@@ -33,10 +33,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
 
-<!-- Custom elements -->
-<!-- <link rel="import" href="../my-greeting/my-greeting.html">
-<link rel="import" href="../my-list/my-list.html"> -->
-
 <dom-module id="things-app">
 
   <template>
@@ -48,8 +44,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       value="{{storage}}"
       on-iron-localstorage-load-empty="initializeDefaultStorage">
     </iron-localstorage>
-      <!-- Client Setting -->
+
+    <!-- Client Setting -->
     <things-setting id="setting"></things-setting>
+
+    <!-- full dialog -->
+    <things-full-dialog id='common-full-dialog'></things-full-dialog>
+
+    <!-- resource dialog -->
+    <things-resource-dialog id='resource-dialog'></things-resource-dialog>    
 
     <paper-drawer-panel id="paperDrawerPanel" responsive-width="599px" drawer-width="256px">
       <!-- Layout Sidebar -->
@@ -69,7 +72,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <iron-pages attr-for-selected="data-route" selected="{{route}}" class="content">
 
           <!-- Dynamic Menu Page -->
-          <template is="dom-repeat" items="{{screens}}" as=screen filter="isDynamicScreen">
+          <template is="dom-repeat" items="{{screens}}" as=screen filter="">
             <!-- Dynamic Resource Screen -->
             <things-resource-content 
               data-route="[[screen.routing]]"
@@ -96,16 +99,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           <!-- Static Menu Page -->
           <!-- login page -->
-          <things-login data-route="login"
-                        route ="{{route}}"
-                        title="Elidom"
-                        login-path="login"
-                        content-type="application/x-www-form-urlencoded"
-                        success-route="/"
-                        username-input-label="ID"
-                        password-input-label="Password"
-                        submit-label = "sign_up"
-                        Reset-label = "Reset">
+          <things-login 
+            data-route="login"
+            route ="{{route}}"
+            title="Elidom"
+            login-path="login"
+            content-type="application/x-www-form-urlencoded"
+            success-route="/"
+            username-input-label="ID"
+            password-input-label="Password"
+            submit-label = "sign_up"
+            Reset-label = "Reset">
             <img avatar src="https://maps.gstatic.com/tactile/pane/default_geocode-1x.png"/>
           </things-login>
 
@@ -212,6 +216,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           <script type="text/javascript">
             var app = document.querySelector('#app');
+
+            app.isDynamicScreen = function(screen) {
+              return screen.routing_type == 'RESOURCE';
+            };
+
+            app.isDiyScreen = function(screen) {
+              return screen.routing_type == 'DIY';
+            };            
 
             app.open = function(e) {
               var input = e.target;

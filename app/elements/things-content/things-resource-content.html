@@ -18,7 +18,7 @@
 <link rel="import" href="../../../bower_components/things-resource-selector/things-resource-selector-behavior.html">
 
 <link rel="import" href="../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
-<link rel="import" href="../../../../bower_components/things-route-content-behavior/things-route-content-behavior.html">
+<link rel="import" href="../../../bower_components/things-route-content-behavior/things-route-content-behavior.html">
 
 <!--
 하나의 리소스에 대한 기본 액션 (List, Create, Find, Upate, Delete) 및 Import, Export 등의 기능을 제공하는 화면 셋 
@@ -142,6 +142,14 @@ Things Reource Content는 검색 폼, 그리드가 기본으로 표시되고 그
 				detailView: {
 					type: String,
 					value: 'things-resource-form'
+				},
+
+				/**
+				 * 그리드 버튼 Override
+				 */
+				gridButtons: {
+					type: Array,
+					observer: '_gridButtonsChanged'
 				}
 			},
 
@@ -149,6 +157,15 @@ Things Reource Content는 검색 폼, 그리드가 기본으로 표시되고 그
 				'grid.things-grid-detail-tap': 'showDetailView',
 				'grid.things-grid-save-success': 'refreshGridData',
 				'grid.things-grid-resource-column-edit' : 'openResourceSelector'
+			},
+
+			/**
+			 * 그리드 버튼 변경시
+			 *
+			 * @param {Array} buttons
+			 */
+			_gridButtonsChanged: function(buttons) {
+				this.$['grid'].buttons = buttons;
 			},
 
 			/**
