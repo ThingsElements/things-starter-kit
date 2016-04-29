@@ -1,0 +1,44 @@
+  <!-- login page -->
+  <things-login 
+    data-route="login"
+    route ="{{route}}"
+    title="Elidom"
+    login-path="login"
+    content-type="application/x-www-form-urlencoded"
+    success-route="/"
+    username-input-label="ID"
+    password-input-label="Password"
+    submit-label = "sign_up"
+    Reset-label = "Reset">
+    <img avatar src="https://maps.gstatic.com/tactile/pane/default_geocode-1x.png"/>
+  </things-login>
+
+  <!-- menu page -->
+  <things-base-menu 
+    data-route="menus"
+    current-route="[[route]]"
+    title="Menu"
+    resource-type="Menu"
+    resource-url="menus"
+    layout="fullbleed layout vertical">
+  </things-base-menu>
+
+  <!-- attachment page -->
+  <things-base-attachment 
+    data-route="attachments"
+    current-route="[[route]]"
+    title="Attachment"
+    resource-type="Attachment"
+    resource-url="attachments"
+    layout="fullbleed layout vertical">
+  </things-base-attachment>
+
+  <!-- terminologies page -->
+  <things-base-terminology 
+    data-route="terminologies"
+    current-route="[[route]]"
+    title="Terminology"
+    resource-type="Terminology"
+    resource-url="terminologies"
+    layout="fullbleed layout vertical">
+  </things-base-terminology>

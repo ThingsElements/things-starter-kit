@@ -1,0 +1,34 @@
+  <template is="dom-repeat" items="{{screens}}" as=screen filter="isDynamicScreen">
+    <things-resource-content 
+      data-route="[[screen.routing]]"
+      title="[[screen.title]]"
+      current-route="[[route]]"
+      resource-type="[[screen.name]]"
+      resource-url="[[screen.routing]]"
+      detail-view="[[screen.detail_form_id]]"
+      layout="fullbleed layout vertical"
+      enable-detail-column>
+    </things-resource-content>
+  </template>
+
+  <template is="dom-repeat" items="{{screens}}" as=screen filter="isDiyScreen">
+    <things-diy-content 
+      layout="fullbleed layout vertical"
+      data-route="{{screen.routing}}"
+      current-route="[[route]]"
+      menu-id="{{screen.id}}"
+      resource-url="[[screen.routing]]">
+      </things-diy-content>
+  </template>
+
+  <script type="text/javascript">
+    var app = document.querySelector('#app');
+
+    app.isDynamicScreen = function(screen) {
+      return screen.routing_type == 'RESOURCE';
+    };
+
+    app.isDiyScreen = function(screen) {
+      return screen.routing_type == 'DIY';
+    };
+  </script>
