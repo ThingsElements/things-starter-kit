@@ -1,5 +1,10 @@
-node_modules
-dist
+app/google*.html
+app/scripts/analytics.js
 bower_components
+deploy
+dist
+node_modules
+npm-debug.log*
+TODO.md
 .tmp
 .publish/

@@ -1,0 +1,248 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<!-- App Theme -->
+<link rel="import" href="../../themes/{$ appTheme $}/theme.html">
+
+<!-- Iron elements -->
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+
+<!-- Paper elements -->
+<link rel="import" href="../../bower_components/paper-drawer-panel/paper-drawer-panel.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-swatch-picker/paper-swatch-picker.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+
+<!-- Custom elements -->
+<!-- <link rel="import" href="../my-greeting/my-greeting.html">
+<link rel="import" href="../my-list/my-list.html"> -->
+
+<dom-module id="things-app">
+
+  <template>
+    <style include="shared-styles">
+      @import "theme.css";
+    </style>
+    
+    <iron-localstorage id="localStorage" name="{$ appName $}"
+      value="{{storage}}"
+      on-iron-localstorage-load-empty="initializeDefaultStorage">
+    </iron-localstorage>
+      <!-- Client Setting -->
+    <things-setting id="setting"></things-setting>
+
+    <paper-drawer-panel id="paperDrawerPanel" responsive-width="599px" drawer-width="256px">
+      <!-- Layout Sidebar -->
+      <things-sidebar drawer 
+        class="layout vertical" 
+        title="Elidom" 
+        selected-menu=1 
+        screens="{{screens}}" 
+        action="menus.json?mode=auth">
+      </things-sidebar>
+
+      <!-- Main Area -->
+      <paper-scroll-header-panel id="headerPanelMain" class="Main" main condenses keep-condensed-header>
+        <!-- Layout Header -->
+        <things-header id ="thingsHeader" drawer-id='paperDrawerPanel'></things-header>
+        <!-- Main Content -->
+        <iron-pages attr-for-selected="data-route" selected="{{route}}" class="content">
+
+          <!-- Dynamic Menu Page -->
+          <template is="dom-repeat" items="{{screens}}" as=screen filter="isDynamicScreen">
+            <!-- Dynamic Resource Screen -->
+            <things-resource-content 
+              data-route="[[screen.routing]]"
+              title="[[screen.title]]"
+              current-route="[[route]]"
+              resource-type="[[screen.name]]"
+              resource-url="[[screen.routing]]"
+              detail-view="[[screen.detail_form_id]]"
+              layout="fullbleed layout vertical"
+              enable-detail-column>
+            </things-resource-content>
+          </template>
+
+          <template is="dom-repeat" items="{{screens}}" as=screen filter="isDiyScreen">
+            <!-- Dynamic Diy Screen -->
+            <things-diy-content 
+              layout="fullbleed layout vertical"
+              data-route="{{screen.routing}}"
+              current-route="[[route]]"
+              menu-id="{{screen.id}}"
+              resource-url="[[screen.routing]]">
+              </things-diy-content>
+          </template>
+
+          <!-- Static Menu Page -->
+          <!-- login page -->
+          <things-login data-route="login"
+                        route ="{{route}}"
+                        title="Elidom"
+                        login-path="login"
+                        content-type="application/x-www-form-urlencoded"
+                        success-route="/"
+                        username-input-label="ID"
+                        password-input-label="Password"
+                        submit-label = "sign_up"
+                        Reset-label = "Reset">
+            <img avatar src="https://maps.gstatic.com/tactile/pane/default_geocode-1x.png"/>
+          </things-login>
+
+          <!-- menu page -->
+          <things-base-menu 
+            data-route="menus"
+            current-route="[[route]]"
+            title="Menu"
+            resource-type="Menu"
+            resource-url="menus"
+            layout="fullbleed layout vertical">
+          </things-base-menu>
+
+          <!-- attachment page -->
+          <things-base-attachment 
+            data-route="attachments"
+            current-route="[[route]]"
+            title="Attachment"
+            resource-type="Attachment"
+            resource-url="attachments"
+            layout="fullbleed layout vertical">
+          </things-base-attachment>
+
+          <!-- demo page -->
+          <section class="Page" data-route="demo">
+            <paper-material class="Page-paper" elevation="1">
+              <things-demo title="Elidom Demo"></things-demo>
+            </paper-material>
+          </section>
+
+          <!-- sample page -->
+          <section class="Page" data-route="image_viewer">
+            <paper-material class="Page-paper" elevation="1">
+              <things-ajax
+                auto
+                query-support
+                resource-url="attachments/list/image"        
+                select-fields="id,name"
+                last-response="{{cardResult}}">
+              </things-ajax>
+
+              <things-card-list items="[[cardResult.items]]"></things-card-list>
+            </paper-material>
+          </section>
+
+          <!-- API Document page -->
+          <section class="Page" data-route="apidoc">
+            <paper-material class="Page-paper" elevation="1">
+              <h2 class="Page-title">Things Component API & Docs</h2>
+              <p class="paper-font-subhead"><a href="/elements/index.html" target="_blank">Component API & Demo</a></p>
+            </paper-material>
+          </section>
+
+          <!-- Resouce Selector Sample page -->
+          <section class="Page" data-route="resource_selector">
+            <paper-material elevation="1">
+              <div>
+                <things-ajax 
+                  auto
+                  id="resource-meta"
+                  resource-url="entities/Alarm/resource_columns"
+                  last-response="{{metaData}}">
+                </things-ajax>
+
+                <things-ajax
+                  auto
+                  resource-url="alarms/:id"
+                  resource-id="1"
+                  last-response="{{detailViewData}}">
+                </things-ajax>
+
+                <!--things-resource-tabs 
+                  search-meta
+                  meta-data="{{metaData}}"
+                  resource-type="Alarm" 
+                  resource-url="alarms"
+                  resource="{{detailViewData}}" 
+                  attachable 
+                  prop-extensible>
+                </things-resource-tabs-->
+              </div>
+            </paper-material>
+          </section>
+
+          <!-- Extension Property Page -->
+          <section class="Page" data-route="extension_property">
+            <paper-material class="Page-paper" elevation="1">
+              <things-extension 
+                resource-id="1" 
+                resource-type="Alarm">
+              </things-extension>
+            </paper-material>
+          </section>
+
+          <!-- Attached file  -->
+          <section class="Page" data-route="attached_file">
+            <paper-material class="Page-paper" elevation="1">
+              <things-attached-file 
+                resource-id="1" 
+                resource-type="Alarm">
+              </things-attached-file>
+            </paper-material>
+          </section>
+
+          <script type="text/javascript">
+            var app = document.querySelector('#app');
+
+            app.open = function(e) {
+              var input = e.target;
+              
+              while (!input.hasAttribute('data-selector') && input !== document.body) {
+                input = input.parentElement;
+              }
+
+              if (!input.hasAttribute('data-selector')) {
+                return;
+              }
+              
+              var id = input.getAttribute('data-selector');
+              var el = document.getElementById(id);
+              
+              if (el) {
+                el.open();
+              }
+            };
+          </script>
+        </iron-pages>     
+      </paper-scroll-header-panel>
+    </paper-drawer-panel>
+
+    <paper-toast id="confirmToast" class="Toast" duration="10000">
+      <span class="Toast-button" role="button" tabindex="0" on-tap="onConfirmToastTap">OK</span>
+    </paper-toast>
+
+    <paper-toast id="infoToast" class="Toast" duration="8000"></paper-toast>
+  </template>
+
+  <script src="things-app.js"></script>
+
+</dom-module>

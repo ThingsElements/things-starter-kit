@@ -1,0 +1,137 @@
+<!-- login page -->
+<things-login data-route="login"
+              route ="{{route}}"
+              title="Elidom"
+              login-path="login"
+              content-type="application/x-www-form-urlencoded"
+              success-route="/"
+              username-input-label="ID"
+              password-input-label="Password"
+              submit-label = "sign_up"
+              Reset-label = "Reset">
+  <img avatar src="https://maps.gstatic.com/tactile/pane/default_geocode-1x.png"/>
+</things-login>
+
+<!-- menu page -->
+<things-base-menu 
+  data-route="menus"
+  current-route="[[route]]"
+  title="Menu"
+  resource-type="Menu"
+  resource-url="menus"
+  layout="fullbleed layout vertical">
+</things-base-menu>
+
+<!-- attachment page -->
+<things-base-attachment 
+  data-route="attachments"
+  current-route="[[route]]"
+  title="Attachment"
+  resource-type="Attachment"
+  resource-url="attachments"
+  layout="fullbleed layout vertical">
+</things-base-attachment>
+
+<!-- demo page -->
+<section class="Page" data-route="demo">
+  <paper-material class="Page-paper" elevation="1">
+    <things-demo title="Elidom Demo"></things-demo>
+  </paper-material>
+</section>
+
+<!-- sample page -->
+<section class="Page" data-route="image_viewer">
+  <paper-material class="Page-paper" elevation="1">
+    <things-ajax
+      auto
+      query-support
+      resource-url="attachments/list/image"        
+      select-fields="id,name"
+      last-response="{{cardResult}}">
+    </things-ajax>
+
+    <things-card-list items="[[cardResult.items]]"></things-card-list>
+  </paper-material>
+</section>
+
+<!-- API Document page -->
+<section class="Page" data-route="apidoc">
+  <paper-material class="Page-paper" elevation="1">
+    <h2 class="Page-title">Things Component API & Docs</h2>
+    <p class="paper-font-subhead"><a href="/elements/index.html" target="_blank">Component API & Demo</a></p>
+  </paper-material>
+</section>
+
+<!-- Resouce Selector Sample page -->
+<section class="Page" data-route="resource_selector">
+  <paper-material elevation="1">
+    <div>
+      <things-ajax 
+        auto
+        id="resource-meta"
+        resource-url="entities/Alarm/resource_columns"
+        last-response="{{metaData}}">
+      </things-ajax>
+
+      <things-ajax
+        auto
+        resource-url="alarms/:id"
+        resource-id="1"
+        last-response="{{detailViewData}}">
+      </things-ajax>
+
+      <!--things-resource-tabs 
+        search-meta
+        meta-data="{{metaData}}"
+        resource-type="Alarm" 
+        resource-url="alarms"
+        resource="{{detailViewData}}" 
+        attachable 
+        prop-extensible>
+      </things-resource-tabs-->
+    </div>
+  </paper-material>
+</section>
+
+<!-- Extension Property Page -->
+<section class="Page" data-route="extension_property">
+  <paper-material class="Page-paper" elevation="1">
+    <things-extension 
+      resource-id="1" 
+      resource-type="Alarm">
+    </things-extension>
+  </paper-material>
+</section>
+
+<!-- Attached file  -->
+<section class="Page" data-route="attached_file">
+  <paper-material class="Page-paper" elevation="1">
+    <things-attached-file 
+      resource-id="1" 
+      resource-type="Alarm">
+    </things-attached-file>
+  </paper-material>
+</section>
+
+<script type="text/javascript">
+  var app = document.querySelector('#app');
+
+  app.open = function(e) {
+    var input = e.target;
+    
+    while (!input.hasAttribute('data-selector') && input !== document.body) {
+      input = input.parentElement;
+    }
+
+    if (!input.hasAttribute('data-selector')) {
+      return;
+    }
+    
+    var id = input.getAttribute('data-selector');
+    var el = document.getElementById(id);
+    
+    if (el) {
+      el.open();
+    }
+  };
+</script>

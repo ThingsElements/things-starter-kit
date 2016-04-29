@@ -1,0 +1,21 @@
+{
+  "name": "ThingsStartKit",
+  "authors": [
+    "Lyonghwan Park <longhuan@hatiolab.com>"
+  ],
+  "description": "Things start kit",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "gold-email-input": "^1.0.7"
+  }
+}
