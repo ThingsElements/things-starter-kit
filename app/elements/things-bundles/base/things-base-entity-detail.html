@@ -1,0 +1,308 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/iron-icon/iron-icon.html">
+
+<link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../../bower_components/things-resource-selector/things-resource-selector-behavior.html">
+<link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
+<link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
+
+<dom-module id="things-base-entity-detail">
+
+  <template>
+    <div class="[[layout]]">
+      <things-ajax 
+        id="resource-search"
+        method="GET"
+        resource-url="entities/:id/entity_columns"
+        resource-id="{{resourceId}}"
+        last-response="{{lastResponse}}"
+        auto>
+      </things-ajax>
+
+      <span><paper-icon-button icon="icons:view-list"></paper-icon-button>[[entityName]]</span>
+      
+      <things-resource-grid 
+        id="grid"
+        config="[[gridConfig]]"
+        model="[[gridModel]]" 
+        columns="[[gridColumns]]"
+        data="[[lastResponse.items]]"
+        grid-save-action="[[gridSaveUrl]]"
+        buttons="[[buttons]]"
+        enable-toolbar>
+      </things-resource-grid>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'things-base-entity-detail',
+
+      behaviors: [ 
+        Things.ViewOpenBehavior
+      ],
+
+      properties: {
+
+        /**
+         * entity id
+         */
+        resourceId: {
+          type: String
+        },
+
+        /**
+         * Detail 클릭시 나타나는 detail title
+         */
+        entityName: {
+          type: String
+        },
+
+        /**
+         * entity resource
+         */
+        resource: {
+          type: Object
+        },
+
+        /**
+         * 화면 타이틀 
+         */
+        title: {
+          type: String
+        },
+
+        /**
+         * entity columns 조회 정보 
+         */
+        lastResponse: {
+          type: Object
+        },        
+
+        /**
+         * grid model
+         */
+        gridModel: {
+          type: Array,
+          value: [ 
+            { fieldName: 'id' }, 
+            { fieldName: 'entity_id' }, 
+            { fieldName: 'disp_rank' }, 
+            { fieldName: 'name' }, 
+            { fieldName: 'description'}, 
+            { fieldName: 'term' },
+            { fieldName: 'ref_type' }, 
+            { fieldName: 'ref_name' }, 
+            { fieldName: 'col_type' },
+            { fieldName: 'col_size' }, 
+            { fieldName: 'nullable' }, 
+            { fieldName: 'def_val'},
+            { fieldName: 'uniq_rank' }, 
+            { fieldName: 'list_rank' }, 
+            { fieldName: 'search_rank' },
+            { fieldName: 'sort_rank' }, 
+            { fieldName: 'reverse_sort' }, 
+            { fieldName: 'editor' },
+            { fieldName: 'width' }, 
+            { fieldName: 'align' }, 
+            { fieldName: 'format' }, 
+            { fieldName: 'operator'} ]
+        },
+        
+        /**
+         * grid columns
+         */
+        gridColumns: {
+          type: Array,
+          value: [ { 
+            fieldName: 'id', name: 'id', width: 0 
+          }, { 
+            fieldName: 'entity_id', name: 'entity_id', width: 0 
+          }, { 
+            fieldName: 'disp_rank', name: 'disp_rank', width: 50,
+            header: { text : 'Rank' }, 
+            styles: { textAlignment: 'far' }
+          }, { 
+            fieldName: 'name', name: 'name', width: 100,
+            header : { text : 'Name' }
+          }, { 
+            fieldName: 'description', name: 'description',
+            header : { text : 'Description' }
+          }, { 
+            fieldName: 'term', name: 'term', width: 140,
+            header : { text : 'Terminology' }
+          }, { 
+            fieldName: 'ref_type',
+            name: 'ref_type',
+            width: 110,
+            header: { text: 'Reference Type'},
+            editor: { type: 'list', domainOnly: true },
+            lookupDisplay: true,
+            lookupValues: [ 'Entity', 'CommonCode' ],
+            lookupLabels: [ 'Entity', 'CommonCode' ] 
+          }, { 
+            fieldName: 'ref_name', name: 'ref_name', width: 120,
+            header: { text: 'Reference Name'}
+          }, { 
+            name: 'col_type', fieldName: 'col_type', width: 100,
+            header: { text: 'Column Type'},
+            editor: { type: 'list', domainOnly: true },
+            lookupDisplay: true,
+            lookupValues: [ 'binary', 'boolean', 'date' ,'datetime',
+                            'decimal', 'double', 'float', 'integer',
+                            'long', 'string', 'text', 'time', 'timestamp' ],
+            lookupLabels: [ 'binary', 'boolean', 'date' ,'datetime',
+                           'decimal', 'double', 'float', 'integer',
+                           'long', 'string', 'text', 'time', 'timestamp' ] 
+          }, { 
+            fieldName: 'col_size', name: 'col_size', type: 'number', width: 90,
+            header: { text : 'Column Size' }, 
+            styles: { textAlignment: 'far' }
+          }, { 
+            name: 'nullable', fieldName: 'nullable', width: 70,
+            header: { text: 'Nullable' },
+            renderer: {
+              type:'check', editable: true, threeStates: false, 
+              trueValues: 'true', falseValues: 'false'
+            }
+          }, { 
+            fieldName: 'def_val', name: 'def_val', width: 100,
+            header: { text : 'Default Value' }
+          }, { 
+            fieldName: 'uniq_rank', name: 'uniq_rank', type: 'number',
+            header: { text : 'Unique Rank' },
+            styles: { textAlignment: 'far' }
+          }, { 
+            fieldName: 'list_rank', name: 'list_rank', type: 'number', width: 75,
+            header: { text : 'List Rank' },
+            styles: { textAlignment: 'far' }
+          }, { 
+            fieldName: 'search_rank', name: 'search_rank', type: 'number', width: 95,
+            header: { text : 'Search Rank' },
+            styles: { textAlignment: 'far' }
+          }, { 
+            fieldName: 'sort_rank', name: 'sort_rank', type: 'number', width: 80,
+            header: { text : 'Sort Rank' },
+            styles: { textAlignment: 'far' }
+          }, { 
+            name: 'reverse_sort', fieldName: 'reverse_sort', width: 95,
+            header: { text: 'Reverse Sort' },
+            renderer: {
+              type: 'check', editable:true, threeStates: false, 
+              trueValues: 'true', falseValues: 'false'
+            }
+          }, { 
+            fieldName: 'editor', name: 'editor', width: 140 
+          }, { 
+            fieldName: 'width', name: 'width', type: 'number', width: 60,
+            styles: { textAlignment: 'far' }
+          }, { 
+            name: 'align', fieldName: 'align', width: 60,
+            header: { text: 'align'},
+            editor: { type: 'list', domainOnly: true },
+            lookupDisplay: true,
+            lookupValues: [ 'Center', 'Far' ],
+            lookupLabels: [ 'Center', 'Far' ] 
+          },  { 
+            fieldName: 'format', name: 'format', width: 120,
+            header: { text: 'Format' },
+          }, { 
+            fieldName: 'operator', name: 'operator', width: 75,
+            header: { text: 'Operator'},
+            editor: { type: 'list', domainOnly: true },
+            lookupDisplay: true,
+            lookupValues: [ 'contains', 'dnew', 'dnsw', 'eq', 'ew', 'gt', 'gte',
+                          'in', 'is_blank', 'is_false', 'is_not_false', 'is_not_null',
+                          'is_not_true', 'is_null', 'is_present', 'is_true', 'like',
+                          'lt', 'lte', 'nlike', 'noteq', 'notin', 'sw' ],
+            lookupLabels: [ 'contains', 'dnew', 'dnsw', 'eq', 'ew', 'gt', 'gte',
+                          'in', 'is_blank', 'is_false', 'is_not_false', 'is_not_null',
+                          'is_not_true', 'is_null', 'is_present', 'is_true', 'like',
+                          'lt', 'lte', 'nlike', 'noteq', 'notin', 'sw' ] 
+            } ] 
+        },
+
+        /**
+         * Entity Column save URL
+         */
+        gridSaveUrl: {
+          type: String,
+          computed: '_computeEntityColumnSaveUrl(resourceId)'
+        },
+
+        /**
+         * 버튼 정보 
+         */
+        buttons: {
+          type: Array,
+          value: [ {
+            id: 'add-btn',
+            text: 'add',
+            icon: 'icons:add'
+          }, {
+            id: 'save-btn',
+            text: 'save',
+            icon: 'icons:save'
+          }, {
+            id: 'delete-btn',
+            text: 'delete',
+            icon: 'icons:delete'
+          } ]
+        }
+      },
+
+      listeners: {
+        'grid.things-grid-handle-save' : '_beforeColumnsSave',
+        'grid.things-grid-save-success' : 'reloadGrid'
+      },
+
+      /**
+       * Entity Id로 Entity Column Save URL 생성
+       *
+       * @param {String} resourceId
+       * @return {String} entity column save url
+       */
+      _computeEntityColumnSaveUrl: function(resourceId) {
+        return 'entities/' + resourceId + '/update_multiple_entity_columns.json';
+      },
+
+      /**
+       * Entity Column 저장 전에...
+       */
+      _beforeColumnsSave: function(event) {
+        var grid = event.target;
+        if(grid.writeData && grid.writeData.length > 0) {
+          var entityId = this.resourceId;
+          grid.writeData.forEach(function(changedData) {
+            if(changedData.cud_flag_ == 'c' && (!changedData.entity || !changedData.entity_id)) {
+              changedData.entity_id = entityId;
+            }
+          });
+        }
+      },      
+
+      /**
+       * reload grid data
+       */
+      reloadGrid: function(e) {
+        this.$['resource-search'].generateRequest();
+      },
+
+      /**
+       * Detail 화면 Open
+       *
+       * @param {String} resourceId
+       * @param {Object} resource
+       */
+      showDetailView: function(resourceId, resource) {
+        if(this.resourceId != resourceId) {
+          this.resourceId = resourceId;
+        }
+
+        this.openPopupView(this, true);
+      }
+
+    });
+  </script>
+</dom-module>

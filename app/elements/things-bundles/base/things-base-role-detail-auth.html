@@ -1,0 +1,377 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/iron-icon/iron-icon.html">
+
+<link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../../bower_components/things-resource-selector/things-resource-selector-behavior.html">
+<link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
+<link rel="import" href="../../../../bower_components/things-msg-box-behavior/things-msg-box-behavior.html">
+<link rel="import" href="../../../../bower_components/things-grid/things-tree-grid.html">
+
+<dom-module id="things-base-role-detail-auth">
+
+  <template>
+    <div class="[[layout]]">
+      <things-ajax 
+        id="resource-search"
+        method="GET"
+        resource-url="[[gridSearchUrl]]"
+        last-response="{{lastResponse}}"
+        auto>
+      </things-ajax>
+
+      <span><paper-icon-button icon="icons:view-list"></paper-icon-button>[[roleName]]</span>
+
+      <things-resource-grid 
+        id="grid"
+        config="[[gridConfig]]"
+        model="[[gridModel]]" 
+        columns="[[gridColumns]]"
+        data="[[items]]"
+        grid-save-action="[[gridSaveUrl]]"
+        buttons="[[buttons]]"
+        enable-toolbar>
+      </things-resource-grid>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'things-base-role-detail-auth',
+
+      behaviors: [ 
+        Things.ViewOpenBehavior,
+        Things.MsgBoxBehavior
+      ],
+
+      properties: {
+
+        /**
+         * role id
+         */
+        roleId: {
+          type: String
+        },
+
+        /**
+         * Detail 클릭시 나타나는 detail title
+         */
+        roleName: {
+          type: String
+        },
+
+        /**
+         * role resource
+         */
+        resource: {
+          type: Object
+        },
+
+        /**
+         * menu authorization 조회 결과 
+         */
+        lastResponse: {
+          type: Object,
+          observer: '_authDataChanged'
+        },        
+
+        /**
+         * grid model
+         */
+        gridModel: {
+          type: Array,
+          value: [ {
+            fieldName: 'id'
+          }, {
+            fieldName: 'parent_id'
+          }, {
+            fieldName: 'name'
+          }, {
+            fieldName: 'check_all',
+            dataType: 'boolean'
+          }, {
+            fieldName: 'show',
+            dataType: 'boolean'
+          }, {
+            fieldName: 'create',
+            dataType: 'boolean'
+          }, {
+            fieldName: 'update',
+            dataType: 'boolean'
+          }, {
+            fieldName: 'delete',
+            dataType: 'boolean'
+          } ]
+        },
+        
+        /**
+         * grid columns
+         */
+        gridColumns: {
+          type: Array,
+          value: [ {
+            fieldName: 'id',
+            width: 0
+          }, {
+            fieldName: 'parent_id',
+            width: 0
+          }, {
+            fieldName: 'name',
+            editable: false,
+            width: 250,
+            imageList: 'images',
+            renderer: {
+              type: 'icon'
+            },
+            styleCallback: function (index, styles) {
+              var rowData = index.getRow().getRowObject();
+              if(!rowData.parent_id || rowData.parent_id == '0' || rowData.parent_id == 0) {
+                styles.setIconIndex('indicator_insert.png');
+              } else {
+                styles.setIconIndex('menu_button.png');
+              }
+            }
+          }, {
+            name: 'check_all', fieldName: 'check_all', width: 100, editable: false,
+            header: { text: 'Check All' },
+            renderer: {
+              type:'check', editable: true, editOnClick: true, threeStates: false, 
+              trueValues: 'true', falseValues: 'false'
+            }
+          }, {
+            name: 'show', fieldName: 'show', width: 80, editable: false,
+            header: { text: 'Show' },
+            renderer: {
+              type:'check', editable: true, editOnClick: true, threeStates: false, 
+              trueValues: 'true', falseValues: 'false'
+            }
+          }, {
+            name: 'create', fieldName: 'create', width: 80, editable: false,
+            header: { text: 'Create' },
+            renderer: {
+              type:'check', editable: true, editOnClick: true, threeStates: false, 
+              trueValues: 'true', falseValues: 'false'
+            }
+          }, {
+            name: 'update', fieldName: 'update', width: 80, editable: false,
+            header: { text: 'Update' },
+            renderer: {
+              type:'check', editable: true, editOnClick: true, threeStates: false, 
+              trueValues: 'true', falseValues: 'false'
+            }
+          }, {
+            name: 'delete', fieldName: 'delete', width: 80, editable: false,
+            header: { text: 'Delete' },
+            renderer: {
+              type:'check', editable: true, editOnClick: true, threeStates: false, 
+              trueValues: 'true', falseValues: 'false'
+            }
+          } ]
+        },
+
+        /**
+         * menu autholization search url
+         */
+        gridSearchUrl: {
+          type: String,
+          computed: '_computeAuthSearchUrl(roleId)',
+        },
+
+        /**
+         * menu autholization save URL
+         */
+        gridSaveUrl: {
+          type: String,
+          computed: '_computeAuthColumnSaveUrl(roleId)'
+        },
+
+        /**
+         * 버튼 정보 
+         */
+        buttons: {
+          type: Array,
+          value: [ {
+            id: 'save-btn',
+            text: 'save',
+            icon: 'icons:save'
+          } ]
+        }
+      },
+
+      listeners: {
+        'grid.things-grid-configured' : '_onGridConfigured',
+        'grid.things-grid-save-success' : 'reloadGrid',
+        'grid.things-grid-handle-build-writedata' : '_setupPermissionsToUpdate'
+      },
+
+      /**
+       * check_all 컬럼이 true가 되었을 때
+       * 다른 check box들을 모두 true로 변환
+       * @param {Object} event grid.things-grid-configured 이벤
+       */
+      _onGridConfigured: function(event) {
+        var grid = event.detail;
+        grid.onEditCellUpdated = function (grid, rowIndex, fieldIndex, newValue, oldValue) {
+          if(fieldIndex == 3) {
+            grid.commit();
+            var rowObj = grid.focusedRow().getRowObject();
+            rowObj['show'] = newValue;
+            rowObj['create'] = newValue;
+            rowObj['update'] = newValue;
+            rowObj['delete'] = newValue;
+            grid.dataSource().updateRow(rowIndex._dataIndex, rowObj);
+          }
+        };
+      },
+
+      /**
+       * 업데이트할 Permissions 데이터를 셋업한다.
+       *
+       * @param {Object} event things-grid-handle-build-writedata
+       */
+      _setupPermissionsToUpdate: function(event) {
+        event.preventDefault();
+
+        var thingsGrid = this.$.grid;
+        var grid = thingsGrid.getGridObject();
+        var count = grid.dataSource().rowCount();
+        var dataList = grid.dataSource().getRowObjects(0, count);
+
+        if(dataList && dataList.length > 0) {
+          var updateList = [];
+
+          dataList.forEach(function(data) {
+            if(data.show || data.create || data.update || data.delete) {
+              var clonedObj = JSON.parse(JSON.stringify(data));
+              clonedObj.menu_id = clonedObj.id;
+              delete clonedObj['id'];
+              delete clonedObj['name'];
+              updateList.push(clonedObj);
+            }
+          });
+
+          if(!updateList || updateList.length == 0) {
+            thingsGrid.gridSaveAction = this.gridSaveUrl + '?delete_all=true';
+          } else {
+            thingsGrid.gridSaveAction = this.gridSaveUrl;
+          }
+
+          thingsGrid.writeData = updateList;
+        }
+      },
+
+      /**
+       * role id를 통한 searching URL 생성
+       */
+      _computeAuthSearchUrl: function(roleId) {
+        return 'roles/' + roleId + '/permitted_resources.json?resource_type=Menu';
+      },
+
+      /**
+       * role id를 통해 menu authorization save URL 생성
+       */
+      _computeAuthColumnSaveUrl: function(roleId) {
+        return 'roles/' + roleId + '/update_permissions';
+      },
+
+      /**
+       * lastResponse에서 parent와 child를 추출하여
+       * items에 초기화
+       */
+      _authDataChanged: function(lastResponse) {
+        var newItems = [];
+        var parents = this.extractParents(lastResponse.items);
+        var parentCount = parents.length;
+        var itemCount = lastResponse.items.length;
+
+        // parents loop
+        for(var i = 0 ; i < parentCount ; i++) {
+          var parent = parents[i];
+          newItems.push(parent);
+
+          // items loop
+          for(var j = 0 ; j < itemCount ; j++) {
+            var item = lastResponse.items[j];
+            if(item.parent_id != parent.id) continue;
+
+            var actionFlag = item.action_name;
+            var temp = null;
+            var ti = newItems.filter(function(ni) { return ni.id == item.id; });
+
+            if(!ti || ti.length == 0) {
+              temp = item;
+              newItems.push(temp);
+            } else {
+              temp = ti[0];
+            }
+
+            if(actionFlag)
+              temp[actionFlag] = true;
+
+            delete temp['action_name'];
+          }
+        }
+
+        this.items = newItems;
+      }, 
+
+      /**
+       * permittedItems에서 parents rows만 추출해서 리턴
+       */
+      extractParents : function(permittedItems) {
+        var tmpParents = permittedItems.filter(function(item) { return !item.parent_id; });
+        var parents = [];
+
+        tmpParents.forEach(function(item) {
+          var actionFlag = item.action_name;
+          var p = null;
+
+          var parent = parents.filter(function(p) { return p.id == item.id; });
+          if(!parent || parent.length == 0) {
+            p = item;
+            parents.push(p);
+          } else {
+            p = parent[0];
+          }
+
+          if(actionFlag)
+            p[actionFlag] = true;
+
+          delete p['action_name'];
+          p.name = p.name;
+        });
+
+        return parents;        
+      },
+
+      /**
+       * reload grid data
+       */
+      reloadGrid: function(e) {
+        this.$['resource-search'].generateRequest();
+      },
+
+      /***************************************************************************************
+       *                            Start detail item view interface
+       ***************************************************************************************/
+
+      /**
+       * detail item view를 구성하기 위한 필수 함수 
+       * item view를 구성한다.
+       *
+       * @return {Object} resource 리소스 데이터 (Object) 혹은 리소스 아이디 (Number)
+       */
+      loadDetailData: function(resource) {
+        if(resource) {
+          this.resource = resource;
+          this.roleId = resource.id;
+          this.roleName = resource.name;
+        }
+      }
+
+      /***************************************************************************************
+       *                            End detail item view interface
+       ***************************************************************************************/       
+    });
+  </script>
+</dom-module>

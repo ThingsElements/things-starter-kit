@@ -46,8 +46,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       logger('Imports are loaded and elements have been registered!');
       
       // Remove skeleton
-      var skeleton = document.getElementById('skeleton');
-      skeleton.remove();
+      // var skeleton = document.getElementById('skeleton');
+      // skeleton.remove();
 
       if (webComponentsSupported) {
         // Emulate WebComponentsReady event for browsers supporting Web Components natively
@@ -93,27 +93,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     /* imports are loaded and elements have been registered */
   });
 
-  window.addEventListener('service-worker-error', e => {
-    // Check to make sure caching is actually enabled—it won't be in the dev environment.
-    if (!Polymer.dom(document).querySelector('platinum-sw-cache').disabled) {
-      logger(e.detail);
-    }
-  });
+  // window.addEventListener('service-worker-error', e => {
+  //   // Check to make sure caching is actually enabled—it won't be in the dev environment.
+  //   if (!Polymer.dom(document).querySelector('platinum-sw-cache').disabled) {
+  //     logger(e.detail);
+  //   }
+  // });
 
-  window.addEventListener('service-worker-installed', () => {
-    // Check to make sure caching is actually enabled—it won't be in the dev environment.
-    if (!Polymer.dom(document).querySelector('platinum-sw-cache').disabled) {
-      app.$.infoToast.text = 'Caching complete! This app will work offline.';
-      app.$.infoToast.show();
-    }
-  });
+  // window.addEventListener('service-worker-installed', () => {
+  //   // Check to make sure caching is actually enabled—it won't be in the dev environment.
+  //   if (!Polymer.dom(document).querySelector('platinum-sw-cache').disabled) {
+  //     app.$.infoToast.text = 'Caching complete! This app will work offline.';
+  //     app.$.infoToast.show();
+  //   }
+  // });
 
-  window.addEventListener('service-worker-updated', e => {
-    // Check to make sure caching is actually enabled—it won't be in the dev environment.
-    if (!Polymer.dom(document).querySelector('platinum-sw-cache').disabled) {
-      logger(e.detail);
-    }
-  });
+  // window.addEventListener('service-worker-updated', e => {
+  //   // Check to make sure caching is actually enabled—it won't be in the dev environment.
+  //   if (!Polymer.dom(document).querySelector('platinum-sw-cache').disabled) {
+  //     logger(e.detail);
+  //   }
+  // });
 
   // Main area's paper-scroll-header-panel custom condensing transformation of
   // the headerTitle in the middle-container and the bottom title in the bottom-container.

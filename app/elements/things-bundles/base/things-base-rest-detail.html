@@ -1,0 +1,181 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/iron-icon/iron-icon.html">
+
+<link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../../bower_components/things-resource-selector/things-resource-selector-behavior.html">
+<link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
+<link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
+
+<link rel="import" href="./things-base-rest-detail-api.html">
+
+<dom-module id="things-base-rest-detail">
+
+  <template>
+    <div class="[[layout]]">
+      <things-ajax 
+        id="resource-search"
+        method="GET"
+        resource-url="[[gridSearchUrl]]"
+        last-response="{{lastResponse}}">
+      </things-ajax>
+
+      <span><paper-icon-button icon="icons:view-list"></paper-icon-button>[[resource.module]] : [[resource.name]] ([[resource.description]])</span>
+
+      <things-basic-grid 
+        id="grid"
+        grid-height=200
+        config="[[gridConfig]]"
+        model="[[gridModel]]" 
+        columns="[[gridColumns]]"
+        data="[[items]]"
+        grid-save-action="[[gridSaveUrl]]"
+        buttons="[[buttons]]"
+        !show-grid-footer
+        enable-detail-column>
+      </things-basic-grid>
+
+      <span><paper-icon-button icon="icons:view-list"></paper-icon-button>[[apiTitle]]</span>
+
+      <things-base-rest-detail-api id="api-detail">
+      </things-base-rest-detail-api>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'things-base-rest-detail',
+
+      behaviors: [ 
+        Things.ViewOpenBehavior
+      ],
+
+      properties: {
+        /**
+         * 화면 타이틀 
+         */
+        title: {
+          type: String
+        },
+
+        /**
+         * REST Resource
+         */
+        resource: {
+          type: Object
+        },
+
+        /**
+         * API 조회 정보 
+         */
+        lastResponse: {
+          type: Object,
+          observer: '_apiResultChanged'
+        },
+
+        /**
+         * API List
+         */
+        items: {
+          type: Array
+        },
+
+        /**
+         * grid model
+         */
+        gridModel: {
+          type: Array,
+          value: [ { 
+            fieldName: 'id' 
+          }, { 
+            fieldName: 'url' 
+          }, { 
+            fieldName: 'http_method' 
+          }, { 
+            fieldName: 'name' 
+          }, { 
+            fieldName: 'description'
+          } ]
+        },
+        
+        /**
+         * grid columns
+         */
+        gridColumns: {
+          type: Array,
+          value: [ { 
+            fieldName: 'id', name: 'id', width: 0 
+          }, { 
+            fieldName: 'name', name: 'name', width: 100,
+            header: { text : 'Name' }
+          }, { 
+            fieldName: 'http_method', name: 'http_method', width: 80,
+            header: { text : 'Method' }
+          }, { 
+            fieldName: 'url', name: 'url', width: 300,
+            header : { text : 'URL' }
+          }, { 
+            fieldName: 'description', name: 'description', width: 375,
+            header : { text : 'Description' }
+          } ] 
+        },
+
+        /**
+         * API search URL
+         */
+        gridSearchUrl: {
+          type: String
+        },
+
+        /**
+         * 그리드에서 선택한 API 타이틀  
+         */
+        apiTitle: {
+          type: String
+        }
+
+      },
+
+      listeners: {
+        'grid.things-grid-detail-tap': '_showApiDetail'
+      },
+
+      /**
+       * API 상세 내용 표시 
+       *
+       * @event {Event} event
+       */
+      _showApiDetail: function(event) {
+        var api = event.detail;
+        this.apiTitle = api.name + ' : ' + api.url + ' (' + api.description + ')';
+        this.$['api-detail'].loadDetailData(api);
+      },
+
+      /**
+       * API 조회 결과가 변경되었을 경우 
+       *
+       * @param {Object} lastResponse
+       */
+      _apiResultChanged: function(lastResponse) {
+        this.items = lastResponse.api_list;
+      },
+
+      /**
+       * detail view를 오픈과 detail title 초기화
+       *
+       * @param {Object} resource
+       */
+      showDetailView: function(resourceId, resource) {
+        if(this.resourceId != resourceId) {
+          this.resourceId = resourceId;  
+        }
+        
+        this.resource = resource;
+        this.openPopupView(this, true);
+        this.$['resource-search'].resourceUrl = 'rests/api?id=' + resource.bean_class_name;
+        this.$['resource-search'].generateRequest();
+      }
+
+    });
+  </script>
+</dom-module>
