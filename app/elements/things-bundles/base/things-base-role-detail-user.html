@@ -3,13 +3,14 @@
 
 <link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
 <link rel="import" href="../../../../bower_components/things-resource-selector/things-resource-selector-behavior.html">
-<link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
+<link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
 
 <dom-module id="things-base-role-detail-user">
 
   <template>
     <div class="[[layout]]">
       <things-ajax 
+        auto
         id="resource-search"
         method="GET"
         resource-url="[[gridSearchUrl]]"
@@ -30,7 +31,6 @@
         enable-toolbar>
       </things-resource-grid>
     </div>
-
   </template>
 
   <script>
@@ -63,7 +63,8 @@
          * role detail user resource
          */
         resource: {
-          type: Object
+          type: Object,
+          observer: '_onResourceChanged'
         },
 
         /**
@@ -194,6 +195,16 @@
       },
 
       /**
+      * Resource 변경시
+      *
+      * @param {Object} resource
+      */
+      _onResourceChanged: function(resource) {
+        this.roleId = resource.id;
+        this.roleName = resource.name;
+      },      
+
+      /**
        * Resource Selector의 선택된 detail 정보
        */
       _onResourceSelectorSelected: function(event) {
@@ -272,7 +283,7 @@
             return {id : changedData.id, cud_flag_ : changedData.cud_flag_};
           });
         }
-      },   
+      },
 
       /**
        * reload grid data

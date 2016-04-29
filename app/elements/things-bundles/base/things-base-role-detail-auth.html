@@ -1,17 +1,15 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../../bower_components/paper-icon-button/paper-icon-button.html">
 
 <link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
-<link rel="import" href="../../../../bower_components/things-resource-selector/things-resource-selector-behavior.html">
-<link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
-<link rel="import" href="../../../../bower_components/things-msg-box-behavior/things-msg-box-behavior.html">
-<link rel="import" href="../../../../bower_components/things-grid/things-tree-grid.html">
+<link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
 
 <dom-module id="things-base-role-detail-auth">
 
   <template>
     <div class="[[layout]]">
       <things-ajax 
+        auto
         id="resource-search"
         method="GET"
         resource-url="[[gridSearchUrl]]"
@@ -39,11 +37,6 @@
 
       is: 'things-base-role-detail-auth',
 
-      behaviors: [ 
-        Things.ViewOpenBehavior,
-        Things.MsgBoxBehavior
-      ],
-
       properties: {
 
         /**
@@ -64,7 +57,8 @@
          * role resource
          */
         resource: {
-          type: Object
+          type: Object,
+          observer: '_onResourceChanged'
         },
 
         /**
@@ -202,6 +196,16 @@
         'grid.things-grid-configured' : '_onGridConfigured',
         'grid.things-grid-save-success' : 'reloadGrid',
         'grid.things-grid-handle-build-writedata' : '_setupPermissionsToUpdate'
+      },
+
+      /**
+       * Resource 변경시
+       *
+       * @param {Object} resource
+       */
+      _onResourceChanged: function(resource) {
+        this.roleId = resource.id;
+        this.roleName = resource.name;
       },
 
       /**
@@ -349,29 +353,8 @@
        */
       reloadGrid: function(e) {
         this.$['resource-search'].generateRequest();
-      },
-
-      /***************************************************************************************
-       *                            Start detail item view interface
-       ***************************************************************************************/
-
-      /**
-       * detail item view를 구성하기 위한 필수 함수 
-       * item view를 구성한다.
-       *
-       * @return {Object} resource 리소스 데이터 (Object) 혹은 리소스 아이디 (Number)
-       */
-      loadDetailData: function(resource) {
-        if(resource) {
-          this.resource = resource;
-          this.roleId = resource.id;
-          this.roleName = resource.name;
-        }
       }
 
-      /***************************************************************************************
-       *                            End detail item view interface
-       ***************************************************************************************/       
     });
   </script>
 </dom-module>
