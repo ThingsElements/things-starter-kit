@@ -1,0 +1,57 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../bower_components/things-button/things-button.html">
+<link rel="import" href="../../../bower_components/things-input-field/things-input-field.html">
+
+<!--
+`<things-stamp>` Things Stamp
+-->
+<dom-module id="things-stamp">
+	<template>
+    <things-ajax
+      auto
+      id="resource-search"
+      resource-url="[[searchUrl]]"
+      resource-action="index"
+      select-fields="[[selectFields]]"
+      sort-fields="[[sortFields]]"
+      query-fields="[[queryFields]]"
+      last-response="{{lastResponse}}">
+    </things-ajax>
+
+    <things-input-field></things-input-field>
+
+    <things-button raised on-tap="showData">fire</things-button>
+  </template>
+
+  <script>
+    Polymer({
+      is: "things-stamp",
+
+      properties: {
+
+        resourceType: {
+          type: String
+        },
+
+        resourceId: {
+          type: String
+        },
+        
+        searchUrl: {
+          type: String,
+          computed: '_computedSearchUrl(resourceType, resourceId)'
+        }
+      },
+
+      _computedSearchUrl: function(resourceType, resourceId) {
+        return [resourceType, resourceId].join('/');
+      },
+
+      showData: function() {
+        console.log(this.lastResponse);
+      }
+    });
+  </script>
+</dom-module>

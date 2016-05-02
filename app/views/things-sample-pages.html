@@ -80,3 +80,18 @@
       </things-attached-file>
     </paper-material>
   </section>
+
+  <!-- Stamp -->
+  <section class="page" data-route="stamp">
+    <things-ajax
+      auto
+      resource-url="roles/:id"
+      resource-id="7"
+      last-response="{{response}}">
+    </things-ajax>
+
+    <paper-material class="Page-paper" elevation="1">
+      <things-stamp resource="[[response]]">
+      </things-stamp>
+    </paper-material>
+  </section>
