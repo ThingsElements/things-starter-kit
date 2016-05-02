@@ -156,19 +156,91 @@
 				 */
 				mainGridColumns: {
 					type: Array,
-					value: [ {
-						"name":"id","fieldName":"id","width":0,"header":{"text":"id"}
-					}, {
-						"name":"rank","fieldName":"rank","width":50,"header":{"text":"rank"},"styles":{"textAlignment":"far"}
-					}, {
-						"name":"name","fieldName":"name","width":150,"header":{"text":"name"},"validations":[{"expression":"value is not empty","level":"error","message":"(name) should not be empty!"},{"expression":"len value < 64","level":"error","message":"Maximum (name) length is (64)"}]
-					}, {
-						"name":"menu_type","fieldName":"menu_type","width":100,"header":{"text":"menu_type"},"validations":[{"expression":"len value < 20","level":"error","message":"Maximum (menu_type) length is (20)"}],"editor":{"type":"list","domainOnly":true},"lookupDisplay":true,"lookupValues":["MENU","SCREEN","SEPARATOR","TEMPLATE"],"lookupLabels":["Menu","Screen","SEPARATOR","Template"]
-					}, {
-						"name":"category","fieldName":"category","width":100,"header":{"text":"category"},"validations":[{"expression":"len value < 64","level":"error","message":"Maximum (category) length is (64)"}],"editor":{"type":"list","domainOnly":true},"lookupDisplay":true,"lookupValues":["STANDARD","TERMINAL"],"lookupLabels":["STANDARD","TERMINAL"]
-					}, {
-						"name":"hidden_flag","fieldName":"hidden_flag","width":100,"header":{"text":"hidden_flag"},"validations":[],"renderer":{"type":"check","editable":true,"threeStates":false,"trueValues":"true","falseValues":"false"}
-					} ]
+					value: function() {
+						return [ {
+							name: 'id',
+							fieldName: 'id',
+							width: 0
+						}, {
+							name:'rank',
+							fieldName:' rank',
+							width: 50,
+							header: {
+								text: Things.DataGlobal.t('label.rank')
+							},
+							styles: {
+								textAlignment: 'far'
+							}
+						}, {
+							name: 'name',
+							fieldName: 'name',
+							width: 150,
+							header: {
+								text: Things.DataGlobal.t('label.name')
+							},
+							validations: [{
+								expression: 'value is not empty','level':'error','message':'(name) should not be empty!'
+							},{
+								expression: 'len value < 64','level':'error','message':'Maximum (name) length is (64)'
+							}]
+						}, {
+							name: 'menu_type',
+							fieldName: 'menu_type',
+							width: 100,
+							lookupDisplay: true,
+							header: {
+								text: Things.DataGlobal.t('label.menu_type')
+							},
+							validations: [{
+								expression: 'len value < 20','level':'error','message':'Maximum (menu_type) length is (20)'
+							}],
+							editor: {
+								type: 'list',
+								domainOnly: true
+							},
+							lookupValues: [
+								'MENU','SCREEN','SEPARATOR','TEMPLATE'
+							],
+							lookupLabels: [
+								'Menu','Screen','SEPARATOR','Template'
+							]
+						}, {
+							name: 'category',
+							fieldName: 'category',
+							width: 100,
+							lookupDisplay: true,
+							header: { 
+								text: Things.DataGlobal.t('label.category')
+							},
+							validations: [{
+								expression: 'len value < 64','level':'error','message':'Maximum (category) length is (64)'
+							}],
+							editor: {
+								type: 'list',
+								domainOnly: true
+							},
+							lookupValues: [
+								'STANDARD','TERMINAL'
+							],
+							lookupLabels: [
+								'STANDARD','TERMINAL'
+							]
+						}, {
+							name: 'hidden_flag',
+							fieldName: 'hidden_flag',
+							width: 100,
+							header: {
+								text: Things.DataGlobal.t('label.hidden_flag')
+							},
+							renderer: {
+								type: 'check',
+								editable: true,
+								threeStates: false,
+								trueValues: 'true',
+								falseValues: 'false'
+							}
+						} ];
+					}
 				},
 
 				/**
