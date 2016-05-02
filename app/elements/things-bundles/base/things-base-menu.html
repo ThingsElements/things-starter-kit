@@ -125,7 +125,9 @@
 				 */
 				title: {
 					type: String,
-					value: 'Menu'
+					value: function() {
+						return Things.DataGlobal.t('menu.Menu');
+					}
 				},
 
 				/**
