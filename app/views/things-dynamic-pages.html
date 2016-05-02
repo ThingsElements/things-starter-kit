@@ -1,4 +1,4 @@
-  <template is="dom-repeat" items="{{screens}}" as=screen filter="isDynamicScreen">
+  <template is="dom-repeat" items="{{resourceScreens}}" as=screen>
     <things-resource-content 
       data-route="[[screen.routing]]"
       title="[[screen.title]]"
@@ -11,7 +11,7 @@
     </things-resource-content>
   </template>
 
-  <template is="dom-repeat" items="{{screens}}" as=screen filter="isDiyScreen">
+  <template is="dom-repeat" items="{{diyScreens}}" as=screen>
     <things-diy-content 
       layout="fullbleed layout vertical"
       data-route="{{screen.routing}}"
@@ -20,15 +20,3 @@
       resource-url="[[screen.routing]]">
       </things-diy-content>
   </template>
-
-  <script type="text/javascript">
-    var app = document.querySelector('#app');
-
-    app.isDynamicScreen = function(screen) {
-      return screen.routing_type == 'RESOURCE';
-    };
-
-    app.isDiyScreen = function(screen) {
-      return screen.routing_type == 'DIY';
-    };
-  </script>
