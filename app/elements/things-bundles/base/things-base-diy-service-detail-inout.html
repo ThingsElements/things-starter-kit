@@ -100,14 +100,20 @@
             fieldName: 'resource_type', name: 'resource_type', width: 0
           }, { 
             fieldName: 'rank', name: 'rank', width: 60,
-            header: { text : 'Rank' },
+            header: { 
+              text: Things.DataGlobal.t('label.rank')
+            },
             styles: { textAlignment: 'far' }
           }, { 
             fieldName: 'name', name: 'name', width: 250,
-            header: { text : 'Name' }
+            header: { 
+              text: Things.DataGlobal.t('label.name')
+            }
           }, { 
             fieldName: 'description', name: 'description', width: 350,
-            header: { text : 'Description' }
+            header: {
+              text: Things.DataGlobal.t('label.description')
+           }
           } ] 
         },
 

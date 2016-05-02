@@ -114,6 +114,9 @@
             editable: false,
             width: 250,
             imageList: 'images',
+            header: {
+              text: Things.DataGlobal.t('label.name')
+            },
             renderer: {
               type: 'icon'
             },
@@ -127,35 +130,45 @@
             }
           }, {
             name: 'check_all', fieldName: 'check_all', width: 100, editable: false,
-            header: { text: 'Check All' },
+            header: { 
+              text: Things.DataGlobal.t('label.check_all')
+            },
             renderer: {
               type:'check', editable: true, editOnClick: true, threeStates: false, 
               trueValues: 'true', falseValues: 'false'
             }
           }, {
             name: 'show', fieldName: 'show', width: 80, editable: false,
-            header: { text: 'Show' },
+            header: { 
+              text: Things.DataGlobal.t('label.show')
+            },
             renderer: {
               type:'check', editable: true, editOnClick: true, threeStates: false, 
               trueValues: 'true', falseValues: 'false'
             }
           }, {
             name: 'create', fieldName: 'create', width: 80, editable: false,
-            header: { text: 'Create' },
+            header: { 
+              text: Things.DataGlobal.t('label.create')
+            },
             renderer: {
               type:'check', editable: true, editOnClick: true, threeStates: false, 
               trueValues: 'true', falseValues: 'false'
             }
           }, {
             name: 'update', fieldName: 'update', width: 80, editable: false,
-            header: { text: 'Update' },
+            header: { 
+              text: Things.DataGlobal.t('label.update')
+            },
             renderer: {
               type:'check', editable: true, editOnClick: true, threeStates: false, 
               trueValues: 'true', falseValues: 'false'
             }
           }, {
             name: 'delete', fieldName: 'delete', width: 80, editable: false,
-            header: { text: 'Delete' },
+            header: { 
+              text: Things.DataGlobal.t('label.delete')
+            },
             renderer: {
               type:'check', editable: true, editOnClick: true, threeStates: false, 
               trueValues: 'true', falseValues: 'false'

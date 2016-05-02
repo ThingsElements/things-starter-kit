@@ -105,6 +105,9 @@
           }, {
             fieldName: 'user',
             name: 'user',
+            header: {
+              text: Things.DataGlobal.t('label.user')
+            },
             valueType: 'text',
             type: 'calced',
             valueCallback : function(column, row) {
@@ -139,9 +142,15 @@
               }
             }
           }, {
-            fieldName: 'login'
+            fieldName: 'login',
+            header: {
+              text: Things.DataGlobal.t('label.login')
+            }
           }, {
             fieldName: 'email',
+            header: {
+              text: Things.DataGlobal.t('label.email')
+            },
             width: 160
           }, {
             fieldName: 'name',
