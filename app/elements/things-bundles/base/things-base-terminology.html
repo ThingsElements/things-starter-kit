@@ -1,7 +1,6 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
 
 <link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
-<link rel="import" href="../../../../bower_components/things-route-content-behavior/things-route-content-behavior.html">
 <link rel="import" href="../../things-content/things-resource-content.html">
 
 <!--
@@ -33,7 +32,8 @@
 			id="terminology-content"
 			layout="fullbleed layout vertical"
 			title="[[title]]"
-			current-route="[[route]]"
+			current-route="{{currentRoute}}"
+			my-route="{{resourceUrl}}"
 			resource-type="{{resourceType}}"
 			resource-url="{{resourceUrl}}"
 			grid-buttons="{{gridButtons}}"
@@ -44,10 +44,6 @@
 	<script>
 		Polymer({
 			is: 'things-base-terminology',
-			
-			behaviors: [ 
-				Things.RouteContentBehavior
-			],
 
 			properties: {
 				/**
@@ -60,6 +56,17 @@
 					}
 				},
 
+				/**
+				 * 현재 메뉴에서 선택된 라우팅
+				 */
+				currentRoute: {
+					type: String,
+					notify : true
+				},				
+
+				/**
+				 * 그리드 버튼
+				 */
 				gridButtons : {
 					type: Array,
 					value: function() {
@@ -89,7 +96,8 @@
                 icon: 'icons:file-upload'
               } ];
             }
-					}				
+					}
+
 			},
 
 			listeners : {
@@ -103,15 +111,7 @@
 			 */
 			reloadCache: function(e) {
 				this.$['reload-cache'].generateRequest();
-			},
-
-			/**
-			 * 화면 초기화 함수 
-			 * 메타 데이터를 서버로 요청하여 화면을 구성한다.
-			 */
-			initializeContent: function() {
-				this.$['terminology-content'].initializeContent();
-			}			
+			}
 
 		});
 	</script>
