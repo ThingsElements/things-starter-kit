@@ -58,7 +58,8 @@
 				last-response="{{mainMenus}}">
 			</things-search-form>
 
-			<span><paper-icon-button icon="icons:view-list"></paper-icon-button><things-i18n-msg msgid="title.main_menu"></things-i18n-msg></span>
+			<span><paper-icon-button icon="icons:view-list"></paper-icon-button>
+			<things-i18n-msg msgid="title.main_menu"></things-i18n-msg></span>
 
 			<things-resource-grid 
 				id="grid"
@@ -84,7 +85,8 @@
 				last-response="{{subMenus}}">
 			</things-ajax>
 
-			<span><paper-icon-button icon="icons:view-list"></paper-icon-button><things-i18n-msg msgid="title.sub_menu"></things-i18n-msg></span>
+			<span><paper-icon-button icon="icons:view-list"></paper-icon-button>
+			<things-i18n-msg msgid="title.sub_menu"></things-i18n-msg></span>
 
 			<things-resource-grid 
 				id="sub-grid"
@@ -96,6 +98,7 @@
 				data="[[subMenus]]"
 				grid-save-action="[[gridSaveUrl]]"
 				buttons="[[buttons]]"
+				enable-detail-column
 				enable-toolbar>
 			</things-resource-grid>
 

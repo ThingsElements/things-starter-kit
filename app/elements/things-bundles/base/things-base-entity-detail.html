@@ -19,11 +19,7 @@
         last-response="{{lastResponse}}">
       </things-ajax>
 
-      <things-ajax 
-        id="generate-service"
-        method="GET"
-        resource-url="code_generator/code">
-      </things-ajax>      
+      <things-ajax id="generate-service"></things-ajax>      
 
       <span><paper-icon-button icon="icons:view-list"></paper-icon-button>[[title]]</span>
       
@@ -77,7 +73,7 @@
          */
         lastResponse: {
           type: Object
-        },        
+        },
 
         /**
          * grid model
@@ -436,8 +432,11 @@
             text: 'delete',
             icon: 'icons:delete'
           }, {
-            id: 'generate-btn',
+            id: 'generate-table-btn',
             text: 'generate-table'
+          }, {
+            id: 'generate-entity-btn',
+            text: 'generate-entity'
           }, {
             id: 'generate-svc-btn',
             text: 'generate-service'
@@ -446,10 +445,13 @@
       },
 
       listeners: {
+        'generate-table-btn-tap' : 'generateTable',
+        'generate-entity-btn-tap' : 'generateEntity',
+        'generate-svc-btn-tap' : 'generateService',
         'grid.things-grid-handle-built-writedata' : '_setupWriteData',
         'grid.things-grid-save-success' : 'reloadGrid',
-        'generate-btn-tap' : 'generateTable',
-        'generate-svc-btn-tap' : 'generateService'
+        'generate-service.things-ajax-response' : '_generateSuccess',
+        'generate-service.things-ajax-error' : '_generateError'
       },
 
       /**
@@ -494,8 +496,35 @@
        * @param {Object} e 버튼 클릭 이벤트 
        */
       generateTable: function(e) {
-        // Table 생성 ...
+        if(this.resource.table_name) {
+          this._confirmAndInvoke(function() {
+            var service = this.$['generate-service'];
+            service.resourceUrl = 'code_generator/code/table/' + this.resourceId;
+            service.generateRequest();
+          }.bind(this));
+
+        } else {
+          this._warningNotReady();
+        }
       },
+
+      /**
+       * Generate Entity
+       *
+       * @param {Object} e 버튼 클릭 이벤트 
+       */
+      generateEntity: function(e) {
+        if(this.resource.table_name) {
+          this._confirmAndInvoke(function() {
+            var service = this.$['generate-service'];
+            service.resourceUrl = 'code_generator/code/entity/' + this.resourceId;
+            service.generateRequest();
+          }.bind(this));
+
+        } else {
+          this._warningNotReady();
+        }
+      },      
 
       /**
        * Generate Service
@@ -503,31 +532,37 @@
        * @param {Object} e 버튼 클릭 이벤트 
        */
       generateService: function(e) {
-        this.openPromptMsg({
-          type : 'input',
-          title : 'Generate Service',
-          text : 'Input table name of entity',
-          showCancelButton: true,
-          closeOnConfirm : false,
-          animation : 'slide-from-to',
-          inputPlaceholder : 'Table Name' 
-        });
+        if(this.resource.table_name) {
+          this._confirmAndInvoke(function() {
+            var service = this.$['generate-service'];
+            service.resourceUrl = 'code_generator/code/' + this.resourceId;
+            service.generateRequest();
+          }.bind(this));
+
+        } else {
+          this._warningNotReady();
+        }
       },
 
-      /**
-       * Invoke Generate Service
-       *
-       * @param {String} tableName
-       */
-      invokeGenerateService: function(tableName) {
-        if(!tableName) return;
+      _confirmAndInvoke: function(func) {
+        this.openConfirmMsg({
+          type : 'info',
+          title : 'Are you sure to process?',
+          showCancelButton: true,
+          closeOnConfirm : false
+        }, func);
+      },
 
-        this.$['generate-service'].params = {
-          module: this.resource.bundle,
-          entity: this.resource.name,
-          tableName: tableName
-        };
-        this.$['generate-service'].generateRequest();
+      _warningNotReady: function() {
+        var tableName = Things.DataGlobal.t('label.table_name');
+        var msg = Things.DataGlobal.t('error.SHOULD_NOT_BE_EMPTY', { value : tableName });
+
+        this.openInfoMsg({
+          type : 'warning',
+          title : msg,
+          showCancelButton: true,
+          closeOnConfirm : false
+        });
       },
 
       /**
