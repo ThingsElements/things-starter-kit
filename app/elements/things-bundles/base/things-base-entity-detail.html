@@ -451,8 +451,7 @@
         'generate-svc-btn-tap' : 'generateService',
         'grid.things-grid-handle-built-writedata' : '_setupWriteData',
         'grid.things-grid-save-success' : 'reloadGrid',
-        'generate-service.things-ajax-response' : '_generateSuccess',
-        'generate-service.things-ajax-error' : '_generateError'
+        'generate-service.things-ajax-response' : '_generationSuccess'
       },
 
       /**
@@ -548,9 +547,9 @@
       _confirmAndInvoke: function(func) {
         this.openConfirmMsg({
           type : 'info',
-          title : 'Are you sure to process?',
+          title : Things.DataGlobal.t('text.Sure to Generate'),
           showCancelButton: true,
-          closeOnConfirm : false
+          closeOnConfirm : true
         }, func);
       },
 
@@ -562,7 +561,22 @@
           type : 'warning',
           title : msg,
           showCancelButton: true,
-          closeOnConfirm : false
+          closeOnConfirm : true
+        });
+      },
+
+      /**
+       * 서비스 생성 성공시 
+       */
+      _generationSuccess: function(e) {
+        console.log('Generated source is below...');
+        console.log(e.detail.msg);
+
+        this.openInfoMsg({
+          title : Things.DataGlobal.t('title.success'),
+          type : 'info',
+          text : Things.DataGlobal.t('text.Success to Process'),
+          closeOnConfirm: true
         });
       },
 
