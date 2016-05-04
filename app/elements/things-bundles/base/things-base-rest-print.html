@@ -1,0 +1,211 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/iron-icon/iron-icon.html">
+
+<link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../../bower_components/things-resource-selector/things-resource-selector-behavior.html">
+<link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
+<link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
+
+<link rel="import" href="./things-base-rest-detail-api.html">
+
+<dom-module id="things-base-rest-detail">
+
+  <template>
+    <div class="[[layout]]">
+
+      <span><paper-icon-button icon="icons:view-list"></paper-icon-button>[[resource.module]] : [[resource.name]] ([[resource.description]])</span>
+
+      <things-basic-grid 
+        id="grid"
+        grid-height=200
+        config="[[gridConfig]]"
+        model="[[gridModel]]" 
+        columns="[[gridColumns]]"
+        
+        data="[[items]]"
+        grid-save-action="[[gridSaveUrl]]"
+        buttons="[[buttons]]"
+        !show-grid-footer
+        enable-detail-column>
+      </things-basic-grid>
+
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'things-base-rest-detail',
+
+      behaviors: [ 
+        Things.ViewOpenBehavior
+      ],
+
+      properties: {
+        /**
+         * 화면 타이틀 
+         */
+        title: {
+          type: String
+        },
+
+        /**
+         * REST Resource
+         */
+        resource: {
+          type: Object
+        },
+
+        /**
+         * API List
+         */
+        items: {
+          type: Array
+        },
+
+        /**
+         * grid model
+         */
+        gridModel: {
+          type: Array,
+          value: [ { 
+            fieldName: 'id' 
+          }, { 
+            fieldName: 'url' 
+          }, { 
+            fieldName: 'http_method' 
+          }, { 
+            fieldName: 'name' 
+          }, { 
+            fieldName: 'description'
+          } ]
+        },
+        
+        /**
+         * grid columns
+         */
+        gridColumns: {
+          type: Array,
+          value: [ { 
+            fieldName: 'id', name: 'id', width: 0 
+          }, { 
+            fieldName: 'name', name: 'name', width: 100,
+            header: { text : 'Name' }
+          }, { 
+            fieldName: 'http_method', name: 'http_method', width: 80,
+            header: { text : 'Method' }
+          }, { 
+            fieldName: 'url', name: 'url', width: 300,
+            header : { text : 'URL' }
+          }, { 
+            fieldName: 'description', name: 'description', width: 375,
+            header : { text : 'Description' }
+          } ] 
+        },
+
+        /**
+         * grid print options
+         */
+        printOptions: {
+          type: Array,
+          value: [{
+            print: {
+                previewUrl: "../resource/js/previewer-test.html"
+            },
+            reportHeader: {
+                styles: {
+                },
+                items: [{
+                    text: "REST API Document",
+                    styles: {
+                        fontSize: 30
+                    }
+
+                }]
+            },
+            pageHeader: {
+                items: [{
+                    text: 'HatioLab Inc.',
+                    styles: {
+                        fontBold: true,
+                    }
+                }, {
+                    right: 0,
+                    text: 'REST API Document'
+                }]
+            },
+            grid: {
+                display: {
+                    fitStyle: "even"
+                },
+                footer: {
+                    visible: true
+                }
+            },
+            gridStyles: {
+                grid: {
+                    border: null
+                }
+            }       
+          }]
+        },
+
+        /**
+         * API search URL
+         */
+        gridSearchUrl: {
+          type: String
+        },
+
+        /**
+         * 그리드에서 선택한 API 타이틀  
+         */
+        apiTitle: {
+          type: String
+        },
+
+        buttons: {
+          type: Array,
+          value: function() {
+            return [{
+              id: 'print-btn',
+              text: 'print',
+              icon: 'icons:print'
+            }];
+          }
+        }
+
+      },
+
+      listeners: {
+        'print-btn-tap' : '_printSheet'
+      },
+
+
+      /**
+       * 전표 인쇄
+       *
+       * @param {Object} e 프린트 버튼 클릭 이벤트
+       */
+      _printSheet: function(e) {
+        var dsMain = this.$.grid.getGridDataSet();
+        var grdMain = this.$.grid.getGridObject();
+
+        grdMain.setDataSource(dsMain);
+        grdMain.checkBar().setVisible(false);
+        grdMain.footer().setVisible(false);
+        
+        grdMain.header().head().setPopupMenu([{
+            label: 'DataLudi Grid Version',
+            callback: function () { alert(DataLudi.getVersion()); }
+        },{
+            label: 'DataLudi Report Version',
+            callback: function () { alert(DLReport.getVersion()); }
+        }]);
+        loadData(dsMain);
+
+        DLReport.preview(grdMain, printOptions, $('#chkPrint').is(':checked'));
+      }
+    });
+  </script>
+</dom-module>

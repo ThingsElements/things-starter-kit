@@ -28,6 +28,20 @@
 			resource-url="terminologies/resource_refresh">
 		</things-ajax>
 
+    <things-basic-grid 
+      id="grid"
+      grid-height=200
+      config="[[gridConfig]]"
+      model="[[gridModel]]" 
+      columns="[[gridColumns]]"
+      
+      data="[[items]]"
+      grid-save-action="[[gridSaveUrl]]"
+      buttons="[[buttons]]"
+      !show-grid-footer
+      enable-detail-column>
+    </things-basic-grid>		
+
 		<things-resource-content
 			id="terminology-content"
 			layout="fullbleed layout vertical"
@@ -67,41 +81,125 @@
 				/**
 				 * 그리드 버튼
 				 */
-				gridButtons : {
+				gridButtons: {
 					type: Array,
 					value: function() {
 						return [ {
-                id: 'reload-btn',
-                text: 'reload',
-                icon: 'icons:reload'
-              }, {
-                id: 'export-btn',
-                text: 'export',
-                icon: 'icons:swap-vert'
-              }, {
-                id: 'add-btn',
-                text: 'add',
-                icon: 'icons:add'
-              }, {
-                id: 'delete-btn',
-                text: 'delete',
-                icon: 'icons:delete'
-              }, {
-                id: 'save-btn',
-                text: 'save',
-                icon: 'icons:save'
-              }, {
-                id: 'import-btn',
-                text: 'import',
-                icon: 'icons:file-upload'
-              } ];
-            }
+							id: 'reload-btn',
+							text: 'reload',
+							icon: 'icons:reload'
+						}, {
+              id: 'export-btn',
+              text: 'export',
+              icon: 'icons:swap-vert'
+						}, {
+              id: 'add-btn',
+              text: 'add',
+              icon: 'icons:add'							
+						}, {
+              id: 'delete-btn',
+              text: 'delete',
+              icon: 'icons:delete'							
+						}, {
+              id: 'save-btn',
+              text: 'save',
+              icon: 'icons:save'							
+						}, {
+              id: 'import-btn',
+              text: 'import',
+              icon: 'icons:file-upload'							
+						}, {
+							id: 'print-btn',
+							text: 'print',
+							icon: 'icons:print'
+						} ]
 					}
+				},
 
+        /**
+         * grid model
+         */
+        gridModel: {
+          type: Array,
+          value: [ { 
+            fieldName: 'id' 
+          }, { 
+            fieldName: 'url' 
+          }, { 
+            fieldName: 'http_method' 
+          }, { 
+            fieldName: 'name' 
+          }, { 
+            fieldName: 'description'
+          } ]
+        },
+        
+        /**
+         * grid columns
+         */
+        gridColumns: {
+          type: Array,
+          value: [ { 
+            fieldName: 'id', name: 'id', width: 0 
+          }, { 
+            fieldName: 'name', name: 'name', width: 100,
+            header: { text : 'Name' }
+          }, { 
+            fieldName: 'http_method', name: 'http_method', width: 80,
+            header: { text : 'Method' }
+          }, { 
+            fieldName: 'url', name: 'url', width: 300,
+            header : { text : 'URL' }
+          }, { 
+            fieldName: 'description', name: 'description', width: 375,
+            header : { text : 'Description' }
+          } ] 
+        },				
+
+	      /**
+	       * grid print options
+	       */
+	      printOptions: {
+	        type: Array,
+	        value: [{
+	          print: {
+	            previewUrl: "/preview.html"
+	          },
+	          reportHeader: {
+	            items: [{
+	              text: "REST API Document",
+	              styles: {
+	               fontSize: 30
+	              }
+	            }]
+	          },
+	          pageHeader: {
+	            items: [{
+	              text: 'HatioLab Inc.'
+	            }, { 
+	              right: 0,
+	              text: 'REST API Document'
+	            }]
+	          },
+	          grid: {
+	            display: {
+	              fitStyle: "even"
+	            },
+	            footer: {
+	              visible: true
+	            }
+	          },
+	          gridStyles: {
+	            grid: {
+	              border: null
+	            }
+	          }
+	        }]
+	      }
 			},
-
 			listeners : {
 				'reload-btn-tap': 'reloadCache',
+				'print-btn-tap': 'printSheet'
 			},
 
 			/**
@@ -111,8 +209,14 @@
 			 */
 			reloadCache: function(e) {
 				this.$['reload-cache'].generateRequest();
-			}
+			},
 
+			printSheet: function() {
+        var dsMain = this.$.grid.getGridDataSet();
+        var grdMain = this.$.grid.getGridObject();
+        
+        DLReport.preview(grdMain, this.printOptions, false);				
+			}
 		});
 	</script>
 </dom-module>
