@@ -40,13 +40,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       @import "theme.css";
     </style>
     
-    <iron-localstorage id="localStorage" name="{$ appName $}"
+    <iron-localstorage 
+      id="localStorage" 
+      name="{$ appName $}"
       value="{{storage}}"
       on-iron-localstorage-load-empty="initializeDefaultStorage">
     </iron-localstorage>
 
     <!-- i18n setting -->
     <things-i18n-src></things-i18n-src>
+    
     <!-- Client Setting -->
     <things-setting id="setting"></things-setting>
 
@@ -59,7 +62,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <paper-drawer-panel id="paperDrawerPanel" responsive-width="599px" drawer-width="256px">
       <!-- Layout Sidebar -->
       <things-sidebar drawer
-        drawer-id='paperDrawerPanel' page-content-id='content'
+        drawer-id='paperDrawerPanel' 
+        page-content-id='content'
         class="layout vertical" 
         title="Elidom" 
         selected-menu=1 
@@ -67,16 +71,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         resource-screens="{{resourceScreens}}"
         diy-screens="{{diyScreens}}"
         action="menus.json?mode=auth">
-        <!-- sidebar header toolbar menu start-->
+          <!-- sidebar header toolbar menu start-->
           <things-profile></things-profile>
-          
           <!-- setting -->
           <things-setting></things-setting>
-
           <!-- logout -->
-          <things-logout id="logout" action="logout" icon="icons:power-settings-new">
-          </things-logout>
-        <!-- sidebar header toolbar menu end -->
+          <things-logout id="logout" action="logout" icon="icons:power-settings-new"></things-logout>
+          <!-- sidebar header toolbar menu end -->
       </things-sidebar>
 
       <!-- Main Area -->
@@ -88,7 +89,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <iron-pages attr-for-selected="data-route" selected="{{route}}" class="content" id="content">
           {% include "things-sample-pages.html" %}
           {% include "things-static-pages.html" %}
-          {% include "things-dynamic-pages.html" %}
         </iron-pages>     
       </paper-scroll-header-panel>
     </paper-drawer-panel>
