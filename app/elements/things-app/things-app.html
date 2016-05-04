@@ -54,12 +54,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <things-full-dialog id='common-full-dialog'></things-full-dialog>
 
     <!-- resource dialog -->
-    <things-resource-dialog id='resource-dialog'></things-resource-dialog>    
+    <things-resource-dialog id='resource-dialog'></things-resource-dialog>
 
     <paper-drawer-panel id="paperDrawerPanel" responsive-width="599px" drawer-width="256px">
       <!-- Layout Sidebar -->
       <things-sidebar drawer
-        drawer-id='paperDrawerPanel'
+        drawer-id='paperDrawerPanel' page-content-id='content'
         class="layout vertical" 
         title="Elidom" 
         selected-menu=1 
@@ -85,7 +85,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <things-header id ="thingsHeader" drawer-id='paperDrawerPanel'>
         </things-header>
         <!-- Main Content -->
-        <iron-pages attr-for-selected="data-route" selected="{{route}}" class="content">
+        <iron-pages attr-for-selected="data-route" selected="{{route}}" class="content" id="content">
           {% include "things-sample-pages.html" %}
           {% include "things-static-pages.html" %}
           {% include "things-dynamic-pages.html" %}

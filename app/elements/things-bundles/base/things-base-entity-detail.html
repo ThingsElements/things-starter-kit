@@ -19,12 +19,13 @@
         last-response="{{lastResponse}}">
       </things-ajax>
 
-      <things-ajax id="generate-service"></things-ajax>      
+      <things-ajax id="generate-service" method="POST"></things-ajax>      
 
       <span><paper-icon-button icon="icons:view-list"></paper-icon-button>[[title]]</span>
       
       <things-resource-grid 
         id="grid"
+        grid-height=400
         config="[[gridConfig]]"
         model="[[gridModel]]" 
         columns="[[gridColumns]]"
@@ -535,7 +536,7 @@
         if(this.resource.table_name) {
           this._confirmAndInvoke(function() {
             var service = this.$['generate-service'];
-            service.resourceUrl = 'code_generator/code/' + this.resourceId;
+            service.resourceUrl = 'code_generator/code/controller/' + this.resourceId;
             service.generateRequest();
           }.bind(this));
 
