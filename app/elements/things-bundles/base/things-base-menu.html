@@ -20,6 +20,7 @@
 <link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
 <link rel="import" href="../../../../bower_components/things-meta/things-resource-meta-behavior.html">
 <link rel="import" href="../../../../bower_components/things-route-content-behavior/things-route-content-behavior.html">
+<link rel="import" href="./things-base-menu-detail.html">
 
 <!--
 메뉴 관리 화면 셋. 
@@ -273,6 +274,7 @@
 				'search-form.things-form-pre-submit' : '_beforeSearchMenu', 
 				'grid.things-grid-detail-tap': '_showSubMenus',
 				'grid.things-grid-save-success': '_reloadMainMenus',
+				'sub-grid.things-grid-detail-tap': '_showMenuDetail',
 				'sub-grid.things-grid-save-success': '_reloadSubMenus',
 				'sub-grid.things-grid-handle-save' : '_beforeSubMenuSave',
 				'things-grid-resource-column-edit' : '_openResourceSelector'
@@ -316,6 +318,30 @@
 					queryArr.push({ name: 'parent_id', operator : 'is_null' });
 					form.request.params.query = JSON.stringify(queryArr);
 				}
+			},
+
+			/**
+			 * 메뉴 상세 페이지를 오픈
+			 *
+			 * @param {Object} e 서브 메뉴 그리드 Detail Button 클릭 이벤트
+			 */
+			_showMenuDetail: function(e) {
+				var menu = e.detail;
+				var viewElement = document.createElement('things-base-menu-detail');
+				viewElement.id = 'menu-detail';
+				viewElement.title = menu.name;
+				viewElement.resourceType = 'Menu';
+				viewElement.resourceUrl = 'menus/:id';
+				viewElement.resource = menu;
+				viewElement.resourceId = menu.id;
+				viewElement.formFields = this.resourceFormFields;
+				viewElement.showDetailView(menu.id, menu);
+
+				var me = this;
+				viewElement.addEventListener('things-resource-form-saved', function(e) {
+					viewElement.closePopupView();
+					me.refreshGridData();
+				});				
 			},
 
 			/**
