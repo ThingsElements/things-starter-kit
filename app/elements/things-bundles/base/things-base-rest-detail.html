@@ -31,7 +31,7 @@
         columns="[[gridColumns]]"
         data="[[items]]"
         grid-save-action="[[gridSaveUrl]]"
-        buttons='[]'
+        buttons="[[buttons]]"
         !show-grid-footer
         enable-detail-column>
       </things-basic-grid>
@@ -134,12 +134,24 @@
          */
         apiTitle: {
           type: String
+        },
+
+        buttons: {
+          type: Array,
+          value: function() {
+            return [{
+              id: 'print-btn',
+              text: 'print',
+              icon: 'icons:print'
+            }];
+          }
         }
 
       },
 
       listeners: {
-        'grid.things-grid-detail-tap': '_showApiDetail'
+        'grid.things-grid-detail-tap': '_showApiDetail',
+        'print-btn-tap' : '_printSheet'
       },
 
       /**
@@ -160,6 +172,15 @@
        */
       _apiResultChanged: function(lastResponse) {
         this.items = lastResponse.api_list;
+      },
+
+      /**
+       * 전표 인쇄
+       *
+       * @param {Object} e 프린트 버튼 클릭 이벤트
+       */
+      _printSheet: function(e) {
+        console.log(e);
       },
 
       /**
