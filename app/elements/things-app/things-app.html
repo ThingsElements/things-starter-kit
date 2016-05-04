@@ -11,7 +11,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
 <!-- App Theme -->
-<link rel="import" href="../../themes/{$ appTheme $}/theme.html">
+<!-- <link rel="import" href="../../themes/{$ appTheme $}/theme.html"> -->
+<link rel="import" href="../../bower_components/things-xmes-theme/things-xmes-theme.html">
 
 <!-- Iron elements -->
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
@@ -85,6 +86,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <!-- Layout Header -->
         <things-header id ="thingsHeader" drawer-id='paperDrawerPanel'>
         </things-header>
+
+        <things-recent-page></things-recent-page>
         <!-- Main Content -->
         <iron-pages attr-for-selected="data-route" selected="{{route}}" class="content" id="content">
           {% include "things-sample-pages.html" %}
