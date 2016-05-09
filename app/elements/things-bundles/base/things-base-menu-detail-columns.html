@@ -6,7 +6,7 @@
 <link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
 <link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
 
-<dom-module id="things-base-menu-detail-search">
+<dom-module id="things-base-menu-detail-columns">
 
   <template>
     <div class="[[layout]]">
@@ -33,7 +33,7 @@
   <script>
     Polymer({
 
-      is: 'things-base-menu-detail-search',
+      is: 'things-base-menu-detail-columns',
 
       properties: {
 
@@ -77,15 +77,27 @@
           }, { 
             fieldName: 'menu_id'
           }, { 
-            fieldName: 'search_rank'
+            fieldName: 'rank'
           }, { 
             fieldName: 'name'
           }, { 
+            fieldName: 'term'
+          }, { 
             fieldName: 'col_type'
+          }, { 
+            fieldName: 'nullable'
+          }, { 
+            fieldName: 'uniq_rank'
+          }, { 
+            fieldName: 'search_rank'
           }, { 
             fieldName: 'sort_rank'
           }, { 
             fieldName: 'reverse_sort'
+          }, { 
+            fieldName: 'grid_rank'
+          }, { 
+            fieldName: 'form_rank'
           }, { 
             fieldName: 'ref_type'
           }, { 
@@ -95,7 +107,7 @@
           }, { 
             fieldName: 'ref_related'
           }, {
-            fieldName: 'search_oper'
+            fieldName: 'def_val'
           } ]
         },
         
@@ -109,9 +121,9 @@
           }, { 
             fieldName: 'menu_id', name: 'menu_id', width: 0 
           }, { 
-            fieldName: 'search_rank', name: 'search_rank', width: 90, type: 'number',
+            fieldName: 'rank', name: 'rank', width: 60, type: 'number',
             header: { 
-              text: Things.DataGlobal.t('label.search_rank')
+              text: Things.DataGlobal.t('label.rank')
             },
             styles: { 
               textAlignment: 'far' 
@@ -120,6 +132,11 @@
             fieldName: 'name', name: 'name', width: 120,
             header: { 
               text: Things.DataGlobal.t('label.name')
+            }
+          }, { 
+            fieldName: 'term', name: 'term', width: 120,
+            header: { 
+              text: Things.DataGlobal.t('label.term')
             }
           }, { 
             name: 'col_type', 
@@ -162,7 +179,38 @@
               'text',
               'time',
               'timestamp'
-            ]
+            ]     
+          }, { 
+            name: 'nullable', 
+            fieldName: 'nullable', 
+            width: 70,
+            editable: false,
+            header: { 
+              text: Things.DataGlobal.t('label.nullable') 
+            },
+            renderer: {
+              type:'check', 
+              editable: true, 
+              threeStates: false, 
+              trueValues: 'true', 
+              falseValues: 'false'
+            }
+          }, { 
+            fieldName: 'uniq_rank', name: 'uniq_rank', width: 80, type: 'number',
+            header: { 
+              text: Things.DataGlobal.t('label.uniq_rank')
+            },
+            styles: { 
+              textAlignment: 'far' 
+            }
+          }, { 
+            fieldName: 'search_rank', name: 'search_rank', width: 95, type: 'number',
+            header: { 
+              text: Things.DataGlobal.t('label.search_rank')
+            },
+            styles: { 
+              textAlignment: 'far' 
+            }
           }, { 
             fieldName: 'sort_rank', name: 'sort_rank', width: 80, type: 'number',
             header: { 
@@ -182,6 +230,22 @@
               threeStates: false, 
               trueValues: 'true', 
               falseValues: 'false'
+            }            
+          }, { 
+            fieldName: 'grid_rank', name: 'grid_rank', width: 80, type: 'number',
+            header: { 
+              text: Things.DataGlobal.t('label.grid_rank')
+            },
+            styles: { 
+              textAlignment: 'far' 
+            }
+          }, { 
+            fieldName: 'form_rank', name: 'form_rank', width: 80, type: 'number',
+            header: { 
+              text: Things.DataGlobal.t('label.form_rank')
+            },
+            styles: { 
+              textAlignment: 'far' 
             }
           }, { 
             fieldName: 'ref_type',
@@ -212,73 +276,16 @@
             header: {
               text: Things.DataGlobal.t('label.ref_related')
            }
-          }, {
-            fieldName: 'search_oper', 
-            name: 'search_oper', 
-            width: 85,
-            lookupDisplay: true,
-            header: { 
-              text: Things.DataGlobal.t('label.search_oper') 
-            },
-            editor: { 
-              type: 'list', 
-              domainOnly: true 
-            },
-            lookupValues: [
-              'contains', 
-              'dnew', 
-              'dnsw', 
-              'eq', 
-              'ew', 
-              'gt', 
-              'gte',
-              'in', 
-              'is_blank', 
-              'is_false', 
-              'is_not_false', 
-              'is_not_null',
-              'is_not_true', 
-              'is_null', 
-              'is_present', 
-              'is_true', 
-              'like',
-              'lt', 
-              'lte', 
-              'nlike', 
-              'noteq', 
-              'notin', 
-              'sw' 
-            ],
-            lookupLabels: [
-              'contains', 
-              'dnew', 
-              'dnsw', 
-              'eq', 
-              'ew', 
-              'gt', 
-              'gte',
-              'in', 
-              'is_blank', 
-              'is_false', 
-              'is_not_false', 
-              'is_not_null',
-              'is_not_true', 
-              'is_null', 
-              'is_present', 
-              'is_true', 
-              'like',
-              'lt', 
-              'lte', 
-              'nlike', 
-              'noteq', 
-              'notin', 
-              'sw' 
-            ]
-          } ] 
+          }, { 
+            fieldName: 'def_val', name: 'def_val', width: 100,
+            header: {
+              text: Things.DataGlobal.t('label.def_val')
+           }
+          } ]
         },
 
         /**
-         * Search Column Save URL
+         * Grid Column Save URL
          */
         gridSaveUrl: {
           type: String,
@@ -309,47 +316,30 @@
       listeners: {
         'grid.things-grid-handle-save' : '_beforeSearchColumnSave',
         'grid.things-grid-save-success' : '_reloadGrid',
-        'column-ajax.things-ajax-response': '_afterColumnsLoaded',
+        'column-ajax.things-ajax-response': '_afterColumnsLoaded'
       },
 
       /**
        * MenuMeta 변경시
        *
-       * @param {Object} menuMeta
+       * @param {Object} resource
        */
       _onMenuMetaChanged: function(menuMeta) {
-        if(!menuMeta || !menuMeta.columns || menuMeta.columns.length == 0) {
-          this.items = [];
-        } else {
-          var items = menuMeta.columns.filter(function(column) {
-            return (column.search_rank && column.search_rank > 0) || (column.sort_rank && column.sort_rank > 0);
-          });
-          if(items && items.length > 0) this._sortColumns(items, 'search_rank')
-          this.items = items;
-        }
+        this.items = menuMeta.columns;
       },
 
       /**
-       * list sorting
-       */
-      _sortColumns: function(list, sortField) {
-        list.sort(function(a, b) {
-          return (a[sortField] > b[sortField]) ? 1 : ((b[sortField] > a[sortField]) ? -1 : 0);
-        });
-      },
-
-      /**
-       * Search Column Save URL
+       * Grid Column Save URL
        *
        * @param {String} resourceId
-       * @return {String} Search Column Save URL
+       * @return {String} Grid Column Save URL
        */
       _computeColumnSaveUrl: function(resourceId) {
         return 'menus/' + resourceId + '/menu_columns/update_multiple';
-      },      
+      },
 
       /**
-       * Search Column 저장 전
+       * Grid Column 저장 전
        *
        * @param {Object} event menu-meta 저장 전 이벤트 
        */
@@ -369,7 +359,7 @@
        * Reload Grid Data
        */
       _reloadGrid: function(e) {
-        this.$['column-ajax'].generateRequest();
+       this.$['column-ajax'].generateRequest();
       },
 
       /**
@@ -379,7 +369,7 @@
        */
       _afterColumnsLoaded: function(event) {
         this.menuMeta = event.detail;
-      },
+      },    
 
     });
   </script>

@@ -8,6 +8,7 @@
 <link rel="import" href="../../../../bower_components/things-detail/things-resource-detail-tab-view-behavior.html">
 <link rel="import" href="../../../../bower_components/things-form/things-resource-form.html">
 
+<link rel="import" href="./things-base-menu-detail-columns.html">
 <link rel="import" href="./things-base-menu-detail-buttons.html">
 <link rel="import" href="./things-base-menu-detail-search.html">
 <link rel="import" href="./things-base-menu-detail-grid.html">
@@ -60,6 +61,11 @@ Example:
         form-fields="[[formFields]]"
         remove-fields-on-save="[[removeFieldsOnSave]]">
       </things-resource-form>
+
+      <things-base-menu-detail-columns
+        resource-id="[[resourceId]]"
+        menu-meta="{{menuMeta}}">
+      </things-base-menu-detail-columns>
 
       <things-base-menu-detail-search
         resource-id="[[resourceId]]"
@@ -120,6 +126,9 @@ Example:
         this._panels = [ {
           title: Things.DataGlobal.t('title.basic_info'), 
           elementId: 'things-resource-form'
+        }, {
+          title: Things.DataGlobal.t('title.setup_columns'), 
+          elementId: 'things-base-menu-detail-columns'
         }, {
           title: Things.DataGlobal.t('title.setup_searching'), 
           elementId: 'things-base-menu-detail-search'

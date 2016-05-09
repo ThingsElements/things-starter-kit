@@ -15,7 +15,7 @@
         method="GET"
         resource-url="menus/:id/menu_meta"
         resource-id="[[resourceId]]"
-        last-response="{{resource}}">
+        last-response="{{menuMeta}}">
       </things-ajax>
 
       <things-resource-grid 
@@ -81,11 +81,7 @@
           }, { 
             fieldName: 'name' 
           }, { 
-            fieldName: 'term'
-          }, { 
             fieldName: 'col_type'
-          }, { 
-            fieldName: 'uniq_rank'
           }, { 
             fieldName: 'ref_type'
           }, { 
@@ -99,15 +95,7 @@
           }, { 
             fieldName: 'grid_width'
           }, { 
-            fieldName: 'grid_editor'
-          }, { 
             fieldName: 'grid_format'
-          }, { 
-            fieldName: 'def_val'
-          }, { 
-            fieldName: 'ignore_fields_on_save'
-          }, { 
-            fieldName: 'skip_validation'
           } ]
         },
         
@@ -126,75 +114,108 @@
               text: Things.DataGlobal.t('label.rank')
             },
           }, { 
-            fieldName: 'term', name: 'term', width: 120,
+            fieldName: 'name', name: 'name', width: 120,
             header: { 
-              text: Things.DataGlobal.t('label.term')
+              text: Things.DataGlobal.t('label.name')
             }
           }, { 
-            fieldName: 'col_type', name: 'col_type', width: 90,
+            name: 'col_type', 
+            fieldName: 'col_type', 
+            width: 100,
+            lookupDisplay: true,
             header: { 
-              text: Things.DataGlobal.t('label.col_type')
-            }
+              text: Things.DataGlobal.t('label.col_type') 
+            },
+            editor: { 
+              type: 'list', 
+              domainOnly: true 
+            },
+            lookupValues: [
+              'binary',
+              'boolean',
+              'date',
+              'datetime',
+              'decimal',
+              'double',
+              'float',
+              'integer',
+              'long',
+              'string',
+              'text',
+              'time',
+              'timestamp'
+            ],
+            lookupLabels: [
+              'binary',
+              'boolean',
+              'date',
+              'datetime',
+              'decimal',
+              'double',
+              'float',
+              'integer',
+              'long',
+              'string',
+              'text',
+              'time',
+              'timestamp'
+            ]
           }, { 
-            fieldName: 'uniq_rank', name: 'uniq_rank', width: 90,
+            fieldName: 'ref_type',
+            name: 'ref_type',
+            width: 95,
+            lookupDisplay: true,
+            lookupValues: [ 'Entity', 'CommonCode' ],
+            lookupLabels: [ 'Entity', 'CommonCode' ],
             header: { 
-              text: Things.DataGlobal.t('label.uniq_rank')
-            }
+              text: Things.DataGlobal.t('label.ref_type') 
+            },
+            editor: { 
+              type: 'list',
+              domainOnly: true 
+            }           
           }, { 
-            fieldName: 'ref_type', name: 'ref_type', width: 120,
-            header: {
-              text: Things.DataGlobal.t('label.ref_type')
-           }
-          }, { 
-            fieldName: 'ref_name', name: 'ref_name', width: 120,
+            fieldName: 'ref_name', name: 'ref_name', width: 100,
             header: {
               text: Things.DataGlobal.t('label.ref_name')
-           }
+            }
           }, { 
-            fieldName: 'ref_url', name: 'ref_url', width: 150,
+            fieldName: 'ref_url', name: 'ref_url', width: 100,
             header: {
               text: Things.DataGlobal.t('label.ref_url')
-           }
+            }
           }, { 
-            fieldName: 'ref_related', name: 'ref_related', width: 120,
+            fieldName: 'ref_related', name: 'ref_related', width: 110,
             header: {
               text: Things.DataGlobal.t('label.ref_related')
-           }
+            }
           }, { 
-            fieldName: 'grid_align', name: 'grid_align', width: 90,
-            header: {
-              text: Things.DataGlobal.t('label.align')
-           }
+            name: 'grid_align', 
+            fieldName: 'grid_align', 
+            width: 60,
+            lookupDisplay: true,
+            header: { 
+              text: Things.DataGlobal.t('label.align') 
+            },
+            editor: { 
+              type: 'list', 
+              domainOnly: true 
+            },
+            lookupValues: [ 'Center', 'Far' ],
+            lookupLabels: [ 'Center', 'Far' ]
           }, { 
-            fieldName: 'grid_width', name: 'grid_width', width: 110,
+            fieldName: 'grid_width', name: 'grid_width', width: 60, type: 'number',
             header: {
               text: Things.DataGlobal.t('label.width')
-           }
+            },
+            styles: { 
+              textAlignment: 'far' 
+            }
           }, { 
-            fieldName: 'grid_editor', name: 'grid_editor', width: 130,
-            header: {
-              text: Things.DataGlobal.t('label.editor')
-           }
-          }, { 
-            fieldName: 'grid_format', name: 'grid_format', width: 100,
+            fieldName: 'grid_format', name: 'grid_format', width: 110,
             header: {
               text: Things.DataGlobal.t('label.format')
-           }
-          }, { 
-            fieldName: 'def_val', name: 'def_val', width: 100,
-            header: {
-              text: Things.DataGlobal.t('label.def_val')
-           }
-          }, { 
-            fieldName: 'ignore_fields_on_save', name: 'ignore_fields_on_save', width: 130,
-            header: {
-              text: Things.DataGlobal.t('label.ignore_fields_on_save')
-           }
-          }, { 
-            fieldName: 'skip_validation', name: 'skip_validation', width: 100,
-            header: {
-              text: Things.DataGlobal.t('label.skip_validation')
-           }
+            }
           } ] 
         },
 
@@ -228,18 +249,35 @@
       },
 
       listeners: {
-        'column-ajax.things-ajax-response': '_afterSearchColumnSaved',
         'grid.things-grid-handle-save' : '_beforeSearchColumnSave',
-        'grid.things-grid-save-success' : 'reloadGrid'
+        'grid.things-grid-save-success' : '_reloadGrid',
+        'column-ajax.things-ajax-response': '_afterColumnsLoaded'
       },
 
       /**
        * MenuMeta 변경시
        *
-       * @param {Object} resource
+       * @param {Object} menuMeta
        */
       _onMenuMetaChanged: function(menuMeta) {
-        this.items = menuMeta.columns;
+        if(!menuMeta || !menuMeta.columns || menuMeta.columns.length == 0) {
+          this.items = [];
+        } else {
+          var items = menuMeta.columns.filter(function(column) {
+            return column.grid_rank && column.grid_rank > 0;
+          });
+          if(items && items.length > 0) this._sortColumns(items, 'grid_rank')
+          this.items = items;
+        }
+      },
+
+      /**
+       * list sorting
+       */
+      _sortColumns: function(list, sortField) {
+        list.sort(function(a, b) {
+          return (a[sortField] > b[sortField]) ? 1 : ((b[sortField] > a[sortField]) ? -1 : 0);
+        });
       },
 
       /**
@@ -249,19 +287,8 @@
        * @return {String} Grid Column Save URL
        */
       _computeColumnSaveUrl: function(resourceId) {
-        // TODO
-        return 'menus/' + resourceId;
+        return 'menus/' + resourceId + '/menu_columns/update_multiple';
       },
-
-      /**
-       * Grid Column 저장 후 
-       *
-       * @param {Object} event menu-meta 저장 후 이벤트 
-       */
-      _afterSearchColumnSaved: function(event) {
-        console.log(event);
-        this.resource.columns = event.detail.columns;
-      },      
 
       /**
        * Grid Column 저장 전
@@ -283,8 +310,17 @@
       /**
        * Reload Grid Data
        */
-      reloadGrid: function(e) {
+      _reloadGrid: function(e) {
         this.$['column-ajax'].generateRequest();
+      },
+
+      /**
+       * Menu Meta Data 조회 후 
+       *
+       * @param {Object} event 
+       */
+      _afterColumnsLoaded: function(event) {
+        this.menuMeta = event.detail;
       }
 
     });
