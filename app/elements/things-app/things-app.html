@@ -39,6 +39,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template>
     <style include="shared-styles">
       @import "theme.css";
+      .user-menu{
+        background-color:var(--things-secondary-background-color);
+        padding:3px 5px;
+      }
+      things-logout,things-setting{
+        @apply(--things-small-icon);
+        float:right;
+      }
     </style>
     
     <iron-localstorage 
