@@ -81,13 +81,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         resource-screens="{{resourceScreens}}"
         diy-screens="{{diyScreens}}"
         action="menus.json?mode=auth">
-          <!-- sidebar header toolbar menu start-->
-          <things-profile></things-profile>
-          <!-- setting -->
-          <things-setting></things-setting>
-          <!-- logout -->
-          <things-logout id="logout" action="logout" icon="icons:power-settings-new"></things-logout>
-          <!-- sidebar header toolbar menu end -->
+          <div class="user-menu">
+            <!-- sidebar header toolbar menu start-->
+            <things-profile></things-profile>
+            <!-- setting -->
+            <things-setting></things-setting>
+            <!-- logout -->
+            <things-logout id="logout" action="logout" icon="icons:power-settings-new"></things-logout>
+            <!-- sidebar header toolbar menu end -->
+          </div>
       </things-sidebar>
 
       <!-- Main Area -->
