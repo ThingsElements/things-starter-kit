@@ -82,28 +82,29 @@
         gridModel: {
           type: Array,
           value: [ 
-            { fieldName: 'id' }, 
-            { fieldName: 'entity_id' }, 
-            { fieldName: 'disp_rank' }, 
-            { fieldName: 'name' }, 
-            { fieldName: 'description'}, 
-            { fieldName: 'term' },
-            { fieldName: 'ref_type' }, 
-            { fieldName: 'ref_name' }, 
-            { fieldName: 'col_type' },
-            { fieldName: 'col_size' }, 
-            { fieldName: 'nullable' }, 
-            { fieldName: 'def_val'},
-            { fieldName: 'uniq_rank' }, 
-            { fieldName: 'list_rank' }, 
-            { fieldName: 'search_rank' },
-            { fieldName: 'sort_rank' }, 
-            { fieldName: 'reverse_sort' }, 
-            { fieldName: 'editor' },
-            { fieldName: 'width' }, 
-            { fieldName: 'align' }, 
-            { fieldName: 'format' }, 
-            { fieldName: 'operator'} ]
+              { fieldName: 'id' }, 
+              { fieldName: 'entity_id' }, 
+              { fieldName: 'disp_rank', dataType: 'number' }, 
+              { fieldName: 'name' }, 
+              { fieldName: 'description' }, 
+              { fieldName: 'term' },
+              { fieldName: 'ref_type' }, 
+              { fieldName: 'ref_name' }, 
+              { fieldName: 'col_type' },
+              { fieldName: 'col_size', dataType: 'number' }, 
+              { fieldName: 'nullable', dataType: 'boolean' }, 
+              { fieldName: 'def_val' },
+              { fieldName: 'uniq_rank', dataType: 'number' }, 
+              { fieldName: 'list_rank', dataType: 'number' }, 
+              { fieldName: 'search_rank', dataType: 'number' },
+              { fieldName: 'sort_rank', dataType: 'number' }, 
+              { fieldName: 'reverse_sort' }, 
+              { fieldName: 'editor' },
+              { fieldName: 'width', dataType: 'number' }, 
+              { fieldName: 'align' }, 
+              { fieldName: 'format' }, 
+              { fieldName: 'operator' }
+            ]
         },
         
         /**
@@ -477,6 +478,12 @@
             if(changedData.cud_flag_ == 'c' && (!changedData.entity || !changedData.entity_id)) {
               changedData.entity_id = entityId;
             }
+
+            /*if(!changedData.rank) changedData.rank = 0;
+            if(!changedData.disp_rank) changedData.disp_rank = 0;
+            if(!changedData.list_rank) changedData.list_rank = 0;
+            if(!changedData.search_rank) changedData.search_rank = 0;
+            if(!changedData.uniq_rank) changedData.uniq_rank = 0;*/
           });
         }
       },
