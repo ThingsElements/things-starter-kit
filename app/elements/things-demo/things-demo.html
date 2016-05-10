@@ -91,6 +91,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 			<div class="buttons">
 				<paper-button raised id="msg-button">Message Box</paper-button>
+				<paper-button raised id="msg-html-button">Message Box - HTML</paper-button>
 				<paper-button raised id="confirm-button">Confirm Box</paper-button>
 				<paper-button raised id="prompt-button">Prompt Box</paper-button>
 				<paper-button raised id="spn-button">Spinner</paper-button>
@@ -266,6 +267,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 				'things-btn-2.things-button-confirm' : 'onConfirmMsgBox',
 				'things-btn-3.things-button-confirm' : 'onConfirmMsgBox',
 				'msg-button.tap' : 'onTapMsgButton',
+				'msg-html-button.tap' : 'onTapMsgHtmlButton',
 				'confirm-button.tap' : 'onTapConfirmButton',
 				'prompt-button.tap' : 'onTapPromptButton',
 				'spn-button.tap' : 'onTapSpnButton',
@@ -293,6 +295,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 			onTapMsgButton: function(e) {
 				this.openInfoMsg({ title : 'Info Title', text : 'Info Message', type : 'info', timer : 3000 });
+			},
+
+			onTapMsgHtmlButton: function(e) {
+				this.openInfoMsg({ title : 'Info Title', html : true, text : '<a href="#">error_id</a>', type : 'info', timer : 3000 });
 			},
 
 			onTapConfirmButton: function(e) {
