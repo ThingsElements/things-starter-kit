@@ -154,6 +154,7 @@ Things Reource Content는 검색 폼, 그리드가 기본으로 표시되고 그
 			},
 
 			listeners : {
+				'search-form.iron-form-response': '_onSearchSuccess',
 				'grid.things-grid-detail-tap': 'showDetailView',
 				'grid.things-grid-save-success': 'refreshGridData',
 				'grid.things-grid-resource-column-edit' : 'openResourceSelector'
@@ -267,6 +268,16 @@ Things Reource Content는 검색 폼, 그리드가 기본으로 표시되고 그
 			openResourceSelector: function(event) {
 				var index = event.detail.index;
 				this.openResourceSelectorByGrid(index._grid, index.rowIndex, event.detail.userObj, true);
+			},
+
+			/**
+			 * 검색 후 그리드가 없으면 intialize
+			 * FIXME 모든 화면 구성이 완료된 후 검색이 자동으로 되도록 수정 필요
+			 */
+			_onSearchSuccess: function(event) {
+				if(!this.$.grid.getGridObject()) {
+					this.$.grid.initializeGrid();
+				}
 			}
 
 		});

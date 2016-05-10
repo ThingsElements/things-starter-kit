@@ -11,6 +11,14 @@
   <template>
     <div class="[[layout]]">
       <things-ajax 
+        id="columns-sync-ajax"
+        method="POST"
+        resource-url="menus/:id/menu_meta"
+        resource-id="[[resourceId]]"
+        last-response="{{resource}}">
+      </things-ajax>
+
+      <things-ajax 
         id="column-ajax"
         method="GET"
         resource-url="menus/:id/menu_meta"
@@ -309,6 +317,10 @@
             id: 'delete-btn',
             text: 'delete',
             icon: 'icons:delete'
+          }, {
+            id: 'sync-btn',
+            text: 'sync',
+            icon: 'icons:sync'
           } ]
         }
       },
@@ -316,7 +328,8 @@
       listeners: {
         'grid.things-grid-handle-save' : '_beforeSearchColumnSave',
         'grid.things-grid-save-success' : '_reloadGrid',
-        'column-ajax.things-ajax-response': '_afterColumnsLoaded'
+        'column-ajax.things-ajax-response': '_afterColumnsLoaded',
+        'sync-btn-tap' : '_syncColumns'
       },
 
       /**
@@ -337,6 +350,15 @@
       _computeColumnSaveUrl: function(resourceId) {
         return 'menus/' + resourceId + '/menu_columns/update_multiple';
       },
+
+      /**
+       * Sync Columns
+       *
+       * @param {Object} e 버튼 클릭 이벤트
+       */
+      _syncColumns: function(e) {
+        this.$['columns-sync-ajax'].generateRequest();
+      },      
 
       /**
        * Grid Column 저장 전

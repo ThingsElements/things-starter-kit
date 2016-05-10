@@ -11,14 +11,6 @@
   <template>
     <div class="[[layout]]">
       <things-ajax 
-        id="sync-ajax"
-        method="POST"
-        resource-url="menus/:id/menu_meta"
-        resource-id="[[resourceId]]"
-        last-response="{{resource}}">
-      </things-ajax>
-
-      <things-ajax 
         id="button-ajax"
         method="GET"
         resource-url="[[gridSearchUrl]]"
@@ -118,12 +110,12 @@
             header: { 
               text: Things.DataGlobal.t('label.style')
             }
-          }, { 
+          }/*, { 
             fieldName: 'logic', name: 'logic', width: 350,
             header: {
               text: Things.DataGlobal.t('label.logic')
            }
-          } ] 
+          }*/ ]
         },
 
         /**
@@ -159,10 +151,6 @@
             id: 'delete-btn',
             text: 'delete',
             icon: 'icons:delete'
-          }, {
-            id: 'sync-btn',
-            text: 'sync',
-            icon: 'icons:sync'
           } ]
         }
       },
@@ -170,8 +158,7 @@
       listeners: {
         'button-ajax.things-ajax-response': '_afterButtonSaved',
         'grid.things-grid-handle-save' : '_beforeButtonSave',
-        'grid.things-grid-save-success' : 'reloadGrid',
-        'sync-btn-tap' : '_syncColumns'        
+        'grid.things-grid-save-success' : 'reloadGrid'
       },
 
       /**
@@ -204,20 +191,11 @@
       },
 
       /**
-       * Sync Columns
-       *
-       * @param {Object} e 버튼 클릭 이벤트
-       */
-      _syncColumns: function(e) {
-        this.$['sync-ajax'].generateRequest();
-      },
-
-      /**
        * Button Grid 저장 후 
        */
       _afterButtonSaved: function(event) {
         //this.resource.buttons = event.detail.buttons;
-      },      
+      },
 
       /**
        * Button Grid 저장 전 
@@ -232,7 +210,7 @@
             }
           });
         }
-      },      
+      },
 
       /**
        * reload grid data
