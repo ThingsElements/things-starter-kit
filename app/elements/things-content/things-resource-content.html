@@ -75,8 +75,8 @@ Things Reource Content는 검색 폼, 그리드가 기본으로 표시되고 그
 				config="[[gridConfig]]"
 				current-page="{{page}}"
 				per-page="{{perPage}}"
-				data="[[lastResponse.items]]"
-				total-count="[[lastResponse.total]]"
+				data="[[items]]"
+				total-count="[[itemCount]]"
 				grid-save-action="[[gridSaveUrl]]"
 				export-file-name="[[title]]"
 				export-sheet-name="[[title]]"
@@ -110,6 +110,28 @@ Things Reource Content는 검색 폼, 그리드가 기본으로 표시되고 그
 				 */
 				title: {
 					type: String
+				},
+
+				/**
+				 * 조회 결과 
+				 */
+				lastResponse: {
+					type: Object,
+					observer: '_responseChanged'
+				},
+
+				/**
+				 * 조회 결과 리스트 데이터
+				 */
+				items: {
+					type: Array
+				},
+
+				/**
+				 * 조회 결과 레코드 수  
+				 */
+				itemCount: {
+					type: Number
 				},
 
 				/**
@@ -167,6 +189,21 @@ Things Reource Content는 검색 폼, 그리드가 기본으로 표시되고 그
 			 */
 			_gridButtonsChanged: function(buttons) {
 				this.$['grid'].buttons = buttons;
+			},
+
+			/**
+			 * 조회 데이터 변경시 
+			 *
+			 * @param {Object} lastResponse
+			 */
+			_responseChanged: function(lastResponse) {
+				if(lastResponse.items) {
+					this.items = lastResponse.items;
+					this.itemCount = lastResponse.total;
+				} else {
+					this.items = [];
+					this.itemCount = 0;
+				}
 			},
 
 			/**
