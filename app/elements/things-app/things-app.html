@@ -41,11 +41,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       @import "theme.css";
       .user-menu{
         background-color:var(--things-secondary-background-color);
-        padding:3px 5px;
+        padding:5px;
       }
-      things-logout,things-setting{
+      things-logout::shadow paper-icon-button{
         @apply(--things-small-icon);
         float:right;
+        margin-top:1px;margin-right:-37px;
       }
     </style>
     
