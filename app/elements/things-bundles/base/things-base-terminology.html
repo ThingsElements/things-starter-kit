@@ -28,21 +28,8 @@
 			resource-url="terminologies/resource_refresh">
 		</things-ajax>
 
-    <things-basic-grid 
-      id="grid"
-      grid-height=200
-      config="[[gridConfig]]"
-      model="[[gridModel]]" 
-      columns="[[gridColumns]]"
-      data="[[items]]"
-      grid-save-action="[[gridSaveUrl]]"
-      buttons="[[buttons]]"
-      !show-grid-footer
-      enable-detail-column>
-    </things-basic-grid>		
-
 		<things-resource-content
-			id="terminology-content"
+			id="content"
 			layout="fullbleed layout vertical"
 			title="[[title]]"
 			current-route="{{currentRoute}}"
@@ -92,21 +79,21 @@
               text: 'export',
               icon: 'icons:swap-vert'
 						}, {
+              id: 'import-btn',
+              text: 'import',
+              icon: 'icons:file-upload'
+						}, {
               id: 'add-btn',
               text: 'add',
-              icon: 'icons:add'							
+              icon: 'icons:add'
 						}, {
               id: 'delete-btn',
               text: 'delete',
-              icon: 'icons:delete'							
+              icon: 'icons:delete'
 						}, {
               id: 'save-btn',
               text: 'save',
-              icon: 'icons:save'							
-						}, {
-              id: 'import-btn',
-              text: 'import',
-              icon: 'icons:file-upload'							
+              icon: 'icons:save'
 						}, {
 							id: 'print-btn',
 							text: 'print',
@@ -204,18 +191,24 @@
 			/**
 			 * Reload Cache
 			 *
-			 * @param {Object} e
+			 * @param {Object} e 버튼 탭 이벤트
 			 */
 			reloadCache: function(e) {
 				this.$['reload-cache'].generateRequest();
 			},
 
-			printSheet: function() {
-        var dsMain = this.$.grid.getGridDataSet();
-        var grdMain = this.$.grid.getGridObject();
-        
+			/**
+			 * Print Sheet
+			 *
+			 * @param {Object} e 버튼 탭 이벤트
+			 */
+			printSheet: function(e) {
+				var resourceGrid = this.$.content.getResourceGrid();
+        var dsMain = resourceGrid.getGridDataSet();
+        var grdMain = resourceGrid.getGridObject();
         DLReport.preview(grdMain, this.printOptions, false);				
 			}
+
 		});
 	</script>
 </dom-module>
