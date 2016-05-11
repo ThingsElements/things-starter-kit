@@ -48,6 +48,7 @@ Things Reource Content는 검색 폼, 그리드가 기본으로 표시되고 그
 
 		<div class="[[layout]]">
 			<things-ajax 
+				auto
 				id="resource-meta"
 				method="GET"
 				resource-url="[[resourceMetaUrl]]"
@@ -221,7 +222,7 @@ Things Reource Content는 검색 폼, 그리드가 기본으로 표시되고 그
 			 * 메타 데이터를 서버로 요청하여 화면을 구성한다.
 			 */
 			initializeContent: function() {
-				this.$['resource-meta'].generateRequest();
+				//this.$['resource-meta'].generateRequest();
 			},
 
 			/**

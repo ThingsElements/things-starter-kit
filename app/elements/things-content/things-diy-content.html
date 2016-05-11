@@ -44,6 +44,7 @@
 
 		<div class="[[layout]]">
 			<things-ajax 
+				auto
 				id="resource-meta"
 				method="GET"
 				resource-url="[[resourceMetaUrl]]"
@@ -130,6 +131,7 @@
 			},
 
 			listeners : {
+				'search-form.iron-form-response': '_onSearchSuccess',
 				'grid.things-grid-detail-tap': '_showDetailView',
 				'grid.things-grid-save-success': '_refreshGridData'
 			},
@@ -181,7 +183,17 @@
 			 * 메타 데이터를 서버로 요청하여 화면을 구성한다.
 			 */
 			initializeContent: function() {
-				this.$['resource-meta'].generateRequest();
+				//this.$['resource-meta'].generateRequest();
+			},
+
+			/**
+			 * 검색 후 그리드가 없으면 intialize
+			 * FIXME 모든 화면 구성이 완료된 후 검색이 자동으로 되도록 수정 필요
+			 */
+			_onSearchSuccess: function(event) {
+				if(!this.$.grid.getGridObject()) {
+					this.$.grid.initializeGrid();
+				}
 			}
 
 		});
