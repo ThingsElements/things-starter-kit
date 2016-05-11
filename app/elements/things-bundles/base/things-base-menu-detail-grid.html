@@ -87,6 +87,8 @@
           }, { 
             fieldName: 'grid_width'
           }, { 
+            fieldName: 'grid_editor'            
+          }, { 
             fieldName: 'grid_format'
           } ]
         },
@@ -126,6 +128,7 @@
               domainOnly: true 
             },
             lookupValues: [
+              '',
               'binary',
               'boolean',
               'date',
@@ -141,6 +144,7 @@
               'timestamp'
             ],
             lookupLabels: [
+              '',
               'binary',
               'boolean',
               'date',
@@ -177,6 +181,46 @@
             styles: { 
               textAlignment: 'far' 
             }
+          }, { 
+            name: 'grid_editor', 
+            fieldName: 'grid_editor', 
+            width: 110,
+            lookupDisplay: true,
+            header: { 
+              text: Things.DataGlobal.t('label.editor') 
+            },
+            editor: { 
+              type: 'list', 
+              domainOnly: true 
+            },
+            lookupValues: [
+              '',
+              'hidden',
+              'readonly',
+              'checkbox',
+              'text',
+              'code-combo',
+              'number',
+              'textarea',
+              'resource-column',
+              'resource-selector',
+              'date-picker',
+              'datetime-picker'
+            ],
+            lookupLabels: [
+              '',
+              'hidden',
+              'readonly',
+              'checkbox',
+              'text',
+              'code-combo',
+              'number',
+              'textarea',
+              'resource-column',
+              'resource-selector',
+              'date-picker',
+              'datetime-picker'
+            ]
           }, { 
             fieldName: 'grid_format', name: 'grid_format', width: 120,
             header: {

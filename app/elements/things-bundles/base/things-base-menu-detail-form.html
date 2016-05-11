@@ -83,7 +83,9 @@
           }, { 
             fieldName: 'col_type'
           }, { 
-            fieldName: 'uniq_rank'            
+            fieldName: 'uniq_rank'
+          }, { 
+            fieldName: 'form_editor'
           }, { 
             fieldName: 'form_format'
           }, { 
@@ -103,7 +105,7 @@
           }, { 
             fieldName: 'menu_id', name: 'menu_id', width: 0 
           }, { 
-            fieldName: 'rank', name: 'rank', width: 80, type: 'number',
+            fieldName: 'rank', name: 'rank', width: 60, type: 'number',
             header: { 
               text: Things.DataGlobal.t('label.rank')
             },
@@ -128,6 +130,7 @@
               domainOnly: true 
             },
             lookupValues: [
+              '',
               'binary',
               'boolean',
               'date',
@@ -143,6 +146,7 @@
               'timestamp'
             ],
             lookupLabels: [
+              '',
               'binary',
               'boolean',
               'date',
@@ -156,6 +160,46 @@
               'text',
               'time',
               'timestamp'
+            ]
+          }, { 
+            name: 'form_editor', 
+            fieldName: 'form_editor', 
+            width: 110,
+            lookupDisplay: true,
+            header: { 
+              text: Things.DataGlobal.t('label.editor') 
+            },
+            editor: { 
+              type: 'list', 
+              domainOnly: true 
+            },
+            lookupValues: [
+              '',
+              'hidden',
+              'readonly',
+              'checkbox',
+              'text',
+              'code-combo',
+              'number',
+              'textarea',
+              'resource-field',
+              'resource-selector',
+              'date-picker',
+              'datetime-picker'
+            ],
+            lookupLabels: [
+              '',
+              'hidden',
+              'readonly',
+              'checkbox',
+              'text',
+              'code-combo',
+              'number',
+              'textarea',
+              'resource-field',
+              'resource-selector',
+              'date-picker',
+              'datetime-picker'
             ]
           }, { 
             fieldName: 'form_format', name: 'form_format', width: 100,
