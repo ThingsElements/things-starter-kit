@@ -85,14 +85,6 @@
           }, { 
             fieldName: 'uniq_rank'            
           }, { 
-            fieldName: 'ref_type'
-          }, { 
-            fieldName: 'ref_name'
-          }, { 
-            fieldName: 'ref_url'
-          }, { 
-            fieldName: 'ref_related'
-          }, { 
             fieldName: 'form_format'
           }, { 
             fieldName: 'def_val'
@@ -166,35 +158,6 @@
               'timestamp'
             ]
           }, { 
-            fieldName: 'ref_type',
-            name: 'ref_type',
-            width: 95,
-            lookupDisplay: true,
-            lookupValues: [ 'Entity', 'CommonCode' ],
-            lookupLabels: [ 'Entity', 'CommonCode' ],
-            header: { 
-              text: Things.DataGlobal.t('label.ref_type') 
-            },
-            editor: { 
-              type: 'list',
-              domainOnly: true 
-            }           
-          }, { 
-            fieldName: 'ref_name', name: 'ref_name', width: 100,
-            header: {
-              text: Things.DataGlobal.t('label.ref_name')
-            }
-          }, { 
-            fieldName: 'ref_url', name: 'ref_url', width: 100,
-            header: {
-              text: Things.DataGlobal.t('label.ref_url')
-            }
-          }, { 
-            fieldName: 'ref_related', name: 'ref_related', width: 110,
-            header: {
-              text: Things.DataGlobal.t('label.ref_related')
-            }
-          }, { 
             fieldName: 'form_format', name: 'form_format', width: 100,
             header: {
               text: Things.DataGlobal.t('label.format')
@@ -241,17 +204,9 @@
         buttons: {
           type: Array,
           value: [ {
-            id: 'add-btn',
-            text: 'add',
-            icon: 'icons:add'
-          }, {
             id: 'save-btn',
             text: 'save',
             icon: 'icons:save'
-          }, {
-            id: 'delete-btn',
-            text: 'delete',
-            icon: 'icons:delete'
           } ]
         }
       },
@@ -272,7 +227,7 @@
           this.items = [];
         } else {
           var items = menuMeta.columns;
-          this._sortColumns(menuMeta.columns, 'form_rank')
+          this._sortColumns(menuMeta.columns, 'rank')
           this.items = items;
         }
       },

@@ -13,7 +13,7 @@
       <things-ajax 
         id="columns-sync-ajax"
         method="POST"
-        resource-url="menus/:id/menu_meta"
+        resource-url="menus/:id/sync_menu_columns"
         resource-id="[[resourceId]]"
         last-response="{{resource}}">
       </things-ajax>
@@ -329,6 +329,7 @@
         'grid.things-grid-handle-save' : '_beforeSearchColumnSave',
         'grid.things-grid-save-success' : '_reloadGrid',
         'column-ajax.things-ajax-response': '_afterColumnsLoaded',
+        'columns-sync-ajax.things-ajax-response' : '_reloadGrid',
         'sync-btn-tap' : '_syncColumns'
       },
 

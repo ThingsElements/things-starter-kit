@@ -120,14 +120,6 @@
         },
 
         /**
-         * Menu Buttons Search URL
-         */
-        gridSearchUrl: {
-          type: String,
-          computed: '_computeButtonSearchUrl(resourceId)'
-        },
-
-        /**
          * Menu Buttons Save URL
          */
         gridSaveUrl: {
@@ -157,28 +149,18 @@
       },
 
       listeners: {
-        'button-ajax.things-ajax-response': '_afterButtonSaved',
         'grid.things-grid-handle-save' : '_beforeButtonSave',
-        'grid.things-grid-save-success' : 'reloadGrid'
+        'grid.things-grid-save-success' : '_reloadGrid',
+        'button-ajax.things-ajax-response': '_afterButtonsLoaded'
       },
 
       /**
        * MenuMeta 변경시
        *
-       * @param {Object} resource
+       * @param {Object} menuMeta
        */
       _onMenuMetaChanged: function(menuMeta) {
         this.items = menuMeta.buttons;
-      },
-
-      /**
-       * Button Search URL 데이터로 Button Search URL 생성
-       *
-       * @param {String} resourceId
-       * @return {String} Button Search URL
-       */
-      _computeButtonSearchUrl: function(resourceId) {
-        return 'menus/' + resourceId;
       },
 
       /**
@@ -194,8 +176,8 @@
       /**
        * Button Grid 저장 후 
        */
-      _afterButtonSaved: function(event) {
-        //this.resource.buttons = event.detail.buttons;
+      _afterButtonsLoaded: function(event) {
+        this.menuMeta = event.detail;
       },
 
       /**
@@ -214,9 +196,9 @@
       },
 
       /**
-       * reload grid data
+       * Reload Grid Data
        */
-      reloadGrid: function(e) {
+      _reloadGrid: function(e) {
         this.$['button-ajax'].generateRequest();
       }
 
