@@ -103,8 +103,11 @@
           }, { 
             fieldName: 'grid_rank', name: 'grid_rank', width: 80,
             header: { 
-              text: Things.DataGlobal.t('label.rank')
+              text: Things.DataGlobal.t('label.grid_rank')
             },
+            styles: { 
+              textAlignment: 'far' 
+            }            
           }, { 
             fieldName: 'name', name: 'name', width: 120,
             header: { 
@@ -155,7 +158,7 @@
           }, { 
             name: 'grid_align', 
             fieldName: 'grid_align', 
-            width: 60,
+            width: 80,
             lookupDisplay: true,
             header: { 
               text: Things.DataGlobal.t('label.align') 
@@ -167,7 +170,7 @@
             lookupValues: [ 'Center', 'Far' ],
             lookupLabels: [ 'Center', 'Far' ]
           }, { 
-            fieldName: 'grid_width', name: 'grid_width', width: 60, type: 'number',
+            fieldName: 'grid_width', name: 'grid_width', width: 70, type: 'number',
             header: {
               text: Things.DataGlobal.t('label.width')
             },
@@ -175,7 +178,7 @@
               textAlignment: 'far' 
             }
           }, { 
-            fieldName: 'grid_format', name: 'grid_format', width: 110,
+            fieldName: 'grid_format', name: 'grid_format', width: 120,
             header: {
               text: Things.DataGlobal.t('label.format')
             }
