@@ -13,8 +13,9 @@
       <things-ajax 
         id="button-ajax"
         method="GET"
-        resource-url="[[gridSearchUrl]]"
-        last-response="{{items}}">
+        resource-url="menus/:id/menu_meta"
+        resource-id="[[resourceId]]"
+        last-response="{{menuMeta}}">
       </things-ajax>
 
       <things-resource-grid 
@@ -187,7 +188,7 @@
        * @return {String} Button Search URL
        */
       _computeButtonSaveUrl: function(resourceId) {
-        return 'menus/' + resourceId;
+        return 'menus/' + resourceId + '/menu_buttons/update_multiple';
       },
 
       /**

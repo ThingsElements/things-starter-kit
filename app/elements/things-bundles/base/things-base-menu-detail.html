@@ -1,7 +1,9 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../../../bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="../../../../bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="../../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../../bower_components/paper-toolbar/paper-toolbar.html">
 
 <link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
 <link rel="import" href="../../../../bower_components/things-detail/things-detail-tab-view-behavior.html">
@@ -30,7 +32,6 @@ Example:
 
 <dom-module id="things-base-menu-detail">
   <template>
-
     <style>
       :host {
         display: block;
@@ -45,49 +46,48 @@ Example:
       last-response="{{menuMeta}}">
     </things-ajax>
 
-    <h2>[[title]]</h2>
+    <paper-material elevation="1" class="flex">
+      <paper-tabs id="tabGroup" selected="{{currentTabIdx}}" noink>
+        <template is="dom-repeat" items="{{_panels}}">
+          <paper-tab id="{{item.elementId}}">{{item.title}}</paper-tab>
+        </template>
+      </paper-tabs>
 
-    <paper-tabs id="tabGroup" selected="{{currentTabIdx}}" noink>
-      <template is="dom-repeat" items="{{_panels}}">
-        <paper-tab id="{{item.elementId}}">{{item.title}}</paper-tab>
-      </template>
-    </paper-tabs>
+      <iron-pages id="tabPages" selected="{{currentTabIdx}}">
+        <things-resource-form
+          id="resource-form" 
+          resource-url="[[resourceUrl]]"
+          resource="{{menuMeta.menu}}"
+          form-fields="[[formFields]]"
+          remove-fields-on-save="[[removeFieldsOnSave]]">
+        </things-resource-form>
 
-    <iron-pages id="tabPages" selected="{{currentTabIdx}}">
-      <things-resource-form
-        id="resource-form" 
-        resource-url="[[resourceUrl]]"
-        resource="{{menuMeta.menu}}"
-        form-fields="[[formFields]]"
-        remove-fields-on-save="[[removeFieldsOnSave]]">
-      </things-resource-form>
+        <things-base-menu-detail-columns
+          resource-id="[[resourceId]]"
+          menu-meta="{{menuMeta}}">
+        </things-base-menu-detail-columns>
 
-      <things-base-menu-detail-columns
-        resource-id="[[resourceId]]"
-        menu-meta="{{menuMeta}}">
-      </things-base-menu-detail-columns>
+        <things-base-menu-detail-search
+          resource-id="[[resourceId]]"
+          menu-meta="{{menuMeta}}">
+        </things-base-menu-detail-search>
 
-      <things-base-menu-detail-search
-        resource-id="[[resourceId]]"
-        menu-meta="{{menuMeta}}">
-      </things-base-menu-detail-search>
+        <things-base-menu-detail-grid
+          resource-id="[[resourceId]]"
+          menu-meta="{{menuMeta}}">
+        </things-base-menu-detail-grid>
 
-      <things-base-menu-detail-grid
-        resource-id="[[resourceId]]"
-        menu-meta="{{menuMeta}}">
-      </things-base-menu-detail-grid>
+        <things-base-menu-detail-form
+          resource-id="[[resourceId]]"
+          menu-meta="{{menuMeta}}">
+        </things-base-menu-detail-form>
 
-      <things-base-menu-detail-form
-        resource-id="[[resourceId]]"
-        menu-meta="{{menuMeta}}">
-      </things-base-menu-detail-form>
-
-      <things-base-menu-detail-buttons
-        resource-id="[[resourceId]]"
-        menu-meta="{{menuMeta}}">
-      </things-base-menu-detail-buttons>
-    </iron-pages>
-
+        <things-base-menu-detail-buttons
+          resource-id="[[resourceId]]"
+          menu-meta="{{menuMeta}}">
+        </things-base-menu-detail-buttons>
+      </iron-pages>
+    </paper-material>
   </template>
 
   <script>
