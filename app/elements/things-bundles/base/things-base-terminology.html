@@ -30,6 +30,7 @@
 
 		<things-resource-content
 			id="content"
+			menu-id="18"
 			layout="fullbleed layout vertical"
 			title="[[title]]"
 			current-route="{{currentRoute}}"
@@ -141,48 +142,8 @@
             header : { text : 'Description' }
           } ] 
         },				
-
-	      /**
-	       * grid print options
-	       */
-	      printOptions: {
-	        type: Array,
-	        value: [{
-	          print: {
-	            previewUrl: "/preview.html"
-	          },
-	          reportHeader: {
-	            items: [{
-	              text: "REST API Document",
-	              styles: {
-	               fontSize: 30
-	              }
-	            }]
-	          },
-	          pageHeader: {
-	            items: [{
-	              text: 'HatioLab Inc.'
-	            }, { 
-	              right: 0,
-	              text: 'REST API Document'
-	            }]
-	          },
-	          grid: {
-	            display: {
-	              fitStyle: "even"
-	            },
-	            footer: {
-	              visible: true
-	            }
-	          },
-	          gridStyles: {
-	            grid: {
-	              border: null
-	            }
-	          }
-	        }]
-	      }
 			},
+
 			listeners : {
 				'reload-btn-tap': 'reloadCache',
 				'print-btn-tap': 'printSheet'
@@ -199,16 +160,52 @@
 
 			/**
 			 * Print Sheet
-			 *
-			 * @param {Object} e 버튼 탭 이벤트
 			 */
-			printSheet: function(e) {
+			printShee: function(e) {
 				var resourceGrid = this.$.content.getResourceGrid();
-        var dsMain = resourceGrid.getGridDataSet();
-        var grdMain = resourceGrid.getGridObject();
-        DLReport.preview(grdMain, this.printOptions, false);				
-			}
+				var dsMain = resourceGrid.getGridDataSet();
+				var grdMain = resourceGrid.getGridObject();
+				DLReport.preview(grdMain, this.getPrintOption(), false);
+			},
 
+			getPrintOption: function() {
+				var printOptions = 
+						{
+							print: {
+								previewUrl: "preview.html"
+							},
+							reportHeaser: {
+								items: [{
+									text: "Terminology Document",
+									styles: {
+										fontSize: 30
+									}
+								}]
+							},
+							pageHeader: {
+								items: [{
+									text: 'HatioLab Inc.'
+								}, {
+									right: 0,
+									text: 'Terminology Document'
+								}]
+							},
+							grid: {
+								display: {
+									fitStyle: "even"
+								},
+								footer: {
+									visible: true
+								}
+							},
+							gridStyles: {
+								grid: {
+									border: null
+								}
+							}
+						};
+				return printOptions;
+			}
 		});
 	</script>
 </dom-module>
