@@ -42,11 +42,19 @@ Things Reource Content는 검색 폼, 그리드가 기본으로 표시되고 그
 		<style>
 			:host {
 				display: block;
-				height: 100%;
+				@apply(--layout-vertical);
+			}
+			#layout-container{
+				@apply(--layout-vertical);
+				@apply(--layout-flex);
+			}
+			things-resource-grid {
+				@apply(--layout-flex);
 			}
 		</style>
 
-		<div class="[[layout]]">
+		<!-- flex를 위해 id layout-container 추가 -->
+		<div class="[[layout]]" id="layout-container">
 			<things-ajax 
 				auto
 				id="resource-meta"
@@ -57,7 +65,6 @@ Things Reource Content는 검색 폼, 그리드가 기본으로 표시되고 그
 
 			<things-search-form 
 				id="search-form"
-				class="flex"
 				active="[[active]]"
 				title="[[title]]"
 				form-fields="[[searchFormFields]]" 
@@ -74,6 +81,7 @@ Things Reource Content는 검색 폼, 그리드가 기본으로 표시되고 그
 				model="[[gridModel]]" 
 				columns="[[gridColumns]]"
 				config="[[gridConfig]]"
+				grid-height="[[gridHeight]]"
 				current-page="{{page}}"
 				per-page="{{perPage}}"
 				data="[[items]]"
@@ -173,6 +181,12 @@ Things Reource Content는 검색 폼, 그리드가 기본으로 표시되고 그
 				gridButtons: {
 					type: Array,
 					observer: '_gridButtonsChanged'
+				},
+
+				gridHeight: {
+					type: Number,
+					notify: true,
+					value: -1
 				}
 			},
 
@@ -223,6 +237,9 @@ Things Reource Content는 검색 폼, 그리드가 기본으로 표시되고 그
 			 */
 			initializeContent: function() {
 				//this.$['resource-meta'].generateRequest();
+				this.async(function() {
+					this.$['search-form'].submitMyForm();
+				}, 500);
 			},
 
 			/**

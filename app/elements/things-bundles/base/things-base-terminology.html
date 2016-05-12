@@ -31,8 +31,9 @@
 		<things-resource-content
 			id="content"
 			menu-id="18"
-			layout="fullbleed layout vertical"
 			title="[[title]]"
+			layout="fullbleed layout vertical"
+			grid-height="450"
 			current-route="{{currentRoute}}"
 			my-route="{{resourceUrl}}"
 			resource-type="{{resourceType}}"
@@ -161,7 +162,7 @@
 			/**
 			 * Print Sheet
 			 */
-			printShee: function(e) {
+			printSheet: function(e) {
 				var resourceGrid = this.$.content.getResourceGrid();
 				var dsMain = resourceGrid.getGridDataSet();
 				var grdMain = resourceGrid.getGridObject();

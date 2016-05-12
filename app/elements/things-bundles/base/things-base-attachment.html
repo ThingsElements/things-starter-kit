@@ -40,7 +40,21 @@ things-attach-content는 첨부파일에 대한 검색 폼, 리스트가 기본�
 
 <dom-module id="things-base-attachment">
 	<template>
-		<div class="[[layout]]">
+		<style>
+			:host {
+				display: block;
+				@apply(--layout-vertical);
+			}
+			#layout-container{
+				@apply(--layout-vertical);
+				@apply(--layout-flex);
+			}
+			things-resource-grid {
+				@apply(--layout-flex);
+			}
+		</style>
+
+		<div class="[[layout]]" id="layout-container">
 			<things-ajax 
 				id="resource-meta"
 				method="GET"
@@ -50,7 +64,6 @@ things-attach-content는 첨부파일에 대한 검색 폼, 리스트가 기본�
 
 			<things-search-form 
 				id="search-form"
-				class="flex"
 				active="[[active]]"
 				title="[[title]]"
 				form-fields="[[searchFormFields]]" 
