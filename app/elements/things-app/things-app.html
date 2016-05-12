@@ -10,10 +10,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<!-- App Theme -->
-<!-- <link rel="import" href="../../themes/{$ appTheme $}/theme.html"> -->
-<link rel="import" href="../../bower_components/things-xmes-theme/things-xmes-theme.html">
-
 <!-- Iron elements -->
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
@@ -34,6 +30,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
 
+<!-- App Theme -->
+<!-- <link rel="import" href="../../themes/{$ appTheme $}/theme.html"> -->
+<link rel="import" href="../../bower_components/things-xmes-theme/things-xmes-theme.html">
+
 <dom-module id="things-app">
 
   <template>
@@ -47,6 +47,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         @apply(--things-small-icon);
         float:right;
         margin-top:1px;margin-right:-37px;
+      }
+      div.flex-horizontal-with-ratios{
+        height:100%;
       }
     </style>
     
