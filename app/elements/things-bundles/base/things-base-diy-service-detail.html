@@ -2,6 +2,8 @@
 <link rel="import" href="../../../../bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="../../../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
+<link rel="import" href="../../../../bower_components/paper-toolbar/paper-toolbar.html">
 
 <link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
 <link rel="import" href="../../../../bower_components/things-code-editor/things-code-editor.html">
@@ -11,9 +13,6 @@
 
 <link rel="import" href="./things-base-diy-service-detail-inout.html">
 <link rel="import" href="./things-base-diy-service-detail-test.html">
-
-<link rel="import" href="../../../../bower_components/paper-toolbar/paper-toolbar.html">
-<link rel="import" href="../../../../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
 
 <!--
 	Diy Service 상세 View
@@ -35,22 +34,21 @@
 				@apply(--layout-flex);
 				@apply(--layout-vertical);
 			}
-
 			.content {
 				@apply(--layout-vertical);
 				@apply(--layout-flex);
 			}
-			.iron-pages{
+			.iron-pages {
 				@apply(--layout-flex);
 				@apply(--layout-vertical);
 			}
-			.detial-flex{
+			.detail-flex {
 				@apply(--layout-flex);
 			}
 		</style>
 
 		<paper-header-panel mode="standard" class="green">
-			<paper-tabs class="paper-header" id="tabGroup" selected="{{currentTabIdx}}" noink >
+			<paper-tabs id="tabGroup" class="paper-header" selected="{{currentTabIdx}}" noink scrollable>
 				<template is="dom-repeat" items="{{_panels}}">
 					<paper-tab id="{{item.elementId}}">{{item.title}}</paper-tab>
 				</template>
@@ -82,27 +80,27 @@
 						resource="{{resource}}"
 						code-field="service_logic"
 						save-url="[[resourceUrl]]"
-						class="detial-flex">
+						class="detail-flex">
 					</things-code-editor>
 
 					<things-base-diy-service-detail-inout 
 						id="in-params"
 						mode="in"
 						resource="[[resource]]"
-						class="detial-flex">
+						class="detail-flex">
 					</things-base-diy-service-detail-inout>
 
 					<things-base-diy-service-detail-inout 
 						id="out-params"
 						mode="out"
 						resource="[[resource]]"
-						class="detial-flex">
+						class="detail-flex">
 					</things-base-diy-service-detail-inout>
 
 					<things-base-diy-service-detail-test 
 						id="diy-test"
 						resource="[[resource]]"
-						class="detial-flex">
+						class="detail-flex">
 					</things-base-diy-service-detail-test>
 				</iron-pages>
 			</div>
