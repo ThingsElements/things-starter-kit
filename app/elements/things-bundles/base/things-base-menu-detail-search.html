@@ -88,6 +88,8 @@
           }, { 
             fieldName: 'name'
           }, { 
+            fieldName: 'term'
+          }, { 
             fieldName: 'col_type'
           }, { 
             fieldName: 'sort_rank'
@@ -108,17 +110,27 @@
           }, { 
             fieldName: 'menu_id', name: 'menu_id', width: 0 
           }, { 
-            fieldName: 'search_rank', name: 'search_rank', width: 90, type: 'number',
+            fieldName: 'search_rank', name: 'search_rank', width: 60, type: 'number',
             header: { 
-              text: Things.DataGlobal.t('label.search_rank')
+              text: Things.DataGlobal.t('label.rank')
             },
             styles: { 
               textAlignment: 'far' 
             }
           }, { 
-            fieldName: 'name', name: 'name', width: 120,
+            fieldName: 'name', name: 'name', width: 135,
             header: { 
               text: Things.DataGlobal.t('label.name')
+            }
+          }, { 
+            fieldName: 'term', name: 'term', width: 135,
+            header: { 
+              text: Things.DataGlobal.t('label.term')
+            },
+            valueType: 'text', type: 'calced',
+            valueCallback: function(column, row) {
+              var term = row.getValue('term');
+              return term ? Things.DataGlobal.t(term) : '';
             }
           }, { 
             name: 'col_type', 
@@ -187,7 +199,7 @@
           }, {
             fieldName: 'search_oper', 
             name: 'search_oper', 
-            width: 115,
+            width: 120,
             lookupDisplay: true,
             header: { 
               text: Things.DataGlobal.t('label.search_oper') 
@@ -324,6 +336,7 @@
         if(grid.writeData && grid.writeData.length > 0) {
           var resourceId = this.resourceId;
           grid.writeData.forEach(function(changedData) {
+            delete changedData['term'];
             if(changedData.cud_flag_ == 'c') {
               changedData.menu_id = resourceId;
             }

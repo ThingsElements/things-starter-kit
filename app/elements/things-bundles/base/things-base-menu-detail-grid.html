@@ -88,6 +88,8 @@
           }, { 
             fieldName: 'name' 
           }, { 
+            fieldName: 'term'
+          }, { 
             fieldName: 'col_type'
           }, { 
             fieldName: 'grid_align'
@@ -110,17 +112,27 @@
           }, { 
             fieldName: 'menu_id', name: 'menu_id', width: 0 
           }, { 
-            fieldName: 'grid_rank', name: 'grid_rank', width: 80,
+            fieldName: 'grid_rank', name: 'grid_rank', width: 60,
             header: { 
-              text: Things.DataGlobal.t('label.grid_rank')
+              text: Things.DataGlobal.t('label.rank')
             },
             styles: { 
               textAlignment: 'far' 
             }            
           }, { 
-            fieldName: 'name', name: 'name', width: 120,
+            fieldName: 'name', name: 'name', width: 135,
             header: { 
               text: Things.DataGlobal.t('label.name')
+            }
+          }, { 
+            fieldName: 'term', name: 'term', width: 135,
+            header: { 
+              text: Things.DataGlobal.t('label.term')
+            },
+            valueType: 'text', type: 'calced',
+            valueCallback: function(column, row) {
+              var term = row.getValue('term');
+              return term ? Things.DataGlobal.t(term) : '';
             }
           }, { 
             name: 'col_type', 
@@ -181,7 +193,7 @@
             lookupValues: [ 'Center', 'Far' ],
             lookupLabels: [ 'Center', 'Far' ]
           }, { 
-            fieldName: 'grid_width', name: 'grid_width', width: 70, type: 'number',
+            fieldName: 'grid_width', name: 'grid_width', width: 80, type: 'number',
             header: {
               text: Things.DataGlobal.t('label.width')
             },
@@ -191,7 +203,7 @@
           }, { 
             name: 'grid_editor', 
             fieldName: 'grid_editor', 
-            width: 110,
+            width: 150,
             lookupDisplay: true,
             header: { 
               text: Things.DataGlobal.t('label.editor') 
@@ -229,7 +241,7 @@
               'datetime-picker'
             ]
           }, { 
-            fieldName: 'grid_format', name: 'grid_format', width: 120,
+            fieldName: 'grid_format', name: 'grid_format', width: 135,
             header: {
               text: Things.DataGlobal.t('label.format')
             }
@@ -309,6 +321,7 @@
         if(grid.writeData && grid.writeData.length > 0) {
           var resourceId = this.resourceId;
           grid.writeData.forEach(function(changedData) {
+            delete changedData['term'];
             if(changedData.cud_flag_ == 'c') {
               changedData.menu_id = resourceId;
             }

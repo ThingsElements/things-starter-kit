@@ -86,6 +86,8 @@
           }, { 
             fieldName: 'name' 
           }, { 
+            fieldName: 'term' 
+          }, { 
             fieldName: 'icon' 
           }, { 
             fieldName: 'style' 
@@ -108,6 +110,16 @@
             header: { 
               text: Things.DataGlobal.t('label.name')
             },
+          }, { 
+            fieldName: 'term', name: 'term', width: 135,
+            header: { 
+              text: Things.DataGlobal.t('label.term')
+            },
+            valueType: 'text', type: 'calced',
+            valueCallback: function(column, row) {
+              var name = row.getValue('name');
+              return name ? Things.DataGlobal.t('button.' + name) : '';
+            }
           }, { 
             fieldName: 'icon', name: 'icon', width: 150,
             header: { 
@@ -195,6 +207,7 @@
         if(grid.writeData && grid.writeData.length > 0) {
           var resourceId = this.resourceId;
           grid.writeData.forEach(function(changedData) {
+            delete changedData['term'];
             if(changedData.cud_flag_ == 'c') {
               changedData.menu_id = resourceId;
             }
