@@ -27,12 +27,24 @@
 				height: 100%;
 				width: 100%;
 				@apply(--layout-vertical);
+				--paper-header-panel-standard-container: {
+				    @apply(--layout-vertical);
+				};
 			}
 			paper-header-panel {
 				@apply(--layout-flex);
 				@apply(--layout-vertical);
 			}
+
 			.content {
+				@apply(--layout-vertical);
+				@apply(--layout-flex);
+			}
+			.iron-pages{
+				@apply(--layout-flex);
+				@apply(--layout-vertical);
+			}
+			.detial-flex{
 				@apply(--layout-flex);
 			}
 		</style>
@@ -54,7 +66,7 @@
 					last-response="{{resource}}">
 				</things-ajax>
 
-				<iron-pages id="tabPages" selected="{{currentTabIdx}}">
+				<iron-pages id="tabPages" selected="{{currentTabIdx}}" class="iron-pages">
 					<things-resource-form
 						id="resource-form" 
 						resource-url="[[resourceUrl]]"
@@ -69,24 +81,28 @@
 						mode="ace/mode/groovy"
 						resource="{{resource}}"
 						code-field="service_logic"
-						save-url="[[resourceUrl]]">
+						save-url="[[resourceUrl]]"
+						class="detial-flex">
 					</things-code-editor>
 
 					<things-base-diy-service-detail-inout 
 						id="in-params"
 						mode="in"
-						resource="[[resource]]">
+						resource="[[resource]]"
+						class="detial-flex">
 					</things-base-diy-service-detail-inout>
 
 					<things-base-diy-service-detail-inout 
 						id="out-params"
 						mode="out"
-						resource="[[resource]]">
+						resource="[[resource]]"
+						class="detial-flex">
 					</things-base-diy-service-detail-inout>
 
 					<things-base-diy-service-detail-test 
 						id="diy-test"
-						resource="[[resource]]">
+						resource="[[resource]]"
+						class="detial-flex">
 					</things-base-diy-service-detail-test>
 				</iron-pages>
 			</div>

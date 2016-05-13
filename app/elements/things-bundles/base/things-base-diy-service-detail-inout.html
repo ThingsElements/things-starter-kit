@@ -13,16 +13,12 @@
         display:block;
         @apply(--layout-vertical);
       }
-      #layout-flex {
-        @apply(--layout-flex);
-        @apply(--layout-vertical);
-      }
       things-resource-grid {
         @apply(--layout-flex);
       }
     </style>
 
-    <div id="layout-flex">
+    <!-- <div id="layout-flex"> -->
       <things-ajax 
         auto
         id="get-params"
@@ -41,7 +37,7 @@
         buttons="[[buttons]]"
         enable-toolbar>
       </things-resource-grid>
-    </div>
+    <!-- </div> -->
   </template>
 
   <script>
