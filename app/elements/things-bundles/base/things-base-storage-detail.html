@@ -9,9 +9,22 @@
 <link rel="import" href="../../../../bower_components/things-global-behavior/things-global-behavior.html">
 
 <dom-module id="things-base-storage-detail">
-
   <template>
-    <div class="[[layout]]">
+    <style>
+      :host {
+        display: block;
+        @apply(--layout-vertical);
+      }
+      #layout-flex {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+      }
+      things-resource-grid {
+        @apply(--layout-flex);
+      }
+    </style>
+
+    <div id="layout-flex">
       <things-ajax 
         auto
         id="resource-search"
@@ -139,28 +152,28 @@
           }, { 
             name: 'name',
             fieldName: 'name',
-            width: 200,
+            width: 220,
             header: { 
               text: Things.DataGlobal.t('label.name')
             }
           }, { 
             name: 'tag',
             fieldName: 'tag',
-            width: 120,
+            width: 150,
             header: { 
               text: Things.DataGlobal.t('label.tag')
             }
           }, { 
             name: 'path',
             fieldName: 'path',
-            width: 350,
+            width: 450,
             header: { 
               text: Things.DataGlobal.t('label.path')
             }
           }, { 
             name: 'created_at',
             fieldName: 'created_at', 
-            width: 130,
+            width: 135,
             header: { 
               text: Things.DataGlobal.t('label.created_at')
             }

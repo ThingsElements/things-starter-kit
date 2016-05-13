@@ -7,9 +7,22 @@
 <link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
 
 <dom-module id="things-base-menu-detail-buttons">
-
   <template>
-    <div class="[[layout]]">
+    <style>
+      :host {
+        display:block;
+        @apply(--layout-vertical);
+      }
+      #layout-flex {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+      }
+      things-resource-grid {
+        @apply(--layout-flex);
+      }
+    </style>
+
+    <div id="layout-flex">
       <things-ajax 
         id="button-ajax"
         method="GET"

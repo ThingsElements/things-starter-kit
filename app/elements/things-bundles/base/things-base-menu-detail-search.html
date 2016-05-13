@@ -7,9 +7,22 @@
 <link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
 
 <dom-module id="things-base-menu-detail-search">
-
   <template>
-    <div class="[[layout]]">
+    <style>
+      :host {
+        display:block;
+        @apply(--layout-vertical);
+      }
+      #layout-flex {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+      }
+      things-resource-grid {
+        @apply(--layout-flex);
+      }
+    </style>
+
+    <div id="layout-flex">
       <things-ajax 
         id="column-ajax"
         method="GET"
@@ -20,7 +33,6 @@
 
       <things-resource-grid 
         id="grid"
-        grid-height="600"
         config="[[gridConfig]]"
         model="[[gridModel]]" 
         columns="[[gridColumns]]"

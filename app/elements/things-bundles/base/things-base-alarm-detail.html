@@ -31,11 +31,27 @@ Example:
 
 <dom-module id="things-base-alarm-detail">
   <template>
-
     <style>
       :host {
         display: block;
+        @apply(--layout-vertical);
       }
+      iron-pages {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+      }
+      /*things-template-editor {
+        @apply(--layout-flex);
+      }
+      things-code-editor {
+        @apply(--layout-flex);
+      }
+      things-attached-file {
+        @apply(--layout-flex);
+      }
+      things-extension {
+        @apply(--layout-flex);
+      }*/  
     </style>
 
     <things-ajax 
@@ -45,8 +61,6 @@ Example:
       resource-id="[[resourceId]]"
       last-response="{{resource}}">
     </things-ajax>
-
-    <h2>[[title]]</h2>
 
     <paper-tabs id="tabGroup" selected="{{currentTabIdx}}" noink scrollable>
       <template is="dom-repeat" items="{{_panels}}">

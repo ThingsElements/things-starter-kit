@@ -17,17 +17,7 @@
 <link rel="import" href="./things-base-menu-detail-form.html">
 
 <!--
-Menu 셋업 View
-
-Example:
-
-  <things-base-menu-detail 
-    id="alarm-detail"
-    resource-id="1"
-    form-fields="[[formFields]]">
-  </things-base-menu-detail>
-
-@demo demo/index.html
+  Menu 셋업 View
 -->
 
 <dom-module id="things-base-menu-detail">
@@ -35,6 +25,16 @@ Example:
     <style>
       :host {
         display: block;
+        height: 100%;
+        width: 100%;        
+        @apply(--layout-vertical);
+      }
+      iron-pages {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+      }
+      .content {
+        @apply(--layout-flex);
       }
     </style>
 
@@ -46,7 +46,7 @@ Example:
       last-response="{{menuMeta}}">
     </things-ajax>
 
-    <paper-material elevation="1" class="flex">
+    <div class="content">
       <paper-tabs id="tabGroup" selected="{{currentTabIdx}}" noink>
         <template is="dom-repeat" items="{{_panels}}">
           <paper-tab id="{{item.elementId}}">{{item.title}}</paper-tab>
@@ -87,7 +87,7 @@ Example:
           menu-meta="{{menuMeta}}">
         </things-base-menu-detail-buttons>
       </iron-pages>
-    </paper-material>
+    </div>
   </template>
 
   <script>

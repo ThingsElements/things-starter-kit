@@ -16,34 +16,19 @@
 <link rel="import" href="../../../../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
 
 <!--
-Diy Service 상세 View
-
-Example:
-
-  <things-base-diy-service-detail 
-    id="alarm-detail"
-    title="Alarm"
-    resource-type="Alarm"
-    resource-url="alarms/:id"
-    resource-id="1"
-    form-fields="[[formFields]]"
-    last-response="{{metaData}}">
-  </things-base-diy-service-detail>
-
-@demo demo/index.html
+	Diy Service 상세 View
 -->
 
 <dom-module id="things-base-diy-service-detail">
 	<template>
-
 		<style>
 			:host {
 				display: block;
 				height: 100%;
-				width:100%;
+				width: 100%;
 				@apply(--layout-vertical);
 			}
-			paper-header-panel{
+			paper-header-panel {
 				@apply(--layout-flex);
 				@apply(--layout-vertical);
 			}
@@ -53,13 +38,14 @@ Example:
 		</style>
 
 		<paper-header-panel mode="standard" class="green">
-		    <paper-tabs class="paper-header" id="tabGroup" selected="{{currentTabIdx}}" noink >
+			<paper-tabs class="paper-header" id="tabGroup" selected="{{currentTabIdx}}" noink >
 				<template is="dom-repeat" items="{{_panels}}">
 					<paper-tab id="{{item.elementId}}">{{item.title}}</paper-tab>
 				</template>
 			</paper-tabs>
-		    <div class="content">
-		    	<things-ajax 
+
+			<div class="content">
+				<things-ajax 
 					auto
 					id="get-resource"
 					method="GET"
@@ -103,10 +89,8 @@ Example:
 						resource="[[resource]]">
 					</things-base-diy-service-detail-test>
 				</iron-pages>
-	      	</div>
-	    </paper-header-panel>
-
-
+			</div>
+		</paper-header-panel>
 	</template>
 
 	<script>
