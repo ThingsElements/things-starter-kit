@@ -3,7 +3,7 @@
 <dom-module is="things-jay-test">
 <template>
 	<h4>things jay test</h4>
-	<div id="grdMain" style="width: 900px; height: 900px"></div>
+	<div id="grdMain" style="width: 900px; height: 300px"></div>
 	<paper-button on-tap="printStart">print</paper-button>
 </template>
 
@@ -35,6 +35,18 @@
 			var dataSet = [{'product_id': '1',
 										 'product_name': 'computer',
 										 'customer_id': '1', 
+										 'customer_name': 'Customer Name', 
+										 'country': 'Korea', 
+										 'phone': '010-1234-5678', 
+										 'unit': '500', 
+										 'currency': 'dollor', 
+										 'unit_price': 1200, 
+										 'quantity': 200, 
+										 'order_date': '2015-05-18',
+										 'ship_date': '2014-08-07'},
+										 {'product_id': '1',
+										 'product_name': 'computer',
+										 'customer_id': '2', 
 										 'customer_name': 'Customer Name', 
 										 'country': 'Korea', 
 										 'phone': '010-1234-5678', 
@@ -111,23 +123,6 @@
 	                data: '$report.date'
 	            }]
 	        },
-	        pageFooter: {
-	            styles: {
-	                margin: 4,
-	                background: "#f8f8f8"
-	            },
-	            items: [{
-	                type: "hbox",
-	                right: 0,
-	                items: [{
-	                    data: '$report.pageno'
-	                }, {
-	                    text: "/"
-	                }, {
-	                    data: '$report.pages'
-	                }]
-	            }]
-	        },
 	        grid: {
 	            display: {
 	                fitStyle: "even"
@@ -144,15 +139,27 @@
 	            fieldName: "product_id",
 	            dataType: "text",
 	        }, {
-	            fieldName: "product_name"
+	            fieldName: "product_name",
+	            dataType: "text"
 	        }, {
-	            fieldName: "customer_id"
-	        },
-	            "customer_name",
-	            "country",
-	            "phone",
-	            "unit",
-	            "currency",
+	            fieldName: "customer_id",
+	            dataType: "text"
+	          },{
+	            fieldName: "customer_name",
+	            dataType: "text"
+	          },{
+	            fieldName: "country",
+	            dataType: "text"
+	          },{
+	            fieldName: "phone",
+	            dataType: "text"
+	          },{
+	            fieldName: "unit",
+	            dataType: "text"
+	          },{
+	            fieldName: "currency",
+	            dataType: "text"
+	          },
 	        {
 	            fieldName: "unit_price",
 	            dataType: "number"
@@ -161,12 +168,10 @@
 	            dataType: "number"
 	        }, {
 	            fieldName: "order_date",
-	            dataType: "datetime",
-	            datetimeFormat: "yyyy-MM-dd"
+	            dataType: "text"
 	        }, {
 	            fieldName: "ship_date",
-	            dataType: "datetime",
-	            datetimeFormat: "iso"
+	            dataType: "text"
 	        }
 	    ]);
 
@@ -176,7 +181,7 @@
 		getGrdMain: function() {
 			var grdMain = DataLudi.createGridView('grdMain', [
           {
-              "name": "ProductName",
+              "name": "product_name",
               "fieldName": "product_name",
               "width": "90",
               "styles": {
@@ -185,7 +190,7 @@
                   "text": "ProductName"
               }
           }, {
-              "name": "CustomerId",
+              "name": "customer_id",
               "fieldName": "customer_id",
               "width": "60",
               "styles": {
@@ -194,7 +199,7 @@
                   "text": "Customer"
               }
           }, {
-              "name": "CustomerName",
+              "name": "customer_name",
               "fieldName": "customer_name",
               "width": "70",
               "styles": {
@@ -203,7 +208,7 @@
                   "text": "CustomerName"
               }
           }, {
-              "name": "Phone",
+              "name": "phone",
               "fieldName": "phone",
               "width": "125",
               "styles": {
@@ -213,7 +218,7 @@
                   "text": "Phone"
               }
           }, {
-              "name": "Country",
+              "name": "country",
               "fieldName": "country",
               "width": "70",
               "styles": {
@@ -228,7 +233,7 @@
                   }
               }
           }, {
-              "name": "Quantity",
+              "name": "quantity",
               "fieldName": "quantity",
               "width": 50,
               "styles": {
@@ -249,7 +254,7 @@
                   }
               }
           }, {
-              "name": "OrderDate",
+              "name": "order_date",
               "fieldName": "order_date",
               "width": "90",
               "styles": {
@@ -260,7 +265,7 @@
                   "text": "OrderDate"
               }
           }, {
-              "name": "ShipDate",
+              "name": "ship_date",
               "fieldName": "ship_date",
               "width": "90",
               "styles": {
@@ -285,6 +290,7 @@
 		},
 
 		printStart: function() {
+			console.log('test');
       DLReport.preview(this.grdMain, this.getPrintOption(), true);
 		}
 	});
