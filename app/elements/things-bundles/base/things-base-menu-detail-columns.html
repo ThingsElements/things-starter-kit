@@ -2,9 +2,9 @@
 <link rel="import" href="../../../../bower_components/iron-icon/iron-icon.html">
 
 <link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
 <link rel="import" href="../../../../bower_components/things-resource-selector/things-resource-selector-behavior.html">
 <link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
-<link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
 
 <dom-module id="things-base-menu-detail-columns">
   <template>
@@ -13,42 +13,36 @@
         display:block;
         @apply(--layout-vertical);
       }
-      #layout-flex {
-        @apply(--layout-flex);
-        @apply(--layout-vertical);
-      }
       things-resource-grid {
         @apply(--layout-flex);
       }
     </style>
 
-    <div id="layout-flex">
-      <things-ajax 
-        id="columns-sync-ajax"
-        method="POST"
-        resource-url="menus/:id/sync_menu_columns"
-        resource-id="[[resourceId]]"
-        last-response="{{resource}}">
-      </things-ajax>
+    <things-ajax 
+      id="columns-sync-ajax"
+      method="POST"
+      resource-url="menus/:id/sync_menu_columns"
+      resource-id="[[resourceId]]"
+      last-response="{{resource}}">
+    </things-ajax>
 
-      <things-ajax 
-        id="column-ajax"
-        method="GET"
-        resource-url="menus/:id/menu_meta"
-        resource-id="[[resourceId]]"
-        last-response="{{menuMeta}}">
-      </things-ajax>
+    <things-ajax 
+      id="column-ajax"
+      method="GET"
+      resource-url="menus/:id/menu_meta"
+      resource-id="[[resourceId]]"
+      last-response="{{menuMeta}}">
+    </things-ajax>
 
-      <things-resource-grid 
-        id="grid"
-        config="[[gridConfig]]"
-        model="[[gridModel]]" 
-        columns="[[gridColumns]]"
-        data="[[items]]"
-        grid-save-action="[[gridSaveUrl]]"
-        buttons="[[buttons]]">
-      </things-resource-grid>
-    </div>
+    <things-resource-grid 
+      id="grid"
+      config="[[gridConfig]]"
+      model="[[gridModel]]" 
+      columns="[[gridColumns]]"
+      data="[[items]]"
+      grid-save-action="[[gridSaveUrl]]"
+      buttons="[[buttons]]">
+    </things-resource-grid>
   </template>
 
   <script>

@@ -18,26 +18,24 @@
       }
     </style>
 
-    <!-- <div id="layout-flex"> -->
-      <things-ajax 
-        auto
-        id="get-params"
-        method="GET"
-        resource-url="[[gridSearchUrl]]"
-        last-response="{{items}}">
-      </things-ajax>
+    <things-ajax 
+      auto
+      id="get-params"
+      method="GET"
+      resource-url="[[gridSearchUrl]]"
+      last-response="{{items}}">
+    </things-ajax>
 
-      <things-resource-grid 
-        id="grid"
-        config="[[gridConfig]]"
-        model="[[gridModel]]" 
-        columns="[[gridColumns]]"
-        data="[[items]]"
-        grid-save-action="[[gridSaveUrl]]"
-        buttons="[[buttons]]"
-        enable-toolbar>
-      </things-resource-grid>
-    <!-- </div> -->
+    <things-resource-grid 
+      id="grid"
+      config="[[gridConfig]]"
+      model="[[gridModel]]" 
+      columns="[[gridColumns]]"
+      data="[[items]]"
+      grid-save-action="[[gridSaveUrl]]"
+      buttons="[[buttons]]"
+      enable-toolbar>
+    </things-resource-grid>
   </template>
 
   <script>

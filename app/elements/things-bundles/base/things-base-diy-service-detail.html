@@ -1,8 +1,8 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/paper-header-panel/paper-header-panel.html">
 <link rel="import" href="../../../../bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="../../../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../../../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../../../../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
 <link rel="import" href="../../../../bower_components/paper-toolbar/paper-toolbar.html">
 
 <link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
@@ -75,32 +75,32 @@
 
 					<things-code-editor 
 						id="code-editor"
+						class="detail-flex"
 						theme="ace/theme/monokai"
 						mode="ace/mode/groovy"
 						resource="{{resource}}"
 						code-field="service_logic"
-						save-url="[[resourceUrl]]"
-						class="detail-flex">
+						save-url="[[resourceUrl]]">
 					</things-code-editor>
 
 					<things-base-diy-service-detail-inout 
 						id="in-params"
+						class="detail-flex"
 						mode="in"
-						resource="[[resource]]"
-						class="detail-flex">
+						resource="[[resource]]">
 					</things-base-diy-service-detail-inout>
 
 					<things-base-diy-service-detail-inout 
 						id="out-params"
+						class="detail-flex"
 						mode="out"
-						resource="[[resource]]"
-						class="detail-flex">
+						resource="[[resource]]">
 					</things-base-diy-service-detail-inout>
 
 					<things-base-diy-service-detail-test 
 						id="diy-test"
-						resource="[[resource]]"
-						class="detail-flex">
+						class="detail-flex"
+						resource="[[resource]]">
 					</things-base-diy-service-detail-test>
 				</iron-pages>
 			</div>
@@ -122,7 +122,17 @@
 				 */
 				removeFieldsOnSave: {
 					type: Array,
-					value: ['domain_id', 'creator', 'updater', 'creator_id', 'updater_id', 'created_at', 'updated_at', 'service_in_params', 'service_out_params']
+					value: [
+						'domain_id', 
+						'creator', 
+						'updater', 
+						'creator_id', 
+						'updater_id', 
+						'created_at', 
+						'updated_at', 
+						'service_in_params', 
+						'service_out_params'
+					]
 				}
 			},
 

@@ -46,7 +46,7 @@
       last-response="{{resource}}">
     </things-ajax>
 
-    <paper-tabs id="tabGroup" selected="{{currentTabIdx}}" noink>
+    <paper-tabs id="tabGroup" selected="{{currentTabIdx}}" noink scrollable>
       <template is="dom-repeat" items="{{_panels}}">
         <paper-tab id="{{item.elementId}}">{{item.title}}</paper-tab>
       </template>
