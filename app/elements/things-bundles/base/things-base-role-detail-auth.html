@@ -7,7 +7,19 @@
 <dom-module id="things-base-role-detail-auth">
 
   <template>
-    <div class="[[layout]]">
+    <style>
+      :host{
+        display:block;
+        @apply(--layout-vertical);
+      }
+      #layout-flex{
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+      }
+      things-resource-grid{@apply(--layout-flex);}
+    </style>
+    <!-- flex를 위해 id에  layout-flex 추가  -->
+    <div class="[[layout]]" id="layout-flex">
       <things-ajax 
         auto
         id="resource-search"

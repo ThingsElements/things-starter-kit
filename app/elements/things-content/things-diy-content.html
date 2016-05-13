@@ -38,11 +38,18 @@
 		<style>
 			:host {
 				display: block;
-				height: 100%;
+				@apply(--layout-vertical);
+			}
+			#layout-container{
+				@apply(--layout-vertical);
+				@apply(--layout-flex);
+			}
+			things-resource-grid {
+				@apply(--layout-flex);
 			}
 		</style>
 
-		<div class="[[layout]]">
+		<div class="[[layout]]" id="layout-container">
 			<things-ajax 
 				auto
 				id="resource-meta"
@@ -53,7 +60,6 @@
 
 			<things-search-form 
 				id="search-form"
-				class="flex"
 				active="[[active]]"
 				title="[[title]]"
 				form-fields="[[searchFormFields]]" 

@@ -38,7 +38,21 @@
 
 <dom-module id="things-base-rest">
 	<template>
-		<div class="[[layout]]">
+		<style>
+			:host {
+				display: block;
+				@apply(--layout-vertical);
+			}
+			#layout-container{
+				@apply(--layout-vertical);
+				@apply(--layout-flex);
+			}
+			things-resource-grid {
+				@apply(--layout-flex);
+			}
+		</style>
+
+		<div class="[[layout]]" id="layout-container">
 			<things-ajax 
 				id="resource-meta"
 				method="GET"
@@ -48,7 +62,6 @@
 
 			<things-search-form 
 				id="search-form"
-				class="flex"
 				active="[[active]]"
 				title="[[title]]"
 				form-fields="[[searchFormFields]]" 
@@ -153,6 +166,10 @@
 			 */
 			initializeContent: function() {
 				this.$['resource-meta'].generateRequest();
+
+				this.async(function() {
+					this.$['search-form'].submitMyForm();
+				}, 1000);				
 			},
 
 			/**

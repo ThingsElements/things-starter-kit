@@ -415,6 +415,10 @@
 			 */
 			initializeContent: function() {
 				this.$['resource-meta'].generateRequest();
+
+				this.async(function() {
+					this.$['search-form'].submitMyForm();
+				}, 1000);
 			},
 
 			/**
