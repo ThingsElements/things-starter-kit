@@ -11,9 +11,22 @@
 공통 코드 디테일 화면 
 -->
 <dom-module id="things-base-code-detail">
-
   <template>
-    <div class="[[layout]]">
+    <style>
+      :host {
+        display: block;
+        @apply(--layout-vertical);
+      }
+      #layout-flex {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+      }
+      things-resource-grid {
+        @apply(--layout-flex);
+      }
+    </style>
+
+    <div id="layout-flex">
       <things-ajax
         auto
         id="subcode-list"
@@ -38,7 +51,6 @@
 
       <things-resource-grid 
         id="grid"
-        grid-height=175
         config="[[gridConfig]]"
         model="[[gridModel]]" 
         columns="[[gridColumns]]"

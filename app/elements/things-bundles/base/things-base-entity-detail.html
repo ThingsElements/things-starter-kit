@@ -7,32 +7,42 @@
 <link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
 
 <dom-module id="things-base-entity-detail">
-
   <template>
-    <div class="[[layout]]">
-      <things-ajax 
-        auto
-        id="resource-search"
-        method="GET"
-        resource-url="entities/:id/entity_columns"
-        resource-id="{{resourceId}}"
-        last-response="{{lastResponse}}">
-      </things-ajax>
+    <style>
+      :host {
+        display: block;
+        @apply(--layout-vertical);
+      }
+      iron-pages {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+      }
+      things-resource-grid {
+        @apply(--layout-flex);
+      }
+    </style>
 
-      <things-ajax id="generate-service" method="POST"></things-ajax>      
-      
-      <things-resource-grid 
-        id="grid"
-        grid-height=400
-        config="[[gridConfig]]"
-        model="[[gridModel]]" 
-        columns="[[gridColumns]]"
-        data="[[lastResponse.items]]"
-        grid-save-action="[[gridSaveUrl]]"
-        buttons="[[buttons]]"
-        enable-toolbar>
-      </things-resource-grid>
-    </div>
+    <things-ajax 
+      auto
+      id="resource-search"
+      method="GET"
+      resource-url="entities/:id/entity_columns"
+      resource-id="{{resourceId}}"
+      last-response="{{lastResponse}}">
+    </things-ajax>
+
+    <things-ajax id="generate-service" method="POST"></things-ajax>      
+    
+    <things-resource-grid 
+      id="grid"
+      config="[[gridConfig]]"
+      model="[[gridModel]]" 
+      columns="[[gridColumns]]"
+      data="[[lastResponse.items]]"
+      grid-save-action="[[gridSaveUrl]]"
+      buttons="[[buttons]]"
+      enable-toolbar>
+    </things-resource-grid>
   </template>
 
   <script>
