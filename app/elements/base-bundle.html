@@ -10,8 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <!-- App Element -->
 <link rel="import" href="things-app/things-app.html">
-<link rel="import" href="../bower_components/things-i18n-msg/things-i18n-src.html">
-<link rel="import" href="../bower_components/things-setting/things-setting.html">
+
 <!-- Platinum elements -->
 <link rel="import" href="../bower_components/platinum-sw/platinum-sw-cache.html">
 <link rel="import" href="../bower_components/platinum-sw/platinum-sw-offline-analytics.html">
@@ -19,5 +18,159 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <!-- Start elements
 <link rel="import" href="../bower_components/start-google-analytics-tracker/start-google-analytics-tracker.html">
-hi
 -->
+
+
+<!-- Routing -->
+<script src="../bower_components/page/page.js"></script>
+
+<!-- Iron elements -->
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
+<link rel="import" href="../bower_components/iron-meta/iron-meta.html">
+<!--link rel="import" href="../bower_components/iron-flex-layout/classes/iron-flex-layout.html"-->
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<!-- Paper elements -->
+<link rel="import" href="../bower_components/paper-drawer-panel/paper-drawer-panel.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
+<link rel="import" href="../bower_components/paper-styles/paper-styles-classes.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../bower_components/paper-date-picker/paper-date-picker.html">
+<link rel="import" href="../bower_components/paper-date-picker/paper-date-picker-dialog-style.html">
+<link rel="import" href="../bower_components/paper-time-picker/paper-time-picker.html">
+<link rel="import" href="../bower_components/paper-time-picker/paper-time-picker-dialog-style.html">
+
+
+<!-- Platinum elements -->
+<!--link rel="import" href="../bower_components/platinum-sw/platinum-sw-cache.html">
+<link rel="import" href="../bower_components/platinum-sw/platinum-sw-offline-analytics.html">
+<link rel="import" href="../bower_components/platinum-sw/platinum-sw-register.html"-->
+
+<!-- Start elements -->
+<!--link rel="import" href="../bower_components/start-google-analytics-tracker/start-google-analytics-tracker.html"-->
+
+<!-- Theme -->
+<link rel="import" href="../bower_components/things-xmes-theme/things-xmes-theme.html">
+<!-- Custom elements -->
+
+<link rel="import" href="../bower_components/things-msg-box-behavior/things-error-page.html">
+
+<link rel="import" href="../bower_components/things-global-behavior/things-global-behavior.html">
+
+<link rel="import" href="../bower_components/things-setting/things-setting.html">
+
+<link rel="import" href="../bower_components/things-setting/things-setting-dialog.html">
+
+<link rel="import" href="../bower_components/things-spinner/things-spinner.html">
+
+<link rel="import" href="../bower_components/things-button/things-button.html">
+
+<link rel="import" href="../bower_components/things-button/things-button-group.html">
+
+<link rel="import" href="../bower_components/things-button/things-button-bar.html">
+
+<link rel="import" href="../bower_components/things-alarm/things-alarm-badge.html">
+
+<link rel="import" href="../bower_components/things-ajax/things-ajax.html">
+
+<link rel="import" href="../bower_components/things-code-editor/things-code-editor.html">
+
+<link rel="import" href="../bower_components/things-code-editor/things-template-editor.html">
+
+<link rel="import" href="../bower_components/things-combo/things-combo.html">
+
+<link rel="import" href="../bower_components/things-resource-combo/things-code-combo.html">
+
+<link rel="import" href="../bower_components/things-resource-selector/things-resource-selector.html">
+
+<link rel="import" href="../bower_components/things-resource-selector/things-resource-selector-behavior.html">
+
+<link rel="import" href="../bower_components/things-resource-selector/things-resource-dialog.html">
+
+<link rel="import" href="../bower_components/things-grid/things-basic-grid.html">
+
+<link rel="import" href="../bower_components/things-grid/things-resource-grid.html">
+
+<link rel="import" href="../bower_components/things-form/things-search-form.html">
+
+<link rel="import" href="../bower_components/things-form/things-resource-form.html">
+
+<link rel="import" href="../bower_components/things-stamp/things-stamp.html">
+
+<link rel="import" href="../bower_components/things-recent-page/things-recent-page.html">
+
+<link rel="import" href="../bower_components/things-meta/things-resource-meta-behavior.html">
+
+<link rel="import" href="../bower_components/things-full-dialog/things-full-dialog.html">
+
+<link rel="import" href="../bower_components/things-date-picker/things-date-picker.html">
+
+<link rel="import" href="../bower_components/things-date-picker/things-time-picker.html">
+
+<link rel="import" href="../bower_components/things-date-picker/things-date-from-to.html">
+
+<link rel="import" href="../bower_components/things-card/things-img-card.html">
+
+<link rel="import" href="../bower_components/things-card/things-card-list.html">
+
+<link rel="import" href="../bower_components/things-grid/things-diy-grid.html">
+
+<link rel="import" href="../bower_components/things-resource-combo/things-locale-combo.html">
+
+<link rel="import" href="../bower_components/things-i18n-msg/things-i18n-msg.html">
+<link rel="import" href="../bower_components/things-i18n-msg/things-i18n-src.html">
+
+<link rel="import" href="../bower_components/things-input-field/things-input-field.html">
+
+<link rel="import" href="../bower_components/things-route-content-behavior/things-route-content-behavior.html">
+
+<link rel="import" href="../bower_components/things-auth/things-change-password.html">
+<link rel="import" href="../bower_components/things-auth/things-login.html">
+<link rel="import" href="../bower_components/things-auth/things-logout.html">
+<link rel="import" href="../bower_components/things-auth/things-password-init.html">
+<link rel="import" href="../bower_components/things-auth/things-signup.html">
+<link rel="import" href="../bower_components/things-attached-file/things-attached-file.html">
+<link rel="import" href="../bower_components/things-extension/things-extension.html">
+<link rel="import" href="../bower_components/things-layout/things-routing-behavior.html">
+<link rel="import" href="../bower_components/things-layout/things-sidebar.html">
+<link rel="import" href="../bower_components/things-layout/things-header.html">
+<link rel="import" href="../bower_components/things-profile/things-profile.html">
+<link rel="import" href="../bower_components/things-tabs/things-resource-tabs.html">
+<link rel="import" href="../bower_components/things-detail/things-resource-detail-tab-view-behavior">
+
+<link rel="import" href="things-bundles/base/things-base-menu.html">
+<link rel="import" href="things-bundles/base/things-base-attachment.html">
+<link rel="import" href="things-bundles/base/things-base-terminology.html">
+<link rel="import" href="things-bundles/base/things-base-rest.html">
+<link rel="import" href="things-bundles/base/things-base-rest-detail.html">
+<link rel="import" href="things-bundles/base/things-base-code-detail.html">
+<link rel="import" href="things-bundles/base/things-base-entity-detail.html">
+<link rel="import" href="things-bundles/base/things-base-storage-detail.html">
+<link rel="import" href="things-bundles/base/things-base-diy-forms-detail.html">
+<link rel="import" href="things-bundles/base/things-base-diy-grid-detail.html">
+<link rel="import" href="things-bundles/base/things-base-diy-template-detail.html">
+<link rel="import" href="things-bundles/base/things-base-alarm-detail.html">
+<link rel="import" href="things-bundles/base/things-base-diy-service-detail.html">
+<link rel="import" href="things-bundles/base/things-base-role-detail.html">
+
+<link rel="import" href="things-content/things-content.html">
+<link rel="import" href="things-content/things-diy-content.html">
+<link rel="import" href="things-content/things-resource-content.html">
+
+<link rel="import" href="things-demo/things-demo.html">
+
+<link rel="import" href="things-jay-test/things-jay-test.html">
+<style is="custom-style" include="iron-flex iron-flex-reverse iron-flex-alignment iron-flex-factors iron-positioning"></style>
