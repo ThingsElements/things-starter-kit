@@ -22,20 +22,8 @@
 <link rel="import" href="../../../../bower_components/things-global-behavior/things-global-behavior.html">
 
 <!--
-첨부파일 리스트와 첨부파일 업로드 기능을 제공하는 화면 셋 
-
-things-attach-content는 첨부파일에 대한 검색 폼, 리스트가 기본으로 표시되고 첨부파일에 대하여 다운로드와 업로드가 가능하다.
-
-	Example:
-
-	<things-base-attachment 
-	  title="Attachment"
-	  resource-type="Attachment"
-	  resource-url="attachments"
-	  layout="fullbleed layout vertical">
-	</things-base-attachment>
-
-@demo ./things-content/demo/demo-things-attach-content.html
+	첨부파일 리스트와 첨부파일 업로드 기능을 제공하는 화면 셋 
+	things-attach-content는 첨부파일에 대한 검색 폼, 리스트가 기본으로 표시되고 첨부파일에 대하여 다운로드와 업로드가 가능하다.
 -->
 
 <dom-module id="things-base-attachment">
@@ -54,7 +42,7 @@ things-attach-content는 첨부파일에 대한 검색 폼, 리스트가 기본�
 			}
 		</style>
 
-		<div class="[[layout]]" id="layout-container">
+		<div id="layout-container">
 			<things-ajax 
 				id="resource-meta"
 				method="GET"
@@ -88,7 +76,6 @@ things-attach-content는 첨부파일에 대한 검색 폼, 리스트가 기본�
 				paginatable
 				enable-toolbar>
 			</things-resource-grid>
-
 		</div>
 	</template>
 

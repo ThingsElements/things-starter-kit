@@ -71,9 +71,7 @@
         id="users"
         enable-toolbar>
       </things-base-role-detail-user>
-
     </iron-pages>
-
   </template>
 
   <script>
@@ -91,7 +89,14 @@
          */
         removeFieldsOnSave: {
           type: Array,
-          value: ['creator', 'updater', 'creator_id', 'updater_id', 'created_at', 'updated_at']
+          value: [
+            'creator', 
+            'updater', 
+            'creator_id', 
+            'updater_id', 
+            'created_at', 
+            'updated_at'
+          ]
         }
       },
 

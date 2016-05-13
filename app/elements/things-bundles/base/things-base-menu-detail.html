@@ -37,10 +37,6 @@
         @apply(--layout-flex);
         @apply(--layout-vertical);
       }
-      .content {
-        @apply(--layout-vertical);
-        @apply(--layout-flex);
-      }
       .iron-pages {
         @apply(--layout-flex);
         @apply(--layout-vertical);
@@ -57,56 +53,54 @@
         </template>
       </paper-tabs>
 
-      <div class="content">
-        <things-ajax 
-          auto
-          id="get-resource"
-          method="GET"
-          resource-url="menus/:id/menu_meta"
+      <things-ajax 
+        auto
+        id="get-resource"
+        method="GET"
+        resource-url="menus/:id/menu_meta"
+        resource-id="[[resourceId]]"
+        last-response="{{menuMeta}}">
+      </things-ajax>
+
+      <iron-pages id="tabPages" selected="{{currentTabIdx}}" class="iron-pages">
+        <things-resource-form
+          id="resource-form" 
+          resource-url="[[resourceUrl]]"
+          resource="{{menuMeta.menu}}"
+          form-fields="[[formFields]]"
+          remove-fields-on-save="[[removeFieldsOnSave]]">
+        </things-resource-form>
+
+        <things-base-menu-detail-columns
+          class="detail-flex"
           resource-id="[[resourceId]]"
-          last-response="{{menuMeta}}">
-        </things-ajax>
+          menu-meta="{{menuMeta}}">
+        </things-base-menu-detail-columns>
 
-        <iron-pages id="tabPages" selected="{{currentTabIdx}}" class="iron-pages">
-          <things-resource-form
-            id="resource-form" 
-            resource-url="[[resourceUrl]]"
-            resource="{{menuMeta.menu}}"
-            form-fields="[[formFields]]"
-            remove-fields-on-save="[[removeFieldsOnSave]]">
-          </things-resource-form>
+        <things-base-menu-detail-search
+          class="detail-flex"
+          resource-id="[[resourceId]]"
+          menu-meta="{{menuMeta}}">
+        </things-base-menu-detail-search>
 
-          <things-base-menu-detail-columns
-            class="detail-flex"
-            resource-id="[[resourceId]]"
-            menu-meta="{{menuMeta}}">
-          </things-base-menu-detail-columns>
+        <things-base-menu-detail-grid
+          class="detail-flex"
+          resource-id="[[resourceId]]"
+          menu-meta="{{menuMeta}}">
+        </things-base-menu-detail-grid>
 
-          <things-base-menu-detail-search
-            class="detail-flex"
-            resource-id="[[resourceId]]"
-            menu-meta="{{menuMeta}}">
-          </things-base-menu-detail-search>
+        <things-base-menu-detail-form
+          class="detail-flex"
+          resource-id="[[resourceId]]"
+          menu-meta="{{menuMeta}}">
+        </things-base-menu-detail-form>
 
-          <things-base-menu-detail-grid
-            class="detail-flex"
-            resource-id="[[resourceId]]"
-            menu-meta="{{menuMeta}}">
-          </things-base-menu-detail-grid>
-
-          <things-base-menu-detail-form
-            class="detail-flex"
-            resource-id="[[resourceId]]"
-            menu-meta="{{menuMeta}}">
-          </things-base-menu-detail-form>
-
-          <things-base-menu-detail-buttons
-            class="detail-flex"
-            resource-id="[[resourceId]]"
-            menu-meta="{{menuMeta}}">
-          </things-base-menu-detail-buttons>
-        </iron-pages>
-      </div>
+        <things-base-menu-detail-buttons
+          class="detail-flex"
+          resource-id="[[resourceId]]"
+          menu-meta="{{menuMeta}}">
+        </things-base-menu-detail-buttons>
+      </iron-pages>
     </paper-header-panel>
   </template>
 

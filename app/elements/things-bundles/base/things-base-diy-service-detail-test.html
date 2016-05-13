@@ -7,17 +7,8 @@
 <link rel="import" href="../../../../bower_components/paper-material/paper-material.html">
 
 <!--
-커스텀 서비스의 테스트 화면 
-커스텀 서비스에서는 생성한 서비스 로직의 테스트를 위해 테스트 화면을 제공한다.
-
-Example:
-
-		<things-base-diy-service-detail-test 
-			id="diy-test"
-			resource="[[resource]]">
-		</things-base-diy-service-detail-test>
-
-@demo demo/index.html
+	커스텀 서비스의 테스트 화면 
+	커스텀 서비스에서는 생성한 서비스 로직의 테스트를 위해 테스트 화면을 제공한다.
 -->
 
 <dom-module id="things-base-diy-service-detail-test">
@@ -49,8 +40,8 @@ Example:
 			content-type="application/json"
 			method="POST"
 			last-response="{{lastResponse}}">
-			<paper-input required id="invoke-url" name ="invokeUrl" label="Invoke URL" disabled>
-			</paper-input>
+			<things-input-field required id="invoke-url" name ="invokeUrl" label="Invoke URL" disabled>
+			</things-input-field>
 			<div id="param-fields" class="layout vertical flex fields"></div>
 			<paper-textarea id="result" label="Result" rows=4>
 			</paper-textarea>
