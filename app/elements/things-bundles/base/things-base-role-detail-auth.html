@@ -1,25 +1,26 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../../bower_components/paper-icon-button/paper-icon-button.html">
-
 <link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
 <link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
 
 <dom-module id="things-base-role-detail-auth">
-
   <template>
     <style>
-      :host{
+      :host {
         display:block;
         @apply(--layout-vertical);
       }
-      #layout-flex{
+      #layout-flex {
         @apply(--layout-flex);
         @apply(--layout-vertical);
       }
-      things-resource-grid{@apply(--layout-flex);}
+      things-resource-grid {
+        @apply(--layout-flex);
+      }
     </style>
+
     <!-- flex를 위해 id에  layout-flex 추가  -->
-    <div class="[[layout]]" id="layout-flex">
+    <div id="layout-flex">
       <things-ajax 
         auto
         id="resource-search"

@@ -14,20 +14,25 @@
 <link rel="import" href="./things-base-role-detail-auth.html">
 <link rel="import" href="./things-base-role-detail-user.html">
 
+<!--
+  Role Detail View
+-->
 
 <dom-module id="things-base-role-detail">
   <template>
-
     <style>
       :host {
         display: block;
         @apply(--layout-vertical);
       }
-      iron-pages{
+      iron-pages {
         @apply(--layout-flex);
         @apply(--layout-vertical);
       }
-      things-base-role-detail-auth{
+      things-base-role-detail-auth {
+        @apply(--layout-flex);
+      }
+      things-base-role-detail-user {
         @apply(--layout-flex);
       }
     </style>
