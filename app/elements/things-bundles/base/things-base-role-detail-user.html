@@ -8,21 +8,7 @@
 <dom-module id="things-base-role-detail-user">
 
   <template>
-    <style>
-      :host{
-        display:block;
-        @apply(--layout-vertical);
-      }
-      #layout-flex {
-        @apply(--layout-flex);
-        @apply(--layout-vertical);
-      }
-      things-resource-grid{
-        @apply(--layout-flex);
-      }
-    </style>
-
-    <div class="[[layout]]" id="layout-flex">
+    <div class="[[layout]]">
       <things-ajax 
         auto
         id="resource-search"
