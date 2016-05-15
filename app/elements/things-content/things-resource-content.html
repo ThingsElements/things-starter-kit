@@ -15,10 +15,9 @@
 <link rel="import" href="../../../bower_components/things-full-dialog/things-full-dialog.html">
 <link rel="import" href="../../../bower_components/things-grid/things-resource-grid.html">
 <link rel="import" href="../../../bower_components/things-meta/things-resource-meta-behavior.html">
-<link rel="import" href="../../../bower_components/things-resource-selector/things-resource-selector-behavior.html">
-
-<link rel="import" href="../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
 <link rel="import" href="../../../bower_components/things-route-content-behavior/things-route-content-behavior.html">
+<link rel="import" href="../../../bower_components/things-resource-selector/things-resource-selector-behavior.html">
+<link rel="import" href="../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
 
 <!--
 하나의 리소스에 대한 기본 액션 (List, Create, Find, Upate, Delete) 및 Import, Export 등의 기능을 제공하는 화면 셋 
@@ -44,7 +43,7 @@ Things Reource Content는 검색 폼, 그리드가 기본으로 표시되고 그
 				display: block;
 				@apply(--layout-vertical);
 			}
-			#layout-container{
+			#layout-container {
 				@apply(--layout-vertical);
 				@apply(--layout-flex);
 			}
@@ -100,9 +99,9 @@ Things Reource Content는 검색 폼, 그리드가 기본으로 표시되고 그
 			is: 'things-resource-content',
 
 			behaviors: [ 
-				Things.ResourceSelectorBehavior,
-				Things.ResourceMetaBehavior,
 				Things.RouteContentBehavior,
+				Things.ResourceMetaBehavior,
+				Things.ResourceSelectorBehavior,				
 				Things.ViewOpenBehavior
 			],
 			

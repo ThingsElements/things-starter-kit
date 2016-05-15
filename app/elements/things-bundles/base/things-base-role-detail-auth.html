@@ -30,8 +30,6 @@
         auto>
       </things-ajax>
 
-      <span><paper-icon-button icon="icons:view-list"></paper-icon-button>[[roleName]]</span>
-
       <things-resource-grid 
         id="grid"
         config="[[gridConfig]]"
@@ -56,13 +54,6 @@
          * role id
          */
         roleId: {
-          type: String
-        },
-
-        /**
-         * Detail 클릭시 나타나는 detail title
-         */
-        roleName: {
           type: String
         },
 
@@ -231,7 +222,6 @@
        */
       _onResourceChanged: function(resource) {
         this.roleId = resource.id;
-        this.roleName = resource.name;
       },
 
       /**

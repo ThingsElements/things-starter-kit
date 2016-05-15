@@ -1,0 +1,146 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<script>
+
+window.Things = window.Things || {};
+
+/**
+ * 리소스 타입 메뉴 화면 Behavior
+ *
+ * @polymerBehavior Things.ResourceMenuContentBehavior
+ */
+Things.ResourceMenuContentBehavior = {
+
+	properties: {
+		/**
+		 * 조회 결과 
+		 */
+		lastResponse: {
+			type: Object,
+			observer: '_responseChanged'
+		},
+
+		/**
+		 * 조회 결과 리스트 데이터 프로퍼티 명
+		 */
+		responseRoot: {
+			type: String,
+			value: 'items'
+		},
+
+		/**
+		 * 조회 결과 리스트 Total Count 프로퍼티 명
+		 */
+		responseTotal: {
+			type: String,
+			value: 'total'
+		},
+
+		/**
+		 * 조회 결과 리스트 데이터
+		 */
+		items: {
+			type: Array
+		},
+
+		/**
+		 * 조회 결과 레코드 수  
+		 */
+		itemCount: {
+			type: Number
+		},
+
+		/**
+		 * 그리드 저장 (Multiple Save) URL
+		 */
+		gridSaveUrl: {
+			type: String,
+			computed: '_computeGridSaveUrl(menuInfo)'
+		},
+
+		/**
+		 * Detail 버튼을 활성화 시킬 지 여부
+		 */
+		enableDetailColumn: {
+			type: Boolean,
+			value: false
+		},
+
+		/**
+		 * Toolbar를 활성화 시킬 지 여부 
+		 */
+		enableToolbar: {
+			type: Boolean,
+			value: true
+		},
+
+		/**
+		 * 그리드 버튼 Override
+		 */
+		gridButtons: {
+			type: Array,
+			observer: '_gridButtonsChanged'
+		},
+
+		/**
+		 * 그리드 Height
+		 * -1이면 layout flex가 적용되고 -1이 아니면 설정된 gridHeight가 적용됨 
+		 */
+		gridHeight: {
+			type: Number,
+			notify: true,
+			value: -1
+		}
+	},
+
+	listeners : {
+		'grid.things-grid-configured' : 'refreshGridData',
+		'grid.things-grid-save-success': 'refreshGridData',
+		'grid.things-grid-resource-column-edit' : 'openResourceSelector'
+	},	
+
+	/**
+	 * 그리드 버튼 변경시
+	 *
+	 * @param {Array} buttons
+	 */
+	_gridButtonsChanged: function(buttons) {
+		this.$['grid'].buttons = buttons;
+	},
+
+	/**
+	 * 조회 데이터 변경시 
+	 *
+	 * @param {Object} lastResponse
+	 */
+	_responseChanged: function(lastResponse) {
+		this.items = lastResponse[this.responseRoot] ? lastResponse[this.responseRoot] : [];
+		this.itemCount = lastResponse[this.responseTotal] ? lastResponse[this.responseTotal] : 0;
+	},
+
+	/**
+	 * menuInfo 정보로 부터 Grid Multiple Update URL을 생성
+	 *
+	 * @param {String} menuInfo
+	 * @return {String} Grid Multiple Update URL을 생성
+	 */
+	_computeGridSaveUrl: function(menuInfo) {
+		return menuInfo.resource_url + '/update_multiple.json';
+	},
+
+	/**
+	 * Reload Grid. 서치 폼에서 다시 검색한다.
+	 */
+	refreshGridData: function(grid) {
+		this.getResourceSearchForm().submitMyForm();
+	},
+
+	/**
+	 * 화면 초기화 함수, 현재는 없어도 무방, 추후 삭제 예정
+	 */
+	initializeContent: function() {
+	}
+
+};
+
+</script>

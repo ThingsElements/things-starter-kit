@@ -21,57 +21,54 @@
 			:host {
 				display: block;
 				@apply(--layout-vertical);
-			}
-			#layout-container{
-				@apply(--layout-vertical);
 				@apply(--layout-flex);
 			}
+			
 			things-resource-grid {
 				@apply(--layout-flex);
 			}
 		</style>
 
-		<div id="layout-container">
-			<things-ajax 
-				id="resource-meta"
-				method="GET"
-				resource-url="[[resourceMetaUrl]]"
-				last-response="{{metaData}}">
-			</things-ajax>
+		<things-ajax 
+			auto
+			id="resource-meta"
+			method="GET"
+			resource-url="[[resourceMetaUrl]]"
+			last-response="{{metaData}}">
+		</things-ajax>
 
-			<things-ajax 
-				id="reload-cache"
-				method="GET"
-				resource-url="terminologies/resource_refresh">
-			</things-ajax>			
+		<things-ajax 
+			id="reload-cache"
+			method="GET"
+			resource-url="terminologies/resource_refresh">
+		</things-ajax>			
 
-			<things-search-form 
-				id="search-form"
-				active="[[active]]"
-				title="[[menuInfo.title]]"
-				form-fields="[[searchFormFields]]" 
-				action-url="[[resourceUrl]]" 
-				page="{{page}}"
-				per-page="[[perPage]]"
-				last-response="{{lastResponse}}">
-			</things-search-form>
+		<things-search-form 
+			id="search-form"
+			active="[[active]]"
+			title="[[menuInfo.title]]"
+			form-fields="[[searchFormFields]]" 
+			action-url="[[resourceUrl]]" 
+			page="{{page}}"
+			per-page="[[perPage]]"
+			last-response="{{lastResponse}}">
+		</things-search-form>
 
-			<things-resource-grid 
-				id="grid"
-				config="[[gridConfig]]"
-				model="[[gridModel]]" 
-				columns="[[gridColumns]]"
-				data="[[lastResponse.items]]"
-				total-count="[[lastResponse.total]]"
-				current-page="{{page}}"
-				per-page="[[perPage]]"
-				grid-save-action="[[gridSaveUrl]]"
-				buttons="[[buttons]]"
-				enable-detail-column
-				paginatable
-				enable-toolbar>
-			</things-resource-grid>
-		</div>
+		<things-resource-grid 
+			id="grid"
+			config="[[gridConfig]]"
+			model="[[gridModel]]" 
+			columns="[[gridColumns]]"
+			data="[[lastResponse.items]]"
+			total-count="[[lastResponse.total]]"
+			current-page="{{page}}"
+			per-page="[[perPage]]"
+			grid-save-action="[[gridSaveUrl]]"
+			buttons="[[buttons]]"
+			enable-detail-column
+			paginatable
+			enable-toolbar>
+		</things-resource-grid>
 	</template>
 
 	<script>
@@ -181,6 +178,7 @@
 
 			listeners : {
 				'search-form.iron-form-response': '_onSearchSuccess',
+				'grid.things-grid-configured' : 'refreshGridData',
 				'grid.things-grid-save-success': 'refreshGridData',
 				'reload-btn-tap': 'reloadCache',
 				'print-btn-tap': 'printSheet'				
@@ -237,27 +235,10 @@
 			},
 
 			/**
-			 * 화면 초기화 함수 
-			 * 메타 데이터를 서버로 요청하여 화면을 구성한다.
+			 * 화면 초기화 함수, 추후 삭제 예저
 			 */
 			initializeContent: function() {
-				this.$['resource-meta'].generateRequest();
-
-				this.async(function() {
-					this.$['search-form'].submitMyForm();
-				}, 1000);				
-			},
-
-			/**
-			 * 검색 후 그리드가 없으면 intialize
-			 * FIXME 모든 화면 구성이 완료된 후 검색이 자동으로 되도록 수정 필요
-			 */
-			_onSearchSuccess: function(event) {
-				if(!this.$.grid.getGridObject()) {
-					this.$.grid.initializeGrid();
-				}
 			}
-
 		});
 	</script>
 </dom-module>
