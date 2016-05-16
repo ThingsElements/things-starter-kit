@@ -24,7 +24,20 @@
 		<style>
 			:host {
 				display: block;
-				height: 100%;
+			}
+			.subtitle:before{
+				content:"";
+				@apply(--things-subtitle-icon);
+			}
+			.subtitle{
+				@apply(--things-default-padding);
+				padding-bottom:7px;
+				@apply(--things-subtitle);
+			}
+			things-resource-grid{
+				@apply(--things-default-padding);
+				padding-top:0px;
+				padding-bottom:0px;
 			}
 		</style>
 
@@ -51,9 +64,9 @@
 				last-response="{{mainMenus}}">
 			</things-search-form>
 
-			<span>
-				<paper-icon-button icon="icons:view-list"></paper-icon-button>
-				<things-i18n-msg msgid="title.main_menu">Main Menus</things-i18n-msg>
+
+			<span class="subtitle">
+				<things-i18n-msg msgid="title.main_menu"></things-i18n-msg>
 			</span>
 
 			<things-resource-grid 
@@ -80,9 +93,9 @@
 				last-response="{{subMenus}}">
 			</things-ajax>
 
-			<span>
-				<paper-icon-button icon="icons:view-list"></paper-icon-button>
-				<things-i18n-msg msgid="title.sub_menu">Sub Menus</things-i18n-msg>
+
+			<span class="subtitle">
+				<things-i18n-msg msgid="title.sub_menu"></things-i18n-msg>
 			</span>
 
 			<things-resource-grid 
