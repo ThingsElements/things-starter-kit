@@ -1,206 +1,69 @@
 <dom-module is="things-grid-print">
-<template>
+  <template>
+  <div id="container" style="width: 900px; height: 300px"></div>
+  <paper-button raised on-tap="showGrid">showGrid</paper-button>
+
+  <paper-button raised on-tap="print">Print</paper-button>
   <paper-button raised on-tap="preview">preview</paper-button>
-</template>
+  </template>
 
-<script>
-  Polymer({
-    is: 'things-grid-print',
+  <script>
+    Polymer({
+      is: 'things-grid-print',
 
-    properties: {
-      dsMain: {
-        type: Object,
-        value : function() {
-          return this.getDsMain();
+      properties: {
+        dsMain: {
+          type: Object
+        },
+
+        grdMain: {
+          type: Object
+        },
+
+        report: {
+          type: Object,
+          value: function() {
+            return this.getReport();
+          }
+        },
+
+        reportData: {
+          type: Array,
+          value: function() {
+            return this.getReportData();
+          }
         }
+
+        // tests: {
+        //   type: Object,
+        //   value: function() {
+        //     return this.getTests();
+        //   }
+        // }
       },
 
-      grdMain: {
-        type: Object,
-        value: function() {
-          return this.getDsMain();
-        }
-      },      
-    },
+      showGrid: function() {
+        DataLudi.setDebug(true);
+        DataLudi.setLogging(true);
 
-    attached: function() {
-      this.grdMain = this.getGrdMain();
-    },    
+        this.dsMain = DataLudi.createGridDataSet();
+        this.dsMain.setDatetimeFormat("yyyy-MM-dd a hh:mm:ss").setAmText("오전").setPmText("오후");
+        this.setFields(this.dsMain);
 
-    preview: function() {
+        this.grdMain = DataLudi.createGridView("container", null, false);
+        this.grdMain.setDataSource(this.dsMain);
 
-      setFields(this.dsMain);
-      this.grdMain.setDataSource(this.dsMain);
+        this.setColumns(this.grdMain);
+        this.setOptions(this.grdMain);
+        this.setStyles(this.grdMain);
 
-      setColumns(this.grdMain);
-      setOptions(this.grdMain);
-      setStyles(this.grdMain);
+        this.loadData(this.dsMain);          
+      },
 
-      loadData(this.dsMain);
-
-      setTests("actions", "PrintTest-02");
-    },
-
-    getDsMain: function() {
-      var dsMain = DataLudi.createGridDataSet([
-          {
-              fieldName: "product_id",
-              dataType: "text",
-          }, {
-              fieldName: "product_name",
-              dataType: "text"
-          }, {
-              fieldName: "customer_id",
-              dataType: "text"
-            },{
-              fieldName: "customer_name",
-              dataType: "text"
-            },{
-              fieldName: "country",
-              dataType: "text"
-            },{
-              fieldName: "phone",
-              dataType: "text"
-            },{
-              fieldName: "unit",
-              dataType: "text"
-            },{
-              fieldName: "currency",
-              dataType: "text"
-            },
-          {
-              fieldName: "unit_price",
-              dataType: "number"
-          }, {
-              fieldName: "quantity",
-              dataType: "number"
-          }, {
-              fieldName: "order_date",
-              dataType: "text"
-          }, {
-              fieldName: "ship_date",
-              dataType: "text"
-          }
-      ]);
-
-      return this.loadData(dsMain);
-    },
-
-    getGrdMain: function() {
-      var grdMain = DataLudi.createGridView('grdMain', [
-          {
-              "name": "product_name",
-              "fieldName": "product_name",
-              "width": "90",
-              "styles": {
-              },
-              "header": {
-                  "text": "ProductName"
-              }
-          }, {
-              "name": "customer_id",
-              "fieldName": "customer_id",
-              "width": "60",
-              "styles": {
-              },
-              "header": {
-                  "text": "Customer"
-              }
-          }, {
-              "name": "customer_name",
-              "fieldName": "customer_name",
-              "width": "70",
-              "styles": {
-              },
-              "header": {
-                  "text": "CustomerName"
-              }
-          }, {
-              "name": "phone",
-              "fieldName": "phone",
-              "width": "125",
-              "styles": {
-                  "textAlignment": "center"
-              },
-              "header": {
-                  "text": "Phone"
-              }
-          }, {
-              "name": "country",
-              "fieldName": "country",
-              "width": "70",
-              "styles": {
-              },
-              "header": {
-                  "text": "Country"
-              },
-              "footer": {
-                  "text": "xxx",
-                  "styles": {
-                      "background": "#888888"
-                  }
-              }
-          }, {
-              "name": "quantity",
-              "fieldName": "quantity",
-              "width": 50,
-              "styles": {
-                  "textAlignment": "far"
-              },
-              "header": {
-                  "text": "Quantity"
-              },
-              "footer": {
-                  "expression": "sum",
-                  "styles": {
-                      "background": "#bbddff",
-                      "color": "#00f",
-                      "numberFormat": "#,##0",
-                      "fontName": "Arial",
-                      "fontBold": true,
-                      "fontSize": 14
-                  }
-              }
-          }, {
-              "name": "order_date",
-              "fieldName": "order_date",
-              "width": "90",
-              "styles": {
-                  "datetimeFormat": "yyyy-MM-dd",
-                  "textAlignment": "center"
-              },
-              "header": {
-                  "text": "OrderDate"
-              }
-          }, {
-              "name": "ship_date",
-              "fieldName": "ship_date",
-              "width": "90",
-              "styles": {
-                  "datetimeFormat": "yyyy-MM-dd",
-                  "textAlignment": "center"
-              },
-              "header": {
-                  "text": "ShipDate"
-              },
-              "footer": {
-                  "text": "ShipDate",
-                  "styles": {
-                      "background": "#bbffdd"
-                  }
-              }
-          }
-      ], false);
-
-      var dataSet = this.getDsMain();
-      grdMain.setDataSource(dataSet);
-      return grdMain;
-    },
-
-    setFields: function(provider) {
+      setFields: function(dsMain) {
         var fields = [{
           fieldName: "product_id",
-          dataType: "text",
+          dataType: "text"
         }, {
           fieldName: "product_name",
           dataType: "text"
@@ -234,40 +97,321 @@
         }, {
           fieldName: "ship_date",
           dataType: "text"
-      }];
+        }];
 
-      provider.setFields(fields);
-    },
+        dsMain.setFields(fields);
+      },
 
-    loadData(provider) {
-      this.dsMain.setRows([{
-        'product_id': '1',
-        'product_name': 'computer',
-        'customer_id': '1',
-        'customer_name': 'Customer Name',
-        'country': 'Korea',
-        'phone': '010-1234-5678',
-        'unit': '500',
-        'currency': 'dollor',
-        'unit_price': 1200,
-        'quantity': 200,
-        'order_date': '2015-05-18',
-        'ship_date': '2014-08-07'
-      },{
-        'product_id': '1',
-        'product_name': 'computer',
-        'customer_id': '2',
-        'customer_name': 'Customer Name',
-        'country': 'Korea',
-        'phone': '010-1234-5678',
-        'unit': '500',
-        'currency': 'dollor',
-        'unit_price': 1200,
-        'quantity': 200,
-        'order_date': '2015-05-18',
-        'ship_date': '2014-08-07'
-      }])
-    }
-  });
-</script>
+      setColumns: function(grid) {
+        var columns = [{
+          "name": "product_name",
+          "fieldName": "product_name",
+          "width": "90",
+          "styles": {
+          },
+          "header": {
+            "text": "ProductName"
+          }
+        }, {
+          "name": "customer_id",
+          "fieldName": "customer_id",
+          "width": "60",
+          "styles": {
+          },
+          "header": {
+            "text": "Customer"
+          }
+        }, {
+          "name": "customer_name",
+          "fieldName": "customer_name",
+          "width": "70",
+          "styles": {
+          },
+          "header": {
+            "text": "CustomerName"
+          }
+        }, {
+          "name": "phone",
+          "fieldName": "phone",
+          "width": "125",
+          "styles": {
+            "textAlignment": "center"
+          },
+          "header": {
+            "text": "Phone"
+          }
+        }, {
+          "name": "country",
+          "fieldName": "country",
+          "width": "70",
+          "styles": {
+          },
+          "header": {
+            "text": "Country"
+          },
+          "footer": {
+            "text": "xxx",
+            "styles": {
+               "background": "#888888"
+            }
+          }
+        }, {
+          "name": "quantity",
+          "fieldName": "quantity",
+          "width": 50,
+          "styles": {
+            "textAlignment": "far"
+          },
+          "header": {
+            "text": "Quantity"
+          },
+          "footer": {
+            "expression": "sum",
+            "styles": {
+              "background": "#bbddff",
+              "color": "#00f",
+              "numberFormat": "#,##0",
+              "fontName": "Arial",
+              "fontBold": true,
+              "fontSize": 14
+            }
+          }
+        }, {
+          "name": "order_date",
+          "fieldName": "order_date",
+          "width": "90",
+          "styles": {
+            "datetimeFormat": "yyyy-MM-dd",
+            "textAlignment": "center"
+          },
+          "header": {
+            "text": "OrderDate"
+          }
+        }, {
+          "name": "ship_date",
+          "fieldName": "ship_date",
+          "width": "90",
+          "styles": {
+            "datetimeFormat": "yyyy-MM-dd",
+            "textAlignment": "center"
+          },
+          "header": {
+            "text": "ShipDate"
+          },
+          "footer": {
+            "text": "ShipDate",
+            "styles": {
+                "background": "#bbffdd"
+            }
+          }
+        }];
+        grid.setColumns(columns);
+      },
+
+      setOptions: function(grid) {
+        grid.setOptions({
+          panel: {
+            visible: false
+          },
+          stateBar: {
+            visible: false
+          },
+          footer: {
+            visible: false
+          },
+          display: {
+            selectStyle: DataLudi.SelectionStyle.ROWS
+          }
+        });
+      },
+
+      setStyles: function() {
+        this.grdMain.loadStyles({
+          selection: {
+              background: "#11000000",
+              border: "#88000000,1"
+          }
+        });
+      },
+
+      loadData: function(provider) {
+        this.dsMain.setRows([{
+          "product_id": "1",
+          "product_name": "computer",
+          "customer_id": "1",
+          "customer_name": "Customer Name",
+          "country": "Korea",
+          "phone": "010-1234-5678",
+          "unit": "500",
+          "currency": "dollor",
+          "unit_price": 1200,
+          "quantity": 200,
+          "order_date": "2015-05-18",
+          "ship_date": "2014-08-07"
+        },{
+          "product_id": "1",
+          "product_name": "computer",
+          "customer_id": "2",
+          "customer_name": "Customer Name",
+          "country": "Korea",
+          "phone": "010-1234-5678",
+          "unit": "500",
+          "currency": "dollor",
+          "unit_price": 1200,
+          "quantity": 200,
+          "order_date": "2015-05-18",
+          "ship_date": "2014-08-07"
+        }]);
+      },
+
+      getReport: function() {
+        var report = {
+          reportHeader: {
+            items: [{
+              text: "Order List",
+              styles: {
+                paddingTop: 10,
+                paddingBottom: 20,
+                fontName: "Arial",
+                fontSize: 30,
+                fontUnderline: true
+              }
+            }]
+          },
+          reportFooter: {
+            items: [{
+              type: "list",
+              right: 0,
+              items: [{
+                type: "summary",
+                expression: "sum['quantity']",
+                styles: {
+                  padding: 6,
+                  fontSize: 16,
+                  fontBold: true,
+                  numberFormat: "#,##0"
+                },
+                header: {
+                  text: "수량 합계: ",
+                  styles: {
+                    fontSize: 14
+                  }
+                }
+              }],
+              styles: {
+                background: "#100088ff",
+                borderTop: "#aaa",
+                borderBottom: "#aaa",
+                marginTop: 10
+                }
+            }]
+          },
+          pageHeader: {
+            styles: {
+              margin: 4,
+              background: "#f8f8f8"
+            },
+            items: [{
+              left: 0,
+              text: 'Dataludi Inc.',
+              styles: {
+                fontBold: true,
+                fontItalic: true
+              }
+            }, {
+              right: 0,
+              data: '$report.date'
+            }]
+          },
+          grid: {
+            display: {
+            fitStyle: "even"
+              }
+          }
+        };
+
+        return report;
+      },
+
+      print: function() {
+        var win = window.open('previewer.html');
+        setTimeout(function() {
+          win.grdSource = this.grdMain;
+          win.model = this.report;
+          win.data = this.reportData;
+          win.option = this.printOptions;
+        }, 1000);
+      },
+
+      preview: function() {
+        _createPreview('pvMain', this.grdMain, this.report, this.reportData, this.printOptions);
+      },
+
+      getReportData: function() {
+        var reportData = [{
+          'name': 'test',
+          'description': 'description test'
+        }, {
+          'name': 'test',
+          'description': 'description test'          
+        }, {
+          'name': 'test',
+          'description': 'description test'          
+        }, {
+          'name': 'test',
+          'description': 'description test'          
+        }, {
+          'name': 'test',
+          'description': 'description test'          
+        }, {
+          'name': 'test',
+          'description': 'description test'          
+        }]
+
+        return reportData;
+      }
+
+      // getTests: function() {
+      //   var tests = {
+      //     getVersion: function () {
+      //       alert(DLReport.getVersion());
+      //     },
+      //     print: function () {
+      //       var win = window.open('PrintPreview.html');
+      //       setTimeout(function () {
+      //         win.grdSource = grdMain;
+      //         win.model = report;
+      //         win.data = reportData;
+      //         win.options = printOptions;
+      //       }, 1000);
+      //     },
+      //     printPopup: function () {
+      //       DLReport.preview(grdMain, report, reportData, printOptions, _getChecked('print'));
+      //     },
+      //     "Save to Local": function () {
+      //       new DataLudi.GridExcelExporter().export(grdMain, {
+      //         target: "local",
+      //         fileName: "local.xlsx",
+      //         indicator: _getSelected("indicator"),
+      //         header: _getSelected("header"),
+      //         footer: _getSelected("footer"),
+      //         numberFormat: "#,##0.00",
+      //         datetimeFormat: "yyyy.mm.dd"
+      //       });
+      //     },
+      //     "Upload to Server": function () {
+      //       new DataLudi.GridExcelExporter().export(grdMain, {
+      //         url: "http://dev.demo.realgrid.net/Demo/ExcelXBin",
+      //         fileName: "remote.xlsx",
+      //         indicator: _getSelected("indicator"),
+      //         header: _getSelected("header"),
+      //         footer: _getSelected("footer")
+      //       });
+      //     }
+      //   };
+
+      //   return tests;
+      // }
+    })
+  </script>
 </dom-module>
