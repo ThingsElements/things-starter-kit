@@ -39,8 +39,6 @@
         last-response="{{lastResponse}}">
       </things-ajax>
 
-      <span><paper-icon-button icon="icons:view-list"></paper-icon-button>[[storageName]]</span>
-
       <things-resource-grid 
         id="grid"
         config="[[gridConfig]]"
@@ -50,7 +48,7 @@
         total-count="[[lastResponse.total]]"
         current-page="{{page}}"
         per-page="[[limit]]"
-        buttons='[]'
+        buttons="[[buttons]]"
         enable-detail-column
         enable-toolbar
         paginatable>
@@ -78,17 +76,18 @@
         },
 
         /**
-         * 선택된 Storage Name
-         */
-        storageName: {
-          type: String
-        },
-
-        /**
          * 첨부 파일 조회 정보 
          */
         lastResponse: {
           type: Object
+        },
+
+        /**
+         * 버튼 
+         */
+        buttons: {
+          type: Array,
+          value: []
         },
 
         /**
@@ -223,9 +222,9 @@
       _downloadFile: function(e) {
         var baseUrl = this.get('globals.baseUrl');
         this.openConfirmMsg({
-          title : 'Do you want to download file?',
           type : 'info',
-          text : 'You can download file',
+          title : Things.DataGlobal.t('text.Want to download file'),
+          text : Things.DataGlobal.t('text.You can download file'),
           showCancelButton: true
         }, function() {
           window.location = baseUrl + '/download/' + e.detail.id;
@@ -255,10 +254,6 @@
       showDetailView: function(resourceId, resource) {
         if(this.resourceId != resourceId) {
           this.resourceId = resourceId;
-        }
-
-        if(resource) {
-          this.storageName = resource.name;
         }
 
         this.openPopupView(this, true);

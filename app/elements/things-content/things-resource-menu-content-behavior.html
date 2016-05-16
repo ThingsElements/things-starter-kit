@@ -178,7 +178,7 @@ Things.ResourceMenuContentBehaviorImpl = {
 	showDetailView: function(event) {
 		if(!this.menuInfo.detail_form_id || this.menuInfo.detail_form_id == 'things-resource-form') {
 			this.showResourceForm(event.detail, this.refreshGridData);
-		} else {
+		} else if(this.menuInfo.detail_form_id != 'custom') {
 			this.showCustomView(this.menuInfo.detail_form_id, event.detail, this.refreshGridData);
 		}
 	},
@@ -245,6 +245,7 @@ Things.ResourceMenuContentBehavior = [
 	Things.MenuMetaBehavior,
 	Things.ResourceSelectorBehavior,
 	Things.ViewOpenBehavior,
+	Things.MsgBoxBehavior,
 	Things.GlobalBehavior
 ];
 

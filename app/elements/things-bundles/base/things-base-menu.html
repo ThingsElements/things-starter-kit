@@ -298,17 +298,6 @@
 			},
 
 			/**
-			 * 검색 후 그리드가 없으면 intialize
-			 * FIXME 모든 화면 구성이 완료된 후 검색이 자동으로 되도록 수정 필요
-			 */
-			_onSearchSuccess: function(event) {
-				if(!this.$.grid.getGridObject()) {
-					this.$.grid.initializeGrid();
-					this.$['sub-grid'].initializeGrid();
-				}
-			},	
-
-			/**
 			 * 메뉴 조회 전 액션
 			 *
 			 * @param {Event} event Form Submit Event
@@ -348,7 +337,7 @@
 				var me = this;
 				viewElement.addEventListener('things-resource-form-saved', function(e) {
 					viewElement.closePopupView();
-					me.refreshGridData();
+					me._reloadSubMenus();
 				});				
 			},
 

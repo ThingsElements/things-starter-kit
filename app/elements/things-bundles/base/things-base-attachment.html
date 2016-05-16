@@ -1,11 +1,12 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
 
+<link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../../bower_components/things-form/things-search-form.html">
 <link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
 <link rel="import" href="../../../../bower_components/things-upload/things-file-upload.html">
-<link rel="import" href="../../../../bower_components/things-form/things-search-form.html">
-<link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
 
 <link rel="import" href="../../things-content/things-resource-menu-content-behavior.html">
+
 <!--
 	첨부파일 리스트와 첨부파일 업로드 기능을 제공하는 화면 셋 
 	things-attach-content는 첨부파일에 대한 검색 폼, 리스트가 기본으로 표시되고 첨부파일에 대하여 다운로드와 업로드가 가능하다.
@@ -53,7 +54,7 @@
 			total-count="[[total]]"
 			current-page="{{page}}"
 			per-page="[[perPage]]"
-			grid-save-action="[[gridSaveUrl]]"
+			grid-save-action="[[menuInfo.grid_save_url]]"
 			buttons="[[buttons]]"
 			enable-detail-column
 			paginatable>
@@ -114,9 +115,9 @@
 			_downloadFile: function(e) {
 				var baseUrl = this.get('globals.baseUrl');
 				this.openConfirmMsg({
-					title : 'Do you want to download file?',
 					type : 'info',
-					text : 'You can download file',
+					title : Things.DataGlobal.t('text.Want to download file'),
+					text : Things.DataGlobal.t('text.You can download file'),
 					showCancelButton: true
 				}, function() {
 					window.location = baseUrl + '/download/' + e.detail.id;
