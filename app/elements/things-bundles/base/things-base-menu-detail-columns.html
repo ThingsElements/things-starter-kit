@@ -350,7 +350,19 @@
        * @param {Object} resource
        */
       _onMenuMetaChanged: function(menuMeta) {
+        this._sortColumns(menuMeta.columns);
         this.items = menuMeta.columns;
+      },
+
+      /**
+       * list sorting
+       */
+      _sortColumns: function(list) {
+        list.sort(function(a, b) {
+          if(!a.rank) a.rank = 0;
+          if(!b.rank) b.rank = 0;
+          return (a.rank > b.rank) ? 1 : ((b.rank > a.rank) ? -1 : 0);
+        });
       },
 
       /**

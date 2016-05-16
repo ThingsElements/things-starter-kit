@@ -1,4 +1,11 @@
-<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../../../bower_components/things-global-behavior/things-global-behavior.html">
+<link rel="import" href="../../../../bower_components/things-meta/things-menu-meta-behavior.html">
+<link rel="import" href="../../../../bower_components/things-msg-box-behavior/things-msg-box-behavior.html">
+<link rel="import" href="../../../../bower_components/things-resource-selector/things-resource-selector-behavior.html">
+<link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
+
 <script>
 
 window.Things = window.Things || {};
@@ -8,9 +15,17 @@ window.Things = window.Things || {};
  *
  * @polymerBehavior Things.ResourceMenuContentBehavior
  */
-Things.ResourceMenuContentBehavior = {
+Things.ResourceMenuContentBehaviorImpl = {
 
 	properties: {
+		/**
+		 * 조회 결과 
+		 */
+		menuInfo: {
+			type: Object,
+			observer: '_menuInfoChanged'
+		},
+
 		/**
 		 * 조회 결과 
 		 */
@@ -22,7 +37,7 @@ Things.ResourceMenuContentBehavior = {
 		/**
 		 * 조회 결과 리스트 데이터 프로퍼티 명
 		 */
-		responseRoot: {
+		itemsProp: {
 			type: String,
 			value: 'items'
 		},
@@ -30,7 +45,7 @@ Things.ResourceMenuContentBehavior = {
 		/**
 		 * 조회 결과 리스트 Total Count 프로퍼티 명
 		 */
-		responseTotal: {
+		totalProp: {
 			type: String,
 			value: 'total'
 		},
@@ -50,35 +65,11 @@ Things.ResourceMenuContentBehavior = {
 		},
 
 		/**
-		 * 그리드 저장 (Multiple Save) URL
-		 */
-		gridSaveUrl: {
-			type: String,
-			computed: '_computeGridSaveUrl(menuInfo)'
-		},
-
-		/**
 		 * Detail 버튼을 활성화 시킬 지 여부
 		 */
 		enableDetailColumn: {
 			type: Boolean,
 			value: false
-		},
-
-		/**
-		 * Toolbar를 활성화 시킬 지 여부 
-		 */
-		enableToolbar: {
-			type: Boolean,
-			value: true
-		},
-
-		/**
-		 * 그리드 버튼 Override
-		 */
-		gridButtons: {
-			type: Array,
-			observer: '_gridButtonsChanged'
 		},
 
 		/**
@@ -95,16 +86,51 @@ Things.ResourceMenuContentBehavior = {
 	listeners : {
 		'grid.things-grid-configured' : 'refreshGridData',
 		'grid.things-grid-save-success': 'refreshGridData',
-		'grid.things-grid-resource-column-edit' : 'openResourceSelector'
-	},	
+		'grid.things-grid-resource-column-edit' : 'openResourceSelector',
+		'grid.things-grid-detail-tap': 'showDetailView'
+	},
 
 	/**
-	 * 그리드 버튼 변경시
-	 *
-	 * @param {Array} buttons
+	 * Resource Search Form을 리턴한다.
 	 */
-	_gridButtonsChanged: function(buttons) {
-		this.$['grid'].buttons = buttons;
+	getResourceSearchForm: function() {
+		return this.$['search-form'];
+	},
+
+	/**
+	 * Resource Grid를 리턴한다.
+	 */
+	getResourceGrid: function() {
+		return this.$.grid;
+	},
+
+	/**
+	 * ID Field를 리턴한다.
+	 */
+	getIdField: function() {
+		return (this.menuInfo && this.menuInfo.id_field) ? this.menuInfo.id_field : 'id';
+	},
+
+	/**
+	 * Title Field를 리턴한다.
+	 */
+	getTitleField: function() {
+		return (this.menuInfo && this.menuInfo.title_field) ? this.menuInfo.title_field : 'name';
+	},
+
+	/**
+	 * 메뉴 메타데이터 변경시
+   *
+	 * @param {Object} menuInfo
+	 */
+	_menuInfoChanged: function(menuInfo) {
+		if(menuInfo) {
+			this.menuId = menuInfo.id;
+			this.getResourceGrid().enableDetailColumn = menuInfo.detail_form_id ? true : false;
+			this.getResourceGrid().paginatable = menuInfo.pagination;
+			this.itemsProp = menuInfo.items_prop;
+			this.totalProp = menuInfo.total_prop;
+		}
 	},
 
 	/**
@@ -113,8 +139,8 @@ Things.ResourceMenuContentBehavior = {
 	 * @param {Object} lastResponse
 	 */
 	_responseChanged: function(lastResponse) {
-		this.items = lastResponse[this.responseRoot] ? lastResponse[this.responseRoot] : [];
-		this.itemCount = lastResponse[this.responseTotal] ? lastResponse[this.responseTotal] : 0;
+		this.items = lastResponse[this.itemsProp] ? lastResponse[this.itemsProp] : [];
+		this.itemCount = lastResponse[this.totalProp] ? lastResponse[this.totalProp] : 0;
 	},
 
 	/**
@@ -135,11 +161,91 @@ Things.ResourceMenuContentBehavior = {
 	},
 
 	/**
+	 * Open Resource Selector Dialog
+	 *
+	 * @param {Object} event
+	 */
+	openResourceSelector: function(event) {
+		var index = event.detail.index;
+		this.openResourceSelectorByGrid(index._grid, index.rowIndex, event.detail.userObj, true);
+	},
+
+	/**
+	 * 디테일 뷰를 표시한다.
+	 *
+	 * @param {Event} event 그리드에서 선택된 event
+	 */
+	showDetailView: function(event) {
+		if(!this.menuInfo.detail_form_id || this.menuInfo.detail_form_id == 'things-resource-form') {
+			this.showResourceForm(event.detail, this.refreshGridData);
+		} else {
+			this.showCustomView(this.menuInfo.detail_form_id, event.detail, this.refreshGridData);
+		}
+	},
+
+	/**
+	 * 표준화된 리소스 디테일 폼을 표시한다.
+	 *
+	 * @param {Object} selectedRecord 그리드에서 선택된 Row Data
+	 * @param {Function} saveCallback 저장 후 콜백 함수 
+	 */
+	showResourceForm: function(selectedRecord, saveCallback) {
+		var viewElement = document.createElement('things-resource-form');
+		this._setViewConfig('detail-view', viewElement, selectedRecord, saveCallback);
+		this.openPopupView(viewElement, true);
+	},
+
+	/**
+	 * 프레임 웍에서 기본으로 제공하지 않는 리소스 디테일 폼을 표시한다.
+	 *
+	 * @param {String} detailViewId 상세 뷰 아이디 
+	 * @param {Object} selectedRecord 그리드에서 선택된 Row Data
+	 * @param {Function} saveCallback 저장 후 콜백 함수 
+	 */
+	showCustomView: function(detailViewId, selectedRecord, saveCallback) {
+		var viewElement = document.createElement(detailViewId);
+		viewElement.attachable = true;
+		viewElement.propExtensible = true;
+		this._setViewConfig('detail-view', viewElement, selectedRecord);
+		viewElement.showDetailView(selectedRecord.id, selectedRecord, saveCallback);
+	},
+
+	/**
+	 * 선택된 레코드로 상세 뷰 Properties를 설정한다.
+	 *
+	 * @param {String} elementId
+	 * @param {Object} viewElement
+	 * @param {Object} selectedRecord
+	 * @param {Function} saveCallback 저장 후 콜백 함수 
+	 */
+	_setViewConfig: function(elementId, viewElement, selectedRecord, saveCallback) {
+		viewElement.id = elementId;
+		viewElement.title = this.menuInfo.title + ' (' + selectedRecord.name + ')';
+		viewElement.formFields = this.resourceFormFields;
+		viewElement.resourceType = this.menuInfo.resource_name;
+		viewElement.resourceId = selectedRecord.id;
+		viewElement.resourceUrl = this.menuInfo.resource_url + '/:id';
+
+		viewElement.addEventListener('things-resource-form-saved', function(e) {
+			viewElement.closePopupView();
+			saveCallback.apply(this);
+		}.bind(this));
+	},
+
+	/**
 	 * 화면 초기화 함수, 현재는 없어도 무방, 추후 삭제 예정
 	 */
 	initializeContent: function() {
 	}
 
 };
+
+Things.ResourceMenuContentBehavior = [
+	Things.ResourceMenuContentBehaviorImpl,
+	Things.MenuMetaBehavior,
+	Things.ResourceSelectorBehavior,
+	Things.ViewOpenBehavior,
+	Things.GlobalBehavior
+];
 
 </script>

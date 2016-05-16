@@ -1,17 +1,11 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
 
-<link rel="import" href="../../../../bower_components/things-resource-selector/things-resource-selector-behavior.html">
 <link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
 <link rel="import" href="../../../../bower_components/things-upload/things-file-upload.html">
 <link rel="import" href="../../../../bower_components/things-form/things-search-form.html">
 <link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
 
-<link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
-<link rel="import" href="../../../../bower_components/things-meta/things-resource-meta-behavior.html">
-<link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
-<link rel="import" href="../../../../bower_components/things-msg-box-behavior/things-msg-box-behavior.html">
-<link rel="import" href="../../../../bower_components/things-global-behavior/things-global-behavior.html">
-
+<link rel="import" href="../../things-content/things-resource-menu-content-behavior.html">
 <!--
 	첨부파일 리스트와 첨부파일 업로드 기능을 제공하는 화면 셋 
 	things-attach-content는 첨부파일에 대한 검색 폼, 리스트가 기본으로 표시되고 첨부파일에 대하여 다운로드와 업로드가 가능하다.
@@ -35,7 +29,7 @@
 			auto
 			id="resource-meta"
 			method="GET"
-			resource-url="[[resourceMetaUrl]]"
+			resource-url="[[menuMetaUrl]]"
 			last-response="{{metaData}}">
 		</things-ajax>
 
@@ -44,7 +38,7 @@
 			active="[[active]]"
 			title="[[menuInfo.title]]"
 			form-fields="[[searchFormFields]]" 
-			action-url="[[resourceUrl]]" 
+			action-url="[[menuInfo.resource_url]]" 
 			page="{{page}}"
 			per-page="[[perPage]]"
 			last-response="{{lastResponse}}">
@@ -55,15 +49,14 @@
 			config="[[gridConfig]]"
 			model="[[gridModel]]" 
 			columns="[[gridColumns]]"
-			data="[[lastResponse.items]]"
-			total-count="[[lastResponse.total]]"
+			data="[[items]]"
+			total-count="[[total]]"
 			current-page="{{page}}"
 			per-page="[[perPage]]"
 			grid-save-action="[[gridSaveUrl]]"
 			buttons="[[buttons]]"
 			enable-detail-column
-			paginatable
-			enable-toolbar>
+			paginatable>
 		</things-resource-grid>
 	</template>
 
@@ -72,31 +65,10 @@
 			is: 'things-base-attachment',
 
 			behaviors: [ 
-				Things.ResourceMetaBehavior,
-				Things.RouteContentBehavior,
-				Things.ResourceSelectorBehavior,
-				Things.GlobalBehavior,
-				Things.MsgBoxBehavior,
-				Things.ViewOpenBehavior
+				Things.ResourceMenuContentBehavior
 			],
 			
 			properties: {
-				/**
-				 * 서버에서 관리하는 메뉴 정보 
-				 */
-				menuInfo: {
-					type: Object,
-					observer: '_menuInfoChanged'
-				},
-
-				/**
-				 * 그리드 저장 (Multiple Save) URL
-				 */
-				gridSaveUrl: {
-					type: String,
-					computed: '_computeGridSaveUrl(resourceUrl)'
-				},
-
 				/**
 				 * 버튼 정보 
 				 */
@@ -119,43 +91,8 @@
 			},
 
 			listeners : {
-				'grid.things-grid-configured' : 'refreshGridData',
 				'grid.upload-btn-tap' : '_onTapUpload',
-				'grid.things-grid-detail-tap': '_downloadFile',
-				'grid.things-grid-save-success': 'refreshGridData',
-				'grid.things-grid-resource-column-edit' : '_openResourceSelector'
-			},
-
-			/**
-			 * 메뉴 정보 변경시 모든 설정을 처리한다.
-			 *
-			 * @param {Object} menuInfo 메뉴 정보 
-			 */
-			_menuInfoChanged: function(menuInfo) {
-				if(menuInfo) {
-					this.menuId = menuInfo.id;
-					this.resourceType = menuInfo.resource_type;
-					this.resourceUrl = menuInfo.resource_url;
-					this.dataRoute = menuInfo.routing;
-					this.detailView = menuInfo.detail_form_id;
-				}
-			},			
-
-			/**
-			 * ResourceUrl로 grid save url을 생성
-			 *
-			 * @param {String} resourceUrl
-			 * @return {String} grid save URL
-			 */
-			_computeGridSaveUrl: function(resourceUrl) {
-				return resourceUrl + '/update_multiple.json';
-			},
-
-			/**
-			 * Refresh Data
-			 */
-			refreshGridData: function(grid) {
-				this.$['search-form'].getMyForm().submit();
+				'grid.things-grid-detail-tap': '_downloadFile'
 			},
 
 			/**
@@ -184,16 +121,6 @@
 				}, function() {
 					window.location = baseUrl + '/download/' + e.detail.id;
 				});
-			},
-
-			/**
-			 * Open Resource Selector Dialog
-			 *
-			 * @param {Object} event
-			 */
-			_openResourceSelector: function(event) {
-				var index = event.detail.index;
-				this.openResourceSelectorByGrid(index._grid, index.rowIndex, event.detail.userObj, true);
 			},
 
 			/**

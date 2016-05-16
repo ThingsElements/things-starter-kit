@@ -84,7 +84,7 @@
           }, { 
             fieldName: 'menu_id' 
           }, { 
-            fieldName: 'name' 
+            fieldName: 'text' 
           }, { 
             fieldName: 'term' 
           }, { 
@@ -106,7 +106,7 @@
           }, { 
             fieldName: 'menu_id', name: 'menu_id', width: 0 
           }, { 
-            fieldName: 'name', name: 'name', width: 200,
+            fieldName: 'text', name: 'text', width: 200,
             header: { 
               text: Things.DataGlobal.t('label.name')
             },
@@ -117,8 +117,8 @@
             },
             valueType: 'text', type: 'calced',
             valueCallback: function(column, row) {
-              var name = row.getValue('name');
-              return name ? Things.DataGlobal.t('button.' + name) : '';
+              var text = row.getValue('text');
+              return text ? Things.DataGlobal.t('button.' + text) : '';
             }
           }, { 
             fieldName: 'icon', name: 'icon', width: 150,

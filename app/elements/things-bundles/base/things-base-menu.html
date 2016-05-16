@@ -7,7 +7,7 @@
 <link rel="import" href="../../../../bower_components/things-full-dialog/things-full-dialog.html">
 <link rel="import" href="../../../../bower_components/things-grid/things-basic-grid.html">
 <link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
-<link rel="import" href="../../../../bower_components/things-meta/things-resource-meta-behavior.html">
+<link rel="import" href="../../../../bower_components/things-meta/things-menu-meta-behavior.html">
 <link rel="import" href="../../../../bower_components/things-resource-selector/things-resource-selector-behavior.html">
 <link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
 
@@ -25,16 +25,18 @@
 			:host {
 				display: block;
 			}
-			.subtitle:before{
+			.subtitle:before {
 				content:"";
 				@apply(--things-subtitle-icon);
 			}
-			.subtitle{
+
+			.subtitle {
 				@apply(--things-default-padding);
 				padding-bottom:7px;
 				@apply(--things-subtitle);
 			}
-			things-resource-grid{
+
+			things-resource-grid {
 				@apply(--things-default-padding);
 				padding-top:0px;
 				padding-bottom:0px;
@@ -46,7 +48,7 @@
 				auto
 				id="resource-meta"
 				method="GET"
-				resource-url="[[resourceMetaUrl]]"
+				resource-url="[[menuMetaUrl]]"
 				last-response="{{metaData}}">
 			</things-ajax>
 
@@ -63,7 +65,6 @@
 				per-page=1000
 				last-response="{{mainMenus}}">
 			</things-search-form>
-
 
 			<span class="subtitle">
 				<things-i18n-msg msgid="title.main_menu"></things-i18n-msg>
@@ -93,7 +94,6 @@
 				last-response="{{subMenus}}">
 			</things-ajax>
 
-
 			<span class="subtitle">
 				<things-i18n-msg msgid="title.sub_menu"></things-i18n-msg>
 			</span>
@@ -121,7 +121,7 @@
 
 			behaviors: [ 
 				Things.ResourceSelectorBehavior,
-				Things.ResourceMetaBehavior
+				Things.MenuMetaBehavior
 			],
 			
 			properties: {
