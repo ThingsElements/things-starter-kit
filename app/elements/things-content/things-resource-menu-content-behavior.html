@@ -139,8 +139,8 @@ Things.ResourceMenuContentBehaviorImpl = {
 	 * @param {Object} lastResponse
 	 */
 	_responseChanged: function(lastResponse) {
-		this.items = lastResponse[this.itemsProp] ? lastResponse[this.itemsProp] : [];
-		this.itemCount = lastResponse[this.totalProp] ? lastResponse[this.totalProp] : 0;
+		this.items = lastResponse[this.itemsProp] ? lastResponse[this.itemsProp] : lastResponse;
+		this.itemCount = lastResponse[this.totalProp] ? lastResponse[this.totalProp] : lastResponse.length;
 	},
 
 	/**

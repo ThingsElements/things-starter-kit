@@ -39,32 +39,47 @@
       .detail-flex {
         @apply(--layout-flex);
       }
+
+      .subtitle:before {
+        content:"";
+        @apply(--things-subtitle-icon);
+      }
+
+      .subtitle {
+        @apply(--things-default-padding);
+        padding-bottom:7px;
+        @apply(--things-subtitle);
+      }      
     </style>
 
     <div class="[[layout]]">
       <things-ajax 
+        auto
         id="resource-search"
         method="GET"
         resource-url="[[gridSearchUrl]]"
         last-response="{{lastResponse}}">
       </things-ajax>
 
-      <span><paper-icon-button icon="icons:view-list"></paper-icon-button>[[resource.module]] : [[resource.name]] ([[resource.description]])</span>
+      <span class="subtitle">
+        [[resource.module]] : [[resource.name]] ([[resource.description]])
+      </span>
 
       <things-basic-grid 
         id="grid"
-        grid-height=200
+        grid-height=250
         config="[[gridConfig]]"
         model="[[gridModel]]" 
         columns="[[gridColumns]]"
         data="[[items]]"
         grid-save-action="[[gridSaveUrl]]"
         buttons="[[buttons]]"
+        !paginatable
         !show-grid-footer
         enable-detail-column>
       </things-basic-grid>
 
-      <span><paper-icon-button icon="icons:view-list"></paper-icon-button>[[apiTitle]]</span>
+      <span class="subtitle">[[apiTitle]]</span>
 
       <things-base-rest-detail-api id="api-detail">
       </things-base-rest-detail-api>
@@ -136,7 +151,7 @@
           value: [ { 
             fieldName: 'id', name: 'id', width: 0 
           }, { 
-            fieldName: 'name', name: 'name', width: 100,
+            fieldName: 'name', name: 'name', width: 200,
             header: { text : 'Name' }
           }, { 
             fieldName: 'http_method', name: 'http_method', width: 80,
@@ -166,13 +181,14 @@
 
         buttons: {
           type: Array,
-          value: function() {
+          value: []
+          /*value: function() {
             return [{
               id: 'print-btn',
               text: 'print',
               icon: 'icons:print'
             }];
-          }
+          }*/
         }
 
       },
@@ -217,13 +233,10 @@
        * @param {Object} resource
        */
       showDetailView: function(resourceId, resource) {
-        if(this.resourceId != resource.bean_class_name) {
-          this.resourceId = resource.bean_class_name;
-        }
-        
+        this.resourceId = resourceId;        
         this.resource = resource;
-        this.$['resource-search'].resourceUrl = 'rests/api?id=' + resource.bean_class_name;
-        this.$['resource-search'].generateRequest();        
+        this.$['resource-search'].resourceUrl = 'rests/api?id=' + resourceId;
+        //this.$['resource-search'].generateRequest();
         this.openPopupView(this, true);
       }
 

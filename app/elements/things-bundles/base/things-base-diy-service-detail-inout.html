@@ -95,6 +95,10 @@
             fieldName: 'rank' 
           }, { 
             fieldName: 'description'
+          }, { 
+            fieldName: 'data_type' 
+          }, { 
+            fieldName: 'nullable'
           } ]
         },
         
@@ -125,6 +129,65 @@
             header: {
               text: Things.DataGlobal.t('label.description')
            }
+          }, { 
+            name: 'data_type', 
+            fieldName: 'data_type', 
+            width: 120,
+            lookupDisplay: true,
+            header: { 
+              text: Things.DataGlobal.t('label.col_type') 
+            },
+            editor: { 
+              type: 'list', 
+              domainOnly: true 
+            },
+            lookupValues: [
+              '',
+              'binary',
+              'boolean',
+              'date',
+              'datetime',
+              'decimal',
+              'double',
+              'float',
+              'integer',
+              'long',
+              'string',
+              'text',
+              'time',
+              'timestamp'
+            ],
+            lookupLabels: [
+              '',
+              'binary',
+              'boolean',
+              'date',
+              'datetime',
+              'decimal',
+              'double',
+              'float',
+              'integer',
+              'long',
+              'string',
+              'text',
+              'time',
+              'timestamp'
+            ] 
+          }, { 
+            name: 'nullable', 
+            fieldName: 'nullable', 
+            width: 80,
+            editable: false,
+            header: { 
+              text: Things.DataGlobal.t('label.nullable') 
+            },
+            renderer: {
+              type:'check', 
+              editable: true, 
+              threeStates: false, 
+              trueValues: 'true', 
+              falseValues: 'false'
+            }
           } ] 
         },
 
@@ -177,6 +240,7 @@
        * @param {Object} resource
        */
       _onResourceChanged: function(resource) {
+        this.resourceId = resource.id;
         this.items = (this.mode == 'in') ? this.resource.service_in_params : this.resource.service_out_params;
       },
 
