@@ -23,6 +23,18 @@
       }
       things-resource-grid {
         @apply(--layout-flex);
+        padding-top:0;
+      }
+      .subtitle:before {
+        content:"";
+        @apply(--things-subtitle-icon);
+      }
+
+      .subtitle {
+        @apply(--things-default-padding);
+        padding-top:0;
+        padding-bottom:7px;
+        @apply(--things-subtitle);
       }
     </style>
 
@@ -47,7 +59,9 @@
         form-fields="[[formFields]]">
       </things-resource-form>
 
-      <span><paper-icon-button icon="icons:view-list"></paper-icon-button><things-i18n-msg msgid="label.sub_codes"></things-i18n-msg></span>
+      <span class="subtitle">
+        <things-i18n-msg msgid="label.sub_codes"></things-i18n-msg>
+      </span>
 
       <things-resource-grid 
         id="grid"
