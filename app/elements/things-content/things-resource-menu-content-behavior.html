@@ -144,16 +144,6 @@ Things.ResourceMenuContentBehaviorImpl = {
 	},
 
 	/**
-	 * menuInfo 정보로 부터 Grid Multiple Update URL을 생성
-	 *
-	 * @param {String} menuInfo
-	 * @return {String} Grid Multiple Update URL을 생성
-	 */
-	_computeGridSaveUrl: function(menuInfo) {
-		return menuInfo.resource_url + '/update_multiple.json';
-	},
-
-	/**
 	 * Reload Grid. 서치 폼에서 다시 검색한다.
 	 */
 	refreshGridData: function(grid) {
