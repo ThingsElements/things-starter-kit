@@ -1,35 +1,12 @@
 <dom-module is="things-validate-test">
 	<template>
-		<things-input-field id="input"
-			label="Validation Test"
-			validate="[[validator]]"
-			auto-validate="true">
-		</things-input-field>
-
-		<paper-button raised on-tap="hasValidator">has validator</paper-button>
+		<things-input-field label="E-Mail" auto-validate validator="things-validator-email" error-message="email validator"></things-input-field>
+		<things-input-field label="Phone" auto-validate validator="things-validator-phone" error-message="phone validator"></things-input-field>
 	</template>
 
 	<script>
 		Polymer({
-			is: 'things-validate-test',
-
-			properties: {
-			},
-
-
-			validate: function(values) {
-	      if (typeof values === 'object') {
-	        return this.validateObject(values);
-	      } else {
-	        var value = Array.isArray(values) ? values.join('') : values;
-	        return value.match(/^(c|ca|cat|cats)?$/) !== null;
-	      }
-    	},
-
-    	hasValidator: function() {
-    		this.$.input.hasValidator();
-    	}
-		});
+			is: 'things-validate-test'
+		})
 	</script>
-
 </dom-module>
