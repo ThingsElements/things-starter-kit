@@ -24,6 +24,8 @@
 		<style>
 			:host {
 				display: block;
+				@apply(--layout-vertical)
+				@apply(--layout-flex)
 			}
 			
 			.subtitle:before {
@@ -42,9 +44,15 @@
 				padding-top:0px;
 				padding-bottom:0px;
 			}
+			.things-resource-grid-main {
+				@apply(--layout-flex);
+				min-height: 200px;
+			}
+			.things-resource-grid-sub {
+				@apply(--layout-flex-3);
+			}
 		</style>
 
-		<div class="fullbleed layout vertical">
 			<things-ajax 
 				auto
 				id="resource-meta"
@@ -55,7 +63,6 @@
 
 			<things-search-form 
 				id="search-form"
-				class="flex"
 				active="[[active]]"
 				title="[[menuInfo.title]]"
 				form-fields="[[searchFormFields]]" 
@@ -73,7 +80,7 @@
 
 			<things-resource-grid 
 				id="grid"
-				grid-height="200"
+				class="things-resource-grid-main"
 				config ="[[gridConfig]]"
 				model="[[gridModel]]"
 				columns="[[mainGridColumns]]"
@@ -101,7 +108,7 @@
 
 			<things-resource-grid 
 				id="sub-grid"
-				grid-height="600"
+				class="things-resource-grid-sub"
 				config ="[[gridConfig]]"
 				model="[[gridModel]]"
 				columns="[[gridColumns]]"
@@ -113,7 +120,6 @@
 				enable-detail-column
 				enable-toolbar>
 			</things-resource-grid>
-		</div>
 	</template>
 
 	<script>
