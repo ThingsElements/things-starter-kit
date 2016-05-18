@@ -220,6 +220,7 @@ Things.ResourceMenuContentBehaviorImpl = {
 		viewElement.id = elementId;
 		viewElement.title = this.menuInfo.title + ' (' + selectedRecord.name + ')';
 		viewElement.formFields = this.resourceFormFields;
+		viewElement.removeFieldsOnSave = this.ignoreFieldsOnSave;
 		viewElement.resourceType = this.menuInfo.resource_name;
 		viewElement.resourceId = selectedRecord.id;
 		viewElement.resourceUrl = this.menuInfo.resource_url + '/:id';

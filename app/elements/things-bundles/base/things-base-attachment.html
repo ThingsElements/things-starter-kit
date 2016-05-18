@@ -36,7 +36,6 @@
 
 		<things-search-form 
 			id="search-form"
-			active="[[active]]"
 			title="[[menuInfo.title]]"
 			form-fields="[[searchFormFields]]" 
 			action-url="[[menuInfo.resource_url]]" 
@@ -55,9 +54,7 @@
 			current-page="{{page}}"
 			per-page="[[perPage]]"
 			grid-save-action="[[menuInfo.grid_save_url]]"
-			buttons="[[buttons]]"
-			enable-detail-column
-			paginatable>
+			buttons="[[buttons]]">
 		</things-resource-grid>
 	</template>
 
@@ -70,25 +67,6 @@
 			],
 			
 			properties: {
-				/**
-				 * 버튼 정보 
-				 */
-				buttons: {
-					type: Array,
-					value: [ {
-					  id: 'delete-btn',
-					  text: 'delete',
-					  icon: 'icons:delete'
-					}, {
-					  id: 'save-btn',
-					  text: 'save',
-					  icon: 'icons:save'
-					}, {
-					  id: 'upload-btn',
-					  text: 'upload',
-					  icon: 'icons:file-upload'
-					} ]
-				}
 			},
 
 			listeners : {
@@ -122,12 +100,6 @@
 				}, function() {
 					window.location = baseUrl + '/download/' + e.detail.id;
 				});
-			},
-
-			/**
-			 * 화면 초기화 함수, 추후 삭제 예정  
-			 */
-			initializeContent: function() {
 			}
 
 		});

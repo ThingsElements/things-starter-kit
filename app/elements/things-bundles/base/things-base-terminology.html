@@ -40,7 +40,6 @@
 
 		<things-search-form 
 			id="search-form"
-			active="[[active]]"
 			title="[[menuInfo.title]]"
 			form-fields="[[searchFormFields]]" 
 			action-url="[[menuInfo.resource_url]]" 
@@ -58,12 +57,10 @@
 			total-count="[[itemCount]]"
 			current-page="{{page}}"
 			per-page="[[perPage]]"
-			grid-save-action="[[gridSaveUrl]]"
+			grid-save-action="[[menuInfo.grid_save_url]]"
 			buttons="[[buttons]]"
 			export-file-name="[[menuInfo.title]]"
-			export-sheet-name="[[menuInfo.title]]"
-			enable-detail-column
-			paginatable>
+			export-sheet-name="[[menuInfo.title]]">
 		</things-resource-grid>
 	</template>
 
@@ -76,42 +73,6 @@
 			],
 			
 			properties: {
-				/**
-				 * 버튼 정보 
-				 */
-				buttons: {
-					type: Array,
-					value: [ {
-							id: 'reload-btn',
-							text: 'reload',
-							icon: 'icons:reload'
-						}, {
-              id: 'export-btn',
-              text: 'export',
-              icon: 'icons:swap-vert'
-						}, {
-              id: 'import-btn',
-              text: 'import',
-              icon: 'icons:file-upload'
-						}, {
-              id: 'add-btn',
-              text: 'add',
-              icon: 'icons:add'
-						}, {
-              id: 'delete-btn',
-              text: 'delete',
-              icon: 'icons:delete'
-						}, {
-              id: 'save-btn',
-              text: 'save',
-              icon: 'icons:save'
-						}, {
-							id: 'print-btn',
-							text: 'print',
-							icon: 'icons:print'
-						} ]
-				},
-
 				printOption: {
 					type: Object,
 					value: {
@@ -172,12 +133,6 @@
 				var dsMain = this.$.grid.getGridDataSet();
 				var grdMain = this.$.grid.getGridObject();
 				DLReport.preview(grdMain, this.printOption, false);
-			},
-
-			/**
-			 * 화면 초기화 함수, 추후 삭제 예저
-			 */
-			initializeContent: function() {
 			}
 		});
 	</script>

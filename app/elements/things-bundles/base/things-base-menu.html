@@ -63,7 +63,6 @@
 
 			<things-search-form 
 				id="search-form"
-				active="[[active]]"
 				title="[[menuInfo.title]]"
 				form-fields="[[searchFormFields]]" 
 				select-fields="[[selectFields]]"
@@ -91,8 +90,7 @@
 				grid-save-action="[[gridSaveUrl]]"
 				selected-row-data="{{selectedRow}}"
 				buttons="[[buttons]]"
-				enable-detail-column
-				!paginatable>
+				enable-detail-column>
 			</things-resource-grid>
 
 			<things-ajax 
@@ -117,8 +115,7 @@
 				data="[[subMenus]]"
 				grid-save-action="[[gridSaveUrl]]"
 				buttons="[[buttons]]"
-				enable-detail-column
-				!paginatable>
+				enable-detail-column>
 			</things-resource-grid>
 	</template>
 
