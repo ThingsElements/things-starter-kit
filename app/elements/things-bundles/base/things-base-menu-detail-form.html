@@ -96,6 +96,8 @@
           }, { 
             fieldName: 'form_editor'
           }, { 
+            fieldName: 'form_validator'
+          }, { 
             fieldName: 'form_format'
           }, { 
             fieldName: 'def_val'
@@ -109,7 +111,54 @@
          */
         gridColumns: {
           type: Array,
-          value: [ { 
+          value: function() {
+            return this.formColumnList();
+          }
+        },
+
+        /**
+         * Detail Form Column Save URL
+         */
+        gridSaveUrl: {
+          type: String,
+          computed: '_computeColumnSaveUrl(resourceId)'
+        },
+
+        /**
+         * 버튼 정보 
+         */
+        buttons: {
+          type: Array,
+          value: [ {
+            id: 'save-btn',
+            text: 'save',
+            icon: 'icons:save'
+          } ]
+        }
+      },
+
+      listeners: {
+        'grid.things-grid-handle-save' : '_beforeSearchColumnSave',
+        'grid.things-grid-save-success' : '_reloadGrid',
+        'column-ajax.things-ajax-response': '_afterColumnsLoaded',
+      },
+
+      /**
+       * Form Column List
+       */
+      formColumnList: function() {
+        var validators = document.querySelector('#validators').allValidators();
+        var colTypes = [
+          '', 'binary', 'boolean', 'date', 'datetime','decimal','double', 
+          'float', 'integer', 'long', 'string', 'text', 'time', 'timestamp'
+        ];
+        var editors = [
+          '', 'hidden', 'readonly', 'checkbox', 'text', 'code-combo', 'number',
+          'textarea', 'resource-field', 'resource-selector', 'date-picker', 
+          'time-picker', 'datetime-picker', 'tristate-radio'
+        ];
+
+        return [ { 
             fieldName: 'id', name: 'id', width: 0 
           }, { 
             fieldName: 'menu_id', name: 'menu_id', width: 0 
@@ -148,38 +197,8 @@
               type: 'list', 
               domainOnly: true 
             },
-            lookupValues: [
-              '',
-              'binary',
-              'boolean',
-              'date',
-              'datetime',
-              'decimal',
-              'double',
-              'float',
-              'integer',
-              'long',
-              'string',
-              'text',
-              'time',
-              'timestamp'
-            ],
-            lookupLabels: [
-              '',
-              'binary',
-              'boolean',
-              'date',
-              'datetime',
-              'decimal',
-              'double',
-              'float',
-              'integer',
-              'long',
-              'string',
-              'text',
-              'time',
-              'timestamp'
-            ]
+            lookupValues: colTypes,
+            lookupLabels: colTypes
           }, { 
             name: 'form_editor', 
             fieldName: 'form_editor', 
@@ -192,38 +211,22 @@
               type: 'list', 
               domainOnly: true 
             },
-            lookupValues: [
-              '',
-              'hidden',
-              'readonly',
-              'checkbox',
-              'text',
-              'code-combo',
-              'number',
-              'textarea',
-              'resource-field',
-              'resource-selector',
-              'date-picker',
-              'time-picker',
-              'datetime-picker',
-              'tristate-radio'
-            ],
-            lookupLabels: [
-              '',
-              'hidden',
-              'readonly',
-              'checkbox',
-              'text',
-              'code-combo',
-              'number',
-              'textarea',
-              'resource-field',
-              'resource-selector',
-              'date-picker',
-              'time-picker',
-              'datetime-picker',
-              'tristate-radio'
-            ]
+            lookupValues: editors,
+            lookupLabels: editors
+          }, { 
+            name: 'form_validator', 
+            fieldName: 'form_validator', 
+            width: 150,
+            lookupDisplay: true,
+            lookupValues: validators,
+            lookupLabels: validators,
+            header: { 
+              text: Things.DataGlobal.t('label.validator') 
+            },
+            editor: { 
+              type: 'list', 
+              domainOnly: true 
+            }          
           }, { 
             fieldName: 'form_format', name: 'form_format', width: 125,
             header: {
@@ -254,34 +257,7 @@
               trueValues: 'true', 
               falseValues: 'false'
             }
-          } ] 
-        },
-
-        /**
-         * Detail Form Column Save URL
-         */
-        gridSaveUrl: {
-          type: String,
-          computed: '_computeColumnSaveUrl(resourceId)'
-        },
-
-        /**
-         * 버튼 정보 
-         */
-        buttons: {
-          type: Array,
-          value: [ {
-            id: 'save-btn',
-            text: 'save',
-            icon: 'icons:save'
-          } ]
-        }
-      },
-
-      listeners: {
-        'grid.things-grid-handle-save' : '_beforeSearchColumnSave',
-        'grid.things-grid-save-success' : '_reloadGrid',
-        'column-ajax.things-ajax-response': '_afterColumnsLoaded',
+          } ];
       },
 
       /**
