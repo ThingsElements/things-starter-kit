@@ -2,9 +2,10 @@
 <link rel="import" href="../../../../bower_components/paper-icon-button/paper-icon-button.html">
 
 <link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
-<link rel="import" href="../../../../bower_components/things-msg-box-behavior/things-msg-box-behavior.html">
-<link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
 <link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
+<link rel="import" href="../../../../bower_components/things-msg-box-behavior/things-msg-box-behavior.html">
+<link rel="import" href="../../../../bower_components/things-resource-selector/things-resource-selector-behavior.html">
+<link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
 
 <dom-module id="things-base-entity-detail">
   <template>
@@ -50,7 +51,8 @@
 
       is: 'things-base-entity-detail',
 
-      behaviors: [ 
+      behaviors: [
+        Things.ResourceSelectorBehavior,
         Things.MsgBoxBehavior,
         Things.ViewOpenBehavior
       ],
@@ -121,6 +123,18 @@
         gridColumns: {
           type: Array,
           value: function() {
+            var colTypes = [ 
+              '', 'binary', 'boolean', 'date', 'datetime', 'decimal', 'double', 
+              'float', 'integer', 'long', 'string', 'text', 'time', 'timestamp' 
+            ];
+
+            var editors = [
+              '', 'contains', 'dnew', 'dnsw', 'eq', 'ew', 'gt', 'gte', 'in', 
+              'is_blank', 'is_false', 'is_not_false', 'is_not_null', 
+              'is_not_true', 'is_null', 'is_present', 'is_true', 
+              'like', 'lt', 'lte', 'nlike', 'noteq', 'notin', 'sw' 
+            ];
+
             return [ { 
               fieldName: 'id', 
               name: 'id', 
@@ -171,38 +185,8 @@
                 type: 'list', 
                 domainOnly: true 
               },
-              lookupValues: [ 
-                '',
-                'binary', 
-                'boolean', 
-                'date',
-                'datetime', 
-                'decimal', 
-                'double', 
-                'float', 
-                'integer', 
-                'long', 
-                'string', 
-                'text', 
-                'time', 
-                'timestamp' 
-              ],
-              lookupLabels: [
-                '',
-                'binary', 
-                'boolean', 
-                'date',
-                'datetime', 
-                'decimal', 
-                'double', 
-                'float', 
-                'integer', 
-                'long', 
-                'string', 
-                'text', 
-                'time', 
-                'timestamp' 
-              ]            
+              lookupValues: colTypes,
+              lookupLabels: colTypes           
             }, { 
               fieldName: 'col_size', 
               name: 'col_size', 
@@ -234,8 +218,8 @@
               name: 'ref_type',
               width: 110,
               lookupDisplay: true,
-              lookupValues: [ 'Entity', 'CommonCode' ],
-              lookupLabels: [ 'Entity', 'CommonCode' ],            
+              lookupValues: [ '', 'Entity', 'CommonCode' ],
+              lookupLabels: [ '', 'Entity', 'CommonCode' ],            
               header: { 
                 text: Things.DataGlobal.t('label.ref_type') 
               },
@@ -249,7 +233,24 @@
               width: 120,
               header: { 
                 text: Things.DataGlobal.t('label.ref_name') 
-              }              
+              }
+            }, {
+              name: 'ref_name_editor',
+              fieldName: 'ref_name_editor',
+              width: 30,
+              editable: false,
+              header: { text: '...' },
+              imageList: 'images',
+              renderer: { type: 'icon' },
+              styles:{
+                iconIndex: 'menu_button.png',
+                iconLocation: 'center'
+              },
+              userObj: {
+                resourceType: 'Menu',
+                resourceUrl: 'menus',
+                valueField: 'ref_name'
+              }
             }, { 
               fieldName: 'def_val', 
               name: 'def_val', 
@@ -366,58 +367,8 @@
                 type: 'list', 
                 domainOnly: true 
               },
-              lookupValues: [
-                '',
-                'contains', 
-                'dnew', 
-                'dnsw', 
-                'eq', 
-                'ew', 
-                'gt', 
-                'gte',
-                'in', 
-                'is_blank', 
-                'is_false', 
-                'is_not_false', 
-                'is_not_null',
-                'is_not_true', 
-                'is_null', 
-                'is_present', 
-                'is_true', 
-                'like',
-                'lt', 
-                'lte', 
-                'nlike', 
-                'noteq', 
-                'notin', 
-                'sw' 
-              ],
-              lookupLabels: [
-                '',
-                'contains', 
-                'dnew', 
-                'dnsw', 
-                'eq', 
-                'ew', 
-                'gt', 
-                'gte',
-                'in', 
-                'is_blank', 
-                'is_false', 
-                'is_not_false', 
-                'is_not_null',
-                'is_not_true', 
-                'is_null', 
-                'is_present', 
-                'is_true', 
-                'like',
-                'lt', 
-                'lte', 
-                'nlike', 
-                'noteq', 
-                'notin', 
-                'sw' 
-              ]
+              lookupValues: editors,
+              lookupLabels: editors
             } ];
           } 
         },
@@ -468,6 +419,7 @@
         'generate-svc-btn-tap' : 'generateService',
         'grid.things-grid-handle-built-writedata' : '_setupWriteData',
         'grid.things-grid-save-success' : 'reloadGrid',
+        'grid.things-grid-resource-column-edit' : '_onGridEntityRefEdit',
         'generate-service.things-ajax-response' : '_generationSuccess'
       },
 
@@ -491,6 +443,8 @@
         if(writeData && writeData.length > 0) {
           var entityId = this.resourceId;
           writeData.forEach(function(changedData) {
+            delete changedData['ref_name_editor'];
+
             if(changedData.cud_flag_ == 'c' && (!changedData.entity || !changedData.entity_id)) {
               changedData.entity_id = entityId;
             }
@@ -564,7 +518,7 @@
           var row = dataSet.getRowObject(i);
           row.disp_rank = (i + 1) * 10;
           if(row.name && !row.term) row.term = 'label.' + row.name;
-          dataSet.updateRow(i, row);
+          dataSet.updateRow(i, row);  
         }        
       },
 
@@ -594,7 +548,7 @@
       },
 
       /**
-       * add grid row
+       * Add Grid Row
        */
       _addRow: function(e) {
         e.preventDefault();
@@ -602,6 +556,39 @@
         var count = dataSet._values.length + 1;
         dataSet.insertRow(count - 1, this._newDefaultRow(null, null, 'string', null, null, false, count * 10));
       },      
+
+      /**
+       * Entity Ref Column Edit
+       */
+      _onGridEntityRefEdit: function(e) {
+        var index = e.detail.index;
+        var grid = index._grid;
+        grid.commit();
+
+        var dataSet = this.$.grid.getGridDataSet();
+        var row = dataSet.getRowObject(index.rowIndex);
+        if(!row.ref_type) return;
+        
+        if(!row.ref_name) {
+          row.ref_name = '';
+          dataSet.updateRow(index.rowIndex, row);
+        }
+
+        var resourceObj = e.detail.userObj;
+        if(row.ref_type == 'Entity') {
+          resourceObj.resourceType = 'Menu';
+          resourceObj.resourceUrl = 'menus';
+
+        } else if(row.ref_type == 'CommonCode') {
+          resourceObj.resourceType = 'CommonCode';
+          resourceObj.resourceUrl = 'common_codes';
+        }
+
+        this.openResourceSelectorByGrid(index._grid, index.rowIndex, resourceObj, true);
+        // var selector = this._createResourceContent(resourceObj.resourceType);
+        // this._getResourceSelectorDialog().showResourceDialog(selector, modal, selector.refreshGridData);
+        // this._addSelectedListenerByGrid(selector, parentGrid, parentGridRowIdx, resourceObj);
+      },
 
       /**
        * Generate Table

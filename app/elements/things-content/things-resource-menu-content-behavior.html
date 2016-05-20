@@ -204,8 +204,8 @@ Things.ResourceMenuContentBehaviorImpl = {
 		var viewElement = document.createElement(detailViewId);
 		viewElement.attachable = true;
 		viewElement.propExtensible = true;
-		this._setViewConfig('detail-view', viewElement, selectedRecord);
-		viewElement.showDetailView(selectedRecord.id, selectedRecord, saveCallback);
+		this._setViewConfig('detail-view', viewElement, selectedRecord, saveCallback);
+		viewElement.showDetailView(selectedRecord.id, selectedRecord);
 	},
 
 	/**
