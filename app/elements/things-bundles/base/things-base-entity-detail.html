@@ -98,6 +98,7 @@
               { fieldName: 'name' }, 
               { fieldName: 'description' }, 
               { fieldName: 'term' },
+              { fieldName: 'trans' },
               { fieldName: 'ref_type' }, 
               { fieldName: 'ref_name' }, 
               { fieldName: 'col_type' },
@@ -171,7 +172,17 @@
               name: 'term', 
               width: 140,
               header : { 
-                text : Things.DataGlobal.t('menu.Terminology') 
+                text : Things.DataGlobal.t('menu.Terminology') + ' (from)'
+              }
+            }, { 
+              fieldName: 'trans', name: 'trans', width: 135,
+              header: { 
+                text: Things.DataGlobal.t('label.term') + ' (to)'
+              },
+              valueType: 'text', type: 'calced',
+              valueCallback: function(column, row) {
+                var term = row.getValue('term');
+                return term ? Things.DataGlobal.t(term) : '';
               }
             }, { 
               name: 'col_type', 
@@ -444,6 +455,7 @@
           var entityId = this.resourceId;
           writeData.forEach(function(changedData) {
             delete changedData['ref_name_editor'];
+            delete changedData['trans'];
 
             if(changedData.cud_flag_ == 'c' && (!changedData.entity || !changedData.entity_id)) {
               changedData.entity_id = entityId;
