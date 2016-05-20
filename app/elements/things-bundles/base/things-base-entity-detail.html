@@ -160,27 +160,6 @@
                 text : Things.DataGlobal.t('menu.Terminology') 
               }
             }, { 
-              fieldName: 'ref_type',
-              name: 'ref_type',
-              width: 110,
-              lookupDisplay: true,
-              lookupValues: [ 'Entity', 'CommonCode' ],
-              lookupLabels: [ 'Entity', 'CommonCode' ],            
-              header: { 
-                text: Things.DataGlobal.t('label.ref_type') 
-              },
-              editor: { 
-                type: 'list', 
-                domainOnly: true 
-              }
-            }, { 
-              fieldName: 'ref_name', 
-              name: 'ref_name', 
-              width: 120,
-              header: { 
-                text: Things.DataGlobal.t('label.ref_name') 
-              }
-            }, { 
               name: 'col_type', 
               fieldName: 'col_type', 
               width: 100,
@@ -234,7 +213,7 @@
               }, 
               styles: { 
                 textAlignment: 'far' 
-              }
+              }              
             }, { 
               name: 'nullable', 
               fieldName: 'nullable', 
@@ -250,6 +229,27 @@
                 trueValues: 'true', 
                 falseValues: 'false'
               }
+            }, { 
+              fieldName: 'ref_type',
+              name: 'ref_type',
+              width: 110,
+              lookupDisplay: true,
+              lookupValues: [ 'Entity', 'CommonCode' ],
+              lookupLabels: [ 'Entity', 'CommonCode' ],            
+              header: { 
+                text: Things.DataGlobal.t('label.ref_type') 
+              },
+              editor: { 
+                type: 'list', 
+                domainOnly: true 
+              }
+            }, { 
+              fieldName: 'ref_name', 
+              name: 'ref_name', 
+              width: 120,
+              header: { 
+                text: Things.DataGlobal.t('label.ref_name') 
+              }              
             }, { 
               fieldName: 'def_val', 
               name: 'def_val', 
@@ -436,17 +436,17 @@
         buttons: {
           type: Array,
           value: [ {
-            id: 'add-btn',
-            text: 'add',
-            icon: 'icons:add'
+            id: 'add-default-rows-btn',
+            text: 'add-default-rows'
           }, {
+            id: 'add-btn',
+            text: 'add'
+          }, {            
             id: 'save-btn',
-            text: 'save',
-            icon: 'icons:save'
+            text: 'save'
           }, {
             id: 'delete-btn',
-            text: 'delete',
-            icon: 'icons:delete'
+            text: 'delete'
           }, {
             id: 'generate-table-btn',
             text: 'generate_table'
@@ -461,6 +461,8 @@
       },
 
       listeners: {
+        'grid.things-grid-handle-addrow' : '_addRow',
+        'add-default-rows-btn-tap' : 'addDefaultRows',
         'generate-table-btn-tap' : 'generateTable',
         'generate-entity-btn-tap' : 'generateEntity',
         'generate-svc-btn-tap' : 'generateService',
@@ -473,7 +475,7 @@
        * Entity Id로 Entity Column Save URL 생성
        *
        * @param {String} resourceId
-       * @return {String} entity column save url
+       * @return {String} Save entity columns url
        */
       _computeEntityColumnSaveUrl: function(resourceId) {
         return 'entities/' + resourceId + '/update_multiple_entity_columns.json';
@@ -510,6 +512,96 @@
       reloadGrid: function(e) {
         this.$['resource-search'].generateRequest();
       },
+
+      /**
+       * Add Default Rows
+       *
+       * @param {Object} e 버튼 클릭 이벤트 
+       */
+      addDefaultRows: function(e) {
+        /*this.openPromptMsg({
+          type : 'input',
+          title : Things.DataGlobal.t('text.Sure to Generate'),
+          showCancelButton: true,
+          closeOnConfirm : true,
+          inputType : 'text',
+          inputPlaceholder : 'Rows : ',
+          inputValue : '10'
+        });*/
+
+        var dataSet = this.$.grid.getGridDataSet();
+        var dataCount = dataSet._values.length;
+
+        if(!this._isExistRow(dataSet, 'id')) {
+          dataSet.insertRow(0, this._newDefaultRow('id', null, 'integer', null, null, false));
+        }
+        if(!this._isExistRow(dataSet, 'domain_id')) {
+          dataSet.insertRow(1, this._newDefaultRow('domain_id', null, 'integer', 'Entity', 'Domain', false));
+        }
+
+        dataCount = dataSet._values.length;
+
+        if(!this._isExistRow(dataSet, 'creator_id')) {
+          dataSet.insertRow(dataCount, this._newDefaultRow('creator_id', 'label.creator', 'integer', 'Entity', 'User', true));
+          dataCount += 1;
+        }
+        if(!this._isExistRow(dataSet, 'updater_id')) {
+          dataSet.insertRow(dataCount, this._newDefaultRow('updater_id', 'label.updater', 'integer', 'Entity', 'User', true));
+          dataCount += 1;
+        }
+        if(!this._isExistRow(dataSet, 'created_at')) {
+          dataSet.insertRow(dataCount, this._newDefaultRow('created_at', 'label.created_at', 'datetime', null, null, true));
+          dataCount += 1;
+        }
+        if(!this._isExistRow(dataSet, 'updated_at')) {
+          dataSet.insertRow(dataCount, this._newDefaultRow('updated_at', 'label.updated_at', 'datetime', null, null, true));
+          dataCount += 1;
+        }
+
+        dataCount = dataSet._values.length;
+
+        for (var i = 0; i < dataCount; i++) {
+          var row = dataSet.getRowObject(i);
+          row.disp_rank = (i + 1) * 10;
+          if(row.name && !row.term) row.term = 'label.' + row.name;
+          dataSet.updateRow(i, row);
+        }        
+      },
+
+      _isExistRow: function(dataSet, fieldName) {
+        var count = dataSet._values.length;
+        for(var i = 0 ; i < count ; i++) {
+          var row = dataSet.getRowObject(i);
+          if(row.name == fieldName) {
+            return true;
+          }
+        }
+
+        return false;
+      },
+
+      _newDefaultRow: function(name, term, colType, refType, refName, nullable, dispRank) {
+        return {
+          entity_id : this.resourceId,
+          disp_rank : dispRank ? dispRank : 0,
+          name : name,
+          term : term,
+          col_type : colType,
+          ref_name : refName,
+          ref_type : refType,
+          nullable : nullable
+        };
+      },
+
+      /**
+       * add grid row
+       */
+      _addRow: function(e) {
+        e.preventDefault();
+        var dataSet = this.$.grid.dataSet;
+        var count = dataSet._values.length + 1;
+        dataSet.insertRow(count - 1, this._newDefaultRow(null, null, 'string', null, null, false, count * 10));
+      },      
 
       /**
        * Generate Table
