@@ -165,6 +165,8 @@ Things.ResourceMenuContentBehaviorImpl = {
 	 */
 	openResourceSelector: function(event) {
 		var index = event.detail.index;
+    var grid = index._grid;
+    grid.commit();
 		this.openResourceSelectorByGrid(index._grid, index.rowIndex, event.detail.userObj, true);
 	},
 
