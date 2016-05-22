@@ -34,12 +34,17 @@
 
     <things-ajax 
       id="sync-service" 
-      resource-url="entities/:id/create_entity_columns"
-      last-response="{{resource}}"
-      method="POST">
+      method="POST"
+      content-type="application/json"
+      resource-url = 'entities/:id/create_entity_columns'
+      last-response="{{resource}}">
     </things-ajax>
 
-    <things-ajax id="generate-service" method="POST"></things-ajax>
+    <things-ajax 
+      id="generate-service" 
+      method="POST"
+      content-type="application/json">
+    </things-ajax>
     
     <things-resource-grid 
       id="grid"
@@ -380,8 +385,8 @@
             id: 'sync-btn',
             text: 'sync'
           }, {
-            id: 'add-default-rows-btn',
-            text: 'add-default-rows'
+            id: 'check-columns-btn',
+            text: 'check-columns'
           }, {
             id: 'add-btn',
             text: 'add'
@@ -400,13 +405,17 @@
           }, {
             id: 'generate-svc-btn',
             text: 'generate_service'
+          }, {
+            id: 'create-menu-btn',
+            text: 'create_menu'
           } ]
         }
       },
 
       listeners: {
         'sync-btn-tap' : 'syncWithTable',
-        'add-default-rows-btn-tap' : 'addDefaultRows',
+        'create-menu-btn-tap' : 'createMenu',
+        'check-columns-btn-tap' : 'checkColumns',
         'generate-table-btn-tap' : 'generateTable',
         'generate-entity-btn-tap' : 'generateEntity',
         'generate-svc-btn-tap' : 'generateService',
@@ -526,8 +535,8 @@
        */
       syncWithTable: function(e) {
         var syncSvc = this.$['sync-service'];
-        syncSvc.resourceUrl = syncSvc.resourceUrl.replace(':id', this.resourceId);
-        this.$['sync-service'].generateRequest();
+        syncSvc.resourceUrl = 'entities/' + this.resourceId + '/create_entity_columns';
+        syncSvc.generateRequest();
       },
 
       /**
@@ -535,7 +544,7 @@
        *
        * @param {Object} e 버튼 클릭 이벤트 
        */
-      addDefaultRows: function(e) {
+      checkColumns: function(e) {
         /*this.openPromptMsg({
           type : 'input',
           title : Things.DataGlobal.t('text.Sure to Generate'),
@@ -731,10 +740,12 @@
 
       /**
        * 서비스 생성 성공시 
+       *
+       * @param {Object} e
        */
       _generationSuccess: function(e) {
         console.log('Generated source is below...');
-        console.log(e.detail.msg);
+        if(e.detail && e.detail.msg) console.log(e.detail.msg);
 
         this.openInfoMsg({
           title : Things.DataGlobal.t('title.success'),
@@ -742,6 +753,40 @@
           text : Things.DataGlobal.t('text.Success to Process'),
           closeOnConfirm: true
         });
+      },
+
+      /**
+       * 메뉴 성성 버튼 클릭시
+       *
+       * @param {Object} e 버튼 클릭 이벤트
+       */
+      createMenu: function(e) {
+        var menu = {
+          name: this.resource.name,
+          rank: 0,
+          parent_id: 1,
+          menu_type: 'SCREEN',
+          category: 'STANDARD',
+          hidden_flag: false,
+          routing: this.resource.search_url,
+          routing_type: 'RESOURCE',
+          detail_form_id: 'things-resource-form',
+          resource_type: 'ENTITY',
+          resource_name: this.resource.name,
+          resource_url: this.resource.search_url,
+          id_field: this.resource.id_field,
+          title_field: this.resource.title_field,
+          pagination: true,
+          items_prop: 'items',
+          total_prop: 'total',
+          grid_save_url: this.resource.multi_save_url
+        };
+
+        var genSvc = this.$['generate-service'];
+        genSvc.resourceUrl = 'menus';
+        genSvc.body = menu;
+        genSvc.generateRequest();
+        genSvc.body = null;
       },
 
       /**
