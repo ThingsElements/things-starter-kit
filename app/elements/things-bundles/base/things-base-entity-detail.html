@@ -1,60 +1,102 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../../bower_components/paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../../../../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../../../../bower_components/paper-tabs/paper-tabs.html">
 
 <link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
-<link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
-<link rel="import" href="../../../../bower_components/things-msg-box-behavior/things-msg-box-behavior.html">
-<link rel="import" href="../../../../bower_components/things-resource-selector/things-resource-selector-behavior.html">
-<link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
+<link rel="import" href="../../../../bower_components/things-detail/things-detail-tab-view-behavior.html">
+<link rel="import" href="../../../../bower_components/things-form/things-resource-form.html">
+
+<link rel="import" href="./things-base-entity-detail-columns.html">
+<link rel="import" href="./things-base-entity-detail-search.html">
+<link rel="import" href="./things-base-entity-detail-grid.html">
+<link rel="import" href="./things-base-entity-detail-form.html">
+
+<!--
+  Entity Detail 셋업 View
+-->
 
 <dom-module id="things-base-entity-detail">
   <template>
     <style>
       :host {
         display: block;
+        height: 100%;
+        width: 100%;
         @apply(--layout-vertical);
+        --paper-header-panel-standard-container: {
+            @apply(--layout-vertical);
+        };
       }
-      iron-pages {
+      paper-header-panel {
         @apply(--layout-flex);
         @apply(--layout-vertical);
       }
-      things-resource-grid {
+      .iron-pages {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+      }
+      .detail-flex {
         @apply(--layout-flex);
       }
     </style>
 
-    <things-ajax 
-      auto
-      id="resource-search"
-      method="GET"
-      resource-url="entities/:id/entity_columns"
-      resource-id="{{resourceId}}"
-      last-response="{{lastResponse}}">
-    </things-ajax>
+    <paper-header-panel mode="standard" class="green">
+      <paper-tabs id="tabGroup" class="paper-header" selected="{{currentTabIdx}}" noink scrollable>
+        <template is="dom-repeat" items="{{_panels}}">
+          <paper-tab id="{{item.elementId}}">{{item.title}}</paper-tab>
+        </template>
+      </paper-tabs>
 
-    <things-ajax 
-      id="sync-service" 
-      method="POST"
-      content-type="application/json"
-      resource-url = 'entities/:id/create_entity_columns'
-      last-response="{{resource}}">
-    </things-ajax>
+      <things-ajax 
+        auto
+        id="get-resource"
+        method="GET"
+        resource-url="entities/:id/entity_columns"
+        resource-id="{{resourceId}}"
+        last-response="{{lastResponse}}">
+      </things-ajax>
 
-    <things-ajax 
-      id="generate-service" 
-      method="POST"
-      content-type="application/json">
-    </things-ajax>
-    
-    <things-resource-grid 
-      id="grid"
-      config="[[gridConfig]]"
-      model="[[gridModel]]" 
-      columns="[[gridColumns]]"
-      data="[[items]]"
-      grid-save-action="[[gridSaveUrl]]"
-      buttons="[[buttons]]">
-    </things-resource-grid>
+      <iron-pages id="tabPages" selected="{{currentTabIdx}}" class="iron-pages">
+        <things-resource-form
+          id="resource-form" 
+          resource-url="[[resourceUrl]]"
+          resource="{{resource}}"
+          form-fields="[[formFields]]"
+          remove-fields-on-save="[[removeFieldsOnSave]]">
+        </things-resource-form>
+
+        <things-base-entity-detail-columns
+          class="detail-flex"
+          resource="[[resource]]"
+          resource-id="[[resourceId]]"
+          resource-columns="{{resourceColumns}}"
+          grid-model="[[gridModel]]">
+        </things-base-entity-detail-columns>
+
+        <things-base-entity-detail-search
+          class="detail-flex"
+          resource-id="[[resourceId]]"
+          resource-columns="{{resourceColumns}}"
+          grid-model="[[gridModel]]">
+        </things-base-entity-detail-search>
+
+        <things-base-entity-detail-grid
+          class="detail-flex"
+          resource-id="[[resourceId]]"
+          resource-columns="{{resourceColumns}}"
+          grid-model="[[gridModel]]">
+        </things-base-entity-detail-grid>
+
+        <things-base-entity-detail-form
+          class="detail-flex"
+          resource-id="[[resourceId]]"
+          resource-columns="{{resourceColumns}}"
+          grid-model="[[gridModel]]">
+        </things-base-entity-detail-form>
+      </iron-pages>
+    </paper-header-panel>
   </template>
 
   <script>
@@ -62,47 +104,34 @@
 
       is: 'things-base-entity-detail',
 
-      behaviors: [
-        Things.ResourceSelectorBehavior,
-        Things.MsgBoxBehavior,
-        Things.ViewOpenBehavior
+      behaviors: [ 
+        Things.DetailTabViewBahavior
       ],
 
       properties: {
-        /**
-         * 화면 타이틀 
-         */
-        title: {
-          type: String
-        },
 
         /**
-         * entity id
-         */
-        resourceId: {
-          type: String
-        },
-
-        /**
-         * Entity resource
-         */
-        resource: {
-          type: Object
-        },
-
-        /**
-         * Entity columns 조회 정보 
+         * Entity Resource 조회 데이터
          */
         lastResponse: {
           type: Object,
-          observer: '_responseChanged'
+          observer: '_entityResourceChanged'
         },
 
         /**
-         * Entity column Items 정보 
+         * 각 화면에 전달될 Entity Columns
          */
-        items: {
-          type: Array
+        resourceColumns: {
+          type: Array,
+          notify: true
+        },
+
+        /**
+         * Save 하기 전에 폼에는 있지만 Save하는데 필요 없는 필드를 삭제하기 위한 필드명
+         */
+        removeFieldsOnSave: {
+          type: Array,
+          value: ['creator', 'updater', 'creator_id', 'updater_id', 'created_at', 'updated_at']
         },
 
         /**
@@ -153,658 +182,73 @@
           }, { 
             fieldName: 'ref_related'
           }, {
+            fieldName: 'search_oper'
+          }, {
             fieldName: 'def_val'
+          }, { 
+            fieldName: 'form_editor'
+          }, { 
+            fieldName: 'form_validator'
+          }, { 
+            fieldName: 'form_format'
+          }, { 
+            fieldName: 'ignore_on_save'
+          }, { 
+            fieldName: 'grid_align'
+          }, { 
+            fieldName: 'grid_width'
+          }, { 
+            fieldName: 'grid_editor'
+          }, { 
+            fieldName: 'grid_format'
           }, {
             fieldName: 'search_check'
           }, {
             fieldName: 'grid_check'
           } ]
         },
-        
+
         /**
-         * Grid Columns
+         * 리소스 폼 필드
          */
-        gridColumns: {
+        formFields: {
           type: Array,
           value: function() {
-            var colTypes = [ 
-              '', 'binary', 'boolean', 'date', 'datetime', 'decimal', 'double', 
-              'float', 'integer', 'long', 'string', 'text', 'time', 'timestamp' 
-            ];
-
-            return [ { 
-              fieldName: 'id', name: 'id', width: 0 
-            }, { 
-              fieldName: 'menu_id', name: 'menu_id', width: 0 
-            }, { 
-              fieldName: 'rank', name: 'rank', width: 60, type: 'number',
-              header: { 
-                text: Things.DataGlobal.t('label.rank')
-              },
-              styles: { 
-                textAlignment: 'far' 
-              }
-            }, { 
-              fieldName: 'name', name: 'name', width: 135,
-              header: { 
-                text: Things.DataGlobal.t('label.name')
-              }
-            }, { 
-              fieldName: 'term', name: 'term', width: 175,
-              header: { 
-                text: Things.DataGlobal.t('label.term') + ' (from)'
-              }
-            }, { 
-              fieldName: 'trans', name: 'trans', width: 135,
-              header: { 
-                text: Things.DataGlobal.t('label.term') + ' (to)'
-              },
-              valueType: 'text', type: 'calced',
-              valueCallback: function(column, row) {
-                var term = row.getValue('term');
-                return term ? Things.DataGlobal.t(term) : '';
-              }
-            }, { 
-              name: 'col_type', 
-              fieldName: 'col_type', 
-              width: 100,
-              lookupDisplay: true,
-              header: { 
-                text: Things.DataGlobal.t('label.col_type') 
-              },
-              editor: { 
-                type: 'list', 
-                domainOnly: true 
-              },
-              lookupValues: colTypes,
-              lookupLabels: colTypes
-            }, { 
-              fieldName: 'size', name: 'size', width: 65, type: 'number',
-              header: { 
-                text: Things.DataGlobal.t('label.size')
-              },
-              styles: { 
-                textAlignment: 'far' 
-              }
-            }, { 
-              name: 'nullable', 
-              fieldName: 'nullable', 
-              width: 70,
-              editable: false,
-              header: { 
-                text: Things.DataGlobal.t('label.nullable') 
-              },
-              renderer: {
-                type:'check', 
-                editable: true, 
-                threeStates: false, 
-                trueValues: 'true', 
-                falseValues: 'false'
-              }
-            }, { 
-              fieldName: 'uniq_rank', name: 'uniq_rank', width: 80, type: 'number',
-              header: { 
-                text: Things.DataGlobal.t('label.uniq_rank')
-              },
-              styles: { 
-                textAlignment: 'far' 
-              }
-            }, { 
-              name: 'virtual_field', 
-              fieldName: 'virtual_field', 
-              width: 70,
-              editable: false,
-              header: { 
-                text: Things.DataGlobal.t('label.virtual') 
-              },
-              renderer: {
-                type:'check', 
-                editable: true, 
-                threeStates: false, 
-                trueValues: 'true', 
-                falseValues: 'false'
-              }              
-            }, { 
-              fieldName: 'search_check', name: 'search_check', width: 115, editable: false,
-              header: { 
-                text: Things.DataGlobal.t('title.search_condition')
-              },
-              renderer: {
-                type:'check', 
-                editable: true, 
-                threeStates: false, 
-                trueValues: 'true', 
-                falseValues: 'false'
-              }
-            }, { 
-              fieldName: 'grid_check', name: 'grid_check', width: 75, editable: false,
-              header: { 
-                text: Things.DataGlobal.t('label.list')
-              },
-              renderer: {
-                type:'check', 
-                editable: true, 
-                threeStates: false, 
-                trueValues: 'true', 
-                falseValues: 'false'
-              }
-            }, { 
-              fieldName: 'sort_rank', name: 'sort_rank', width: 80, type: 'number',
-              header: { 
-                text: Things.DataGlobal.t('label.sort_rank')
-              },
-              styles: { 
-                textAlignment: 'far' 
-              }
-            }, { 
-              fieldName: 'reverse_sort', name: 'reverse_sort', width: 100, editable: false,
-              header: { 
-                text: Things.DataGlobal.t('label.reverse_sort')
-              },
-              renderer: {
-                type:'check', 
-                editable: true, 
-                threeStates: false, 
-                trueValues: 'true', 
-                falseValues: 'false'
-              }
-            }, { 
-              fieldName: 'ref_type',
-              name: 'ref_type',
-              width: 115,
-              lookupDisplay: true,
-              lookupValues: [ '', 'CommonCode', 'Entity', 'Menu' ],
-              lookupLabels: [ '', 'Code', 'Entity', 'Menu' ],
-              header: { 
-                text: Things.DataGlobal.t('label.ref_type') 
-              },
-              editor: { 
-                type: 'list',
-                domainOnly: true 
-              }
-            }, { 
-              fieldName: 'ref_name', name: 'ref_name', width: 135,
-              header: {
-                text: Things.DataGlobal.t('label.ref_name')
-             }
-              }, {
-                name: 'ref_name_editor',
-                fieldName: 'ref_name_editor',
-                width: 30,
-                editable: false,
-                header: { text: '...' },
-                imageList: 'images',
-                renderer: { type: 'icon' },
-                styles:{
-                  iconIndex: 'menu_button.png',
-                  iconLocation: 'center'
-                },
-                userObj: {
-                  resourceType: 'Menu',
-                  resourceUrl: 'menus',
-                  valueField: 'ref_name'
-                }
-            }, { 
-              fieldName: 'ref_url', name: 'ref_url', width: 135,
-              header: {
-                text: Things.DataGlobal.t('label.ref_url')
-             }
-            }, { 
-              fieldName: 'ref_params', name: 'ref_params', width: 180,
-              header: {
-                text: Things.DataGlobal.t('label.ref_params')
-             }
-            }, { 
-              fieldName: 'ref_related', name: 'ref_related', width: 180,
-              header: {
-                text: Things.DataGlobal.t('label.ref_related')
-             }
-            }, { 
-              fieldName: 'def_val', name: 'def_val', width: 100,
-              header: {
-                text: Things.DataGlobal.t('label.def_val')
-             }
-            } ];
+            return [{"name":"id","label":"ID","type":"hidden","userObj":{"hidden":true}},{"name":"domain_id","label":"Domain","type":"hidden","userObj":{"hidden":true}},{"name":"name","label":"Name","type":"text","userObj":{"required":true,"max":64,"type":"string"}},{"name":"description","label":"Description","type":"text","userObj":{"max":255,"type":"string"}},{"name":"bundle","label":"bundle","type":"code-combo","codeName":"BUNDLE"},{"name":"table_name","label":"Table Name","type":"text","userObj":{"max":64,"type":"string"}},{"name":"search_url","label":"URL","type":"text","userObj":{"type":"string"}},{"name":"multi_save_url","label":"Grid Save URL","type":"text","userObj":{"type":"string"}},{"name":"id_field","label":"ID Field","type":"text","userObj":{"type":"string"}},{"name":"title_field","label":"Title Field","type":"text","userObj":{"type":"string"}},{"name":"master","label":"Parent","type":"resource-field","userObj":{"delegateColumn":"name","resourceType":"Entity","resourceUrl":"entities","submitName":"master_id"}},{"name":"ref_field","label":"Reference Name","type":"text","userObj":{"type":"string"}},{"name":"del_strategy","label":"Delete Details Strategy","type":"code-combo","codeName":"DELETE_STRATEGY"},{"name":"list_infographic_id","label":"List Infographic","type":"text","userObj":{"type":"integer"}},{"name":"item_infographic_id","label":"Item Infographic","type":"text","userObj":{"type":"integer"}},{"name":"creator_id","label":"Created By","userObj":{"type":"integer"}},{"name":"updater_id","label":"Updated By","type":"resource-column"},{"name":"created_at","label":"Created At","userObj":{"type":"datetime"}},{"name":"updated_at","label":"Updated At","userObj":{"type":"datetime"}}];
           }
-        },
-
-        /**
-         * Entity Column save URL
-         */
-        gridSaveUrl: {
-          type: String,
-          computed: '_computeEntityColumnSaveUrl(resourceId)'
-        },
-
-        /**
-         * 버튼 정보 
-         */
-        buttons: {
-          type: Array,
-          value: [ {
-            id: 'sync-btn',
-            text: 'sync'
-          }, {
-            id: 'check-columns-btn',
-            text: 'check-columns'
-          }, {
-            id: 'add-btn',
-            text: 'add'
-          }, {            
-            id: 'save-btn',
-            text: 'save'
-          }, {
-            id: 'delete-btn',
-            text: 'delete'
-          }, {
-            id: 'generate-table-btn',
-            text: 'generate_table'
-          }, {
-            id: 'generate-entity-btn',
-            text: 'generate_entity'
-          }, {
-            id: 'generate-svc-btn',
-            text: 'generate_service'
-          }, {
-            id: 'create-menu-btn',
-            text: 'create_menu'
-          } ]
         }
       },
 
-      listeners: {
-        'sync-btn-tap' : 'syncWithTable',
-        'create-menu-btn-tap' : 'createMenu',
-        'check-columns-btn-tap' : 'checkColumns',
-        'generate-table-btn-tap' : 'generateTable',
-        'generate-entity-btn-tap' : 'generateEntity',
-        'generate-svc-btn-tap' : 'generateService',
-        'grid.things-grid-configured' : '_gridConfigured',
-        'grid.things-grid-handle-addrow' : '_addRow',
-        'grid.things-grid-handle-built-writedata' : '_setupWriteData',
-        'grid.things-grid-save-success' : '_responseUpdateMultiple',
-        'grid.things-grid-resource-column-edit' : '_onGridColumnRefEdit',
-        'sync-service.things-ajax-response' : '_responseSyncWithTable',
-        'generate-service.things-ajax-response' : '_generationSuccess'
+      /**
+       * Life cycle - Element Ready
+       */
+      ready: function() {
+        this._panels = [ {
+          title: Things.DataGlobal.t('title.basic_info'), 
+          elementId: 'things-resource-form'
+        }, {
+          title: Things.DataGlobal.t('title.setup_columns'), 
+          elementId: 'things-base-entity-detail-columns'
+        }, {
+          title: Things.DataGlobal.t('title.setup_searching'), 
+          elementId: 'things-base-entity-detail-search'
+        }, {
+          title: Things.DataGlobal.t('title.setup_grid'), 
+          elementId: 'things-base-entity-detail-grid'
+        }, {
+          title: Things.DataGlobal.t('title.setup_form'), 
+          elementId: 'things-base-entity-detail-form'
+        } ];
       },
 
       /**
-       * Grid 구성이 완료된 후
-       *
-       * @param {Object} e things-grid-configured
+       * Entity Resource가 변경된 후 ...
        */
-      _gridConfigured: function(e) {
-        e.detail.displayOptions().setFixedColumnCount(4);
-      },
-
-      /**
-       * Entity Id로 Entity Column Save URL 생성
-       *
-       * @param {String} resourceId
-       * @return {String} Save entity columns url
-       */
-      _computeEntityColumnSaveUrl: function(resourceId) {
-        return 'entities/' + resourceId + '/update_multiple_entity_columns.json';
-      },
-
-      /**
-       * 조회 데이터 변경
-       *
-       * @param {Object} lastResponse
-       */
-      _responseChanged: function(lastResponse) {
+      _entityResourceChanged: function(lastResponse) {
         var items = lastResponse.items;
-        if(items && items.length > 0) {
-          for(var i = 0 ; i < items.length ; i++) {
-            var item = items[i];
-            item.search_check = item.search_rank && item.search_rank > 0;
-            item.grid_check = item.grid_rank && item.grid_rank > 0;
-          }
-        }
-
-        this.items = items;
-      },
-
-      /**
-       * Grid에서 업데이트할 writeData 셋업이 완료된 후 writeData 조작
-       *
-       * @param {Object} event
-       */
-      _setupWriteData: function(event) {
-        var writeData = event.detail;
-        if(writeData && writeData.length > 0) {
-          var entityId = this.resourceId;
-
-          writeData.forEach(function(changedData) {
-            changedData.entity_id = entityId;
-            if(!changedData.uniq_rank) changedData.uniq_rank = 0;
-
-            if(!changedData.search_check || 'false' === changedData.search_check) {
-              changedData.search_rank = 0;
-            } else {
-              if(!changedData.search_rank || changedData.search_rank <= 0)
-                changedData.search_rank = changedData.rank;
-            }
-
-            if(!changedData.grid_check || 'false' === changedData.grid_check) {
-              changedData.grid_rank = 0;
-            } else {
-              if(!changedData.grid_rank || changedData.grid_rank <= 0)
-                changedData.grid_rank = changedData.rank;
-            }
-
-            delete changedData['ref_name_editor'];
-            delete changedData['trans'];
-            delete changedData['search_check'];
-            delete changedData['grid_check'];
-          });
-        }
-      },
-
-      /**
-       * 그리드 변경 데이터 저장 후
-       *
-       * @param {Object} e things-grid-save-success 이벤트 
-       */
-      _responseUpdateMultiple: function(e) {
-        this.lastResponse = e.detail;
-      },
-
-      /**
-       * 엔티티 컬럼 데이터 동기화 후 
-       *
-       * @param {Object} e things-grid-save-success 이벤트 
-       */
-      _responseSyncWithTable: function(e) {
-        this.lastResponse = e.detail;
-      },
-
-      /**
-       * Reload Grid Data
-       *
-       * @param {Object} e 버튼 클릭 이벤트 
-       */
-      reloadGrid: function(e) {
-        this.$['resource-search'].generateRequest();
-      },
-
-      /**
-       * Synchronize With Entity Table
-       *
-       * @param {Object} e 버튼 클릭 이벤트 
-       */
-      syncWithTable: function(e) {
-        var syncSvc = this.$['sync-service'];
-        syncSvc.resourceUrl = 'entities/' + this.resourceId + '/create_entity_columns';
-        syncSvc.generateRequest();
-      },
-
-      /**
-       * Add Default Rows
-       *
-       * @param {Object} e 버튼 클릭 이벤트 
-       */
-      checkColumns: function(e) {
-        /*this.openPromptMsg({
-          type : 'input',
-          title : Things.DataGlobal.t('text.Sure to Generate'),
-          showCancelButton: true,
-          closeOnConfirm : true,
-          inputType : 'text',
-          inputPlaceholder : 'Rows : ',
-          inputValue : '10'
-        });*/
-
-        var dataSet = this.$.grid.getGridDataSet();
-        var dataCount = dataSet._values.length;
-
-        if(!this._isExistRow(dataSet, 'id')) {
-          dataSet.insertRow(0, this._newDefaultRow('id', null, 'integer', null, null, false));
-        }
-        if(!this._isExistRow(dataSet, 'domain_id')) {
-          dataSet.insertRow(1, this._newDefaultRow('domain_id', null, 'integer', 'Entity', 'Domain', false));
-        }
-
-        dataCount = dataSet._values.length;
-
-        if(!this._isExistRow(dataSet, 'creator_id')) {
-          dataSet.insertRow(dataCount, this._newDefaultRow('creator_id', 'label.creator', 'integer', 'Entity', 'User', true));
-          dataCount += 1;
-        }
-        if(!this._isExistRow(dataSet, 'updater_id')) {
-          dataSet.insertRow(dataCount, this._newDefaultRow('updater_id', 'label.updater', 'integer', 'Entity', 'User', true));
-          dataCount += 1;
-        }
-        if(!this._isExistRow(dataSet, 'created_at')) {
-          dataSet.insertRow(dataCount, this._newDefaultRow('created_at', 'label.created_at', 'datetime', null, null, true));
-          dataCount += 1;
-        }
-        if(!this._isExistRow(dataSet, 'updated_at')) {
-          dataSet.insertRow(dataCount, this._newDefaultRow('updated_at', 'label.updated_at', 'datetime', null, null, true));
-          dataCount += 1;
-        }
-
-        dataCount = dataSet._values.length;
-
-        for (var i = 0; i < dataCount; i++) {
-          var row = dataSet.getRowObject(i);
-          row.rank = (i + 1) * 10;
-          if(row.name && !row.term) row.term = 'label.' + row.name;
-          dataSet.updateRow(i, row);  
-        }        
-      },
-
-      /**
-       * Entity Columns(dataSet)에 이미 fieldName으로 컬럼이 등록되어 있는지 체크 
-       */
-      _isExistRow: function(dataSet, fieldName) {
-        var count = dataSet._values.length;
-        for(var i = 0 ; i < count ; i++) {
-          var row = dataSet.getRowObject(i);
-          if(row.name == fieldName) {
-            return true;
-          }
-        }
-
-        return false;
-      },
-
-      /**
-       * Add Row시 그리드에 추가될 기본 데이터 
-       */
-      _newDefaultRow: function(name, term, colType, refType, refName, nullable, rank) {
-        return {
-          entity_id : this.resourceId,
-          rank : rank ? rank : 0,
-          name : name,
-          term : term,
-          col_type : colType,
-          ref_name : refName,
-          ref_type : refType,
-          nullable : nullable
-        };
-      },
-
-      /**
-       * Add Grid Row
-       */
-      _addRow: function(e) {
-        e.preventDefault();
-        var dataSet = this.$.grid.dataSet;
-        var count = dataSet._values.length + 1;
-        dataSet.insertRow(count - 1, this._newDefaultRow(null, null, 'string', null, null, true, count * 10));
-      },
-
-      /**
-       * Entity Ref Column Edit
-       *
-       * @param {Object} things-grid-resource-column-edit 이벤트 
-       */
-      _onGridColumnRefEdit: function(e) {
-        var index = e.detail.index;
-        var grid = index._grid;
-        grid.commit();
-
-        var dataSet = this.$.grid.getGridDataSet();
-        var row = dataSet.getRowObject(index.rowIndex);
-        if(!row.ref_type) return;
-        
-        if(!row.ref_name) {
-          row.ref_name = '';
-          dataSet.updateRow(index.rowIndex, row);
-        }
-
-        var resourceObj = { 
-          valueField : 'ref_name',
-          resourceType : row.ref_type,
-          resourceUrl : (row.ref_type == 'Entity') ? 'entities' : (row.ref_type == 'Menu' ? 'menus' : 'common_codes')
-        };
-
-        this.openResourceSelectorByGrid(index._grid, index.rowIndex, resourceObj, true);
-      },
-
-      /**
-       * Generate Table
-       *
-       * @param {Object} e 버튼 클릭 이벤트 
-       */
-      generateTable: function(e) {
-        if(this.resource.table_name) {
-          this._confirmAndInvoke(function() {
-            var service = this.$['generate-service'];
-            service.resourceUrl = 'code_generator/code/table/' + this.resourceId;
-            service.generateRequest();
-          }.bind(this));
-
-        } else {
-          this._warningNotReady();
-        }
-      },
-
-      /**
-       * Generate Entity
-       *
-       * @param {Object} e 버튼 클릭 이벤트 
-       */
-      generateEntity: function(e) {
-        if(this.resource.table_name) {
-          this._confirmAndInvoke(function() {
-            var service = this.$['generate-service'];
-            service.resourceUrl = 'code_generator/code/entity/' + this.resourceId;
-            service.generateRequest();
-          }.bind(this));
-
-        } else {
-          this._warningNotReady();
-        }
-      },      
-
-      /**
-       * Generate Service
-       *
-       * @param {Object} e 버튼 클릭 이벤트 
-       */
-      generateService: function(e) {
-        if(this.resource.table_name) {
-          this._confirmAndInvoke(function() {
-            var service = this.$['generate-service'];
-            service.resourceUrl = 'code_generator/code/controller/' + this.resourceId;
-            service.generateRequest();
-          }.bind(this));
-
-        } else {
-          this._warningNotReady();
-        }
-      },
-
-      _confirmAndInvoke: function(func) {
-        this.openConfirmMsg({
-          type : 'info',
-          title : Things.DataGlobal.t('text.Sure to Generate'),
-          showCancelButton: true,
-          closeOnConfirm : true
-        }, func);
-      },
-
-      _warningNotReady: function() {
-        var tableName = Things.DataGlobal.t('label.table_name');
-        var msg = Things.DataGlobal.t('error.SHOULD_NOT_BE_EMPTY', { value : tableName });
-
-        this.openInfoMsg({
-          type : 'warning',
-          title : msg,
-          showCancelButton: true,
-          closeOnConfirm : true
-        });
-      },
-
-      /**
-       * 서비스 생성 성공시 
-       *
-       * @param {Object} e
-       */
-      _generationSuccess: function(e) {
-        console.log('Generated source is below...');
-        if(e.detail && e.detail.msg) console.log(e.detail.msg);
-
-        this.openInfoMsg({
-          title : Things.DataGlobal.t('title.success'),
-          type : 'info',
-          text : Things.DataGlobal.t('text.Success to Process'),
-          closeOnConfirm: true
-        });
-      },
-
-      /**
-       * 메뉴 성성 버튼 클릭시
-       *
-       * @param {Object} e 버튼 클릭 이벤트
-       */
-      createMenu: function(e) {
-        var menu = {
-          name: this.resource.name,
-          rank: 0,
-          parent_id: 1,
-          menu_type: 'SCREEN',
-          category: 'STANDARD',
-          hidden_flag: false,
-          routing: this.resource.search_url,
-          routing_type: 'RESOURCE',
-          detail_form_id: 'things-resource-form',
-          resource_type: 'ENTITY',
-          resource_name: this.resource.name,
-          resource_url: this.resource.search_url,
-          id_field: this.resource.id_field,
-          title_field: this.resource.title_field,
-          pagination: true,
-          items_prop: 'items',
-          total_prop: 'total',
-          grid_save_url: this.resource.multi_save_url
-        };
-
-        var genSvc = this.$['generate-service'];
-        genSvc.resourceUrl = 'menus';
-        genSvc.body = menu;
-        genSvc.generateRequest();
-        genSvc.body = null;
-      },
-
-      /**
-       * Detail 화면 Open
-       *
-       * @param {String} resourceId
-       * @param {Object} resource
-       */
-      showDetailView: function(resourceId, resource) {
-        if(this.resourceId != resourceId) {
-          this.resourceId = resourceId;
-        }
-
-        if(resource) {
-          this.resource = resource;
-        }
-
-        this.openPopupView(this, true);
+        delete lastResponse['items'];
+        this.resource = lastResponse;
+        this.resourceColumns = items;
       }
 
     });
