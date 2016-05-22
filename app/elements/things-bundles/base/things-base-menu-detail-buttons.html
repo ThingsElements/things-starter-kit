@@ -168,10 +168,18 @@
       },
 
       listeners: {
+        'things-detail-view-selected' : '_detailTabSelected',
         'grid.things-grid-handle-save' : '_beforeButtonSave',
         'grid.things-grid-save-success' : '_reloadGrid',
         'button-ajax.things-ajax-response': '_afterButtonsLoaded'
       },
+
+      /**
+       * 상세 탭 선택시 ...
+       */
+      _detailTabSelected: function(e) {
+        this.$.grid.resizeGrid();
+      },      
 
       /**
        * MenuMeta 변경시

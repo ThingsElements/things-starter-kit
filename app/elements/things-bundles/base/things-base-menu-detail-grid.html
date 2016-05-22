@@ -64,6 +64,7 @@
          */
         menuMeta: {
           type: Object,
+          notify: true,
           observer: '_onMenuMetaChanged'
         },
 
@@ -270,10 +271,18 @@
       },
 
       listeners: {
+        'things-detail-view-selected' : '_detailTabSelected',
         'grid.things-grid-handle-save' : '_beforeSearchColumnSave',
         'grid.things-grid-save-success' : '_reloadGrid',
         'column-ajax.things-ajax-response': '_afterColumnsLoaded'
       },
+
+      /**
+       * 상세 탭 선택시 ...
+       */
+      _detailTabSelected: function(e) {
+        this.$.grid.resizeGrid();
+      },      
 
       /**
        * MenuMeta 변경시

@@ -25,7 +25,7 @@
       method="POST"
       resource-url="menus/:id/sync_menu_columns"
       resource-id="[[resourceId]]"
-      last-response="{{resource}}">
+      last-response="{{menuMeta}}">
     </things-ajax>
 
     <things-ajax 
@@ -80,6 +80,7 @@
          */
         menuMeta: {
           type: Object,
+          notify: true,
           observer: '_onMenuMetaChanged'
         },
 
@@ -110,6 +111,8 @@
           }, { 
             fieldName: 'col_type'
           }, { 
+            fieldName: 'size'
+          }, { 
             fieldName: 'virtual_field'
           }, { 
             fieldName: 'nullable'
@@ -137,6 +140,10 @@
             fieldName: 'ref_related'
           }, {
             fieldName: 'def_val'
+          }, {
+            fieldName: 'search_check'
+          }, {
+            fieldName: 'grid_check'
           } ]
         },
         
@@ -198,20 +205,13 @@
               lookupValues: colTypes,
               lookupLabels: colTypes
             }, { 
-              name: 'virtual_field', 
-              fieldName: 'virtual_field', 
-              width: 70,
-              editable: false,
+              fieldName: 'size', name: 'size', width: 65, type: 'number',
               header: { 
-                text: Things.DataGlobal.t('label.virtual') 
+                text: Things.DataGlobal.t('label.size')
               },
-              renderer: {
-                type:'check', 
-                editable: true, 
-                threeStates: false, 
-                trueValues: 'true', 
-                falseValues: 'false'
-              }              
+              styles: { 
+                textAlignment: 'far' 
+              }
             }, { 
               name: 'nullable', 
               fieldName: 'nullable', 
@@ -236,12 +236,43 @@
                 textAlignment: 'far' 
               }
             }, { 
-              fieldName: 'search_rank', name: 'search_rank', width: 95, type: 'number',
+              name: 'virtual_field', 
+              fieldName: 'virtual_field', 
+              width: 70,
+              editable: false,
               header: { 
-                text: Things.DataGlobal.t('label.search_rank')
+                text: Things.DataGlobal.t('label.virtual') 
               },
-              styles: { 
-                textAlignment: 'far' 
+              renderer: {
+                type:'check', 
+                editable: true, 
+                threeStates: false, 
+                trueValues: 'true', 
+                falseValues: 'false'
+              }
+            }, { 
+              fieldName: 'search_check', name: 'search_check', width: 115, editable: false,
+              header: { 
+                text: Things.DataGlobal.t('title.search_condition')
+              },
+              renderer: {
+                type:'check', 
+                editable: true, 
+                threeStates: false, 
+                trueValues: 'true', 
+                falseValues: 'false'
+              }
+            }, { 
+              fieldName: 'grid_check', name: 'grid_check', width: 75, editable: false,
+              header: { 
+                text: Things.DataGlobal.t('label.list')
+              },
+              renderer: {
+                type:'check', 
+                editable: true, 
+                threeStates: false, 
+                trueValues: 'true', 
+                falseValues: 'false'
               }
             }, { 
               fieldName: 'sort_rank', name: 'sort_rank', width: 80, type: 'number',
@@ -263,14 +294,6 @@
                 trueValues: 'true', 
                 falseValues: 'false'
               }            
-            }, { 
-              fieldName: 'grid_rank', name: 'grid_rank', width: 80, type: 'number',
-              header: { 
-                text: Things.DataGlobal.t('label.grid_rank')
-              },
-              styles: { 
-                textAlignment: 'far' 
-              }
             }, { 
               fieldName: 'ref_type',
               name: 'ref_type',
@@ -365,14 +388,31 @@
       },
 
       listeners: {
+        'things-detail-view-selected' : '_detailTabSelected',
+        'grid.things-grid-configured' : '_gridConfigured',
         'grid.things-grid-handle-addrow' : '_addRow',
         'grid.things-grid-handle-save' : '_beforeSearchColumnSave',
         'grid.things-grid-save-success' : '_reloadGrid',
         'grid.things-grid-resource-column-edit' : '_onGridColumnRefEdit',
         'column-ajax.things-ajax-response': '_afterColumnsLoaded',
-        'columns-sync-ajax.things-ajax-response' : '_reloadGrid',
         'sync-btn-tap' : '_syncColumns'
       },
+
+      /**
+       * 상세 탭 선택시 ...
+       */
+      _detailTabSelected: function(e) {
+        this.$.grid.resizeGrid();
+      },
+
+      /**
+       * Grid 구성이 완료된 후
+       *
+       * @param {Object} e things-grid-configured
+       */
+      _gridConfigured: function(e) {
+        e.detail.displayOptions().setFixedColumnCount(4);
+      },      
 
       /**
        * MenuMeta 변경시
@@ -380,8 +420,16 @@
        * @param {Object} resource
        */
       _onMenuMetaChanged: function(menuMeta) {
-        this._sortColumns(menuMeta.columns);
-        this.items = menuMeta.columns;
+        var columns = menuMeta.columns;
+        this._sortColumns(columns);
+
+        for(var i = 0 ; i < columns.length ; i++) {
+          var column = columns[i];
+          column.search_check = column.search_rank && column.search_rank > 0;
+          column.grid_check = column.grid_rank && column.grid_rank > 0;
+        }
+
+        this.items = columns;
       },
 
       /**
@@ -432,14 +480,29 @@
       _beforeSearchColumnSave: function(event) {
         var grid = event.target;
         if(grid.writeData && grid.writeData.length > 0) {
-          var resourceId = this.resourceId;
+          var menuId = this.resourceId;
           grid.writeData.forEach(function(changedData) {
-            delete changedData['trans'];
-            delete changedData['ref_name_editor'];
+            changedData.menu_id = menuId;
+            if(!changedData.uniq_rank) changedData.uniq_rank = 0;
 
-            if(changedData.cud_flag_ == 'c') {
-              changedData.menu_id = resourceId;
+            if(!changedData.search_check || 'false' === changedData.search_check) {
+              changedData.search_rank = 0;
+            } else {
+              if(!changedData.search_rank || changedData.search_rank <= 0)
+                changedData.search_rank = changedData.rank;
             }
+
+            if(!changedData.grid_check || 'false' === changedData.grid_check) {
+              changedData.grid_rank = 0;
+            } else {
+              if(!changedData.grid_rank || changedData.grid_rank <= 0)
+                changedData.grid_rank = changedData.rank;
+            }
+
+            delete changedData['ref_name_editor'];
+            delete changedData['trans'];
+            delete changedData['search_check'];
+            delete changedData['grid_check'];
           });
         }
       },

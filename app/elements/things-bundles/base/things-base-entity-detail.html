@@ -46,10 +46,9 @@
       config="[[gridConfig]]"
       model="[[gridModel]]" 
       columns="[[gridColumns]]"
-      data="[[lastResponse.items]]"
+      data="[[items]]"
       grid-save-action="[[gridSaveUrl]]"
-      buttons="[[buttons]]"
-      enable-toolbar>
+      buttons="[[buttons]]">
     </things-resource-grid>
   </template>
 
@@ -80,17 +79,25 @@
         },
 
         /**
-         * entity resource
+         * Entity resource
          */
         resource: {
           type: Object
         },
 
         /**
-         * entity columns 조회 정보 
+         * Entity columns 조회 정보 
          */
         lastResponse: {
-          type: Object
+          type: Object,
+          observer: '_responseChanged'
+        },
+
+        /**
+         * Entity column Items 정보 
+         */
+        items: {
+          type: Array
         },
 
         /**
@@ -115,7 +122,7 @@
           }, { 
             fieldName: 'size'
           }, { 
-            fieldName: 'virtual_field'            
+            fieldName: 'virtual_field'
           }, { 
             fieldName: 'nullable'
           }, { 
@@ -137,11 +144,15 @@
           }, { 
             fieldName: 'ref_url'
           }, { 
-            fieldName: 'ref_params'            
+            fieldName: 'ref_params'
           }, { 
             fieldName: 'ref_related'
           }, {
             fieldName: 'def_val'
+          }, {
+            fieldName: 'search_check'
+          }, {
+            fieldName: 'grid_check'
           } ]
         },
         
@@ -203,25 +214,13 @@
               lookupValues: colTypes,
               lookupLabels: colTypes
             }, { 
-              fieldName: 'size', name: 'size', width: 80, type: 'number',
+              fieldName: 'size', name: 'size', width: 65, type: 'number',
               header: { 
-                text: Things.DataGlobal.t('label.col_size')
-              }
-            }, { 
-              name: 'virtual_field', 
-              fieldName: 'virtual_field', 
-              width: 70,
-              editable: false,
-              header: { 
-                text: Things.DataGlobal.t('label.virtual') 
+                text: Things.DataGlobal.t('label.size')
               },
-              renderer: {
-                type:'check', 
-                editable: true, 
-                threeStates: false, 
-                trueValues: 'true', 
-                falseValues: 'false'
-              }              
+              styles: { 
+                textAlignment: 'far' 
+              }
             }, { 
               name: 'nullable', 
               fieldName: 'nullable', 
@@ -246,12 +245,43 @@
                 textAlignment: 'far' 
               }
             }, { 
-              fieldName: 'search_rank', name: 'search_rank', width: 95, type: 'number',
+              name: 'virtual_field', 
+              fieldName: 'virtual_field', 
+              width: 70,
+              editable: false,
               header: { 
-                text: Things.DataGlobal.t('label.search_rank')
+                text: Things.DataGlobal.t('label.virtual') 
               },
-              styles: { 
-                textAlignment: 'far' 
+              renderer: {
+                type:'check', 
+                editable: true, 
+                threeStates: false, 
+                trueValues: 'true', 
+                falseValues: 'false'
+              }              
+            }, { 
+              fieldName: 'search_check', name: 'search_check', width: 115, editable: false,
+              header: { 
+                text: Things.DataGlobal.t('title.search_condition')
+              },
+              renderer: {
+                type:'check', 
+                editable: true, 
+                threeStates: false, 
+                trueValues: 'true', 
+                falseValues: 'false'
+              }
+            }, { 
+              fieldName: 'grid_check', name: 'grid_check', width: 75, editable: false,
+              header: { 
+                text: Things.DataGlobal.t('label.list')
+              },
+              renderer: {
+                type:'check', 
+                editable: true, 
+                threeStates: false, 
+                trueValues: 'true', 
+                falseValues: 'false'
               }
             }, { 
               fieldName: 'sort_rank', name: 'sort_rank', width: 80, type: 'number',
@@ -272,14 +302,6 @@
                 threeStates: false, 
                 trueValues: 'true', 
                 falseValues: 'false'
-              }            
-            }, { 
-              fieldName: 'grid_rank', name: 'grid_rank', width: 80, type: 'number',
-              header: { 
-                text: Things.DataGlobal.t('label.grid_rank')
-              },
-              styles: { 
-                textAlignment: 'far' 
               }
             }, { 
               fieldName: 'ref_type',
@@ -388,12 +410,22 @@
         'generate-table-btn-tap' : 'generateTable',
         'generate-entity-btn-tap' : 'generateEntity',
         'generate-svc-btn-tap' : 'generateService',
+        'grid.things-grid-configured' : '_gridConfigured',
         'grid.things-grid-handle-addrow' : '_addRow',
         'grid.things-grid-handle-built-writedata' : '_setupWriteData',
-        'grid.things-grid-save-success' : 'reloadGrid',
+        'grid.things-grid-save-success' : '_responseUpdateMultiple',
         'grid.things-grid-resource-column-edit' : '_onGridColumnRefEdit',
-        'sync-service.things-ajax-response' : 'reloadGrid',
+        'sync-service.things-ajax-response' : '_responseSyncWithTable',
         'generate-service.things-ajax-response' : '_generationSuccess'
+      },
+
+      /**
+       * Grid 구성이 완료된 후
+       *
+       * @param {Object} e things-grid-configured
+       */
+      _gridConfigured: function(e) {
+        e.detail.displayOptions().setFixedColumnCount(4);
       },
 
       /**
@@ -407,6 +439,24 @@
       },
 
       /**
+       * 조회 데이터 변경
+       *
+       * @param {Object} lastResponse
+       */
+      _responseChanged: function(lastResponse) {
+        var items = lastResponse.items;
+        if(items && items.length > 0) {
+          for(var i = 0 ; i < items.length ; i++) {
+            var item = items[i];
+            item.search_check = item.search_rank && item.search_rank > 0;
+            item.grid_check = item.grid_rank && item.grid_rank > 0;
+          }
+        }
+
+        this.items = items;
+      },
+
+      /**
        * Grid에서 업데이트할 writeData 셋업이 완료된 후 writeData 조작
        *
        * @param {Object} event
@@ -415,20 +465,49 @@
         var writeData = event.detail;
         if(writeData && writeData.length > 0) {
           var entityId = this.resourceId;
-          writeData.forEach(function(changedData) {
-            delete changedData['ref_name_editor'];
-            delete changedData['trans'];
 
-            if(changedData.cud_flag_ == 'c' && (!changedData.entity || !changedData.entity_id)) {
-              changedData.entity_id = entityId;
+          writeData.forEach(function(changedData) {
+            changedData.entity_id = entityId;
+            if(!changedData.uniq_rank) changedData.uniq_rank = 0;
+
+            if(!changedData.search_check || 'false' === changedData.search_check) {
+              changedData.search_rank = 0;
+            } else {
+              if(!changedData.search_rank || changedData.search_rank <= 0)
+                changedData.search_rank = changedData.rank;
             }
 
-            /*if(!changedData.rank) changedData.disp_rank = 0;
-            if(!changedData.grid_rank) changedData.grid_rank = 0;
-            if(!changedData.search_rank) changedData.search_rank = 0;
-            if(!changedData.uniq_rank) changedData.uniq_rank = 0;*/
+            if(!changedData.grid_check || 'false' === changedData.grid_check) {
+              changedData.grid_rank = 0;
+            } else {
+              if(!changedData.grid_rank || changedData.grid_rank <= 0)
+                changedData.grid_rank = changedData.rank;
+            }
+
+            delete changedData['ref_name_editor'];
+            delete changedData['trans'];
+            delete changedData['search_check'];
+            delete changedData['grid_check'];
           });
         }
+      },
+
+      /**
+       * 그리드 변경 데이터 저장 후
+       *
+       * @param {Object} e things-grid-save-success 이벤트 
+       */
+      _responseUpdateMultiple: function(e) {
+        this.lastResponse = e.detail;
+      },
+
+      /**
+       * 엔티티 컬럼 데이터 동기화 후 
+       *
+       * @param {Object} e things-grid-save-success 이벤트 
+       */
+      _responseSyncWithTable: function(e) {
+        this.lastResponse = e.detail;
       },
 
       /**
@@ -506,6 +585,9 @@
         }        
       },
 
+      /**
+       * Entity Columns(dataSet)에 이미 fieldName으로 컬럼이 등록되어 있는지 체크 
+       */
       _isExistRow: function(dataSet, fieldName) {
         var count = dataSet._values.length;
         for(var i = 0 ; i < count ; i++) {
@@ -518,6 +600,9 @@
         return false;
       },
 
+      /**
+       * Add Row시 그리드에 추가될 기본 데이터 
+       */
       _newDefaultRow: function(name, term, colType, refType, refName, nullable, rank) {
         return {
           entity_id : this.resourceId,
@@ -538,7 +623,7 @@
         e.preventDefault();
         var dataSet = this.$.grid.dataSet;
         var count = dataSet._values.length + 1;
-        dataSet.insertRow(count - 1, this._newDefaultRow(null, null, 'string', null, null, false, count * 10));
+        dataSet.insertRow(count - 1, this._newDefaultRow(null, null, 'string', null, null, true, count * 10));
       },
 
       /**
