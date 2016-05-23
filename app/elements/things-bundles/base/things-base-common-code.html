@@ -83,8 +83,8 @@
 			columns="[[gridColumns]]"
 			current-page="1"
 			per-page="1000"
-			data="[[commonCodes.items]]"
-			total-count="[[commonCodes.total]]"
+			data="[[commonCodeList]]"
+			total-count="[[commonCodeTotal]]"
 			grid-save-action="[[gridSaveUrl]]"
 			selected-row-data="{{selectedRow}}"
 			buttons="[[buttons]]"
@@ -171,6 +171,28 @@
         detailSaveUrl: {
         	type: String,
         	value: 'common_codes/:id/update_multiple_codes.json'
+        },
+
+        /**
+         * 커먼 코드의 ajax call response로 null 값일 경우 observer를 통해 초기화 한다.
+         */
+        commonCodes: {
+        	type: Object,
+        	observer: '_commonCodesChanged'
+        },
+
+        /**
+         * 실제 그리드에 매핑되는 결과값
+         */
+        commonCodeList: {
+        	type: Array
+        },
+
+        /**
+         * 실제 그리드에 매핑되는 total값
+         */
+        commonCodeTotal: {
+        	type: Number
         },
 
         /**
@@ -309,6 +331,15 @@
 			_openResourceSelector: function(event) {
 				var index = event.detail.index;
 				this.openResourceSelectorByGrid(index._grid, index.rowIndex, event.detail.userObj, true);
+			},
+
+			/**
+			 * main code의 ajax response를 받아
+			 * 빈값일 경우에 빈 배열로 초기화하고 total 값도 초기화
+			 */
+			_commonCodesChanged: function(response) {
+				this.commonCodeList = response.items ? response.items : [];
+				this.commonCodeTotal = response.total ? response.total : 0;
 			},
 
 			/**
