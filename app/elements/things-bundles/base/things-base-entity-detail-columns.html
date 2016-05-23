@@ -607,10 +607,9 @@
         }
 
         var resourceObj = { 
-          valueField : 'ref_name',
-          selectorType : 'Entity',
-          resourceType : row.ref_type,
-          resourceUrl : (row.ref_type == 'Entity') ? 'entities' : (row.ref_type == 'Menu' ? 'menus' : 'common_codes'),
+          resourceType : 'Entity',
+          resourceName : row.ref_type,
+          ownerField : 'ref_name'
         };
 
         this.openResourceSelectorByGrid(index._grid, index.rowIndex, resourceObj, true);
