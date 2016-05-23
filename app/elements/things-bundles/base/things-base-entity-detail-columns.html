@@ -612,6 +612,10 @@
           ownerField : 'ref_name'
         };
 
+        if(row.ref_type == 'Menu') {
+          resourceObj.initialParams = 'menu_type=SCREEN,routing_type=RESOURCE';
+        }
+
         this.openResourceSelectorByGrid(index._grid, index.rowIndex, resourceObj, true);
       },
 
