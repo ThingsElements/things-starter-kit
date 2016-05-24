@@ -234,7 +234,6 @@
 
       listeners: {
         'things-detail-view-selected' : '_myTabSelected',
-        'grid.things-grid-configured' : '_gridConfigured',
         'grid.things-grid-handle-built-writedata' : '_setupWriteData',
         'grid.things-grid-save-success' : '_responseTransaction'
       },
@@ -245,15 +244,6 @@
       _myTabSelected: function(e) {
         this.$.grid.resizeGrid();
       },      
-
-      /**
-       * Grid 구성이 완료된 후
-       *
-       * @param {Object} e things-grid-configured
-       */
-      _gridConfigured: function(e) {
-        e.detail.displayOptions().setFixedColumnCount(4);
-      },
 
       /**
        * Entity Id로 Entity Column Save URL 생성

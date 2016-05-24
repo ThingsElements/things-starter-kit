@@ -146,6 +146,11 @@
                 text: Things.DataGlobal.t('label.name')
               }
             }, { 
+              fieldName: 'description', name: 'description', width: 150,
+              header: { 
+                text: Things.DataGlobal.t('label.description')
+              }
+            }, { 
               fieldName: 'term', name: 'term', width: 175,
               header: { 
                 text: Things.DataGlobal.t('label.term') + ' (from)'
@@ -368,7 +373,6 @@
         'generate-table-btn-tap' : 'generateTable',
         'generate-entity-btn-tap' : 'generateEntity',
         'generate-svc-btn-tap' : 'generateService',
-        'grid.things-grid-configured' : '_gridConfigured',
         'grid.things-grid-handle-addrow' : '_addRow',
         'grid.things-grid-handle-built-writedata' : '_setupWriteData',
         'grid.things-grid-resource-column-edit' : '_onGridColumnRefEdit',
@@ -383,15 +387,6 @@
       _myTabSelected: function(e) {
         this.$.grid.resizeGrid();
       },      
-
-      /**
-       * Grid 구성이 완료된 후
-       *
-       * @param {Object} e things-grid-configured
-       */
-      _gridConfigured: function(e) {
-        e.detail.displayOptions().setFixedColumnCount(4);
-      },
 
       /**
        * Entity Id로 Entity Column Save URL 생성

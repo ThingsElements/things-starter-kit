@@ -46,10 +46,10 @@
 			}
 			.things-resource-grid-main {
 				@apply(--layout-flex-2);
-				min-height: 200px;
 			}
 			.things-resource-grid-sub {
 				@apply(--layout-flex);
+				min-height: 150px;
 			}
 		</style>
 
@@ -73,7 +73,7 @@
 		</things-search-form>
 
 		<span class="subtitle">
-			<things-i18n-msg msgid="title.main_codes"></things-i18n-msg>
+			<things-i18n-msg msgid="label.code_list"></things-i18n-msg>
 		</span>
 
 		<things-resource-grid id="grid"
@@ -100,7 +100,7 @@
     </things-ajax>
 
 		<span class="subtitle">
-			<things-i18n-msg msgid="title.sub_codes"></things-i18n-msg>
+			<things-i18n-msg msgid="label.sub_codes"></things-i18n-msg>
 		</span>
 
 		<things-resource-grid id="sub-grid"

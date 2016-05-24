@@ -389,7 +389,6 @@
 
       listeners: {
         'things-detail-view-selected' : '_detailTabSelected',
-        'grid.things-grid-configured' : '_gridConfigured',
         'grid.things-grid-handle-addrow' : '_addRow',
         'grid.things-grid-handle-save' : '_beforeSearchColumnSave',
         'grid.things-grid-save-success' : '_reloadGrid',
@@ -403,16 +402,7 @@
        */
       _detailTabSelected: function(e) {
         this.$.grid.resizeGrid();
-      },
-
-      /**
-       * Grid 구성이 완료된 후
-       *
-       * @param {Object} e things-grid-configured
-       */
-      _gridConfigured: function(e) {
-        e.detail.displayOptions().setFixedColumnCount(4);
-      },      
+      },   
 
       /**
        * MenuMeta 변경시
