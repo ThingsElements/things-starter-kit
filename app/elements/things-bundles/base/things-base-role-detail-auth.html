@@ -15,28 +15,58 @@
         @apply(--layout-vertical);
       }
       things-resource-grid {
+        @apply(--things-default-padding);
+        padding-top:0px;
+        padding-bottom:0px;
+      }
+      .things-resource-grid-main {
         @apply(--layout-flex);
+        min-height: 200px;
+      }
+      .things-resource-grid-sub {
+        @apply(--layout-flex-2);
       }
     </style>
 
     <!-- flex를 위해 id에  layout-flex 추가  -->
     <div id="layout-flex">
+
       <things-ajax 
         auto
-        id="resource-search"
+        id="main-menu-search"
         method="GET"
-        resource-url="[[gridSearchUrl]]"
-        last-response="{{lastResponse}}"
-        auto>
+        resource-url="[[mainSearchUrl]]"
+        last-response="{{mainList}}">
       </things-ajax>
 
       <things-resource-grid 
         id="grid"
+        class="things-resource-grid-main"
         config="[[gridConfig]]"
-        model="[[gridModel]]" 
-        columns="[[gridColumns]]"
-        data="[[items]]"
-        grid-save-action="[[gridSaveUrl]]"
+        model="[[mainGridModel]]"
+        columns="[[mainGridColumns]]"
+        current-page=1
+        per-page=1000
+        data="[[mainList.items]]"
+        total-count="[[mainList.total]]"
+        enable-detail-column>
+      </things-resource-grid>
+
+      <things-ajax 
+        id="sub-menu-search"
+        method="GET"
+        resource-url="[[subSearchUrl]]"
+        last-response="{{subList}}">
+      </things-ajax>
+
+      <things-resource-grid 
+        id="subgrid"
+        class="things-resource-grid-sub"
+        config="[[gridConfig]]"
+        model="[[subGridModel]]" 
+        columns="[[subGridColumns]]"
+        data="[[finalItem]]"
+        grid-save-action="[[subSaveUrl]]"
         buttons="[[buttons]]">
       </things-resource-grid>
     </div>
@@ -49,10 +79,26 @@
 
       properties: {
 
+        mainSearchUrl: {
+          type: String,
+          value: function() {
+            var query = JSON.stringify([{name:"menu_type",value:"MENU"}]);
+            return 'menus?query=' + query;
+          }
+        },
+
+        finalItem: {
+          type: Object
+        },
+
         /**
          * role id
          */
         roleId: {
+          type: String
+        },
+
+        menuId: {
           type: String
         },
 
@@ -64,18 +110,124 @@
           observer: '_onResourceChanged'
         },
 
+        mainGridModel: {
+          type: Array,
+          value: [{
+            fieldName: 'id'
+          },{
+            fieldName: 'rank'
+          }, {
+            fieldName: 'name'
+          }, {
+            fieldName: 'menu_type'
+          }, {
+            fieldName: 'category'
+          }, {
+            fieldName: 'hidden_flag'
+          }]
+        },
+
         /**
-         * menu authorization 조회 결과 
+         * mainGridColumn
          */
-        lastResponse: {
-          type: Object,
-          observer: '_authDataChanged'
-        },        
+        mainGridColumns: {
+          type: Array,
+          value: function() {
+            return [ {
+              name: 'id',
+              fieldName: 'id',
+              width: 0
+            }, {
+              name: 'rank',
+              fieldName: 'rank',
+              width: 50,
+              header: {
+                text: Things.DataGlobal.t('label.rank')
+              },
+              styles: {
+                textAlignment: 'far',
+                numberFormat: '#,##0'
+              },
+              editor : {
+                type: 'number'
+              }
+            }, {
+              name: 'name',
+              fieldName: 'name',
+              width: 150,
+              header: {
+                text: Things.DataGlobal.t('label.name')
+              },
+              validations: [{
+                expression: 'value is not empty','level':'error','message':'(name) should not be empty!'
+              },{
+                expression: 'len value < 64','level':'error','message':'Maximum (name) length is (64)'
+              }]
+            }, {
+              name: 'menu_type',
+              fieldName: 'menu_type',
+              width: 100,
+              lookupDisplay: true,
+              header: {
+                text: Things.DataGlobal.t('label.menu_type')
+              },
+              validations: [{
+                expression: 'len value < 20','level':'error','message':'Maximum (menu_type) length is (20)'
+              }],
+              editor: {
+                type: 'list',
+                domainOnly: true
+              },
+              lookupValues: [
+                '', 'MENU','SCREEN','SEPARATOR','TEMPLATE'
+              ],
+              lookupLabels: [
+                '', 'Menu','Screen','SEPARATOR','Template'
+              ]
+            }, {
+              name: 'category',
+              fieldName: 'category',
+              width: 100,
+              lookupDisplay: true,
+              header: { 
+                text: Things.DataGlobal.t('label.category')
+              },
+              validations: [{
+                expression: 'len value < 64','level':'error','message':'Maximum (category) length is (64)'
+              }],
+              editor: {
+                type: 'list',
+                domainOnly: true
+              },
+              lookupValues: [
+                '', 'STANDARD','TERMINAL'
+              ],
+              lookupLabels: [
+                '', 'STANDARD','TERMINAL'
+              ]
+            }, {
+              name: 'hidden_flag',
+              fieldName: 'hidden_flag',
+              width: 100,
+              editable: false,
+              header: {
+                text: Things.DataGlobal.t('label.hidden_flag')
+              },
+              renderer: {
+                type: 'check',
+                editable: true,
+                threeStates: false,
+                trueValues: 'true',
+                falseValues: 'false'
+              }
+            } ];
+          }
+        },
 
         /**
          * grid model
          */
-        gridModel: {
+        subGridModel: {
           type: Array,
           value: [ {
             fieldName: 'id'
@@ -104,7 +256,7 @@
         /**
          * grid columns
          */
-        gridColumns: {
+        subGridColumns: {
           type: Array,
           value: [ {
             fieldName: 'id',
@@ -119,17 +271,6 @@
             imageList: 'images',
             header: {
               text: Things.DataGlobal.t('label.name')
-            },
-            renderer: {
-              type: 'icon'
-            },
-            styleCallback: function (index, styles) {
-              var rowData = index.getRow().getRowObject();
-              if(!rowData.parent_id || rowData.parent_id == '0' || rowData.parent_id == 0) {
-                styles.setIconIndex('indicator_insert.png');
-              } else {
-                styles.setIconIndex('menu_button.png');
-              }
             }
           }, {
             name: 'check_all', fieldName: 'check_all', width: 100, editable: false,
@@ -179,18 +320,23 @@
           } ]
         },
 
+        subList: {
+          type: Object,
+          observer: '_subListChanged'
+        },
+
         /**
          * menu autholization search url
          */
-        gridSearchUrl: {
+        subSearchUrl: {
           type: String,
-          computed: '_computeAuthSearchUrl(roleId)',
+          computed: '_computeAuthSearchUrl(roleId, menuId)',
         },
 
         /**
          * menu autholization save URL
          */
-        gridSaveUrl: {
+        subSaveUrl: {
           type: String,
           computed: '_computeAuthColumnSaveUrl(roleId)'
         },
@@ -209,9 +355,10 @@
       },
 
       listeners: {
-        'grid.things-grid-configured' : '_onGridConfigured',
-        'grid.things-grid-save-success' : 'reloadGrid',
-        'grid.things-grid-handle-build-writedata' : '_setupPermissionsToUpdate'
+        'grid.things-grid-detail-tap': '_showSubMenus',
+        'subgrid.things-grid-configured' : '_onGridConfigured',
+        'subgrid.things-grid-save-success' : 'reloadGrid',
+        'subgrid.things-grid-handle-build-writedata' : '_setupPermissionsToUpdate'
       },
 
       /**
@@ -251,7 +398,7 @@
       _setupPermissionsToUpdate: function(event) {
         event.preventDefault();
 
-        var thingsGrid = this.$.grid;
+        var thingsGrid = this.$.subgrid;
         var grid = thingsGrid.getGridObject();
         var count = grid.dataSource().rowCount();
         var dataList = grid.dataSource().getRowObjects(0, count);
@@ -270,9 +417,9 @@
           });
 
           if(!updateList || updateList.length == 0) {
-            thingsGrid.gridSaveAction = this.gridSaveUrl + '?delete_all=true';
+            thingsGrid.gridSaveAction = this.subSaveUrl + '?delete_all=true';
           } else {
-            thingsGrid.gridSaveAction = this.gridSaveUrl;
+            thingsGrid.gridSaveAction = this.subSaveUrl;
           }
 
           thingsGrid.writeData = updateList;
@@ -282,8 +429,8 @@
       /**
        * role id를 통한 searching URL 생성
        */
-      _computeAuthSearchUrl: function(roleId) {
-        return 'roles/' + roleId + '/permitted_resources.json?resource_type=Menu';
+      _computeAuthSearchUrl: function(roleId, menuId) {
+        return 'roles/' + roleId + '/permitted_resources/' + menuId + '.json';
       },
 
       /**
@@ -293,83 +440,41 @@
         return 'roles/' + roleId + '/update_permissions';
       },
 
-      /**
-       * lastResponse에서 parent와 child를 추출하여
-       * items에 초기화
-       */
-      _authDataChanged: function(lastResponse) {
-        var newItems = [];
-        var parents = this.extractParents(lastResponse.items);
-        var parentCount = parents.length;
-        var itemCount = lastResponse.items.length;
-
-        // parents loop
-        for(var i = 0 ; i < parentCount ; i++) {
-          var parent = parents[i];
-          newItems.push(parent);
-
-          // items loop
-          for(var j = 0 ; j < itemCount ; j++) {
-            var item = lastResponse.items[j];
-            if(item.parent_id != parent.id) continue;
-
-            var actionFlag = item.action_name;
-            var temp = null;
-            var ti = newItems.filter(function(ni) { return ni.id == item.id; });
-
-            if(!ti || ti.length == 0) {
-              temp = item;
-              newItems.push(temp);
-            } else {
-              temp = ti[0];
-            }
-
-            if(actionFlag)
-              temp[actionFlag] = true;
-
-            delete temp['action_name'];
-          }
-        }
-
-        this.items = newItems;
-      }, 
-
-      /**
-       * permittedItems에서 parents rows만 추출해서 리턴
-       */
-      extractParents : function(permittedItems) {
-        var tmpParents = permittedItems.filter(function(item) { return !item.parent_id; });
-        var parents = [];
-
-        tmpParents.forEach(function(item) {
-          var actionFlag = item.action_name;
-          var p = null;
-
-          var parent = parents.filter(function(p) { return p.id == item.id; });
-          if(!parent || parent.length == 0) {
-            p = item;
-            parents.push(p);
-          } else {
-            p = parent[0];
-          }
-
-          if(actionFlag)
-            p[actionFlag] = true;
-
-          delete p['action_name'];
-          p.name = p.name;
-        });
-
-        return parents;        
+      _showSubMenus: function(event) {
+        this.menuId = event.detail.id;
+        this.$['sub-menu-search'].generateRequest();
+        
       },
 
       /**
        * reload grid data
        */
       reloadGrid: function(e) {
-        this.$['resource-search'].generateRequest();
-      }
+        this.$['sub-menu-search'].generateRequest();
+      },
 
+      _subListChanged: function(subList) {
+        var newItems = [];
+        var itemsLength = subList.items.length;
+
+        for(var i=0; i < itemsLength; i++) {
+          var actionName = subList.items[i].action_name;
+          var tempItem = subList.items[i];
+          
+          if(actionName) {
+            if(actionName == 'create')
+              tempItem.create = true;
+            if (actionName == 'delete')
+              tempItem.delete = true;
+            if (actionName == 'update')
+              tempItem.update = true;
+            if (actionName == 'show')
+              tempItem.show = true;
+          }
+          newItems.push(tempItem);
+        }
+        this.finalItem = newItems;
+      }
     });
   </script>
 </dom-module>
