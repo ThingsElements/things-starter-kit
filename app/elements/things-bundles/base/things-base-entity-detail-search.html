@@ -104,6 +104,11 @@
           type: Array,
           value: function() {
             var colTypes = ['', 'binary', 'boolean', 'date', 'datetime', 'decimal', 'double', 'float', 'integer', 'long', 'string', 'text', 'time', 'timestamp'];
+            var editors = [
+              '', 'hidden', 'readonly', 'checkbox', 'text', 'code-combo', 'number',
+              'textarea', 'resource-field', 'resource-selector', 'date-picker', 
+              'time-picker', 'datetime-picker', 'tristate-radio'
+            ];            
             var searchOpers = ['', 'contains', 'dnew', 'dnsw', 'eq', 'ew', 'gt', 'gte','in', 'is_blank', 'is_false', 'is_not_false', 'is_not_null','is_not_true', 'is_null', 'is_present', 'is_true', 'like','lt', 'lte', 'nlike', 'noteq', 'notin', 'sw' ];
 
             return [ { 
@@ -167,6 +172,20 @@
                 trueValues: 'true', 
                 falseValues: 'false'
               }
+            }, {
+              name: 'search_editor', 
+              fieldName: 'search_editor', 
+              width: 120,
+              lookupDisplay: true,
+              header: { 
+                text: Things.DataGlobal.t('label.editor') 
+              },
+              editor: { 
+                type: 'list', 
+                domainOnly: true 
+              },
+              lookupValues: editors,
+              lookupLabels: editors              
             }, {
               fieldName: 'search_oper', 
               name: 'search_oper', 

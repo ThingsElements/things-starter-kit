@@ -97,6 +97,8 @@
           }, { 
             fieldName: 'reverse_sort'
           }, {
+            fieldName: 'search_editor'
+          }, {
             fieldName: 'search_oper'
           } ]
         },
@@ -106,162 +108,113 @@
          */
         gridColumns: {
           type: Array,
-          value: [ { 
-            fieldName: 'id', name: 'id', width: 0 
-          }, { 
-            fieldName: 'menu_id', name: 'menu_id', width: 0 
-          }, { 
-            fieldName: 'search_rank', name: 'search_rank', width: 60, type: 'number',
-            header: { 
-              text: Things.DataGlobal.t('label.rank')
-            },
-            styles: { 
-              textAlignment: 'far' 
-            }
-          }, { 
-            fieldName: 'name', name: 'name', width: 135,
-            header: { 
-              text: Things.DataGlobal.t('label.name')
-            }
-          }, { 
-            fieldName: 'term', name: 'term', width: 135,
-            header: { 
-              text: Things.DataGlobal.t('label.term')
-            },
-            valueType: 'text', type: 'calced',
-            valueCallback: function(column, row) {
-              var term = row.getValue('term');
-              return term ? Things.DataGlobal.t(term) : '';
-            }
-          }, { 
-            name: 'col_type', 
-            fieldName: 'col_type', 
-            width: 100,
-            lookupDisplay: true,
-            header: { 
-              text: Things.DataGlobal.t('label.col_type') 
-            },
-            editor: { 
-              type: 'list', 
-              domainOnly: true 
-            },
-            lookupValues: [
-              '',
-              'binary',
-              'boolean',
-              'date',
-              'datetime',
-              'decimal',
-              'double',
-              'float',
-              'integer',
-              'long',
-              'string',
-              'text',
-              'time',
-              'timestamp'
-            ],
-            lookupLabels: [
-              '',
-              'binary',
-              'boolean',
-              'date',
-              'datetime',
-              'decimal',
-              'double',
-              'float',
-              'integer',
-              'long',
-              'string',
-              'text',
-              'time',
-              'timestamp'
-            ]
-          }, { 
-            fieldName: 'sort_rank', name: 'sort_rank', width: 80, type: 'number',
-            header: { 
-              text: Things.DataGlobal.t('label.sort_rank')
-            },
-            styles: { 
-              textAlignment: 'far' 
-            }
-          }, { 
-            fieldName: 'reverse_sort', name: 'reverse_sort', width: 100, editable: false,
-            header: { 
-              text: Things.DataGlobal.t('label.reverse_sort')
-            },
-            renderer: {
-              type:'check', 
-              editable: true, 
-              threeStates: false, 
-              trueValues: 'true', 
-              falseValues: 'false'
-            }
-          }, {
-            fieldName: 'search_oper', 
-            name: 'search_oper', 
-            width: 120,
-            lookupDisplay: true,
-            header: { 
-              text: Things.DataGlobal.t('label.search_oper') 
-            },
-            editor: { 
-              type: 'list', 
-              domainOnly: true 
-            },
-            lookupValues: [
-              '',
-              'contains', 
-              'dnew', 
-              'dnsw', 
-              'eq', 
-              'ew', 
-              'gt', 
-              'gte',
-              'in', 
-              'is_blank', 
-              'is_false', 
-              'is_not_false', 
-              'is_not_null',
-              'is_not_true', 
-              'is_null', 
-              'is_present', 
-              'is_true', 
-              'like',
-              'lt', 
-              'lte', 
-              'nlike', 
-              'noteq', 
-              'notin', 
-              'sw' 
-            ],
-            lookupLabels: [
-              '',
-              'contains', 
-              'dnew', 
-              'dnsw', 
-              'eq', 
-              'ew', 
-              'gt', 
-              'gte',
-              'in', 
-              'is_blank', 
-              'is_false', 
-              'is_not_false', 
-              'is_not_null',
-              'is_not_true', 
-              'is_null', 
-              'is_present', 
-              'is_true', 
-              'like',
-              'lt', 
-              'lte', 
-              'nlike', 
-              'noteq', 
-              'notin', 
-              'sw' 
-            ]
-          } ] 
+          value: function() {
+            var validators = document.querySelector('#validators').allValidators();
+            var colTypes = [
+              '', 'binary', 'boolean', 'date', 'datetime','decimal','double', 
+              'float', 'integer', 'long', 'string', 'text', 'time', 'timestamp'
+            ];
+            var editors = [
+              '', 'hidden', 'readonly', 'checkbox', 'text', 'code-combo', 'number',
+              'textarea', 'resource-field', 'resource-selector', 'date-picker', 
+              'time-picker', 'datetime-picker', 'tristate-radio'
+            ];
+            var opers = [
+              '', 'contains', 'dnew', 'dnsw', 'eq', 'ew', 'gt', 'gte', 'in', 
+              'is_blank', 'is_false', 'is_not_false', 'is_not_null', 'is_not_true', 'is_null', 
+              'is_present', 'is_true', 'like', 'lt', 'lte', 'nlike', 'noteq', 'notin', 'sw' ];
+
+            return [ { 
+              fieldName: 'id', name: 'id', width: 0 
+            }, { 
+              fieldName: 'menu_id', name: 'menu_id', width: 0 
+            }, { 
+              fieldName: 'search_rank', name: 'search_rank', width: 60, type: 'number',
+              header: { 
+                text: Things.DataGlobal.t('label.rank')
+              },
+              styles: { 
+                textAlignment: 'far' 
+              }
+            }, { 
+              fieldName: 'name', name: 'name', width: 135,
+              header: { 
+                text: Things.DataGlobal.t('label.name')
+              }
+            }, { 
+              fieldName: 'term', name: 'term', width: 135,
+              header: { 
+                text: Things.DataGlobal.t('label.term')
+              },
+              valueType: 'text', type: 'calced',
+              valueCallback: function(column, row) {
+                var term = row.getValue('term');
+                return term ? Things.DataGlobal.t(term) : '';
+              }
+            }, { 
+              name: 'col_type', 
+              fieldName: 'col_type', 
+              width: 100,
+              lookupDisplay: true,
+              header: { 
+                text: Things.DataGlobal.t('label.col_type') 
+              },
+              editor: { 
+                type: 'list', 
+                domainOnly: true 
+              },
+              lookupValues: colTypes,
+              lookupLabels: colTypes
+            }, { 
+              fieldName: 'sort_rank', name: 'sort_rank', width: 80, type: 'number',
+              header: { 
+                text: Things.DataGlobal.t('label.sort_rank')
+              },
+              styles: { 
+                textAlignment: 'far' 
+              }
+            }, { 
+              fieldName: 'reverse_sort', name: 'reverse_sort', width: 100, editable: false,
+              header: { 
+                text: Things.DataGlobal.t('label.reverse_sort')
+              },
+              renderer: {
+                type:'check', 
+                editable: true, 
+                threeStates: false, 
+                trueValues: 'true', 
+                falseValues: 'false'
+              }
+            }, { 
+              name: 'search_editor', 
+              fieldName: 'search_editor', 
+              width: 120,
+              lookupDisplay: true,
+              header: { 
+                text: Things.DataGlobal.t('label.editor') 
+              },
+              editor: { 
+                type: 'list', 
+                domainOnly: true 
+              },
+              lookupValues: editors,
+              lookupLabels: editors
+            }, {
+              fieldName: 'search_oper', 
+              name: 'search_oper', 
+              width: 120,
+              lookupDisplay: true,
+              header: { 
+                text: Things.DataGlobal.t('label.search_oper') 
+              },
+              editor: { 
+                type: 'list', 
+                domainOnly: true 
+              },
+              lookupValues: opers,
+              lookupLabels: opers
+            } ];
+          }
         },
 
         /**
