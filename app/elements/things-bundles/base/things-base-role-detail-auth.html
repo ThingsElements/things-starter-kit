@@ -92,12 +92,15 @@
         },
 
         /**
-         * role id
+         * 현재 선택된 Role Id
          */
         roleId: {
           type: String
         },
 
+        /**
+         * 현재 선택된 Main Menu Id
+         */
         menuId: {
           type: String
         },
@@ -358,7 +361,8 @@
         'grid.things-grid-detail-tap': '_showSubMenus',
         'subgrid.things-grid-configured' : '_onGridConfigured',
         'subgrid.things-grid-save-success' : 'reloadGrid',
-        'subgrid.things-grid-handle-build-writedata' : '_setupPermissionsToUpdate'
+        'subgrid.things-grid-handle-build-writedata' : '_setupPermissionsToUpdate',
+        'subgrid.things-grid-handle-save' : '_saveGridData'
       },
 
       /**
@@ -391,15 +395,15 @@
       },
 
       /**
-       * 업데이트할 Permissions 데이터를 셋업한다.
+       * 업데이트할 Permissions 데이터를 셋업한다. - override setupWriteData Logic
        *
        * @param {Object} event things-grid-handle-build-writedata
        */
       _setupPermissionsToUpdate: function(event) {
         event.preventDefault();
 
-        var thingsGrid = this.$.subgrid;
-        var grid = thingsGrid.getGridObject();
+        var grid = event.detail;
+        var thingsGrid = event.srcElement;
         var count = grid.dataSource().rowCount();
         var dataList = grid.dataSource().getRowObjects(0, count);
 
@@ -416,14 +420,27 @@
             }
           });
 
-          if(!updateList || updateList.length == 0) {
-            thingsGrid.gridSaveAction = this.subSaveUrl + '?delete_all=true';
-          } else {
-            thingsGrid.gridSaveAction = this.subSaveUrl;
-          }
-
           thingsGrid.writeData = updateList;
         }
+      },
+
+      /**
+       * 변경 데이터 업데이트 - override updateMultipleData Logic
+       *
+       * @param {Object} event things-grid-handle-save
+       */
+      _saveGridData: function(event) {
+        event.preventDefault();
+
+        var grid = event.detail;
+        var thingsGrid = event.srcElement;
+        var saveUrl = this.subSaveUrl + '?parent_menu_id=' + this.menuId;
+
+        if(!thingsGrid.writeData || thingsGrid.writeData.length == 0) {
+          saveUrl = saveUrl + '&delete_all=true';
+        }
+
+        thingsGrid.updateMultipleData(saveUrl);
       },
 
       /**
