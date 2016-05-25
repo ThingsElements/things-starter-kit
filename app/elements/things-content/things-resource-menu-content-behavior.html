@@ -178,6 +178,10 @@ Things.ResourceMenuContentBehaviorImpl = {
 	showDetailView: function(event) {
 		if(!this.menuInfo.detail_form_id || this.menuInfo.detail_form_id == 'things-resource-form') {
 			this.showResourceForm(event.detail, this.refreshGridData);
+
+		} else if(this.menuInfo.detail_form_id && this.this.menuInfo.detail_form_id.indexOf('things-detail-layout') >= 0) {
+			this.showLayoutView(event.detail);
+
 		} else if(this.menuInfo.detail_form_id != 'custom') {
 			this.showCustomView(this.menuInfo.detail_form_id, event.detail, this.refreshGridData);
 		}
@@ -194,6 +198,18 @@ Things.ResourceMenuContentBehaviorImpl = {
 		this._setViewConfig('detail-view', viewElement, selectedRecord, saveCallback);
 		this.openPopupView(viewElement, true);
 	},
+
+	/**
+	 * 임시 - Layout 템플릿을 표시한다.
+	 *
+	 * @param {Object} selectedRecord 그리드에서 선택된 Row Data
+	 * @param {Function} saveCallback 저장 후 콜백 함수 
+	 */
+	showLayoutView: function(selectedRecord, saveCallback) {
+		var viewElement = document.createElement(this.menuInfo.detail_form_id);
+		this._setViewConfig('detail-view', viewElement, selectedRecord, saveCallback);
+		this.openPopupView(viewElement, true);
+	},	
 
 	/**
 	 * 프레임 웍에서 기본으로 제공하지 않는 리소스 디테일 폼을 표시한다.
