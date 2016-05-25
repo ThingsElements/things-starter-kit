@@ -6,7 +6,7 @@
 <link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
 <link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
 
-<dom-module id="things-base-menu-detail-grid">
+<dom-module id="things-base-menu-setup-search">
   <template>
     <style>
       :host {
@@ -21,7 +21,7 @@
     <things-ajax 
       id="column-ajax"
       method="GET"
-      resource-url="menus/:id/menu_meta"
+      resource-url="menus/:id/menu_meta?no_trans_term=true"
       resource-id="[[resourceId]]"
       last-response="{{menuMeta}}">
     </things-ajax>
@@ -39,25 +39,20 @@
 
   <script>
     Polymer({
-
-      is: 'things-base-menu-detail-grid',
-
+      is: 'things-base-menu-setup-search',
       properties: {
-
         /**
          * Menu Id
          */
         resourceId: {
           type: String
         },
-
         /**
          * Menu Data
          */
         resource: {
           type: Object
         },
-
         /**
          * Menu Meta Data
          * 데이터 형식 : { menu : Object, buttons: Array, columns: Array }
@@ -67,39 +62,37 @@
           notify: true,
           observer: '_onMenuMetaChanged'
         },
-
         /**
          * Menu columns 조회 정보 
          */
         items: {
           type: Array
         },        
-
         /**
          * Grid Model
          */
         gridModel: {
           type: Array,
           value: [ { 
-            fieldName: 'id' 
+            fieldName: 'id'
           }, { 
-            fieldName: 'menu_id' 
+            fieldName: 'menu_id'
           }, { 
-            fieldName: 'grid_rank' 
+            fieldName: 'search_rank'
           }, { 
-            fieldName: 'name' 
+            fieldName: 'name'
           }, { 
             fieldName: 'term'
           }, { 
             fieldName: 'col_type'
           }, { 
-            fieldName: 'grid_align'
+            fieldName: 'sort_rank'
           }, { 
-            fieldName: 'grid_width'
-          }, { 
-            fieldName: 'grid_editor'            
-          }, { 
-            fieldName: 'grid_format'
+            fieldName: 'reverse_sort'
+          }, {
+            fieldName: 'search_editor'
+          }, {
+            fieldName: 'search_oper'
           } ]
         },
         
@@ -109,21 +102,33 @@
         gridColumns: {
           type: Array,
           value: function() {
-            var colTypes = ['', 'binary', 'boolean', 'date', 'datetime', 'decimal', 'double', 'float', 'integer', 'long', 'string', 'text', 'time', 'timestamp'];
-            var editors = ['', 'hidden', 'readonly', 'checkbox', 'text', 'code-combo', 'number', 'textarea', 'resource-column', 'resource-selector', 'date-picker', 'datetime-picker'];
-            
+            var validators = document.querySelector('#validators').allValidators();
+            var colTypes = [
+              '', 'binary', 'boolean', 'date', 'datetime','decimal','double', 
+              'float', 'integer', 'long', 'string', 'text', 'time', 'timestamp'
+            ];
+            var editors = [
+              '', 'hidden', 'readonly', 'checkbox', 'text', 'code-combo', 'number',
+              'textarea', 'resource-field', 'resource-selector', 'date-picker', 
+              'time-picker', 'datetime-picker', 'tristate-radio'
+            ];
+            var opers = [
+              '', 'contains', 'dnew', 'dnsw', 'eq', 'ew', 'gt', 'gte', 'in', 
+              'is_blank', 'is_false', 'is_not_false', 'is_not_null', 'is_not_true', 'is_null', 
+              'is_present', 'is_true', 'like', 'lt', 'lte', 'nlike', 'noteq', 'notin', 'sw' ];
+              
             return [ { 
               fieldName: 'id', name: 'id', width: 0 
             }, { 
               fieldName: 'menu_id', name: 'menu_id', width: 0 
             }, { 
-              fieldName: 'grid_rank', name: 'grid_rank', width: 60,
+              fieldName: 'search_rank', name: 'search_rank', width: 60, type: 'number',
               header: { 
                 text: Things.DataGlobal.t('label.rank')
               },
               styles: { 
                 textAlignment: 'far' 
-              }            
+              }
             }, { 
               fieldName: 'name', name: 'name', width: 135,
               header: { 
@@ -154,31 +159,29 @@
               lookupValues: colTypes,
               lookupLabels: colTypes
             }, { 
-              name: 'grid_align', 
-              fieldName: 'grid_align', 
-              width: 80,
-              lookupDisplay: true,
+              fieldName: 'sort_rank', name: 'sort_rank', width: 80, type: 'number',
               header: { 
-                text: Things.DataGlobal.t('label.align') 
-              },
-              editor: { 
-                type: 'list', 
-                domainOnly: true 
-              },
-              lookupValues: [ 'Center', 'Far' ],
-              lookupLabels: [ 'Center', 'Far' ]
-            }, { 
-              fieldName: 'grid_width', name: 'grid_width', width: 80, type: 'number',
-              header: {
-                text: Things.DataGlobal.t('label.width')
+                text: Things.DataGlobal.t('label.sort_rank')
               },
               styles: { 
                 textAlignment: 'far' 
               }
             }, { 
-              name: 'grid_editor', 
-              fieldName: 'grid_editor', 
-              width: 150,
+              fieldName: 'reverse_sort', name: 'reverse_sort', width: 100, editable: false,
+              header: { 
+                text: Things.DataGlobal.t('label.reverse_sort')
+              },
+              renderer: {
+                type:'check', 
+                editable: true, 
+                threeStates: false, 
+                trueValues: 'true', 
+                falseValues: 'false'
+              }
+            }, { 
+              name: 'search_editor', 
+              fieldName: 'search_editor', 
+              width: 120,
               lookupDisplay: true,
               header: { 
                 text: Things.DataGlobal.t('label.editor') 
@@ -189,23 +192,30 @@
               },
               lookupValues: editors,
               lookupLabels: editors
-            }, { 
-              fieldName: 'grid_format', name: 'grid_format', width: 135,
-              header: {
-                text: Things.DataGlobal.t('label.format')
-              }
-            } ] 
+            }, {
+              fieldName: 'search_oper', 
+              name: 'search_oper', 
+              width: 120,
+              lookupDisplay: true,
+              header: { 
+                text: Things.DataGlobal.t('label.search_oper') 
+              },
+              editor: { 
+                type: 'list', 
+                domainOnly: true 
+              },
+              lookupValues: opers,
+              lookupLabels: opers
+            } ];
           }
         },
-
         /**
-         * Grid Column Save URL
+         * Search Column Save URL
          */
         gridSaveUrl: {
           type: String,
           computed: '_computeColumnSaveUrl(resourceId)'
         },
-
         /**
          * 버튼 정보 
          */
@@ -218,21 +228,18 @@
           } ]
         }
       },
-
       listeners: {
         'things-detail-view-selected' : '_detailTabSelected',
         'grid.things-grid-handle-save' : '_beforeSearchColumnSave',
         'grid.things-grid-save-success' : '_reloadGrid',
         'column-ajax.things-ajax-response': '_afterColumnsLoaded'
       },
-
       /**
        * 상세 탭 선택시 ...
        */
       _detailTabSelected: function(e) {
         this.$.grid.resizeGrid();
-      },      
-
+      },
       /**
        * MenuMeta 변경시
        *
@@ -243,13 +250,12 @@
           this.items = [];
         } else {
           var items = menuMeta.columns.filter(function(column) {
-            return column.grid_rank && column.grid_rank > 0;
+            return (column.search_rank && column.search_rank > 0) || (column.sort_rank && column.sort_rank > 0);
           });
-          if(items && items.length > 0) this._sortColumns(items, 'grid_rank')
+          if(items && items.length > 0) this._sortColumns(items, 'search_rank')
           this.items = items;
         }
       },
-
       /**
        * list sorting
        */
@@ -258,19 +264,17 @@
           return (a[sortField] > b[sortField]) ? 1 : ((b[sortField] > a[sortField]) ? -1 : 0);
         });
       },
-
       /**
-       * Grid Column Save URL
+       * Search Column Save URL
        *
        * @param {String} resourceId
-       * @return {String} Grid Column Save URL
+       * @return {String} Search Column Save URL
        */
       _computeColumnSaveUrl: function(resourceId) {
         return 'menus/' + resourceId + '/menu_columns/update_multiple';
-      },
-
+      },      
       /**
-       * Grid Column 저장 전
+       * Search Column 저장 전
        *
        * @param {Object} event menu-meta 저장 전 이벤트 
        */
@@ -286,14 +290,12 @@
           });
         }
       },
-
       /**
        * Reload Grid Data
        */
       _reloadGrid: function(e) {
         this.$['column-ajax'].generateRequest();
       },
-
       /**
        * Menu Meta Data 조회 후 
        *
@@ -301,8 +303,7 @@
        */
       _afterColumnsLoaded: function(event) {
         this.menuMeta = event.detail;
-      }
-
+      },
     });
   </script>
 </dom-module>

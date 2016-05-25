@@ -8,15 +8,17 @@
 <link rel="import" href="../../../../bower_components/things-detail/things-detail-tab-view-behavior.html">
 <link rel="import" href="../../../../bower_components/things-form/things-resource-form.html">
 
-<link rel="import" href="./things-base-menu-detail-buttons.html">
-<link rel="import" href="./things-base-menu-detail-columns.html">
-<link rel="import" href="./things-base-menu-detail-master.html">
+<link rel="import" href="./things-base-menu-setup-columns.html">
+<link rel="import" href="./things-base-menu-setup-buttons.html">
+<link rel="import" href="./things-base-menu-setup-search.html">
+<link rel="import" href="./things-base-menu-setup-grid.html">
+<link rel="import" href="./things-base-menu-setup-form.html">
 
 <!--
   Menu 셋업 View
 -->
 
-<dom-module id="things-base-menu-detail">
+<dom-module id="things-base-menu-setup">
   <template>
     <style>
       :host {
@@ -52,28 +54,49 @@
         auto
         id="get-resource"
         method="GET"
-        resource-url="[[menuDetailsUrl]]"
+        resource-url="menus/:id/menu_meta?no_trans_term=true"
+        resource-id="[[resourceId]]"
         last-response="{{menuMeta}}">
       </things-ajax>
 
       <iron-pages id="tabPages" selected="{{currentTabIdx}}" class="iron-pages">
-        <things-base-menu-detail-master
-          class="detail-flex"
-          resource-id="[[resourceId]]"
-          menu-meta="{{menuDetails}}">
-        </things-base-menu-detail-master>
+        <things-resource-form
+          id="resource-form" 
+          resource-url="[[resourceUrl]]"
+          resource="{{menuMeta.menu}}"
+          form-fields="[[formFields]]"
+          remove-fields-on-save="[[removeFieldsOnSave]]">
+        </things-resource-form>
 
-        <things-base-menu-detail-columns
-          class="detail-flex"
-          resource-id="[[resourceId]]"
-          menu-meta="{{menuDetails}}">
-        </things-base-menu-detail-columns>
-
-        <things-base-menu-detail-buttons
+        <things-base-menu-setup-columns
           class="detail-flex"
           resource-id="[[resourceId]]"
           menu-meta="{{menuMeta}}">
-        </things-base-menu-detail-buttons>
+        </things-base-menu-setup-columns>
+
+        <things-base-menu-setup-search
+          class="detail-flex"
+          resource-id="[[resourceId]]"
+          menu-meta="{{menuMeta}}">
+        </things-base-menu-setup-search>
+
+        <things-base-menu-setup-grid
+          class="detail-flex"
+          resource-id="[[resourceId]]"
+          menu-meta="{{menuMeta}}">
+        </things-base-menu-setup-grid>
+
+        <things-base-menu-setup-form
+          class="detail-flex"
+          resource-id="[[resourceId]]"
+          menu-meta="{{menuMeta}}">
+        </things-base-menu-setup-form>
+
+        <things-base-menu-setup-buttons
+          class="detail-flex"
+          resource-id="[[resourceId]]"
+          menu-meta="{{menuMeta}}">
+        </things-base-menu-setup-buttons>
       </iron-pages>
     </paper-header-panel>
   </template>
@@ -81,34 +104,21 @@
   <script>
     Polymer({
 
-      is: 'things-base-menu-detail',
+      is: 'things-base-menu-setup',
 
       behaviors: [ 
         Things.DetailTabViewBahavior
       ],
 
       properties: {
-        /**
-         * Menu Details URL
-         */
-        menuDetailsUrl: {
-          type: String,
-          computed: '_computeMenuDetailsUrl(resourceId)'
-        },
 
         /**
-         * Menu Meta Details
+         * Menu Meta Data
+         * 데이터 형식 : { menu : Object, buttons: Array, columns: Array }
          */
-        menuDetailMeta: {
+        menuMeta: {
           type: Object,
-          observer: '_menuDetailMetaChanged'
-        },
-
-        /**
-         * Menu Details List
-         */
-        menuDetails: {
-          type: Array
+          notify: true
         },
 
         /**
@@ -125,27 +135,24 @@
        */
       ready: function() {
         this._panels = [ {
-          title: Things.DataGlobal.t('title.detail'), 
-          elementId: 'things-base-menu-detail-master'
+          title: Things.DataGlobal.t('title.basic_info'), 
+          elementId: 'things-resource-form'
         }, {
           title: Things.DataGlobal.t('title.setup_columns'), 
-          elementId: 'things-base-menu-detail-columns'
+          elementId: 'things-base-menu-setup-columns'
+        }, {
+          title: Things.DataGlobal.t('title.setup_searching'), 
+          elementId: 'things-base-menu-setup-search'
+        }, {
+          title: Things.DataGlobal.t('title.setup_grid'), 
+          elementId: 'things-base-menu-setup-grid'
+        }, {
+          title: Things.DataGlobal.t('title.setup_form'), 
+          elementId: 'things-base-menu-setup-form'
         }, {
           title: Things.DataGlobal.t('title.setup_button'), 
-          elementId: 'things-base-menu-detail-buttons'
+          elementId: 'things-base-menu-setup-buttons'
         } ];
-      },
-
-      /**
-       * Menu Details를 찾기 위한 URL
-       */
-      _computeMenuDetailsUrl: function(menuId) {
-        var query = JSON.stringify([{name: 'menu_id', value: menuId}]);
-        return 'menu_details?' + query;
-      },
-
-      _menuDetailMetaChanged: function(menuMetaDetail) {
-        this.menuDetails = menuMetaDetail.items ? menuMetaDetail.items : [];
       }
 
     });

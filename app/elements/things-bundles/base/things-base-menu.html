@@ -11,7 +11,8 @@
 <link rel="import" href="../../../../bower_components/things-resource-selector/things-resource-selector-behavior.html">
 <link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
 
-<link rel="import" href="./things-base-menu-detail.html">
+<link rel="import" href="./things-base-menu-setup.html">
+<!--link rel="import" href="./things-base-menu-detail.html"-->
 
 <!--
 메뉴 관리 화면 셋. 
@@ -313,7 +314,8 @@
 			 */
 			_showMenuDetail: function(e) {
 				var menu = e.detail;
-				var viewElement = document.createElement('things-base-menu-detail');
+				var viewElement = document.createElement('things-base-menu-setup');
+				//var viewElement = document.createElement(this.menuInfo.detail_form_id);
 				viewElement.id = 'detail-view';
 				viewElement.title = menu.name;
 				viewElement.resourceType = 'Menu';
@@ -383,12 +385,6 @@
 			_openResourceSelector: function(event) {
 				var index = event.detail.index;
 				this.openResourceSelectorByGrid(index._grid, index.rowIndex, event.detail.userObj, true);
-			},
-
-			/**
-			 * 화면 초기화 함수, 의미 없음, 추후 삭제 예정
-			 */
-			initializeContent: function() {
 			}
 
 		});

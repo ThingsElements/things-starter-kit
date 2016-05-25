@@ -104,7 +104,7 @@
           type: Array,
           value: function() {
             var colTypes = ['', 'binary', 'boolean', 'date', 'datetime', 'decimal', 'double', 'float', 'integer', 'long', 'string', 'text', 'time', 'timestamp'];
-            var searchOpers = ['', 'hidden', 'readonly', 'text', 'number', 'code-combo', 'checkbox', 'resource-column', 'resource-selector', 'date-picker', 'datetime-picker', 'textarea'];
+            var editors = ['', 'hidden', 'readonly', 'text', 'number', 'code-combo', 'checkbox', 'resource-column', 'resource-selector', 'date-picker', 'datetime-picker', 'textarea'];
 
             return [ { 
               fieldName: 'id', name: 'id', width: 0 
@@ -181,8 +181,8 @@
                 type: 'list', 
                 domainOnly: true 
               },
-              lookupValues: searchOpers,
-              lookupLabels: searchOpers
+              lookupValues: editors,
+              lookupLabels: editors
             }, { 
               fieldName: 'grid_format', name: 'grid_format', width: 135,
               header: {

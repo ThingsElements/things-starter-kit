@@ -6,7 +6,7 @@
 <link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
 <link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
 
-<dom-module id="things-base-menu-detail-search">
+<dom-module id="things-base-menu-detail-master">
   <template>
     <style>
       :host {
@@ -19,9 +19,9 @@
     </style>
 
     <things-ajax 
-      id="column-ajax"
+      id="detail-ajax"
       method="GET"
-      resource-url="menus/:id/menu_meta"
+      resource-url="menu_details"
       resource-id="[[resourceId]]"
       last-response="{{menuMeta}}">
     </things-ajax>
@@ -40,7 +40,7 @@
   <script>
     Polymer({
 
-      is: 'things-base-menu-detail-search',
+      is: 'things-base-menu-detail-master',
 
       properties: {
 
@@ -85,21 +85,19 @@
           }, { 
             fieldName: 'menu_id'
           }, { 
-            fieldName: 'search_rank'
-          }, { 
             fieldName: 'name'
           }, { 
-            fieldName: 'term'
+            fieldName: 'view_section'
           }, { 
-            fieldName: 'col_type'
+            fieldName: 'entity'
           }, { 
-            fieldName: 'sort_rank'
+            fieldName: 'search_url'
           }, { 
-            fieldName: 'reverse_sort'
+            fieldName: 'save_url'
+          }, { 
+            fieldName: 'association'
           }, {
-            fieldName: 'search_editor'
-          }, {
-            fieldName: 'search_oper'
+            fieldName: 'data_prop'
           } ]
         },
         
@@ -109,33 +107,10 @@
         gridColumns: {
           type: Array,
           value: function() {
-            var validators = document.querySelector('#validators').allValidators();
-            var colTypes = [
-              '', 'binary', 'boolean', 'date', 'datetime','decimal','double', 
-              'float', 'integer', 'long', 'string', 'text', 'time', 'timestamp'
-            ];
-            var editors = [
-              '', 'hidden', 'readonly', 'checkbox', 'text', 'code-combo', 'number',
-              'textarea', 'resource-field', 'resource-selector', 'date-picker', 
-              'time-picker', 'datetime-picker', 'tristate-radio'
-            ];
-            var opers = [
-              '', 'contains', 'dnew', 'dnsw', 'eq', 'ew', 'gt', 'gte', 'in', 
-              'is_blank', 'is_false', 'is_not_false', 'is_not_null', 'is_not_true', 'is_null', 
-              'is_present', 'is_true', 'like', 'lt', 'lte', 'nlike', 'noteq', 'notin', 'sw' ];
-
             return [ { 
               fieldName: 'id', name: 'id', width: 0 
             }, { 
               fieldName: 'menu_id', name: 'menu_id', width: 0 
-            }, { 
-              fieldName: 'search_rank', name: 'search_rank', width: 60, type: 'number',
-              header: { 
-                text: Things.DataGlobal.t('label.rank')
-              },
-              styles: { 
-                textAlignment: 'far' 
-              }
             }, { 
               fieldName: 'name', name: 'name', width: 135,
               header: { 
@@ -152,68 +127,39 @@
                 return term ? Things.DataGlobal.t(term) : '';
               }
             }, { 
-              name: 'col_type', 
-              fieldName: 'col_type', 
-              width: 100,
-              lookupDisplay: true,
+              fieldName: 'view_section', name: 'view_section', width: 135,
               header: { 
-                text: Things.DataGlobal.t('label.col_type') 
-              },
-              editor: { 
-                type: 'list', 
-                domainOnly: true 
-              },
-              lookupValues: colTypes,
-              lookupLabels: colTypes
+                text: Things.DataGlobal.t('label.view_section')
+              }
             }, { 
-              fieldName: 'sort_rank', name: 'sort_rank', width: 80, type: 'number',
+              fieldName: 'entity', name: 'entity', width: 80, type: 'number',
               header: { 
-                text: Things.DataGlobal.t('label.sort_rank')
+                text: Things.DataGlobal.t('label.entity')
               },
               styles: { 
                 textAlignment: 'far' 
               }
             }, { 
-              fieldName: 'reverse_sort', name: 'reverse_sort', width: 100, editable: false,
+              fieldName: 'search_url', name: 'search_url', width: 135,
               header: { 
-                text: Things.DataGlobal.t('label.reverse_sort')
-              },
-              renderer: {
-                type:'check', 
-                editable: true, 
-                threeStates: false, 
-                trueValues: 'true', 
-                falseValues: 'false'
+                text: Things.DataGlobal.t('label.search_url')
               }
-            }, { 
-              name: 'search_editor', 
-              fieldName: 'search_editor', 
-              width: 120,
-              lookupDisplay: true,
-              header: { 
-                text: Things.DataGlobal.t('label.editor') 
-              },
-              editor: { 
-                type: 'list', 
-                domainOnly: true 
-              },
-              lookupValues: editors,
-              lookupLabels: editors
             }, {
-              fieldName: 'search_oper', 
-              name: 'search_oper', 
-              width: 120,
-              lookupDisplay: true,
+              fieldName: 'save_url', name: 'save_url', width: 135,
               header: { 
-                text: Things.DataGlobal.t('label.search_oper') 
-              },
-              editor: { 
-                type: 'list', 
-                domainOnly: true 
-              },
-              lookupValues: opers,
-              lookupLabels: opers
-            } ];
+                text: Things.DataGlobal.t('label.save_url')
+              }
+            }, {
+              fieldName: 'association', name: 'association', width: 135,
+              header: { 
+                text: Things.DataGlobal.t('label.association')
+              }
+            }, {
+              fieldName: 'data_prop', name: 'data_prop', width: 135,
+              header: { 
+                text: Things.DataGlobal.t('label.data_prop')
+              }
+            } ]
           }
         },
 
