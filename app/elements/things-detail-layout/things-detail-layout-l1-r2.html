@@ -1,0 +1,77 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/things-detail/things-resource-detail-tab-view-behavior.html">
+<!--
+A comment describing this element
+
+Example:
+
+    <my-elem></my-elem>
+
+Example:
+
+    <my-elem>
+      <h2>Hello my-elem</h2>
+    </my-elem>
+
+@demo demo/index.html
+-->
+
+<dom-module id="things-detail-layout-l1-r2">
+	<template>
+		<style>
+			:host {
+				display: inline-block;
+				@apply(--things-detail-layout-l1-r2);
+				@apply(--layout-flex);
+				@apply(--layout-horizontal);
+			}
+			#leftContainer {
+				@apply(--layout-flex);
+				@apply(--layout-vertical);
+				@apply(--things-detail-layout-r1-l2-right-container);
+			}
+			
+			#rightContainer {
+				@apply(--layout-flex);
+				@apply(--layout-vertical);
+				@apply(--things-detail-layout-r1-l2-left-container);
+			}
+
+			#rightTopContainer {
+				@apply(--layout-flex-2);
+				@apply(--things-detail-layout-r1-l2-left-top-container);
+			}
+			
+			#rightBottomContainer {
+				@apply(--layout-flex);
+				@apply(--things-detail-layout-r1-l2-left-bottom-container);
+			}
+		</style>
+		<div id="leftContainer">
+			<span>right</span>
+		</div>
+
+		<div id="rightContainer">
+			<div id="rightTopContainer" class="layout flex">
+				<span>Left Top</span>
+			</div>
+			<div id="rightBottomContainer" class="layout flex">
+				<span>Left Bottom</span>
+			</div>
+		</div>
+		
+	</template>
+	<script>
+		(function() {
+			'use strict';
+
+			Polymer({
+				is: 'things-detail-layout-l1-r2',
+
+			      behaviors: [ 
+			        Things.ResourceDetailTabViewBahavior
+			      ],
+			});
+		})();
+	</script>
+</dom-module>

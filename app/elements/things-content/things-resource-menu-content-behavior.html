@@ -179,7 +179,7 @@ Things.ResourceMenuContentBehaviorImpl = {
 		if(!this.menuInfo.detail_form_id || this.menuInfo.detail_form_id == 'things-resource-form') {
 			this.showResourceForm(event.detail, this.refreshGridData);
 
-		} else if(this.menuInfo.detail_form_id && this.this.menuInfo.detail_form_id.indexOf('things-detail-layout') >= 0) {
+		} else if(this.menuInfo.detail_form_id && this.menuInfo.detail_form_id.indexOf('things-detail-layout') >= 0) {
 			this.showLayoutView(event.detail);
 
 		} else if(this.menuInfo.detail_form_id != 'custom') {
@@ -206,7 +206,7 @@ Things.ResourceMenuContentBehaviorImpl = {
 	 * @param {Function} saveCallback 저장 후 콜백 함수 
 	 */
 	showLayoutView: function(selectedRecord, saveCallback) {
-		var viewElement = document.createElement(this.menuInfo.detail_form_id);
+		var viewElement = document.createElement(selectedRecord.name);
 		this._setViewConfig('detail-view', viewElement, selectedRecord, saveCallback);
 		this.openPopupView(viewElement, true);
 	},	
