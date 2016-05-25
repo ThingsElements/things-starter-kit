@@ -157,11 +157,11 @@
           }, {
             fieldName: 'name'
           }, {
+            fieldName: 'description'
+          }, {
             fieldName: 'menu_type'
           }, {
             fieldName: 'category'
-          }, {
-            fieldName: 'hidden_flag'
           }]
         },
 
@@ -179,86 +179,40 @@
               name: 'rank',
               fieldName: 'rank',
               width: 50,
+              editable: false,
               header: {
                 text: Things.DataGlobal.t('label.rank')
-              },
-              styles: {
-                textAlignment: 'far',
-                numberFormat: '#,##0'
-              },
-              editor : {
-                type: 'number'
               }
             }, {
               name: 'name',
               fieldName: 'name',
               width: 150,
+              editable: false,
               header: {
                 text: Things.DataGlobal.t('label.name')
-              },
-              validations: [{
-                expression: 'value is not empty','level':'error','message':'(name) should not be empty!'
-              },{
-                expression: 'len value < 64','level':'error','message':'Maximum (name) length is (64)'
-              }]
+              }
+            }, {
+              name: 'description',
+              fieldName: 'description',
+              width: 300,
+              editable: false,
+              header: {
+                text: Things.DataGlobal.t('label.description')
+              }
             }, {
               name: 'menu_type',
               fieldName: 'menu_type',
               width: 100,
-              lookupDisplay: true,
+              editable: false,
               header: {
                 text: Things.DataGlobal.t('label.menu_type')
-              },
-              validations: [{
-                expression: 'len value < 20','level':'error','message':'Maximum (menu_type) length is (20)'
-              }],
-              editor: {
-                type: 'list',
-                domainOnly: true
-              },
-              lookupValues: [
-                '', 'MENU','SCREEN','SEPARATOR','TEMPLATE'
-              ],
-              lookupLabels: [
-                '', 'Menu','Screen','SEPARATOR','Template'
-              ]
+              }
             }, {
               name: 'category',
               fieldName: 'category',
               width: 100,
-              lookupDisplay: true,
-              header: { 
-                text: Things.DataGlobal.t('label.category')
-              },
-              validations: [{
-                expression: 'len value < 64','level':'error','message':'Maximum (category) length is (64)'
-              }],
-              editor: {
-                type: 'list',
-                domainOnly: true
-              },
-              lookupValues: [
-                '', 'STANDARD','TERMINAL'
-              ],
-              lookupLabels: [
-                '', 'STANDARD','TERMINAL'
-              ]
-            }, {
-              name: 'hidden_flag',
-              fieldName: 'hidden_flag',
-              width: 100,
               editable: false,
-              header: {
-                text: Things.DataGlobal.t('label.hidden_flag')
-              },
-              renderer: {
-                type: 'check',
-                editable: true,
-                threeStates: false,
-                trueValues: 'true',
-                falseValues: 'false'
-              }
-            } ];
+            }];
           }
         },
 
