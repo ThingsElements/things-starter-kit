@@ -21,6 +21,11 @@
         @apply(--layout-flex);
       }
     </style>
+
+    <things-ajax 
+      id="delete-service" 
+      method="DELETE">
+    </things-ajax>    
     
     <things-resource-grid 
       id="grid"
@@ -209,7 +214,16 @@
          */
         buttons: {
           type: Array,
-          value: [ {            
+          value: [ {
+            id: 'delete-table-btn',
+            text: 'delete table'
+          }, {
+            id: 'delete-entity-btn',
+            text: 'delete entity'
+          }, {
+            id: 'delete-svc-btn',
+            text: 'delete service'
+          }, {
             id: 'save-btn',
             text: 'save'
           }, {
@@ -222,8 +236,92 @@
       listeners: {
         'things-detail-view-selected' : '_myTabSelected',
         'grid.things-grid-handle-built-writedata' : '_setupWriteData',
-        'grid.things-grid-save-success' : '_responseTransaction'
+        'grid.things-grid-save-success' : '_responseTransaction',
+        'delete-table-btn-tap' : 'deleteTable',
+        'delete-entity-btn-tap' : 'deleteEntity',
+        'delete-svc-btn-tap' : 'deleteService'
       },
+
+      /**
+       * Delete Table
+       *
+       * @param {Object} e 버튼 클릭 이벤트 
+       */
+      deleteTable: function(e) {
+        if(this.resource.table_name) {
+          this._confirmAndInvoke(function() {
+            var service = this.$['delete-service'];
+            service.resourceUrl = 'code_generator/code/table/' + this.resourceId;
+            service.generateRequest();
+          }.bind(this));
+
+        } else {
+          this._warningNotReady();
+        }        
+      },
+
+      /**
+       * Delete Entity
+       *
+       * @param {Object} e 버튼 클릭 이벤트 
+       */
+      deleteEntity: function(e) {
+        if(this.resource.table_name) {
+          this._confirmAndInvoke(function() {
+            var service = this.$['delete-service'];
+            service.resourceUrl = 'code_generator/code/entity/' + this.resourceId;
+            service.generateRequest();
+          }.bind(this));
+
+        } else {
+          this._warningNotReady();
+        }
+      },
+
+      /**
+       * Delete Service
+       *
+       * @param {Object} e 버튼 클릭 이벤트 
+       */
+      deleteService: function(e) {
+        if(this.resource.table_name) {
+          this._confirmAndInvoke(function() {
+            var service = this.$['delete-service'];
+            service.resourceUrl = 'code_generator/code/controller/' + this.resourceId;
+            service.generateRequest();
+          }.bind(this));
+
+        } else {
+          this._warningNotReady();
+        }
+      },
+
+      /**
+       * 서비스 호출 준비가 안 된 상태라는 메시지 출력 
+       */
+      _warningNotReady: function() {
+        var tableName = Things.DataGlobal.t('label.table_name');
+        var msg = Things.DataGlobal.t('error.SHOULD_NOT_BE_EMPTY', { value : tableName });
+
+        this.openInfoMsg({
+          type : 'warning',
+          title : msg,
+          showCancelButton: true,
+          closeOnConfirm : true
+        });
+      },      
+
+      /**
+       * 사용자에게 확인 후 서비스 호출
+       */
+      _confirmAndInvoke: function(func) {
+        this.openConfirmMsg({
+          type : 'info',
+          title : Things.DataGlobal.t('text.Sure to Generate'),
+          showCancelButton: true,
+          closeOnConfirm : true
+        }, func);
+      },      
 
       /**
        * 상세 탭 선택시 ...
