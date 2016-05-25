@@ -458,20 +458,40 @@
         var itemsLength = subList.items.length;
 
         for(var i=0; i < itemsLength; i++) {
+          var currentName = subList.items[i].name;
           var actionName = subList.items[i].action_name;
           var tempItem = subList.items[i];
+          var lastIdx = newItems.length - 1;
           
           if(actionName) {
-            if(actionName == 'create')
-              tempItem.create = true;
-            if (actionName == 'delete')
-              tempItem.delete = true;
-            if (actionName == 'update')
-              tempItem.update = true;
-            if (actionName == 'show')
-              tempItem.show = true;
+            if(currentName != previousName) {
+              if(actionName == 'create') {
+                tempItem.create = true;
+              } else if (actionName == 'delete') {
+                tempItem.delete = true;
+              } else if (actionName == 'update') {
+                tempItem.update = true;
+              } else { //show
+                tempItem.show = true;
+              }
+
+              newItems.push(tempItem);
+
+            } else {
+              if(actionName == 'create') {
+                newItems[lastIdx].create = true;
+              } else if (actionName == 'delete') {
+                newItems[lastIdx].delete = true;
+              } else if (actionName == 'update') {
+                newItems[lastIdx].update = true;
+              } else { //show
+                newItems[lastIdx].show = true;
+              }
+            }
+          } else {
+            newItems.push(tempItem);
           }
-          newItems.push(tempItem);
+          var previousName = currentName;
         }
         this.finalItem = newItems;
       }
