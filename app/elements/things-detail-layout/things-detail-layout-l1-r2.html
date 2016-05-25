@@ -28,13 +28,13 @@ Example:
 			#leftContainer {
 				@apply(--layout-flex);
 				@apply(--layout-vertical);
-				@apply(--things-detail-layout-r1-l2-right-container);
+				@apply(--things-detail-layout-l1-r2-right-container);
 			}
 			
 			#rightContainer {
 				@apply(--layout-flex);
 				@apply(--layout-vertical);
-				@apply(--things-detail-layout-r1-l2-left-container);
+				@apply(--things-detail-layout-l1-r2-left-container);
 			}
 
 			#rightTopContainer {
@@ -52,10 +52,10 @@ Example:
 		</div>
 
 		<div id="rightContainer">
-			<div id="rightTopContainer" class="layout flex">
+			<div id="rightTopContainer">
 				<span>Left Top</span>
 			</div>
-			<div id="rightBottomContainer" class="layout flex">
+			<div id="rightBottomContainer">
 				<span>Left Bottom</span>
 			</div>
 		</div>
@@ -68,9 +68,9 @@ Example:
 			Polymer({
 				is: 'things-detail-layout-l1-r2',
 
-			      behaviors: [ 
-			        Things.ResourceDetailTabViewBahavior
-			      ],
+				behaviors: [ 
+					Things.ResourceDetailTabViewBahavior
+				],
 			});
 		})();
 	</script>
