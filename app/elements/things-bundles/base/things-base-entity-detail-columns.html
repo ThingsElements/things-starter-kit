@@ -340,35 +340,7 @@
          * 버튼 정보 
          */
         buttons: {
-          type: Array,
-          value: [ {
-            id: 'sync-btn',
-            text: 'sync'
-          }, {
-            id: 'check-columns-btn',
-            text: 'check-columns'
-          }, {
-            id: 'add-btn',
-            text: 'add'
-          }, {            
-            id: 'save-btn',
-            text: 'save'
-          }, {
-            id: 'delete-btn',
-            text: 'delete'
-          }, {
-            id: 'generate-table-btn',
-            text: 'generate_table'
-          }, {
-            id: 'generate-entity-btn',
-            text: 'generate_entity'
-          }, {
-            id: 'generate-svc-btn',
-            text: 'generate_service'
-          }, {
-            id: 'create-menu-btn',
-            text: 'create_menu'
-          } ]
+          type: Array
         }
       },
 
@@ -392,6 +364,7 @@
        * 상세 탭 선택시 ...
        */
       _myTabSelected: function(e) {
+        this.setupBottons(e.detail.master.name);
         this.$.grid.resizeGrid();
       },      
 
@@ -752,6 +725,62 @@
         genSvc.generateRequest();
         genSvc.body = null;
       },
+
+      /**
+       * 전달받은 isSlave를 통해 master/slave 여부를 확인한 뒤 버튼을 초기화 합니다.
+       */
+      setupBottons: function(isSlave) {
+        if(isSlave) {
+          this.buttons = [ {
+            id: 'sync-btn',
+            text: 'sync'
+          }, {
+            id: 'check-columns-btn',
+            text: 'check-columns'
+          }, {
+            id: 'add-btn',
+            text: 'add'
+          }, {            
+            id: 'save-btn',
+            text: 'save'
+          }, {
+            id: 'delete-btn',
+            text: 'delete'
+          }, {
+            id: 'create-menu-btn',
+            text: 'create_menu'
+          } ];
+        } else { // master
+          this.buttons = [ {
+            id: 'sync-btn',
+            text: 'sync'
+          }, {
+            id: 'check-columns-btn',
+            text: 'check-columns'
+          }, {
+            id: 'add-btn',
+            text: 'add'
+          }, {            
+            id: 'save-btn',
+            text: 'save'
+          }, {
+            id: 'delete-btn',
+            text: 'delete'
+          }, {
+            id: 'generate-table-btn',
+            text: 'generate_table'
+          }, {
+            id: 'generate-entity-btn',
+            text: 'generate_entity'
+          }, {
+            id: 'generate-svc-btn',
+            text: 'generate_service'
+          }, {
+            id: 'create-menu-btn',
+            text: 'create_menu'
+          } ];
+        }
+      }
 
       /**
        * Detail 화면 Open
