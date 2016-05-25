@@ -1,5 +1,7 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/things-detail/things-resource-detail-tab-view-behavior.html">
+<link rel="import" href="../../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
+<link rel="import" href="../../../bower_components/iron-selector/iron-selectable.html">
 <!--
 A comment describing this element
 
@@ -69,7 +71,9 @@ Example:
 				is: 'things-detail-layout-l1-r2',
 
 				behaviors: [ 
-					Things.ResourceDetailTabViewBahavior
+					Things.ResourceDetailTabViewBahavior,
+					Polymer.IronSelectableBehavior,
+					Polymer.IronResizableBehavior,
 				],
 			});
 		})();
