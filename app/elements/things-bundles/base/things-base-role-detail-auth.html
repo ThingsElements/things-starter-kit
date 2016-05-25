@@ -79,16 +79,15 @@
 
       properties: {
 
+        /**
+         * 상위 그리드 검색 URL (Main Menu List)
+         */
         mainSearchUrl: {
           type: String,
           value: function() {
             var query = JSON.stringify([{name:"menu_type",value:"MENU"}]);
             return 'menus?query=' + query;
           }
-        },
-
-        finalItem: {
-          type: Object
         },
 
         /**
@@ -106,6 +105,39 @@
         },
 
         /**
+         * 하위 그리드 ajax response
+         * 부모 메뉴의 자식 메뉴 리스트
+         */
+        subList: {
+          type: Object,
+          observer: '_subListChanged'
+        },
+
+        /**
+         * menu autholization search url
+         */
+        subSearchUrl: {
+          type: String,
+          computed: '_computeAuthSearchUrl(roleId, menuId)',
+        },
+
+        /**
+         * menu autholization save URL
+         */
+        subSaveUrl: {
+          type: String,
+          computed: '_computeAuthColumnSaveUrl(roleId)'
+        },
+
+        /**
+         * 그리드에 나타나는 최종 item object
+         * _subListChanged 함수를 통해 초기화되는 결과 값
+         */
+        finalItem: {
+          type: Object
+        },
+
+        /**
          * role resource
          */
         resource: {
@@ -113,6 +145,9 @@
           observer: '_onResourceChanged'
         },
 
+        /**
+         * 상위 그리드 모델
+         */
         mainGridModel: {
           type: Array,
           value: [{
@@ -131,7 +166,7 @@
         },
 
         /**
-         * mainGridColumn
+         * 상위 그리드 컬럼
          */
         mainGridColumns: {
           type: Array,
@@ -228,7 +263,7 @@
         },
 
         /**
-         * grid model
+         * 하위 그리드 모델
          */
         subGridModel: {
           type: Array,
@@ -257,7 +292,7 @@
         },
         
         /**
-         * grid columns
+         * 하위 그리드 컬럼
          */
         subGridColumns: {
           type: Array,
@@ -321,27 +356,6 @@
               trueValues: 'true', falseValues: 'false'
             }
           } ]
-        },
-
-        subList: {
-          type: Object,
-          observer: '_subListChanged'
-        },
-
-        /**
-         * menu autholization search url
-         */
-        subSearchUrl: {
-          type: String,
-          computed: '_computeAuthSearchUrl(roleId, menuId)',
-        },
-
-        /**
-         * menu autholization save URL
-         */
-        subSaveUrl: {
-          type: String,
-          computed: '_computeAuthColumnSaveUrl(roleId)'
         },
 
         /**
@@ -470,6 +484,9 @@
         this.$['sub-menu-search'].generateRequest();
       },
 
+      /**
+       * 하위메뉴 검색을 통해 얻은 결과 값을 그리드에 매핑하기 위한 데이터의 형식으로 가공하는 로직
+       */
       _subListChanged: function(subList) {
         var newItems = [];
         var itemsLength = subList.items.length;
