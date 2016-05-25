@@ -19,12 +19,20 @@
     </style>
 
     <things-ajax 
+      auto
+      id="get-resource"
+      method="GET"
+      resource-url="[[menuDetailsUrl]]"
+      last-response="{{menuMeta}}">
+    </things-ajax>
+
+    <!--things-ajax 
       id="detail-ajax"
       method="GET"
       resource-url="menu_details"
       resource-id="[[resourceId]]"
       last-response="{{menuMeta}}">
-    </things-ajax>
+    </things-ajax-->
 
     <things-resource-grid 
       id="grid"
@@ -132,13 +140,28 @@
                 text: Things.DataGlobal.t('label.view_section')
               }
             }, { 
-              fieldName: 'entity', name: 'entity', width: 80, type: 'number',
-              header: { 
+              fieldName: 'entity', name: 'entity', width: 135,
+              header: {
                 text: Things.DataGlobal.t('label.entity')
-              },
-              styles: { 
-                textAlignment: 'far' 
-              }
+             }
+            }, {
+                name: 'entity_editor',
+                fieldName: 'entity_editor',
+                width: 30,
+                editable: false,
+                header: { text: '...' },
+                imageList: 'images',
+                renderer: { type: 'icon' },
+                styles: {
+                  iconIndex: 'menu_button.png',
+                  iconLocation: 'center'
+                },
+                userObj: {
+                  resourceType: 'Entity',
+                  resourceName: 'Entity',
+                  resourceUrl: 'entities',
+                  ownerField: 'ref_name'
+                }              
             }, { 
               fieldName: 'search_url', name: 'search_url', width: 135,
               header: { 

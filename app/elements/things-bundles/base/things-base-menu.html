@@ -314,8 +314,7 @@
 			 */
 			_showMenuDetail: function(e) {
 				var menu = e.detail;
-				var viewElement = document.createElement('things-base-menu-setup');
-				//var viewElement = document.createElement(this.menuInfo.detail_form_id);
+				var viewElement = document.createElement(this.menuInfo.detail_form_id);
 				viewElement.id = 'detail-view';
 				viewElement.title = menu.name;
 				viewElement.resourceType = 'Menu';
