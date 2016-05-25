@@ -142,6 +142,9 @@
               }
             }, { 
               fieldName: 'name', name: 'name', width: 135,
+              validations: [
+                { level: "error", expression: "value is not empty", message: "값 '경로'이 빈값이면 안됩니다." }
+              ],              
               header: { 
                 text: Things.DataGlobal.t('label.name')
               }
@@ -170,6 +173,9 @@
               fieldName: 'col_type', 
               width: 100,
               lookupDisplay: true,
+              validations: [
+                { level: "error", expression: "value is not empty", message: "값 '경로'이 빈값이면 안됩니다." }
+              ],
               header: { 
                 text: Things.DataGlobal.t('label.col_type') 
               },
