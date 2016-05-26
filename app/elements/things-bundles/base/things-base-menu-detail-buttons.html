@@ -18,12 +18,12 @@
       }
     </style>
 
-    <things-ajax 
+    <things-ajax
       id="button-ajax"
       method="GET"
-      resource-url="menus/:id/menu_meta"
       resource-id="[[resourceId]]"
-      last-response="{{menuMeta}}">
+      resource-url="menu_details/:id/menu_detail_buttons"
+      last-response="{{menuDetailButtons}}">
     </things-ajax>
 
     <things-resource-grid 
@@ -31,7 +31,8 @@
       config="[[gridConfig]]"
       model="[[gridModel]]" 
       columns="[[gridColumns]]"
-      data="[[items]]"
+      data="[[menuDetailButtons]]"
+      fixed-column-count="0"
       grid-save-action="[[gridSaveUrl]]"
       buttons="[[buttons]]">
     </things-resource-grid>
@@ -45,34 +46,35 @@
       properties: {
 
         /**
-         * Menu ID
+         * Menu Detail ID
          */
         resourceId: {
-          type: String
+          type: String,
+          observer: '_menuDetailChanged'
         },
 
         /**
-         * Menu
+         * Menu Buttons Save URL
+         */
+        gridSaveUrl: {
+          type: String,
+          computed: '_computeButtonSaveUrl(resourceId)'
+        },        
+
+        /**
+         * Menu Detail Data
          */
         resource: {
           type: Object
         },
 
         /**
-         * Menu Meta Data
-         * 데이터 형식 : { menu : Object, buttons: Array, columns: Array }
+         * Menu Detail Buttons
          */
-        menuMeta: {
+        menuDetailButtons: {
           type: Object,
-          observer: '_onMenuMetaChanged'
-        },        
-
-        /**
-         * menu columns 조회 정보 
-         */
-        items: {
-          type: Array
-        },        
+          notify: true
+        },      
 
         /**
          * grid model
@@ -82,17 +84,15 @@
           value: [ { 
             fieldName: 'id' 
           }, { 
-            fieldName: 'menu_id' 
+            fieldName: 'menu_detail_id' 
           }, { 
-            fieldName: 'text' 
+            fieldName: 'name' 
           }, { 
             fieldName: 'term' 
           }, { 
             fieldName: 'icon' 
           }, { 
             fieldName: 'style' 
-          }, { 
-            fieldName: 'logic'
           } ]
         },
         
@@ -101,49 +101,38 @@
          */
         gridColumns: {
           type: Array,
-          value: [ { 
-            fieldName: 'id', name: 'id', width: 0 
-          }, { 
-            fieldName: 'menu_id', name: 'menu_id', width: 0 
-          }, { 
-            fieldName: 'text', name: 'text', width: 200,
-            header: { 
-              text: Things.DataGlobal.t('label.name')
-            },
-          }, { 
-            fieldName: 'term', name: 'term', width: 135,
-            header: { 
-              text: Things.DataGlobal.t('label.term')
-            },
-            valueType: 'text', type: 'calced',
-            valueCallback: function(column, row) {
-              var text = row.getValue('text');
-              return text ? Things.DataGlobal.t('button.' + text) : '';
-            }
-          }, { 
-            fieldName: 'icon', name: 'icon', width: 150,
-            header: { 
-              text: Things.DataGlobal.t('label.icon')
-            }
-          }, { 
-            fieldName: 'style', name: 'style', width: 150,
-            header: { 
-              text: Things.DataGlobal.t('label.style')
-            }
-          }/*, { 
-            fieldName: 'logic', name: 'logic', width: 350,
-            header: {
-              text: Things.DataGlobal.t('label.logic')
-           }
-          }*/ ]
-        },
-
-        /**
-         * Menu Buttons Save URL
-         */
-        gridSaveUrl: {
-          type: String,
-          computed: '_computeButtonSaveUrl(resourceId)'
+          value: function() {
+            return [ { 
+              fieldName: 'id', name: 'id', width: 0 
+            }, { 
+              fieldName: 'menu_detail_id', name: 'menu_detail_id', width: 0 
+            }, { 
+              fieldName: 'name', name: 'name', width: 200,
+              header: { 
+                text: Things.DataGlobal.t('label.name')
+              },
+            }/*, { 
+              fieldName: 'term', name: 'term', width: 135,
+              header: { 
+                text: Things.DataGlobal.t('label.term')
+              },
+              valueType: 'text', type: 'calced',
+              valueCallback: function(column, row) {
+                var text = row.getValue('text');
+                return text ? Things.DataGlobal.t('button.' + text) : '';
+              }
+            }*/, { 
+              fieldName: 'icon', name: 'icon', width: 150,
+              header: { 
+                text: Things.DataGlobal.t('label.icon')
+              }
+            }, { 
+              fieldName: 'style', name: 'style', width: 150,
+              header: { 
+                text: Things.DataGlobal.t('label.style')
+              }
+            } ];
+          }
         },
 
         /**
@@ -153,16 +142,13 @@
           type: Array,
           value: [ {
             id: 'add-btn',
-            text: 'add',
-            icon: 'icons:add'
+            text: 'add'
           }, {
             id: 'save-btn',
-            text: 'save',
-            icon: 'icons:save'
+            text: 'save'
           }, {
             id: 'delete-btn',
-            text: 'delete',
-            icon: 'icons:delete'
+            text: 'delete'
           } ]
         }
       },
@@ -170,8 +156,7 @@
       listeners: {
         'things-detail-view-selected' : '_detailTabSelected',
         'grid.things-grid-handle-save' : '_beforeButtonSave',
-        'grid.things-grid-save-success' : '_reloadGrid',
-        'button-ajax.things-ajax-response': '_afterButtonsLoaded'
+        'grid.things-grid-save-success' : '_onButtonsSaveSuccess',
       },
 
       /**
@@ -179,16 +164,17 @@
        */
       _detailTabSelected: function(e) {
         this.$.grid.resizeGrid();
-      },      
+      },
 
       /**
-       * MenuMeta 변경시
+       * Menu Detail Id Changed
        *
-       * @param {Object} menuMeta
+       * @param {Object} e 버튼 클릭 이벤트
        */
-      _onMenuMetaChanged: function(menuMeta) {
-        this.items = menuMeta.buttons;
-      },
+      _menuDetailChanged: function(menuDetailId) {
+        this.$['button-ajax'].resourceId = menuDetailId;
+        this.$['button-ajax'].generateRequest();
+      },      
 
       /**
        * Button Search URL 데이터로 Button Save URL 생성
@@ -197,14 +183,7 @@
        * @return {String} Button Search URL
        */
       _computeButtonSaveUrl: function(resourceId) {
-        return 'menus/' + resourceId + '/menu_buttons/update_multiple';
-      },
-
-      /**
-       * Button Grid 저장 후 
-       */
-      _afterButtonsLoaded: function(event) {
-        this.menuMeta = event.detail;
+        return 'menu_details/' + resourceId + '/menu_detail_buttons/update_multiple';
       },
 
       /**
@@ -213,22 +192,22 @@
       _beforeButtonSave: function(event) {
         var grid = event.target;
         if(grid.writeData && grid.writeData.length > 0) {
-          var resourceId = this.resourceId;
+          var menuDetailId = this.resourceId;
           grid.writeData.forEach(function(changedData) {
             delete changedData['term'];
-            if(changedData.cud_flag_ == 'c') {
-              changedData.menu_id = resourceId;
-            }
+            changedData.menu_detail_id = menuDetailId;
           });
         }
       },
 
       /**
-       * Reload Grid Data
+       * Menu Detail Buttons 저장 후 
+       *
+       * @param {Object} event 
        */
-      _reloadGrid: function(e) {
-        this.$['button-ajax'].generateRequest();
-      }
+      _onButtonsSaveSuccess: function(event) {
+        this.menuDetailButtons = event.detail;
+      },
 
     });
   </script>

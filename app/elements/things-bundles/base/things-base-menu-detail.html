@@ -60,20 +60,21 @@
         <things-base-menu-detail-main
           class="detail-flex"
           resource-id="[[resourceId]]"
+          menu-detail-id="{{menuDetailId}}"
           menu-detail-meta="{{menuDetailMeta}}">
         </things-base-menu-detail-main>
 
-        <!--things-base-menu-detail-columns
+        <things-base-menu-detail-columns
           class="detail-flex"
-          resource-id="[[resourceId]]"
+          resource-id="{{menuDetailId}}"
           menu-meta="{{menuDetails}}">
         </things-base-menu-detail-columns>
 
         <things-base-menu-detail-buttons
           class="detail-flex"
-          resource-id="[[resourceId]]"
+          resource-id="{{menuDetailId}}"
           menu-meta="{{menuMeta}}">
-        </things-base-menu-detail-buttons-->
+        </things-base-menu-detail-buttons>
       </iron-pages>
     </paper-header-panel>
   </template>
@@ -101,6 +102,14 @@
          */
         menuDetailMeta: {
           type: Object
+        },
+
+        /**
+         * Menu Detail ID
+         */
+        menuDetailId: {
+          type: String,
+          notify: true
         }
       },
 
@@ -111,13 +120,13 @@
         this._panels = [ {
           title: Things.DataGlobal.t('title.detail'), 
           elementId: 'things-base-menu-detail-main'
-        }/*, {
+        }, {
           title: Things.DataGlobal.t('title.setup_columns'), 
           elementId: 'things-base-menu-detail-columns'
         }, {
           title: Things.DataGlobal.t('title.setup_button'), 
           elementId: 'things-base-menu-detail-buttons'
-        }*/ ];
+        } ];
       },
 
       /**

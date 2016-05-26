@@ -25,14 +25,15 @@
       method="POST"
       resource-url="menu_details/:id/menu_detail_columns/sync_with_entity_columns"
       resource-id="[[resourceId]]"
+      content-type="application/json"
       last-response="{{menuDetailColumns}}">
     </things-ajax>
 
-    <things-ajax 
+    <things-ajax
       id="column-ajax"
       method="GET"
-      resource-url="menu_details/:id/menu_detail_columns"
       resource-id="[[resourceId]]"
+      resource-url="menu_details/:id/menu_detail_columns"
       last-response="{{menuDetailColumns}}">
     </things-ajax>
 
@@ -64,7 +65,8 @@
          * Menu Detail Id
          */
         resourceId: {
-          type: String
+          type: String,
+          observer: '_menuDetailChanged'
         },
 
         /**
@@ -116,14 +118,6 @@
           }, { 
             fieldName: 'nullable'
           }, { 
-            fieldName: 'uniq_rank'
-          }, { 
-            fieldName: 'search_rank'
-          }, { 
-            fieldName: 'sort_rank'
-          }, { 
-            fieldName: 'reverse_sort'
-          }, { 
             fieldName: 'grid_rank'
           }, { 
             fieldName: 'ref_type'
@@ -132,15 +126,11 @@
           }, {
             fieldName: 'ref_name_editor'
           }, { 
-            fieldName: 'ref_url'
-          }, { 
             fieldName: 'ref_params'
           }, { 
             fieldName: 'ref_related'
           }, {
             fieldName: 'def_val'
-          }, {
-            fieldName: 'search_check'
           }, {
             fieldName: 'grid_check'
           } ]
@@ -227,32 +217,12 @@
                 falseValues: 'false'
               }
             }, { 
-              fieldName: 'uniq_rank', name: 'uniq_rank', width: 80, type: 'number',
-              header: { 
-                text: Things.DataGlobal.t('label.uniq_rank')
-              },
-              styles: { 
-                textAlignment: 'far' 
-              }
-            }, { 
               name: 'virtual_field', 
               fieldName: 'virtual_field', 
               width: 70,
               editable: false,
               header: { 
                 text: Things.DataGlobal.t('label.virtual') 
-              },
-              renderer: {
-                type:'check', 
-                editable: true, 
-                threeStates: false, 
-                trueValues: 'true', 
-                falseValues: 'false'
-              }
-            }, { 
-              fieldName: 'search_check', name: 'search_check', width: 115, editable: false,
-              header: { 
-                text: Things.DataGlobal.t('title.search_condition')
               },
               renderer: {
                 type:'check', 
@@ -273,26 +243,6 @@
                 trueValues: 'true', 
                 falseValues: 'false'
               }
-            }, { 
-              fieldName: 'sort_rank', name: 'sort_rank', width: 80, type: 'number',
-              header: { 
-                text: Things.DataGlobal.t('label.sort_rank')
-              },
-              styles: { 
-                textAlignment: 'far' 
-              }
-            }, { 
-              fieldName: 'reverse_sort', name: 'reverse_sort', width: 100, editable: false,
-              header: { 
-                text: Things.DataGlobal.t('label.reverse_sort')
-              },
-              renderer: {
-                type:'check', 
-                editable: true, 
-                threeStates: false, 
-                trueValues: 'true', 
-                falseValues: 'false'
-              }            
             }, { 
               fieldName: 'ref_type',
               name: 'ref_type',
@@ -330,11 +280,6 @@
                   resourceUrl: 'menus',
                   ownerField: 'ref_name'
                 }
-            }, { 
-              fieldName: 'ref_url', name: 'ref_url', width: 135,
-              header: {
-                text: Things.DataGlobal.t('label.ref_url')
-             }
             }, { 
               fieldName: 'ref_params', name: 'ref_params', width: 180,
               header: {
@@ -395,7 +340,7 @@
        * @return {String} Grid Column Save URL
        */
       _computeColumnSaveUrl: function(resourceId) {
-        return 'menu_details/' + resourceId + 'menu_detail_columns/update_multiple';
+        return 'menu_details/' + resourceId + '/menu_detail_columns/update_multiple';
       },      
 
       /**
@@ -406,11 +351,22 @@
       },
 
       /**
+       * Menu Detail Id Changed
+       *
+       * @param {Object} e 버튼 클릭 이벤트
+       */
+      _menuDetailChanged: function(resourceId) {
+        this.$['column-ajax'].resourceId = resourceId;
+        this.$['column-ajax'].generateRequest();
+      },
+
+      /**
        * Sync Columns
        *
        * @param {Object} e 버튼 클릭 이벤트
        */
       _syncColumns: function(e) {
+        this.$['column-ajax'].resourceId = this.resourceId;
         this.$['columns-sync-ajax'].generateRequest();
       },
 
@@ -437,14 +393,6 @@
           var menuDetailId = this.resourceId;
           grid.writeData.forEach(function(changedData) {
             changedData.menu_detail_id = menuDetailId;
-            if(!changedData.uniq_rank) changedData.uniq_rank = 0;
-
-            if(!changedData.search_check || 'false' === changedData.search_check) {
-              changedData.search_rank = 0;
-            } else {
-              if(!changedData.search_rank || changedData.search_rank <= 0)
-                changedData.search_rank = changedData.rank;
-            }
 
             if(!changedData.grid_check || 'false' === changedData.grid_check) {
               changedData.grid_rank = 0;
@@ -455,7 +403,6 @@
 
             delete changedData['ref_name_editor'];
             delete changedData['trans'];
-            delete changedData['search_check'];
             delete changedData['grid_check'];
           });
         }
