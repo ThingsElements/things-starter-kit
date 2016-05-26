@@ -12,7 +12,7 @@
 <link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
 
 <link rel="import" href="./things-base-menu-setup.html">
-<!--link rel="import" href="./things-base-menu-detail.html"-->
+<link rel="import" href="./things-base-menu-detail.html">
 
 <!--
 메뉴 관리 화면 셋. 
@@ -256,10 +256,11 @@
 				'grid.things-grid-detail-tap': '_showSubMenus',
 				'grid.things-grid-save-success': '_reloadMainMenus',
 				'grid.things-grid-configured' : '_reloadMainMenus',
-				'sub-grid.things-grid-detail-tap': '_showMenuDetail',
+				'sub-grid.things-grid-detail-tap': '_showSetupMenu',
 				'sub-grid.things-grid-save-success': '_reloadSubMenus',
 				'sub-grid.things-grid-handle-save' : '_beforeSubMenuSave',
-				'things-grid-resource-column-edit' : '_openResourceSelector'
+				'things-grid-resource-column-edit' : '_openResourceSelector',
+				'detail-btn-tap' : '_showSetupDetail'
 			},
 
 			/**
@@ -308,11 +309,11 @@
 			},
 
 			/**
-			 * 메뉴 상세 페이지를 오픈
+			 * 메뉴 셋업 페이지를 오픈
 			 *
 			 * @param {Object} e 서브 메뉴 그리드 Detail Button 클릭 이벤트
 			 */
-			_showMenuDetail: function(e) {
+			_showSetupMenu: function(e) {
 				var menu = e.detail;
 				var viewElement = document.createElement(this.menuInfo.detail_form_id);
 				viewElement.id = 'detail-view';
@@ -328,7 +329,28 @@
 				viewElement.addEventListener('things-resource-form-saved', function(e) {
 					viewElement.closePopupView();
 					me._reloadSubMenus();
-				});				
+				});
+			},
+
+			/**
+			 * 메뉴 상세 셋업 페이지를 오픈
+			 *
+			 * @param {Object} e Detail 버튼 클릭 이벤트
+			 */
+			_showSetupDetail: function(e) {
+				var subgrid = this.$['sub-grid'].getGridObject();
+				var rows = subgrid.getCheckedRows();
+				if(!rows || rows.length == 0) return;
+
+				var ds = this.$['sub-grid'].getGridDataSet();
+				var menu = ds.getRowObject(rows[0]._index);
+
+				var viewElement = document.createElement('things-base-menu-detail');
+				viewElement.id = 'detail-view';
+				viewElement.title = menu.name;
+				viewElement.resourceId = menu.id;
+				viewElement.resource = menu;
+				viewElement.showDetailView(menu.id, menu);
 			},
 
 			/**

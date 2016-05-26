@@ -10,7 +10,7 @@
 
 <link rel="import" href="./things-base-menu-detail-buttons.html">
 <link rel="import" href="./things-base-menu-detail-columns.html">
-<link rel="import" href="./things-base-menu-detail-master.html">
+<link rel="import" href="./things-base-menu-detail-main.html">
 
 <!--
   Menu 셋업 View
@@ -57,13 +57,13 @@
       </things-ajax>
 
       <iron-pages id="tabPages" selected="{{currentTabIdx}}" class="iron-pages">
-        <things-base-menu-detail-master
+        <things-base-menu-detail-main
           class="detail-flex"
           resource-id="[[resourceId]]"
-          menu-meta="{{menuDetails}}">
-        </things-base-menu-detail-master>
+          menu-detail-meta="{{menuDetailMeta}}">
+        </things-base-menu-detail-main>
 
-        <things-base-menu-detail-columns
+        <!--things-base-menu-detail-columns
           class="detail-flex"
           resource-id="[[resourceId]]"
           menu-meta="{{menuDetails}}">
@@ -73,7 +73,7 @@
           class="detail-flex"
           resource-id="[[resourceId]]"
           menu-meta="{{menuMeta}}">
-        </things-base-menu-detail-buttons>
+        </things-base-menu-detail-buttons-->
       </iron-pages>
     </paper-header-panel>
   </template>
@@ -100,23 +100,7 @@
          * Menu Meta Details
          */
         menuDetailMeta: {
-          type: Object,
-          observer: '_menuDetailMetaChanged'
-        },
-
-        /**
-         * Menu Details List
-         */
-        menuDetails: {
-          type: Array
-        },
-
-        /**
-         * Save 하기 전에 폼에는 있지만 Save하는데 필요 없는 필드를 삭제하기 위한 필드명
-         */
-        removeFieldsOnSave: {
-          type: Array,
-          value: ['creator', 'updater', 'creator_id', 'updater_id', 'created_at', 'updated_at']
+          type: Object
         }
       },
 
@@ -126,26 +110,24 @@
       ready: function() {
         this._panels = [ {
           title: Things.DataGlobal.t('title.detail'), 
-          elementId: 'things-base-menu-detail-master'
-        }, {
+          elementId: 'things-base-menu-detail-main'
+        }/*, {
           title: Things.DataGlobal.t('title.setup_columns'), 
           elementId: 'things-base-menu-detail-columns'
         }, {
           title: Things.DataGlobal.t('title.setup_button'), 
           elementId: 'things-base-menu-detail-buttons'
-        } ];
+        }*/ ];
       },
 
       /**
        * Menu Details를 찾기 위한 URL
+       *
+       * @param {String} menuId
        */
       _computeMenuDetailsUrl: function(menuId) {
         var query = JSON.stringify([{name: 'menu_id', value: menuId}]);
         return 'menu_details?' + query;
-      },
-
-      _menuDetailMetaChanged: function(menuMetaDetail) {
-        this.menuDetails = menuMetaDetail.items ? menuMetaDetail.items : [];
       }
 
     });

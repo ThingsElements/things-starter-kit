@@ -2,11 +2,12 @@
 <link rel="import" href="../../../../bower_components/iron-icon/iron-icon.html">
 
 <link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
+<link rel="import" href="../../../../bower_components/things-msg-box-behavior/things-msg-box-behavior.html">
 <link rel="import" href="../../../../bower_components/things-resource-selector/things-resource-selector-behavior.html">
 <link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
-<link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
 
-<dom-module id="things-base-menu-detail-master">
+<dom-module id="things-base-menu-detail-main">
   <template>
     <style>
       :host {
@@ -19,20 +20,12 @@
     </style>
 
     <things-ajax 
-      auto
-      id="get-resource"
-      method="GET"
-      resource-url="[[menuDetailsUrl]]"
-      last-response="{{menuMeta}}">
-    </things-ajax>
-
-    <!--things-ajax 
       id="detail-ajax"
       method="GET"
-      resource-url="menu_details"
+      resource-url="[[menuDetailsUrl]]"
       resource-id="[[resourceId]]"
-      last-response="{{menuMeta}}">
-    </things-ajax-->
+      last-response="{{menuDetailMeta}}">
+    </things-ajax>
 
     <things-resource-grid 
       id="grid"
@@ -40,7 +33,7 @@
       model="[[gridModel]]" 
       columns="[[gridColumns]]"
       data="[[items]]"
-      grid-save-action="[[gridSaveUrl]]"
+      grid-save-action="menu_details/update_multiple"
       buttons="[[buttons]]">
     </things-resource-grid>
   </template>
@@ -48,7 +41,13 @@
   <script>
     Polymer({
 
-      is: 'things-base-menu-detail-master',
+      is: 'things-base-menu-detail-main',
+
+      behaviors: [
+        Things.ResourceSelectorBehavior,
+        Things.MsgBoxBehavior,
+        Things.ViewOpenBehavior
+      ],      
 
       properties: {
 
@@ -60,27 +59,35 @@
         },
 
         /**
-         * Menu Data
+         * Menu Details URL
          */
-        resource: {
-          type: Object
+        menuDetailsUrl: {
+          type: String,
+          computed: '_computeMenuDetailsUrl(resourceId)'
         },
 
         /**
-         * Menu Meta Data
-         * 데이터 형식 : { menu : Object, buttons: Array, columns: Array }
+         * Menu Meta Details
          */
-        menuMeta: {
+        menuDetailMeta: {
           type: Object,
-          notify: true,
-          observer: '_onMenuMetaChanged'
+          observer: '_menuDetailMetaChanged'
         },
 
         /**
-         * Menu columns 조회 정보 
+         * Menu Detail List
          */
         items: {
-          type: Array
+          type: Object,
+          notify: true
+        },
+
+        /**
+         * Save 하기 전에 폼에는 있지만 Save하는데 필요 없는 필드를 삭제하기 위한 필드명
+         */
+        removeFieldsOnSave: {
+          type: Array,
+          value: ['creator', 'updater', 'creator_id', 'updater_id', 'created_at', 'updated_at']
         },        
 
         /**
@@ -95,9 +102,13 @@
           }, { 
             fieldName: 'name'
           }, { 
+            fieldName: 'term'
+          }, { 
             fieldName: 'view_section'
           }, { 
-            fieldName: 'entity'
+            fieldName: 'entity', dataType: 'object'
+          }, { 
+            fieldName: 'entity_editor'
           }, { 
             fieldName: 'search_url'
           }, { 
@@ -141,9 +152,14 @@
               }
             }, { 
               fieldName: 'entity', name: 'entity', width: 135,
+              valueType: 'text', type: 'calced',
               header: {
                 text: Things.DataGlobal.t('label.entity')
-             }
+              },
+              valueCallback: function(column, row) {
+                var obj = row.getValue(column._name);
+                return obj ? obj.name : '';
+              }
             }, {
                 name: 'entity_editor',
                 fieldName: 'entity_editor',
@@ -165,7 +181,7 @@
             }, { 
               fieldName: 'search_url', name: 'search_url', width: 135,
               header: { 
-                text: Things.DataGlobal.t('label.search_url')
+                text: Things.DataGlobal.t('label.url')
               }
             }, {
               fieldName: 'save_url', name: 'save_url', width: 135,
@@ -187,31 +203,28 @@
         },
 
         /**
-         * Search Column Save URL
-         */
-        gridSaveUrl: {
-          type: String,
-          computed: '_computeColumnSaveUrl(resourceId)'
-        },
-
-        /**
          * 버튼 정보 
          */
         buttons: {
           type: Array,
           value: [ {
+            id: 'add-btn',
+            text: 'add'
+          }, {
+            id: 'delete-btn',
+            text: 'delete'
+          }, {
             id: 'save-btn',
-            text: 'save',
-            icon: 'icons:save'
+            text: 'save'
           } ]
         }
       },
 
       listeners: {
         'things-detail-view-selected' : '_detailTabSelected',
+        'grid.things-grid-resource-column-edit' : '_onGridColumnRefEdit',
         'grid.things-grid-handle-save' : '_beforeSearchColumnSave',
-        'grid.things-grid-save-success' : '_reloadGrid',
-        'column-ajax.things-ajax-response': '_afterColumnsLoaded'
+        'grid.things-grid-save-success' : '_reloadGrid'
       },
 
       /**
@@ -222,24 +235,16 @@
       },
 
       /**
-       * MenuMeta 변경시
+       * Menu Details 데이터가 변경되었을 경우 
        *
-       * @param {Object} menuMeta
+       * @param {Object} menuDetailMeta
        */
-      _onMenuMetaChanged: function(menuMeta) {
-        if(!menuMeta || !menuMeta.columns || menuMeta.columns.length == 0) {
-          this.items = [];
-        } else {
-          var items = menuMeta.columns.filter(function(column) {
-            return (column.search_rank && column.search_rank > 0) || (column.sort_rank && column.sort_rank > 0);
-          });
-          if(items && items.length > 0) this._sortColumns(items, 'search_rank')
-          this.items = items;
-        }
+      _menuDetailMetaChanged: function(menuDetailMeta) {
+        this.items = menuDetailMeta.items ? menuDetailMeta.items : [];
       },
 
       /**
-       * list sorting
+       * List sorting
        */
       _sortColumns: function(list, sortField) {
         list.sort(function(a, b) {
@@ -248,13 +253,13 @@
       },
 
       /**
-       * Search Column Save URL
+       * Menu Details를 찾기 위한 URL
        *
-       * @param {String} resourceId
-       * @return {String} Search Column Save URL
+       * @param {String} menuId
        */
-      _computeColumnSaveUrl: function(resourceId) {
-        return 'menus/' + resourceId + '/menu_columns/update_multiple';
+      _computeMenuDetailsUrl: function(menuId) {
+        var query = JSON.stringify([{name: 'menu_id', value: menuId}]);
+        return 'menu_details?' + query;
       },      
 
       /**
@@ -267,10 +272,11 @@
         if(grid.writeData && grid.writeData.length > 0) {
           var resourceId = this.resourceId;
           grid.writeData.forEach(function(changedData) {
+            changedData.menu_id = resourceId;
+            changedData.entity_id = changedData.entity ? changedData.entity.id : null;
+
+            delete changedData['entity'];
             delete changedData['term'];
-            if(changedData.cud_flag_ == 'c') {
-              changedData.menu_id = resourceId;
-            }
           });
         }
       },
@@ -279,17 +285,31 @@
        * Reload Grid Data
        */
       _reloadGrid: function(e) {
-        this.$['column-ajax'].generateRequest();
+        this.$['detail-ajax'].generateRequest();
       },
 
       /**
-       * Menu Meta Data 조회 후 
+       * Entity Ref Column Edit
        *
-       * @param {Object} event 
+       * @param {Object} things-grid-resource-column-edit 이벤트 
        */
-      _afterColumnsLoaded: function(event) {
-        this.menuMeta = event.detail;
-      },
+      _onGridColumnRefEdit: function(e) {
+        var index = e.detail.index;
+        var grid = index._grid;
+        grid.commit();
+
+        var dataSet = this.$.grid.getGridDataSet();
+        var row = dataSet.getRowObject(index.rowIndex);
+
+        var resourceObj = { 
+          resourceType : 'Entity',
+          resourceName : 'Entity',
+          ownerField : 'entity',
+          bindFields : 'search_url,save_url=multi_save_url,association,data_prop'
+        };
+
+        this.openResourceSelectorByGrid(index._grid, index.rowIndex, resourceObj, true);
+      }      
 
     });
   </script>
