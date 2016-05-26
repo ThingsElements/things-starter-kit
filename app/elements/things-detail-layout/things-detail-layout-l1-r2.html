@@ -2,6 +2,7 @@
 <link rel="import" href="../../../bower_components/things-detail/things-resource-detail-tab-view-behavior.html">
 <link rel="import" href="../../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="../../../bower_components/iron-selector/iron-selectable.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
 <!--
 A comment describing this element
 
@@ -17,65 +18,176 @@ Example:
 
 @demo demo/index.html
 -->
-
 <dom-module id="things-detail-layout-l1-r2">
-	<template>
-		<style>
-			:host {
-				display: inline-block;
-				@apply(--things-detail-layout-l1-r2);
-				@apply(--layout-flex);
-				@apply(--layout-horizontal);
-			}
-			#leftContainer {
-				@apply(--layout-flex);
-				@apply(--layout-vertical);
-				@apply(--things-detail-layout-l1-r2-right-container);
-			}
-			
-			#rightContainer {
-				@apply(--layout-flex);
-				@apply(--layout-vertical);
-				@apply(--things-detail-layout-l1-r2-left-container);
-			}
+    <template>
+        <style>
+        :host {
+            display: inline-block;
+            @apply(--things-detail-layout-l1-r2);
+            @apply(--layout-horizontal);
+        }
+        
+        paper-card {
+            @apply(--layout-vertical);
+            @apply(--layout-flex);
+            @apply(--layout-wrap);
+            @apply(--things-detail-layout-l1-r2-container);
+            --paper-card-header-text: {
+            	font-size: 14px;
+            	@apply(--things-detail-header-text);
+            };
+        }
 
-			#rightTopContainer {
-				@apply(--layout-flex-2);
-				@apply(--things-detail-layout-r1-l2-left-top-container);
-			}
-			
-			#rightBottomContainer {
-				@apply(--layout-flex);
-				@apply(--things-detail-layout-r1-l2-left-bottom-container);
-			}
-		</style>
-		<div id="leftContainer">
-			<span>right</span>
-		</div>
+        .container {
+            @apply(--things-detail-layout-l1-r2);
+            @apply(--layout-flex);
+            @apply(--layout-horizontal);
+        }
+        
+        .card-content {
+        	@apply(--layout-flex)
+            @apply(--layout-vertical);
+           	overflow: auto;
+        }
 
-		<div id="rightContainer">
-			<div id="rightTopContainer">
-				<span>Left Top</span>
-			</div>
-			<div id="rightBottomContainer">
-				<span>Left Bottom</span>
-			</div>
-		</div>
-		
-	</template>
-	<script>
-		(function() {
-			'use strict';
+        .card-actions {
+            @apply(--layout-horizontal-reverse);
+        }
+        
+        #left {
+            @apply(--layout-flex);
+            @apply(--layout-vertical);
+            @apply(--things-detail-layout-l1-r2-left);
+        }
+        
+        #right {
+            @apply(--layout-flex);
+            @apply(--layout-vertical);
+            @apply(--things-detail-layout-l1-r2-right);
+        }
+        
+        #right-top {
+            @apply(--layout-flex-4);
+            @apply(--things-detail-layout-l1-r2-right-top);
+        }
+        
+        #right-bottom {
+            @apply(--layout-flex-3);
+            @apply(--things-detail-layout-l1-r2-right-bottom);
+        }
+        </style>
+        <paper-card elevation="2" animated-shadow="false">
+        	<div class ="container">
+				<!-- left -->
+	            <paper-card id="left" 
+	            	heading="[[leftTitle]]" 
+	            	elevation="0" 
+	            	animated-shadow="false">
 
-			Polymer({
-				is: 'things-detail-layout-l1-r2',
+		                <div id="leftContent" class="card-content">
+                            <content select="[left]"></content>
+		                </div>
+		                <div class="card-actions">
+		                	<things-button-bar buttons="[[leftButtons]]">
+		                	</things-buttons>
+		                </div>
+	            </paper-card>
 
-				behaviors: [ 
-					Things.ResourceDetailTabViewBahavior,
-					Polymer.IronSelectableBehavior,
-					Polymer.IronResizableBehavior,
-				],
-			});
-		})();
-	</script>
+	            <!-- right -->
+	            <div id="right">
+		            <paper-card id="right-top" 
+		            	heading="[[rightTopTitle]]" 
+		            	elevation="0" 
+		            	animated-shadow="false">
+			                <div id="rightTopContent" class="card-content">
+                                <content select="[right-top]"></content>
+			                </div>
+			                <div class="card-actions">
+			                    <things-button-bar buttons="[[rightTopButtons]]">
+			                    </things-buttons>
+			                </div>
+		            </paper-card>
+
+	        	    <paper-card id="right-bottom" 
+	        	    	heading="[[rightBottomTitle]]" 
+	        	    	image="" 
+	        	    	elevation="0" 
+	        	    	animated-shadow="false">
+		                    <div id="rightBottomContent" class="card-content">
+		                    	<content select="[right-bottom]"></content>
+		                    </div>
+		                    <div class="card-actions">
+		                        <things-button-bar buttons="[[rightBottomButtons]]"></things-buttons>
+		                    </div>
+	                </paper-card>
+                </div>
+            </div>
+        </paper-card>
+    </template>
+    <script>
+    (function() {
+        'use strict';
+
+        Polymer({
+            is: 'things-detail-layout-l1-r2',
+            properties: {
+                leftTitle: {
+                    type: String,
+                    value: 'Left Container'
+                },
+                leftButtons: {
+                    type: Array,
+                    value: [{
+                        id: 'add',
+                        text: 'add',
+                        icon: 'icons:add'
+                    }, {
+                        id: 'delete',
+                        text: 'delete',
+                        icon: 'icons:delete'
+                    }, {
+                        id: 'save',
+                        text: 'save',
+                        icon: 'icons:save'
+                    }]
+                },
+                rightTopTitle: {
+                    type: String,
+                    value: 'Right Top'
+                },
+                rightTopButtons: {
+                    type: Array,
+                    value: [{
+                        id: 'add',
+                        text: 'add',
+                        icon: 'icons:add'
+                    }, {
+                        id: 'save',
+                        text: 'save',
+                        icon: 'icons:save'
+                    }]
+                },
+                rightBottomTitle: {
+                    type: String,
+                    value: 'Right Bottom'
+                },
+
+                rightBottomButtons: {
+                    type: Array,
+                    value: [{
+                        id: 'save',
+                        text: 'save',
+                        icon: 'icons:save'
+                    }]
+                },
+            },
+
+            behaviors: [
+                Things.ResourceDetailTabViewBahavior,
+                Polymer.IronSelectableBehavior,
+                Polymer.IronResizableBehavior,
+            ],
+        });
+    })();
+    </script>
 </dom-module>
