@@ -71,7 +71,8 @@
          */
         menuDetailsUrl: {
           type: String,
-          computed: '_computeMenuDetailsUrl(resourceId)'
+          computed: '_computeMenuDetailsUrl(resourceId)',
+          observer: '_reloadGrid'
         },
 
         /**

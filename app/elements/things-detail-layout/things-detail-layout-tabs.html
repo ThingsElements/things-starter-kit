@@ -1,0 +1,101 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/things-detail/things-resource-detail-tab-view-behavior.html">
+<link rel="import" href="../../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
+<link rel="import" href="../../../bower_components/iron-selector/iron-selectable.html">
+
+<link rel="import" href="things-resource-tabs.html">
+
+<!--
+A comment describing this element
+
+Example:
+
+    <my-elem></my-elem>
+
+Example:
+
+    <my-elem>
+      <h2>Hello my-elem</h2>
+    </my-elem>
+
+@demo demo/index.html
+-->
+
+<dom-module id="things-detail-layout-tabs">
+	<template>
+		<style>
+			:host {
+				display: inline-block;
+				@apply(--things-detail-layout-tabs);
+				@apply(--layout-flex);
+				@apply(--layout-vertical);
+			}
+			:root{
+			}
+			iron-pages {
+				@apply(--layout-vertical);
+				@apply(--layout-flex);
+			}
+			paper-card {
+				@apply(--layout-flex);
+				@apply(--layout-vertical);
+			}
+		</style>
+        <paper-card id="left" 
+        	heading="[[topTitle]]" 
+        	elevation="0" 
+        	animated-shadow="false">
+        	<things-resource-form>
+        		
+        	</things-resource-form>
+		    <paper-tabs id="tabGroup" selected="{{currentTabIdx}}" noink>
+		      <template is="dom-repeat" items="{{panels}}">
+		        <paper-tab id="{{item.elementId}}">{{item.title}}</paper-tab>
+		      </template>
+		    </paper-tabs>
+		    <iron-pages id="tabPages" selected="{{currentTabIdx}}">
+		    	<div></div>
+		    </iron-pages>
+        </paper-card>
+		
+	</template>
+	<script>
+		(function() {
+			'use strict';
+
+			Polymer({
+				is: 'things-detail-layout-tabs',
+				properties:{
+					panels: {
+						type: Array,
+						value: [{
+							title:'form',
+							tabId :'tabId1',
+							elementId:'elementId1',
+							elementType:'things-resource-form'
+						},{
+							title:'grid',
+							elementId :'elementId2',
+							elementType:'things-resource-grid'
+						}]
+					}
+				},
+				ready: function(){
+					// var content = Polymer.dom(this.$.tabPages).getDestinationInsertionPoints('content')[0];
+					var element = document.createElement('things-resource-grid');
+					element.setAttribute('class','flex')
+					this.$.tabPages.$.contentNode.appendChild(element)
+					var child = this.$.tabPages.getEffectiveChildren();
+					console.log(child);
+
+				},
+
+				behaviors: [ 
+					Things.ResourceDetailTabViewBahavior,
+					Polymer.IronSelectableBehavior,
+					Polymer.IronResizableBehavior,
+				],
+			});
+		})();
+	</script>
+</dom-module>

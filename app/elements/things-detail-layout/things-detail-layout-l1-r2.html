@@ -1,8 +1,10 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../../bower_components/things-detail/things-resource-detail-tab-view-behavior.html">
 <link rel="import" href="../../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="../../../bower_components/iron-selector/iron-selectable.html">
 <link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+
+<link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../../bower_components/things-detail/things-detail-tab-view-behavior.html">
 <!--
 A comment describing this element
 
@@ -27,6 +29,7 @@ Example:
             @apply(--layout-horizontal);
         }
         
+
         paper-card {
             @apply(--layout-vertical);
             @apply(--layout-flex);
@@ -43,9 +46,13 @@ Example:
             @apply(--layout-flex);
             @apply(--layout-horizontal);
         }
+
+        .detail-flex {
+            @apply(--layout-flex);
+        }
         
         .card-content {
-        	@apply(--layout-flex)
+        	@apply(--layout-flex);
             @apply(--layout-vertical);
            	overflow: auto;
         }
@@ -76,31 +83,27 @@ Example:
             @apply(--things-detail-layout-l1-r2-right-bottom);
         }
         </style>
-        <paper-card elevation="2" animated-shadow="false">
+
         	<div class ="container">
 				<!-- left -->
 	            <paper-card id="left" 
-	            	heading="[[leftTitle]]" 
+	            	heading="[[title1]]" 
 	            	elevation="0" 
 	            	animated-shadow="false">
 
 		                <div id="leftContent" class="card-content">
-                            <content select="[left]"></content>
-		                </div>
-		                <div class="card-actions">
-		                	<things-button-bar buttons="[[leftButtons]]">
-		                	</things-buttons>
+
 		                </div>
 	            </paper-card>
 
 	            <!-- right -->
 	            <div id="right">
 		            <paper-card id="right-top" 
-		            	heading="[[rightTopTitle]]" 
+		            	heading="[[title2]]" 
 		            	elevation="0" 
 		            	animated-shadow="false">
 			                <div id="rightTopContent" class="card-content">
-                                <content select="[right-top]"></content>
+
 			                </div>
 			                <div class="card-actions">
 			                    <things-button-bar buttons="[[rightTopButtons]]">
@@ -109,20 +112,16 @@ Example:
 		            </paper-card>
 
 	        	    <paper-card id="right-bottom" 
-	        	    	heading="[[rightBottomTitle]]" 
+	        	    	heading="[[title3]]" 
 	        	    	image="" 
 	        	    	elevation="0" 
 	        	    	animated-shadow="false">
 		                    <div id="rightBottomContent" class="card-content">
-		                    	<content select="[right-bottom]"></content>
-		                    </div>
-		                    <div class="card-actions">
-		                        <things-button-bar buttons="[[rightBottomButtons]]"></things-buttons>
+
 		                    </div>
 	                </paper-card>
                 </div>
             </div>
-        </paper-card>
     </template>
     <script>
     (function() {
@@ -131,62 +130,64 @@ Example:
         Polymer({
             is: 'things-detail-layout-l1-r2',
             properties: {
-                leftTitle: {
-                    type: String,
-                    value: 'Left Container'
-                },
-                leftButtons: {
+                sections:{
                     type: Array,
-                    value: [{
-                        id: 'add',
-                        text: 'add',
-                        icon: 'icons:add'
-                    }, {
-                        id: 'delete',
-                        text: 'delete',
-                        icon: 'icons:delete'
-                    }, {
-                        id: 'save',
-                        text: 'save',
-                        icon: 'icons:save'
-                    }]
+                    observer : '_createSection'
                 },
-                rightTopTitle: {
-                    type: String,
-                    value: 'Right Top'
-                },
-                rightTopButtons: {
-                    type: Array,
-                    value: [{
-                        id: 'add',
-                        text: 'add',
-                        icon: 'icons:add'
-                    }, {
-                        id: 'save',
-                        text: 'save',
-                        icon: 'icons:save'
-                    }]
-                },
-                rightBottomTitle: {
-                    type: String,
-                    value: 'Right Bottom'
+                
+                contents:{
+                    type: Array
                 },
 
-                rightBottomButtons: {
-                    type: Array,
-                    value: [{
-                        id: 'save',
-                        text: 'save',
-                        icon: 'icons:save'
-                    }]
+                title1:{
+                    type: String
                 },
+
+                title2:{
+                    type: String
+                },
+
+                title3:{
+                    type: String
+                }
+
             },
 
             behaviors: [
-                Things.ResourceDetailTabViewBahavior,
+                Things.DetailTabViewBahavior,
                 Polymer.IronSelectableBehavior,
                 Polymer.IronResizableBehavior,
             ],
+            ready : function(){
+                this.set('contents', Polymer.dom(this.root).querySelectorAll('.card-content'));
+                console.log(this.contents);
+                this._createSection();
+            },
+
+            _createSection : function(){
+                if(!this.sections || this.sections.length <= 0 ) return;
+
+                this.contents.forEach(function(content,index){
+                    var child = this.sections[index];
+                    if(child){
+                        child.element = document.createElement(child.elementName);
+                        child.element = this._makeAttributes(child.element, child.attributes);
+                        content.appendChild(child.element);
+                        this.set('title'+(index+1),child.title);
+                    }
+                }.bind(this));
+            },
+
+            _makeAttributes : function(element, attrs){
+                var attr;
+                for(index in attrs) {
+                    attr = attrs[index];
+                    element.setAttribute(attr.name, attr.value);
+                }
+                return element;
+            }
+
+
         });
     })();
     </script>

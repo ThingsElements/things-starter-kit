@@ -270,7 +270,8 @@
 				'sub-grid.things-grid-save-success': '_reloadSubMenus',
 				'sub-grid.things-grid-handle-save' : '_beforeSubMenuSave',
 				'things-grid-resource-column-edit' : '_openResourceSelector',
-				'detail-btn-tap' : '_showSetupDetail'
+				'detail-btn-tap' : '_showSetupDetail',
+				'detail-layout-btn-tap':'_showSetupDetailLayout'
 			},
 
 			/**
@@ -360,6 +361,60 @@
 				viewElement.title = menu.name;
 				viewElement.resourceId = menu.id;
 				viewElement.resource = menu;
+				viewElement.showDetailView(menu.id, menu);
+			},
+			/**
+			 * 메뉴 상세 셋업 페이지를 오픈
+			 *
+			 * @param {Object} e Detail 버튼 클릭 이벤트
+			 */
+			_showSetupDetailLayout: function(e) {
+				var subgrid = this.$['sub-grid'].getGridObject();
+				var rows = subgrid.getCheckedRows();
+				if(!rows || rows.length == 0) return;
+
+				var ds = this.$['sub-grid'].getGridDataSet();
+				var menu = ds.getRowObject(rows[0]._index);
+
+
+				var viewElement = document.createElement('things-detail-layout-l1-r2');
+				viewElement.id = 'detail-view';
+				viewElement.title = menu.name;
+				viewElement.resourceId = menu.id;
+				viewElement.resource = menu;
+				var childElememts =[
+					{
+						viewSection: 'leftContent',
+						title : Things.DataGlobal.t('title.detail'), 
+						elementName : 'things-base-menu-detail-main',
+						elementId:'detailMain',
+						attributes:[
+							{name:'resource-id', value: menu.id},
+							{name : 'class', value : 'layout flex'}
+						]
+					},
+					{
+						viewSection : 'rightTopContent',
+						title : Things.DataGlobal.t('title.setup_columns'), 
+						elementName : 'things-base-menu-detail-columns',
+						elementId:'detailColumns',
+						class:'layout flex',
+						attributes:[
+							{name : 'class', value : 'layout flex'}
+						]
+					},
+					{
+						viewSection :'rightBottomContent',
+						title : Things.DataGlobal.t('title.setup_button'), 
+						elementName : 'things-base-menu-detail-buttons',
+						elementId:'detailButtons',
+						attributes:[
+							{name : 'class', value : 'layout flex'}
+						]
+					}
+				];
+				viewElement.sections = childElememts;
+
 				viewElement.showDetailView(menu.id, menu);
 			},
 
