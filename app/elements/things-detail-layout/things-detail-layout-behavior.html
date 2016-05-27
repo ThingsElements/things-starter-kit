@@ -24,19 +24,19 @@ Things.DetailLayoutBehavior = {
 		}
 	},
     ready : function(){
-        this.set('contents', Polymer.dom(this.root).querySelectorAll('.layout-content'));
         this._createSection();
     },
     _createSection : function(){
         if(!this.sections || this.sections.length <= 0 ) return;
-
+        this.set('contents', Polymer.dom(this.root).querySelectorAll('.layout-content'));
         this.contents.forEach(function(content,index){
             var child = this.sections[index];
-            if(child){
+            if(child&&!child.renderFinish){
                 child.element = document.createElement(child.elementName);
                 child.element = this._makeAttributes(child.element, child.attributes);
                 content.appendChild(child.element);
                 this.set('title'+(index+1),child.title);
+                child.renderFinish = true;
             }
         }.bind(this));
     },
