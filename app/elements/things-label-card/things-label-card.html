@@ -1,8 +1,9 @@
 <dom-module id="things-label-card">
 	<template>
+	
 		<things-ajax
-      auto
-      id="main-menu-search"
+			auto
+      id="label-search"
       method="GET"
       resource-url="[[searchUrl]]"
       last-response="{{lastResponse}}">
@@ -11,11 +12,12 @@
 		<template is="dom-repeat" items="[[lastResponse]]">
 			<paper-card
 		    heading="[[item.name]]"
-		    image="[[item.thumbnail]]" 
+		    image="[[item.thumbnail]]"
+		    animated="[[animated]]"
 		    animated-shadow="[[animatedShadow]]"
-		    preload-image ="preloadImage"
-		    fade-image="fadeImage"
-		    on-tap="_onCardTap">
+		    preload-image="[[preloadImage]]"
+		    fade-image="[[fadeImage]]"
+		    elevation="[[elevation]]">
 			</paper-card>
 
 			[[item.description]]
@@ -28,37 +30,57 @@
 			is: 'things-label-card',
 
 			properties: {
+				
+				/**
+				 * Ajax 호출 URL
+				 */
 				searchUrl: {
 					type: String,
 					value: '/labels'
 				},
 
-				lastResponse: {
-					type: Object,
-					Observer: '_responseChanged'
-				},
-
-				heading: {
-					type: String
-				},
-				
 				card: {
 					type: Object
 				},
 
-				image: {
-					type: String,
+				/**
+				 * Read-only property used to pass down the animatedShadow value to the underlying paper-material style (since they have different names).
+				 */
+				animated: {
+					type: Boolean,
+					value: false
 				},
 
+				/**
+				 * Set this to true to animate the card shadow when setting a new z value.
+				 */
 				animatedShadow: {
 					type: Boolean,
 					value: false
 				},
 
+				/**
+				 * When preloadImage is true, setting fadeImage to true will cause the image to fade into place.
+				 */
+				fadeImage: {
+					type: Boolean,
+					value: false
+				},
+
+				/**
+				 * When true, any change to the image url property will cause the placeholder image to be shown until the image is fully rendered.
+				 */
 				preloadImage: {
 					type: Boolean,
 					value: false
-				}			
+				},
+
+				/**
+				 * The z-depth of the card, from 0-5.
+				 */
+				elevation: {
+					type: Number
+				}
 			}
 		});
 	</script>
