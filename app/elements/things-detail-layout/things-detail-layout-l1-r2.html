@@ -3,8 +3,10 @@
 <link rel="import" href="../../../bower_components/iron-selector/iron-selectable.html">
 <link rel="import" href="../../../bower_components/paper-card/paper-card.html">
 
-<link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
-<link rel="import" href="../../../../bower_components/things-detail/things-detail-tab-view-behavior.html">
+<link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../bower_components/things-detail/things-detail-tab-view-behavior.html">
+
+<link rel="import" href="things-detail-layout-behavior.html">
 <!--
 A comment describing this element
 
@@ -51,10 +53,9 @@ Example:
             @apply(--layout-flex);
         }
         
-        .card-content {
+        .layout-content {
         	@apply(--layout-flex);
             @apply(--layout-vertical);
-           	overflow: auto;
         }
 
         .card-actions {
@@ -91,7 +92,7 @@ Example:
 	            	elevation="0" 
 	            	animated-shadow="false">
 
-		                <div id="leftContent" class="card-content">
+		                <div id="leftContent" class="layout-content">
 
 		                </div>
 	            </paper-card>
@@ -102,7 +103,7 @@ Example:
 		            	heading="[[title2]]" 
 		            	elevation="0" 
 		            	animated-shadow="false">
-			                <div id="rightTopContent" class="card-content">
+			                <div id="rightTopContent" class="layout-content">
 
 			                </div>
 			                <div class="card-actions">
@@ -116,7 +117,7 @@ Example:
 	        	    	image="" 
 	        	    	elevation="0" 
 	        	    	animated-shadow="false">
-		                    <div id="rightBottomContent" class="card-content">
+		                    <div id="rightBottomContent" class="layout-content">
 
 		                    </div>
 	                </paper-card>
@@ -129,63 +130,13 @@ Example:
 
         Polymer({
             is: 'things-detail-layout-l1-r2',
-            properties: {
-                sections:{
-                    type: Array,
-                    observer : '_createSection'
-                },
-                
-                contents:{
-                    type: Array
-                },
-
-                title1:{
-                    type: String
-                },
-
-                title2:{
-                    type: String
-                },
-
-                title3:{
-                    type: String
-                }
-
-            },
 
             behaviors: [
+                Things.DetailLayoutBehavior,
                 Things.DetailTabViewBahavior,
                 Polymer.IronSelectableBehavior,
                 Polymer.IronResizableBehavior,
-            ],
-            ready : function(){
-                this.set('contents', Polymer.dom(this.root).querySelectorAll('.card-content'));
-                console.log(this.contents);
-                this._createSection();
-            },
-
-            _createSection : function(){
-                if(!this.sections || this.sections.length <= 0 ) return;
-
-                this.contents.forEach(function(content,index){
-                    var child = this.sections[index];
-                    if(child){
-                        child.element = document.createElement(child.elementName);
-                        child.element = this._makeAttributes(child.element, child.attributes);
-                        content.appendChild(child.element);
-                        this.set('title'+(index+1),child.title);
-                    }
-                }.bind(this));
-            },
-
-            _makeAttributes : function(element, attrs){
-                var attr;
-                for(index in attrs) {
-                    attr = attrs[index];
-                    element.setAttribute(attr.name, attr.value);
-                }
-                return element;
-            }
+            ]
 
 
         });

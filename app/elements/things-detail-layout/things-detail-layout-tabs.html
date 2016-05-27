@@ -50,7 +50,7 @@ Example:
         	</things-resource-form>
 		    <paper-tabs id="tabGroup" selected="{{currentTabIdx}}" noink>
 		      <template is="dom-repeat" items="{{panels}}">
-		        <paper-tab id="{{item.elementId}}">{{item.title}}</paper-tab>
+		        <paper-tab id="{{item.tabId}}">{{item.title}}</paper-tab>
 		      </template>
 		    </paper-tabs>
 		    <iron-pages id="tabPages" selected="{{currentTabIdx}}">
@@ -72,11 +72,20 @@ Example:
 							title:'form',
 							tabId :'tabId1',
 							elementId:'elementId1',
-							elementType:'things-resource-form'
+							elementName:'things-resource-form',
+							attributes:[
+								{name:'resource-id', value: menu.id},
+								{name : 'class', value : 'layout flex'}
+							]
 						},{
-							title:'grid',
-							elementId :'elementId2',
-							elementType:'things-resource-grid'
+							title:'form',
+							tabId :'tabId2',
+							elementId:'elementId2',
+							elementName:'things-resource-form',
+							attributes:[
+								{name:'resource-id', value: menu.id},
+								{name : 'class', value : 'layout flex'}
+							]
 						}]
 					}
 				},

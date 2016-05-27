@@ -1,0 +1,54 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<script>
+
+window.Things = window.Things || {};
+
+/**
+ * 기본 Form Behavior
+ * Things.FormBehavior를 사용하고자 한다면 반드시 reconfigureMyForm() 함수를 구현해야 한다.
+ * 구현 내용 - Things.FormBehavior를 이용하여 Form을 구성한다.
+ *
+ * @polymerBehavior Things.FormBehavior
+ */
+Things.DetailLayoutBehavior = {
+
+	properties: {
+		sections:{
+		    type: Array,
+		    observer : '_createSection'
+		},
+
+		contents:{
+		    type: Array
+		}
+	},
+    ready : function(){
+        this.set('contents', Polymer.dom(this.root).querySelectorAll('.layout-content'));
+        this._createSection();
+    },
+    _createSection : function(){
+        if(!this.sections || this.sections.length <= 0 ) return;
+
+        this.contents.forEach(function(content,index){
+            var child = this.sections[index];
+            if(child){
+                child.element = document.createElement(child.elementName);
+                child.element = this._makeAttributes(child.element, child.attributes);
+                content.appendChild(child.element);
+                this.set('title'+(index+1),child.title);
+            }
+        }.bind(this));
+    },
+
+    _makeAttributes : function(element, attrs){
+        var attr;
+        for(index in attrs) {
+            attr = attrs[index];
+            element.setAttribute(attr.name, attr.value);
+        }
+        return element;
+    }
+}
+
+</script>
