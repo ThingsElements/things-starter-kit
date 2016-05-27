@@ -121,6 +121,14 @@
         },
 
         /**
+         * Number Types
+         */
+        numberTypes: {
+          type: Array,
+          value: ['integer', 'float', 'double', 'long', 'decimal']
+        },
+
+        /**
          * Grid Columns
          */
         gridColumns: {
@@ -313,25 +321,41 @@
                   ownerField: 'ref_name'
                 }
             }, { 
-              fieldName: 'ref_url', name: 'ref_url', width: 135,
-              header: {
-                text: Things.DataGlobal.t('label.ref_url')
-             }
-            }, { 
               fieldName: 'ref_params', name: 'ref_params', width: 180,
               header: {
                 text: Things.DataGlobal.t('label.ref_params')
-             }
+              }
             }, { 
               fieldName: 'ref_related', name: 'ref_related', width: 180,
               header: {
                 text: Things.DataGlobal.t('label.ref_related')
-             }
+              }
             }, { 
               fieldName: 'def_val', name: 'def_val', width: 100,
               header: {
                 text: Things.DataGlobal.t('label.def_val')
-             }
+              }
+            }, { 
+              fieldName: 'ignore_on_save', name: 'ignore_on_save', width: 0,
+              renderer: {
+                type:'check', 
+                editable: true, 
+                threeStates: false, 
+                trueValues: 'true', 
+                falseValues: 'false'
+              }              
+            }, { 
+              fieldName: 'search_editor', name: 'search_editor', width: 0
+            }, { 
+              fieldName: 'search_oper', name: 'search_oper', width: 0
+            }, { 
+              fieldName: 'grid_editor', name: 'grid_editor', width: 0
+            }, { 
+              fieldName: 'form_editor', name: 'form_editor', width: 0
+            }, { 
+              fieldName: 'grid_width', name: 'grid_width', width: 0
+            }, { 
+              fieldName: 'grid_align', name: 'grid_align', width: 0
             } ];
           }
         },
@@ -364,7 +388,7 @@
        * 상세 탭 선택시 ...
        */
       _myTabSelected: function(e) {
-        this.setupBottons(e.detail.master.name);
+        this.setupButtons();
         this.$.grid.resizeGrid();
       },      
 
@@ -480,32 +504,38 @@
         var dataCount = dataSet._values.length;
 
         if(!this._isExistRow(dataSet, 'id')) {
-          dataSet.insertRow(0, this._newDefaultRow('id', 'label.id', 'integer', null, null, null, false));
+          var idColumn = this._newDefaultRow('id', 'label.id', 'integer', null, null, false, null, false);
+          idColumn.form_editor = 'hidden';
+          dataSet.insertRow(0, this._newDefaultRow('id', 'label.id', 'integer', null, null, false, null, false));
         }
-        if(!this._isExistRow(dataSet, 'domain_id')) {
-          dataSet.insertRow(1, this._newDefaultRow('domain_id', 'label.domain_id', 'integer', 'Entity', 'Domain', 'domains', false, null));
+
+        if(!this.resource.master || !this.resource.master.name && !this._isExistRow(dataSet, 'domain_id')) {
+          var domainIdColumn = this._newDefaultRow('domain_id', 'label.domain_id', 'integer', 'Entity', 'Domain', false, null, true)
+          domainIdColumn.form_editor = 'hidden';
+          dataSet.insertRow(1, domainIdColumn);
         }
 
         dataCount = dataSet._values.length;
 
         if(!this._isExistRow(dataSet, 'creator_id')) {
-          dataSet.insertRow(dataCount, this._newDefaultRow('creator_id', 'label.creator', 'integer', 'Entity', 'User', 'users', true, null));
+          dataSet.insertRow(dataCount, this._newDefaultRow('creator_id', 'label.creator', 'integer', 'Entity', 'User', true, null, true));
           dataCount += 1;
         }
         if(!this._isExistRow(dataSet, 'updater_id')) {
-          var updater = this._newDefaultRow('updater_id', 'label.updater', 'integer', 'Entity', 'User', 'users', true, null);
+          var updater = this._newDefaultRow('updater_id', 'label.updater', 'integer', 'Entity', 'User', true, null, true);
           updater.grid_check = true;
           updater.grid_editor = 'resource-column';
           dataSet.insertRow(dataCount, updater);
           dataCount += 1;
         }
         if(!this._isExistRow(dataSet, 'created_at')) {
-          dataSet.insertRow(dataCount, this._newDefaultRow('created_at', 'label.created_at', 'datetime', null, null, null, true, null));
+          dataSet.insertRow(dataCount, this._newDefaultRow('created_at', 'label.created_at', 'datetime', null, null, true, null, true));
           dataCount += 1;
         }
         if(!this._isExistRow(dataSet, 'updated_at')) {
-          var updatedAt = this._newDefaultRow('updated_at', 'label.updated_at', 'datetime', null, null, null, true, null);
+          var updatedAt = this._newDefaultRow('updated_at', 'label.updated_at', 'datetime', null, null, true, null, true);
           updatedAt.grid_check = true;
+          updatedAt.grid_width = 135;
           dataSet.insertRow(dataCount, updatedAt);
           dataCount += 1;
         }
@@ -516,12 +546,89 @@
           var row = dataSet.getRowObject(i);
           row.rank = (i + 1) * 10;
           if(row.name && !row.term) row.term = 'label.' + row.name;
-          dataSet.updateRow(i, row);  
+
+          if(!(true === row.ignore_on_save || 'true' === row.ignore_on_save)) {
+            if(!row.form_editor) this._setFormEditor(row);
+            if(row.grid_rank && row.grid_rank > 0 && !row.grid_editor) this._setGridEditor(row);
+            if(row.search_rank && row.search_rank > 0 && !row.search_editor) this._setSearchEditor(row);
+          }
+
+          dataSet.updateRow(i, row);
         }        
       },
 
       /**
+       * 기본 그리드 에디터 설정
+       *
+       * @param {Object} row
+       */
+      _setGridEditor: function(row) {
+        if(row.ref_type && row.ref_name) {
+          row.grid_editor = (row.ref_type == 'CommonCode') ? 'code-combo' : 'resource-selector';
+
+        } else if(row.col_type == 'boolean') {
+          row.grid_editor = 'checkbox';
+          if(!row.grid_width) row.grid_width = 80;
+
+        } else if(this.numberTypes.includes(row.col_type)) {
+          row.grid_align = 'far';
+          row.grid_editor = 'number';
+          if(!row.grid_width) row.grid_width = 80;
+
+        } else {
+          row.grid_editor = 'text';
+          if(!row.grid_width) row.grid_width = (row.name == 'name') ? 150 : (row.name == 'description' ? 180 : 120);  
+        }
+      },
+
+      /**
+       * 기본 폼 에디터 설정
+       *
+       * @param {Object} row
+       */
+      _setFormEditor: function(row) {
+        if(row.ref_type && row.ref_name) {
+          row.form_editor =  (row.ref_type == 'CommonCode') ? 'code-combo' : 'resource-field';
+
+        } else if(row.col_type == 'boolean') {
+          row.form_editor = 'tristate-radio';
+
+        } else if(this.numberTypes.includes(row.col_type)) {
+          row.form_editor = 'number';
+
+        } else {
+          row.form_editor = 'text';
+        }
+      },
+
+      /**
+       * 기본 검색 에디터 설정
+       *
+       * @param {Object} row
+       */
+      _setSearchEditor: function(row) {
+        if(row.ref_type && row.ref_name) {
+          row.search_editor =  (row.ref_type == 'CommonCode') ? 'code-combo' : 'resource-selector';
+
+        } else if(row.col_type == 'boolean') {
+          row.search_editor = 'tristate-radio';
+
+        } else if(this.numberTypes.includes(row.col_type)) {
+          row.search_editor = 'number';
+
+        } else {
+          row.search_editor = 'text';
+          if(!row.search_oper && (row.name == 'name' || row.name == 'description')) row.search_oper = 'contains';
+        }
+
+        if(!row.search_oper) row.search_oper = 'eq';
+      },      
+
+      /**
        * Entity Columns(dataSet)에 이미 fieldName으로 컬럼이 등록되어 있는지 체크 
+       *
+       * @param {Object} dataSet
+       * @param {String} fieldName
        */
       _isExistRow: function(dataSet, fieldName) {
         var count = dataSet._values.length;
@@ -537,8 +644,18 @@
 
       /**
        * Add Row시 그리드에 추가될 기본 데이터 
+       *
+       * @param {String} name
+       * @param {String} term
+       * @param {String} colType
+       * @param {String} refType
+       * @param {String} refName
+       * @param {String} nullable
+       * @param {String} rank
+       * @param {String} ignoreOnSave
+       * @param {String} gridCheck
        */
-      _newDefaultRow: function(name, term, colType, refType, refName, refUrl, nullable, rank) {
+      _newDefaultRow: function(name, term, colType, refType, refName, nullable, rank, ignoreOnSave, gridCheck) {
         return {
           entity_id : this.resourceId,
           rank : rank ? rank : 0,
@@ -547,8 +664,9 @@
           col_type : colType,
           ref_name : refName,
           ref_type : refType,
-          ref_url : refUrl,
-          nullable : nullable
+          nullable : nullable,
+          ignore_on_save : ignoreOnSave,
+          grid_check : gridCheck
         };
       },
 
@@ -559,7 +677,7 @@
         e.preventDefault();
         var dataSet = this.$.grid.dataSet;
         var count = dataSet._values.length + 1;
-        dataSet.insertRow(count - 1, this._newDefaultRow(null, null, 'string', null, null, null, true, count * 10));
+        dataSet.insertRow(count - 1, this._newDefaultRow(null, null, 'string', null, null, true, count * 10, false, true));
       },
 
       /**
@@ -716,7 +834,8 @@
           pagination: true,
           items_prop: 'items',
           total_prop: 'total',
-          grid_save_url: this.resource.multi_save_url
+          grid_save_url: this.resource.multi_save_url,
+          fixed_columns: 4
         };
 
         var genSvc = this.$['generate-service'];
@@ -727,81 +846,41 @@
       },
 
       /**
-       * 전달받은 isSlave를 통해 master/slave 여부를 확인한 뒤 버튼을 초기화 합니다.
+       * 전달받은 isDetail를 통해 master/slave 여부를 확인한 뒤 버튼을 초기화 합니다.
        */
-      setupBottons: function(isSlave) {
-        if(isSlave) {
-          this.buttons = [ {
-            id: 'sync-btn',
-            text: 'sync'
-          }, {
-            id: 'check-columns-btn',
-            text: 'check-columns'
-          }, {
-            id: 'add-btn',
-            text: 'add'
-          }, {            
-            id: 'save-btn',
-            text: 'save'
-          }, {
-            id: 'delete-btn',
-            text: 'delete'
-          }, {
-            id: 'generate-table-btn',
-            text: 'generate_table'
-          }, {
-            id: 'generate-entity-btn',
-            text: 'generate_entity'
-          }];
-        } else { // master
-          this.buttons = [ {
-            id: 'sync-btn',
-            text: 'sync'
-          }, {
-            id: 'check-columns-btn',
-            text: 'check-columns'
-          }, {
-            id: 'add-btn',
-            text: 'add'
-          }, {            
-            id: 'save-btn',
-            text: 'save'
-          }, {
-            id: 'delete-btn',
-            text: 'delete'
-          }, {
-            id: 'generate-table-btn',
-            text: 'generate_table'
-          }, {
-            id: 'generate-entity-btn',
-            text: 'generate_entity'
-          }, {
-            id: 'generate-svc-btn',
-            text: 'generate_service'
-          }, {
-            id: 'create-menu-btn',
-            text: 'create_menu'
-          } ];
+      setupButtons: function() {
+        if(this.buttons && this.buttons.length > 1) return;
+
+        var buttons = [ {
+          id: 'sync-btn',
+          text: 'sync'
+        }, {
+          id: 'check-columns-btn',
+          text: 'check-columns'
+        }, {
+          id: 'add-btn',
+          text: 'add'
+        }, {            
+          id: 'save-btn',
+          text: 'save'
+        }, {
+          id: 'delete-btn',
+          text: 'delete'
+        }, {
+          id: 'generate-table-btn',
+          text: 'generate_table'
+        }, {
+          id: 'generate-entity-btn',
+          text: 'generate_entity'
+        } ];
+
+        if(this.resource.master && this.resource.master.name) {
+          buttons.push({ id: 'generate-svc-btn', text: 'generate_service' });
+          buttons.push({ id: 'create-menu-btn', text: 'create_menu' });
         }
+
+        this.buttons = buttons;
       }
-
-      /**
-       * Detail 화면 Open
-       *
-       * @param {String} resourceId
-       * @param {Object} resource
-       */
-      /*showDetailView: function(resourceId, resource) {
-        if(this.resourceId != resourceId) {
-          this.resourceId = resourceId;
-        }
-
-        if(resource) {
-          this.resource = resource;
-        }
-
-        this.openPopupView(this, true);
-      }*/
 
     });
   </script>

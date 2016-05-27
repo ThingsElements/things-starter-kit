@@ -156,6 +156,16 @@
                 lookupValues: colTypes,
                 lookupLabels: colTypes
               }, { 
+                fieldName: 'ref_type', name: 'ref_type', width: 115, editable: false,
+                header: { 
+                  text: Things.DataGlobal.t('label.ref_type') 
+                }
+              }, { 
+                fieldName: 'ref_name', name: 'ref_name', width: 135, editable: false,
+                header: {
+                  text: Things.DataGlobal.t('label.ref_name')
+               }
+              }, { 
                 name: 'form_editor', 
                 fieldName: 'form_editor', 
                 width: 150,

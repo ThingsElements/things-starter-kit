@@ -180,7 +180,7 @@
 						}, {
 							name: 'name',
 							fieldName: 'name',
-							width: 150,
+							width: 180,
 							header: {
 								text: Things.DataGlobal.t('label.name')
 							},
@@ -190,9 +190,19 @@
 								expression: 'len value < 64','level':'error','message':'Maximum (name) length is (64)'
 							}]
 						}, {
+							name: 'description',
+							fieldName: 'description',
+							width: 200,
+							header: {
+								text: Things.DataGlobal.t('label.description')
+							},
+							validations: [{
+								expression: 'len value < 254','level':'error','message':'Maximum (description) length is (254)'
+							}]
+						}, {
 							name: 'menu_type',
 							fieldName: 'menu_type',
-							width: 100,
+							width: 110,
 							lookupDisplay: true,
 							header: {
 								text: Things.DataGlobal.t('label.menu_type')
@@ -213,7 +223,7 @@
 						}, {
 							name: 'category',
 							fieldName: 'category',
-							width: 100,
+							width: 110,
 							lookupDisplay: true,
 							header: { 
 								text: Things.DataGlobal.t('label.category')
@@ -234,7 +244,7 @@
 						}, {
 							name: 'hidden_flag',
 							fieldName: 'hidden_flag',
-							width: 100,
+							width: 90,
 							editable: false,
 							header: {
 								text: Things.DataGlobal.t('label.hidden_flag')

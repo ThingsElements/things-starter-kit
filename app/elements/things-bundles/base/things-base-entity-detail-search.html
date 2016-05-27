@@ -158,6 +158,16 @@
               lookupValues: colTypes,
               lookupLabels: colTypes
             }, { 
+              fieldName: 'ref_type', name: 'ref_type', width: 115, editable: false,
+              header: { 
+                text: Things.DataGlobal.t('label.ref_type') 
+              }
+            }, { 
+              fieldName: 'ref_name', name: 'ref_name', width: 135, editable: false,
+              header: {
+                text: Things.DataGlobal.t('label.ref_name')
+             }              
+            }, { 
               fieldName: 'sort_rank', name: 'sort_rank', width: 80, type: 'number',
               header: { 
                 text: Things.DataGlobal.t('label.sort_rank')

@@ -148,6 +148,16 @@
               lookupValues: colTypes,
               lookupLabels: colTypes
             }, { 
+              fieldName: 'ref_type', name: 'ref_type', width: 115, editable: false,
+              header: { 
+                text: Things.DataGlobal.t('label.ref_type') 
+              }
+            }, { 
+              fieldName: 'ref_name', name: 'ref_name', width: 135, editable: false,
+              header: {
+                text: Things.DataGlobal.t('label.ref_name')
+             }
+            }, { 
               name: 'grid_align', 
               fieldName: 'grid_align', 
               width: 80,
@@ -159,8 +169,8 @@
                 type: 'list', 
                 domainOnly: true 
               },
-              lookupValues: [ 'Center', 'Far' ],
-              lookupLabels: [ 'Center', 'Far' ]
+              lookupValues: [ '', 'center', 'far' ],
+              lookupLabels: [ '', 'Center', 'Far' ]
             }, { 
               fieldName: 'grid_width', name: 'grid_width', width: 80, type: 'number',
               header: {
