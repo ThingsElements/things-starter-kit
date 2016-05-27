@@ -135,8 +135,8 @@
        * @param {String} menuId
        */
       _computeMenuDetailsUrl: function(menuId) {
-        var query = JSON.stringify([{name: 'id', value: menuId}]);
-        return 'menu_details?select=' + query;
+        var query = JSON.stringify([{name: 'menu_id', value: menuId}]);
+        return 'menu_details?query=' + query;
       }
 
     });
