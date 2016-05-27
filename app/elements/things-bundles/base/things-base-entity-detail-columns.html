@@ -887,7 +887,7 @@
           text: 'generate_entity'
         } ];
 
-        if(this.resource.master && this.resource.master.name) {
+        if(!this.resource.master.name || this.resource.master.name == '') {
           buttons.push({ id: 'generate-svc-btn', text: 'generate_service' });
           buttons.push({ id: 'create-menu-btn', text: 'create_menu' });
         }
