@@ -1,9 +1,33 @@
 <dom-module id="things-label-card">
 	<template>
 		<style>
-			:host{
-				background-color:var(--things-whitegrey-background-color);
-			}
+      :host {
+        display: block;
+        background-color:var(--things-whitegrey-background-color);
+      }
+      paper-toolbar{
+        background-color:var(--things-primary-background-color);
+        height:45px;
+      }
+      paper-toolbar::shadow #topBar{
+        height:45px;
+      }
+      paper-toolbar .title{
+        margin-left:32px !important;
+        line-height:initial !important;
+      }
+      form{
+        @apply(--things-default-padding);
+        padding-bottom:5px;
+        border-bottom:1px solid rgba(0,0,0,.1);
+      }
+      paper-fab{
+        @apply(--things-search-fab);
+      }
+      #fullscreen-btn{
+        @apply(--things-header-button);
+        background:url(/images/icon-fullscreen.png) 100% 50% no-repeat;
+      }			
 			paper-card{
         @apply(--things-label-card-container)
       }
@@ -27,7 +51,16 @@
       @media only all and (min-width:1250px)  {paper-card{width:22.6% !important;}}
       @media only all and (min-width:1800px)  {paper-card{width:17.5% !important;}}
 		</style>
-	
+
+    <paper-toolbar>
+      <span class="title">[[menuInfo.title]]</span>
+      <button id="fullscreen-btn" on-tap="toggleFullscreen">
+      </button>
+      <paper-tooltip for="fullscreen-btn" offset="0">
+        <things-i18n-msg msgid="button.fullscreen">Full Screen</things-i18n-msg>
+      </paper-tooltip>
+    </paper-toolbar>
+
 		<things-ajax
 			auto
       id="label-search"
@@ -59,6 +92,10 @@
 
 			properties: {
 				
+				menuInfo:  {
+					type: Object
+				},
+
 				/**
 				 * Ajax 호출 URL
 				 */
