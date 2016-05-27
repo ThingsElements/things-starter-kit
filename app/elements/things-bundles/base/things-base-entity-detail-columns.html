@@ -541,11 +541,21 @@
         }
 
         dataCount = dataSet._values.length;
+        var ignoreFieldsWhenSave = ['domain_id', 'creator_id', 'updater_id', 'created_at', 'updated_at'];
 
         for (var i = 0; i < dataCount; i++) {
           var row = dataSet.getRowObject(i);
           row.rank = (i + 1) * 10;
           if(row.name && !row.term) row.term = 'label.' + row.name;
+          
+          if(ignoreFieldsWhenSave.includes(row.name)) {
+            row.ignore_on_save = true;
+            row.form_editor = '';
+          }
+
+          if(!row.form_editor && row.name == 'domain_id') {
+            row.form_editor = 'hidden';
+          }
 
           if(!(true === row.ignore_on_save || 'true' === row.ignore_on_save)) {
             if(!row.form_editor) this._setFormEditor(row);
@@ -564,6 +574,7 @@
        */
       _setGridEditor: function(row) {
         if(row.ref_type && row.ref_name) {
+          if(!row.grid_width) row.grid_width = 150;
           row.grid_editor = (row.ref_type == 'CommonCode') ? 'code-combo' : 'resource-selector';
 
         } else if(row.col_type == 'boolean') {
@@ -587,7 +598,9 @@
        * @param {Object} row
        */
       _setFormEditor: function(row) {
-        if(row.ref_type && row.ref_name) {
+        if(row.name == 'id') {
+          row.form_editor = 'hidden';
+        } else if(row.ref_type && row.ref_name) {
           row.form_editor =  (row.ref_type == 'CommonCode') ? 'code-combo' : 'resource-field';
 
         } else if(row.col_type == 'boolean') {
