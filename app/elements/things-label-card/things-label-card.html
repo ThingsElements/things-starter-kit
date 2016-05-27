@@ -1,5 +1,32 @@
 <dom-module id="things-label-card">
 	<template>
+		<style>
+			:host{
+				background-color:var(--things-whitegrey-background-color);
+			}
+			paper-card{
+        @apply(--things-label-card-container)
+      }
+      paper-card:last-child{margin-right:0;}
+      paper-card::shadow iron-image img{height:105px !important;}
+      paper-card .card-info{
+        padding:0 7px 7px 7px;
+        font-size:11px;
+        color:green;
+      }
+      paper-card::shadow .title-text{
+        position:relative !important;
+        border-top:1px dotted rgba(0,0,0,.09);
+        padding:5px 7px 0 7px !important;
+        font-size:14px !important
+      }
+			@media only all and (min-width: 400px)  {paper-card{width:  98% !important;}}
+      @media only all and (min-width: 500px)  {paper-card{width:  47% !important;}}
+      @media only all and (min-width: 800px)  {paper-card{width:  30% !important;}}
+      @media only all and (min-width: 900px)  {paper-card{width:30.5% !important;}}
+      @media only all and (min-width:1250px)  {paper-card{width:22.6% !important;}}
+      @media only all and (min-width:1800px)  {paper-card{width:17.5% !important;}}
+		</style>
 	
 		<things-ajax
 			auto
@@ -18,9 +45,10 @@
 		    preload-image="[[preloadImage]]"
 		    fade-image="[[fadeImage]]"
 		    elevation="[[elevation]]">
+		    <div class="card-info">
+        	[[item.description]]
+        </div>
 			</paper-card>
-
-			[[item.description]]
 		</template>
 
 	</template>
