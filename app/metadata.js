@@ -1,8 +1,8 @@
 var config = require('../config');
 
 module.exports = {
-  title: 'Things Starter Kit',
-  description: 'Things Polymer Starter Kit Plus',
+  title: 'Things Framework',
+  description: 'Developed with Things Start Kit',
   charset: 'UTF-8',
   lang: 'en-US',
   // Add to homescreen for Chrome on Android
@@ -15,6 +15,9 @@ module.exports = {
   appName: config.appName,
   // App theme
   appTheme: config.appTheme,
+  xmesUiTheme: config.xmesUiTheme,
+  xmesOiTheme: config.xmesOiTheme,
   // App version
-  appVersion: config.appVersion
+  appVersion: config.appVersion,
+  responsiveWidth :'4096px'
 };

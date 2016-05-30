@@ -12,6 +12,8 @@ module.exports = {
   appName: 'Things starter kit',
   // App theme is directory name in app/themes
   appTheme: 'default-theme',
+  xmesUiTheme: 'xmes',
+  xmesOiTheme: 'oi',
   // App version from git is used for deploy task and frontend
   appVersion: appVersion,
   // Autoprefixer

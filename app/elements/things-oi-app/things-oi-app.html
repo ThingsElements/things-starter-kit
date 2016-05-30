@@ -1,0 +1,141 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="things-oi-import.html">
+<dom-module id="things-oi-app">
+    <template>
+        <style include="shared-styles">
+        @import "theme.css";
+        </style>
+
+        <style is="custom-style">
+        body {
+            margin: 0;
+            background-color: #eee;
+        }
+        
+        app-toolbar {
+            background-color: #4285f4;
+            color: #fff;
+        }
+        
+        app-drawer {
+            --app-drawer-content-container: {
+                background-color: #B0BEC5;
+            }
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Roboto', 'Noto', sans-serif;
+            background-color: #eee;
+        }
+        
+        app-box {
+            height: 640px;
+        }
+        
+        
+        .overlay {
+            left: 100px;
+            right: 100px;
+            top: 50px;
+            bottom: 50px;
+            position: absolute;
+            background-color: #fff;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+        }
+        
+        .overlay > #scrollingRegion {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow-y: auto;
+            /* fixes scroll track's z-index bug in safari*/
+            -webkit-transform: translateZ(0);
+        }
+        #header-form {
+            display:inline-block;
+            @apply(--layout-horizontal);
+
+        }
+        </style>
+        <things-validators id="validators">
+        </things-validators>
+        <iron-localstorage id="localStorage" name="{$ appName $}" value="{{storage}}" on-iron-localstorage-load-empty="initializeDefaultStorage">
+        </iron-localstorage>
+        <!-- OI Layout -->
+        <app-drawer-layout responsive-width="{$ responsiveWidth $}" fullbleed>
+            <app-drawer swipe-open>
+                <h2>menu will be here</h2>
+            </app-drawer>
+            <app-header-layout>
+                <app-header>
+                    <app-toolbar>
+                        <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+                        <form is="iron-form" id="header-form" method="post" action="/form/handler">
+                            <things-code-combo 
+                              id="line-selector" 
+                              label="Line" 
+                              code-name="LINE" 
+                              label-path="description" 
+                              value-path="name">
+                            </things-code-combo>
+                            <things-resource-selector 
+                              id="resource-selector" 
+                              label="Operation" 
+                              name="operation"
+                              resource-type="Entity"
+                              resource-name="Operation"
+                              resource-title-field="name">
+                            </things-resource-selector>
+                            <things-resource-selector 
+                              id="resource-selector" 
+                              label="Order" 
+                              name="order"
+                              resource-type="Entity"
+                              resource-name="ProductOrder"
+                              resource-title-field="name">
+                            </things-resource-selector>
+                        </form>
+                        <div title></div>
+                        <things-profile></things-profile>
+                        <paper-icon-button icon="info" onclick="document.getElementById('endDrawer').toggle();"></paper-icon-button>
+                    </app-toolbar>
+                </app-header>
+                <div class="overlay">
+                    <div id="scrollingRegion">
+                        <section>
+                            <app-box scroll-target="scrollingRegion" effects="parallax-background">
+                                <article>
+                                    <h2>Form will be here</h2>
+                                    <p>all section will be rendered this scope in scrolling region</p>
+                                </article>
+                            </app-box>
+                        </section>
+                    </div>
+                </div>
+            </app-header-layout>
+            <app-drawer id="endDrawer" align="end" swipe-open>
+                <h2>order status</h2>
+            </app-drawer>
+        </app-drawer-layout>
+        <!-- full dialog -->
+        <things-full-dialog id='common-full-dialog'></things-full-dialog>
+        <!-- resource dialog -->
+        <things-resource-dialog id='resource-dialog'></things-resource-dialog>
+        <paper-toast id="confirmToast" class="Toast" duration="10000">
+            <span class="Toast-button" role="button" tabindex="0" on-tap="onConfirmToastTap">OK</span>
+        </paper-toast>
+        <paper-toast id="infoToast" class="Toast" duration="8000"></paper-toast>
+    </template>
+    <script src="things-oi-app.js"></script>
+</dom-module>

@@ -7,6 +7,7 @@
     "neon-elements": "PolymerElements/neon-elements",
     "paper-elements": "PolymerElements/paper-elements",
     "gold-elements": "PolymerElements/gold-elements",
+    "app-elements": "PolymerElements/app-elements",
     "platinum-elements": "PolymerElements/platinum-elements",
     "page": "visionmedia/page.js#~1.6.4",
     "platinum-sw": "PolymerElements/platinum-sw#1.2.3",
