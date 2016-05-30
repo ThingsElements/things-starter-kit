@@ -1,3 +1,12 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/things-i18n-msg/things-i18n-msg.html">
+<link rel="import" href="../../bower_components/things-ajax/things-ajax.html">
+
 <dom-module id="things-label-card">
 	<template>
 		<style>
@@ -7,7 +16,9 @@
       }
       paper-toolbar{
         background-color:var(--things-primary-background-color);
-        height:45px;
+	      height:45px;
+	      margin-top:0px !important;
+	      @apply(--things-padding-clear)
       }
       paper-toolbar::shadow #topBar{
         height:45px;
@@ -29,7 +40,7 @@
         background:url(/images/icon-fullscreen.png) 100% 50% no-repeat;
       }			
 			paper-card{
-        @apply(--things-label-card-container)
+        @apply(--things-label-card-container);
       }
       paper-card:last-child{margin-right:0;}
       paper-card::shadow iron-image img{height:105px !important;}
@@ -50,6 +61,17 @@
       @media only all and (min-width: 900px)  {paper-card{width:30.5% !important;}}
       @media only all and (min-width:1250px)  {paper-card{width:22.6% !important;}}
       @media only all and (min-width:1800px)  {paper-card{width:17.5% !important;}}
+      .detail-card {
+      	@apply(--layout-horizontal);
+      }
+      .detail-content {
+      	@apply(--layout-vertical);
+      }
+	    .close-btn{
+	      @apply(--things-header-button);
+	      background:url(/images/icon-close.png) 100% 50% no-repeat;
+	      margin-right:10px;
+	    }
 		</style>
 
     <paper-toolbar>
@@ -77,18 +99,50 @@
 		    animated-shadow="[[animatedShadow]]"
 		    preload-image="[[preloadImage]]"
 		    fade-image="[[fadeImage]]"
-		    elevation="[[elevation]]">
+		    elevation="[[elevation]]"
+		    on-tap="itemTaped">
 		    <div class="card-info">
         	[[item.description]]
         </div>
 			</paper-card>
 		</template>
 
+		<paper-dialog
+			id="dialog"
+			entry-animation="scale-up-animation"
+			exit-animation="fade-out-animation"
+			modal>
+      <paper-toolbar>
+        <span class="title">[[singleItem.name]]</span>
+        <div class="buttonsGroup">
+          <button dialog-dismiss class="close-btn"></button>
+        </div>
+      </paper-toolbar>
+	  	<div class="detail-card">
+	  		<iron-image src="[[singleItem.thumbnail]]" width="450" height="450" sizing="contain"></iron-image>
+	  		<div class="detail-content">
+		  		<things-input-field label="Status" value="[[singleItem.status]]" readonly></things-input-field>
+		  		<things-input-field label="Version" value="[[singleItem.version]]" readonly></things-input-field>
+		  		<things-input-field label="Description" value="[[singleItem.description]]" readonly></things-input-field>
+		  		<things-input-field label="Tags" value="[[singleItem.tags]]" readonly></things-input-field>
+		  		<things-input-field label="Width" value="[[singleItem.width]]" readonly></things-input-field>
+		  		<things-input-field label="Height" value="[[singleItem.height]]" readonly></things-input-field>
+		  		<things-input-field label="Updater" value="[[singleItem.updater.name]]" readonly></things-input-field>
+		  		<things-input-field label="Updated At" value="[[singleItem.updated_at]]" readonly></things-input-field>
+	  		</div>
+  		</div>
+
+		</paper-dialog>
+
 	</template>
 
 	<script>
 		Polymer({
 			is: 'things-label-card',
+
+			behaviors: [
+				Things.ViewOpenBehavior
+			],
 
 			properties: {
 				
@@ -145,7 +199,20 @@
 				 */
 				elevation: {
 					type: Number
+				},
+
+				singleItem: {
+					type: Object
 				}
+			},
+
+			/**
+			 * item 클릭시 발생하는 이벤트
+			 * 클릭한 아이템의 meta 정보를 초기화 하고 dialog를 오픈 합니다.
+			 */
+			itemTaped: function(e) {
+				this.singleItem = e.model.item;
+				this.$['dialog'].open();
 			}
 		});
 	</script>
