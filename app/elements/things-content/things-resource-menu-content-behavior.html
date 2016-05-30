@@ -1,5 +1,6 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
 
+<link rel="import" href="../../../../bower_components/things-detail/things-menu-detail-opener.html">
 <link rel="import" href="../../../../bower_components/things-global-behavior/things-global-behavior.html">
 <link rel="import" href="../../../../bower_components/things-meta/things-menu-meta-behavior.html">
 <link rel="import" href="../../../../bower_components/things-msg-box-behavior/things-msg-box-behavior.html">
@@ -165,8 +166,8 @@ Things.ResourceMenuContentBehaviorImpl = {
 	 */
 	openResourceSelector: function(event) {
 		var index = event.detail.index;
-    var grid = index._grid;
-    grid.commit();
+		var grid = index._grid;
+		grid.commit();
 		this.openResourceSelectorByGrid(index._grid, index.rowIndex, event.detail.userObj, true);
 	},
 
@@ -181,6 +182,10 @@ Things.ResourceMenuContentBehaviorImpl = {
 
 		} else if(this.menuInfo.detail_form_id && this.menuInfo.detail_form_id.indexOf('things-detail-layout') >= 0) {
 			this.showLayoutView(event.detail);
+
+		} else if(this.menuInfo.detail_form_id && this.menuInfo.detail_form_id == 'things-resource-detail') {
+			var event = new CustomEvent('things-open-menu-detail-view', { detail: { resource: event.detail, menuInfo: this.menuInfo }});
+			document.dispatchEvent(event);			
 
 		} else if(this.menuInfo.detail_form_id != 'custom') {
 			this.showCustomView(this.menuInfo.detail_form_id, event.detail, this.refreshGridData);
