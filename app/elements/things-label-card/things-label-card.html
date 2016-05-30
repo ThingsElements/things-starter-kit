@@ -10,10 +10,10 @@
 <dom-module id="things-label-card">
 	<template>
 		<style>
-      :host {
-        display: block;
-        background-color:var(--things-whitegrey-background-color);
-      }
+			:host{
+				display: block;
+				background-color:var(--things-whitegrey-background-color);
+			}
       paper-toolbar{
         background-color:var(--things-primary-background-color);
 	      height:45px;
@@ -38,9 +38,9 @@
       #fullscreen-btn{
         @apply(--things-header-button);
         background:url(/images/icon-fullscreen.png) 100% 50% no-repeat;
-      }			
+      }      
 			paper-card{
-        @apply(--things-label-card-container);
+        @apply(--things-label-card-container)
       }
       paper-card:last-child{margin-right:0;}
       paper-card::shadow iron-image img{height:105px !important;}
@@ -61,6 +61,7 @@
       @media only all and (min-width: 900px)  {paper-card{width:30.5% !important;}}
       @media only all and (min-width:1250px)  {paper-card{width:22.6% !important;}}
       @media only all and (min-width:1800px)  {paper-card{width:17.5% !important;}}
+      @media only all and (min-width:2150px)  {paper-card{width:14.4% !important;}}
       .detail-card {
       	@apply(--layout-horizontal);
       }
@@ -131,6 +132,7 @@
 		  		<things-input-field label="Updated At" value="[[singleItem.updated_at]]" readonly></things-input-field>
 	  		</div>
   		</div>
+			<things-button-bar id="button-bar" buttons="[[buttons]]"></things-button-bar>
 
 		</paper-dialog>
 
@@ -203,7 +205,22 @@
 
 				singleItem: {
 					type: Object
+				},
+
+				/**
+				 * 버튼 종류
+				 */
+				buttons: {
+					type: Array,
+          value: [ {
+            id: 'print-btn',
+            text: 'print'
+          } ]
 				}
+			},
+
+			listeners: {
+				'button-bar.print-btn-tap': '_printLabel'
 			},
 
 			/**
@@ -213,6 +230,14 @@
 			itemTaped: function(e) {
 				this.singleItem = e.model.item;
 				this.$['dialog'].open();
+			},
+
+			/**
+			 * Print button 클릭시 발생하는 프린트 기능
+			 */
+			_printLabel: function(e) {
+				console.log(e);
+				console.log("TODO: inserting print logic");
 			}
 		});
 	</script>
