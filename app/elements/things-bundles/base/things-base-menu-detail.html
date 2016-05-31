@@ -3,10 +3,6 @@
 <link rel="import" href="../../../bower_components/paper-card/paper-card.html">
 
 <link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
-<link rel="import" href="../../../../bower_components/things-detail/things-detail-tab-view-behavior.html">
-<link rel="import" href="../../../../bower_components/things-form/things-resource-form.html">
-
-<link rel="import" href="../../things-detail-layout/things-detail-layout-behavior.html">
 
 <link rel="import" href="./things-base-menu-detail-buttons.html">
 <link rel="import" href="./things-base-menu-detail-columns.html">
@@ -21,7 +17,7 @@
     <style>
       :host {
         display: inline-block;
-        @apply(--things-detail-layout-l1-r2);
+        @apply(--things-base-menu-detail);
         @apply(--layout-horizontal);
       }
 
@@ -29,7 +25,7 @@
         @apply(--layout-vertical);
         @apply(--layout-flex);
         @apply(--layout-wrap);
-        @apply(--things-detail-layout-l1-r2-container);
+        @apply(--things-base-menu-detail-container);
         --paper-card-header-text: {
           font-size: 14px;
           @apply(--things-detail-header-text);
@@ -37,7 +33,7 @@
       }
 
       .container {
-        @apply(--things-detail-layout-l1-r2);
+        @apply(--things-base-menu-detail);
         @apply(--layout-flex);
         @apply(--layout-horizontal);
       }
@@ -58,24 +54,24 @@
       #left {
         @apply(--layout-flex);
         @apply(--layout-vertical);
-        @apply(--things-detail-layout-l1-r2-left);
+        @apply(--things-base-menu-detail-left);
+      }
+
+      #left-top {
+        @apply(--layout-flex-4);
+        @apply(--things-base-menu-detail-right-top);
+      }
+
+      #left-bottom {
+        @apply(--layout-flex-3);
+        @apply(--things-base-menu-detail-right-bottom);
       }
 
       #right {
         @apply(--layout-flex);
         @apply(--layout-vertical);
-        @apply(--things-detail-layout-l1-r2-right);
-      }
-
-      #right-top {
-        @apply(--layout-flex-4);
-        @apply(--things-detail-layout-l1-r2-right-top);
-      }
-
-      #right-bottom {
-        @apply(--layout-flex-3);
-        @apply(--things-detail-layout-l1-r2-right-bottom);
-      }
+        @apply(--things-base-menu-detail-right);
+      }      
 
       .subtitle:before {
         content: '';
@@ -94,55 +90,47 @@
       id="get-resource"
       method="GET"
       resource-url="[[menuDetailsUrl]]"
-      last-response="{{menuDetailMeta}}">
+      last-response="{{menuDetails}}">
     </things-ajax>
 
     <div class ="container">
       <!-- left -->
-      <paper-card id="left" 
-        heading="[[leftContentTitle]]" 
-        elevation="0" 
-        animated-shadow="false">
-        <div id="leftContent" class="layout-content">
+      <div id="left">
+        <!-- top -->
+        <paper-card id="left-top" 
+          heading="[[leftTopContentTitle]]" 
+          elevation="0" 
+          animated-shadow="false">
           <things-base-menu-detail-main
             class="detail-flex"
             resource-id="[[resourceId]]"
             menu-detail-id="{{menuDetailId}}"
-            menu-detail-meta="{{menuDetailMeta}}">
+            menu-details="{{menuDetails}}">
           </things-base-menu-detail-main>
-        </div>
-      </paper-card>
-
-      <!-- right -->
-      <div id="right">
-        <!-- top -->
-        <paper-card id="right-top" 
-          heading="[[rightTopContentTitle]]" 
-          elevation="0" 
-          animated-shadow="false">
-          <div id="rightTopContent" class="layout-content">
-            <things-base-menu-detail-columns
-              class="detail-flex"
-              resource-id="{{menuDetailId}}"
-              menu-meta="{{menuDetails}}">
-            </things-base-menu-detail-columns>            
-          </div>
         </paper-card>
 
         <!-- bottom -->
-        <paper-card id="right-bottom" 
-          heading="[[rightBottomContentTitle]]" 
+        <paper-card id="left-bottom" 
+          heading="[[leftBottomContentTitle]]" 
           elevation="0" 
           animated-shadow="false">
-          <div id="rightBottomContent" class="layout-content">
-            <things-base-menu-detail-buttons
-              class="detail-flex"
-              resource-id="{{menuDetailId}}"
-              menu-meta="{{menuMeta}}">
-            </things-base-menu-detail-buttons>            
-          </div>
-        </paper-card>
+          <things-base-menu-detail-buttons
+            class="detail-flex"
+            resource-id="{{menuDetailId}}">
+          </things-base-menu-detail-buttons>            
+        </paper-card>        
       </div>
+
+      <!-- right -->
+      <paper-card id="right" 
+        heading="[[rightContentTitle]]" 
+        elevation="0" 
+        animated-shadow="false">
+        <things-base-menu-detail-columns
+          class="detail-flex"
+          resource-id="{{menuDetailId}}">
+        </things-base-menu-detail-columns>
+      </paper-card>
     </div>
   </template>
 
@@ -151,7 +139,6 @@
     is: 'things-base-menu-detail',
 
     behaviors: [
-      Things.DetailLayoutBehavior,
       Things.ViewOpenBehavior
     ],
 
@@ -164,24 +151,27 @@
       },
 
       /**
-       * Title Of Left Content
+       * Title Of Left Top Content
        */
-      leftContentTitle: {
-        type: String
+      leftTopContentTitle: {
+        type: String,
+        value: 'Menu Details'
       },
 
       /**
-       * Title Of Right Top Content
+       * Title Of Left Bottom Content
        */
-      rightTopContentTitle: {
-        type: String
-      },
+      leftBottomContentTitle: {
+        type: String,
+        value: 'Menu Detail Buttons'
+      },      
 
       /**
-       * Title Of Right Bottom Content
+       * Title Of Right Content
        */
-      rightBottomContentTitle: {
-        type: String
+      rightContentTitle: {
+        type: String,
+        value: 'Menu Detail Columns'
       },
 
       /**
@@ -189,14 +179,6 @@
        */
       resourceId: {
         type: String
-      },
-
-      /**
-       * Resource
-       */
-      resource: {
-        type: Object,
-        observer: '_onResourceChanged'
       },
 
       /**
@@ -208,23 +190,19 @@
       },
 
       /**
-       * Menu Meta Details
-       */
-      menuDetailMeta: {
-        type: Object
-      },
-
-      /**
        * Menu Detail ID
        */
       menuDetailId: {
         type: String,
         notify: true
-      }
-    },
+      },
 
-    listeners: {
-      'sections-configured' : 'setupLayoutClass'
+      /**
+       * Menu Details
+       */
+      menuDetails: {
+        type: Object
+      }
     },
 
     /**
@@ -235,28 +213,6 @@
     _computeMenuDetailsUrl: function(menuId) {
       var query = JSON.stringify([{name: 'menu_id', value: menuId}]);
       return 'menu_details?query=' + query;
-    },
-
-    /**
-     * Resource가 변경되었을 경우 
-     *
-     * @param {Object} resource
-     */
-    _onResourceChanged: function(resource) {
-      this.resourceId = resource ? resource.id : null;
-    },    
-
-    /**
-     * Section이 모두 추가된 후 Layout Class를 설정한다.
-     *
-     * @param {Object} e sections-configured
-     */
-    setupLayoutClass: function(e) {
-      if(!this.sections || this.sections.length == 0) return;
-
-      this.sections['leftContent'].setAttribute('class', 'flex');
-      //this.sections['rightTopContent'].setAttribute('class', 'flex');
-      //this.sections['rightBottomContent'].setAttribute('class', 'flex');
     },
 
     /**
