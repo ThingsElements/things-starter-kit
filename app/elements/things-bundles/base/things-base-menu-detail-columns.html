@@ -89,7 +89,8 @@
          */
         menuDetailColumns: {
           type: Object,
-          notify: true
+          notify: true,
+          observer: '_detailColumnsChanged'
         },
 
         /**
@@ -307,12 +308,26 @@
                 text: Things.DataGlobal.t('label.ref_related')
              }
             }, { 
+              name: 'grid_editor', 
+              fieldName: 'grid_editor', 
+              width: 150,
+              lookupDisplay: true,
+              header: { 
+                text: 'Grid ' + Things.DataGlobal.t('label.editor') 
+              },
+              editor: { 
+                type: 'list', 
+                domainOnly: true 
+              },
+              lookupValues: gridEditors,
+              lookupLabels: gridEditors
+            }, { 
               name: 'grid_align', 
               fieldName: 'grid_align', 
               width: 80,
               lookupDisplay: true,
               header: { 
-                text: Things.DataGlobal.t('label.align') 
+                text: 'Grid ' + Things.DataGlobal.t('label.align') 
               },
               editor: { 
                 type: 'list', 
@@ -323,29 +338,15 @@
             }, { 
               fieldName: 'grid_width', name: 'grid_width', width: 80, type: 'number',
               header: {
-                text: Things.DataGlobal.t('label.width')
+                text: 'Grid ' + Things.DataGlobal.t('label.width')
               },
               styles: { 
                 textAlignment: 'far' 
               }
             }, { 
-              name: 'grid_editor', 
-              fieldName: 'grid_editor', 
-              width: 150,
-              lookupDisplay: true,
-              header: { 
-                text: Things.DataGlobal.t('label.editor') 
-              },
-              editor: { 
-                type: 'list', 
-                domainOnly: true 
-              },
-              lookupValues: gridEditors,
-              lookupLabels: gridEditors
-            }, { 
               fieldName: 'grid_format', name: 'grid_format', width: 135,
               header: {
-                text: Things.DataGlobal.t('label.format')
+                text: 'Grid ' + Things.DataGlobal.t('label.format')
               }
             }, { 
               name: 'form_editor', 
@@ -353,7 +354,7 @@
               width: 150,
               lookupDisplay: true,
               header: { 
-                text: Things.DataGlobal.t('label.editor') 
+                text: 'Form ' + Things.DataGlobal.t('label.editor') 
               },
               editor: { 
                 type: 'list', 
@@ -369,7 +370,7 @@
               lookupValues: validators,
               lookupLabels: validators,
               header: { 
-                text: Things.DataGlobal.t('label.validator') 
+                text: 'Form ' + Things.DataGlobal.t('label.validator') 
               },
               editor: { 
                 type: 'list', 
@@ -378,7 +379,7 @@
             }, { 
               fieldName: 'form_format', name: 'form_format', width: 125,
               header: {
-                text: Things.DataGlobal.t('label.format')
+                text: 'Form ' + Things.DataGlobal.t('label.format')
              }
             }, { 
               fieldName: 'def_val', name: 'def_val', width: 100,
@@ -417,7 +418,7 @@
       listeners: {
         'things-detail-view-selected' : '_detailTabSelected',
         'grid.things-grid-handle-addrow' : '_addRow',
-        'grid.things-grid-handle-save' : '_beforeSearchColumnSave',
+        'grid.things-grid-handle-save' : '_beforeDetailColumnSave',
         'grid.things-grid-save-success' : '_onColumnsSaveSuccess',
         'grid.things-grid-resource-column-edit' : '_onGridColumnRefEdit',
         'sync-btn-tap' : '_syncColumns'
@@ -470,14 +471,27 @@
         dataSet.insertRow(count - 1, { 
           menu_detail_id : this.resourceId, rank : count * 10, col_type : 'string' 
         });
-      },      
+      },
 
       /**
-       * Grid Column 저장 전
+       * Detail Columns 변경시 
+       *
+       * @param {Object} detailColumns
+       */
+      _detailColumnsChanged: function(detailColumns) {
+        if(detailColumns && detailColumns.length > 0) {
+          detailColumns.forEach(function(column) {
+            column.grid_check = column.grid_rank && column.grid_rank > 0;
+          });
+        }
+      },
+
+      /**
+       * Detail Column 저장 전
        *
        * @param {Object} event menu-meta 저장 전 이벤트 
        */
-      _beforeSearchColumnSave: function(event) {
+      _beforeDetailColumnSave: function(event) {
         var grid = event.target;
         if(grid.writeData && grid.writeData.length > 0) {
           var menuDetailId = this.resourceId;
