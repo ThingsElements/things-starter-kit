@@ -1,144 +1,278 @@
-<link rel="import" href="../../../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../../../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../../../../bower_components/paper-header-panel/paper-header-panel.html">
-<link rel="import" href="../../../../bower_components/paper-tabs/paper-tab.html">
-<link rel="import" href="../../../../bower_components/paper-tabs/paper-tabs.html">
+
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
 
 <link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
 <link rel="import" href="../../../../bower_components/things-detail/things-detail-tab-view-behavior.html">
 <link rel="import" href="../../../../bower_components/things-form/things-resource-form.html">
+
+<link rel="import" href="../../things-detail-layout/things-detail-layout-behavior.html">
 
 <link rel="import" href="./things-base-menu-detail-buttons.html">
 <link rel="import" href="./things-base-menu-detail-columns.html">
 <link rel="import" href="./things-base-menu-detail-main.html">
 
 <!--
-  Menu 셋업 View
+메뉴 셋업 뷰 - 좌/우 분할 & 우측 상하 분할 레이아웃
 -->
 
 <dom-module id="things-base-menu-detail">
   <template>
     <style>
       :host {
-        display: block;
-        height: 100%;
-        width: 100%;
+        display: inline-block;
+        @apply(--things-detail-layout-l1-r2);
+        @apply(--layout-horizontal);
+      }
+
+      paper-card {
         @apply(--layout-vertical);
-        --paper-header-panel-standard-container: {
-            @apply(--layout-vertical);
+        @apply(--layout-flex);
+        @apply(--layout-wrap);
+        @apply(--things-detail-layout-l1-r2-container);
+        --paper-card-header-text: {
+          font-size: 14px;
+          @apply(--things-detail-header-text);
         };
       }
-      paper-header-panel {
+
+      .container {
+        @apply(--things-detail-layout-l1-r2);
         @apply(--layout-flex);
-        @apply(--layout-vertical);
+        @apply(--layout-horizontal);
       }
-      .iron-pages {
-        @apply(--layout-flex);
-        @apply(--layout-vertical);
-      }
+
       .detail-flex {
         @apply(--layout-flex);
       }
+
+      .layout-content {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+      }
+
+      .card-actions {
+        @apply(--layout-horizontal-reverse);
+      }
+
+      #left {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+        @apply(--things-detail-layout-l1-r2-left);
+      }
+
+      #right {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+        @apply(--things-detail-layout-l1-r2-right);
+      }
+
+      #right-top {
+        @apply(--layout-flex-4);
+        @apply(--things-detail-layout-l1-r2-right-top);
+      }
+
+      #right-bottom {
+        @apply(--layout-flex-3);
+        @apply(--things-detail-layout-l1-r2-right-bottom);
+      }
+
+      .subtitle:before {
+        content: '';
+        @apply(--things-subtitle-icon);
+      }
+
+      .subtitle {
+        @apply(--things-default-padding);
+        padding-bottom:7px;
+        @apply(--things-subtitle);
+      }      
     </style>
 
-    <paper-header-panel mode="standard" class="green">
-      <paper-tabs id="tabGroup" class="paper-header" selected="{{currentTabIdx}}" noink scrollable>
-        <template is="dom-repeat" items="{{_panels}}">
-          <paper-tab id="{{item.elementId}}">{{item.title}}</paper-tab>
-        </template>
-      </paper-tabs>
+    <things-ajax 
+      auto
+      id="get-resource"
+      method="GET"
+      resource-url="[[menuDetailsUrl]]"
+      last-response="{{menuDetailMeta}}">
+    </things-ajax>
 
-      <things-ajax 
-        auto
-        id="get-resource"
-        method="GET"
-        resource-url="[[menuDetailsUrl]]"
-        last-response="{{menuDetailMeta}}">
-      </things-ajax>
+    <div class ="container">
+      <!-- left -->
+      <paper-card id="left" 
+        heading="[[leftContentTitle]]" 
+        elevation="0" 
+        animated-shadow="false">
+        <div id="leftContent" class="layout-content">
+          <things-base-menu-detail-main
+            class="detail-flex"
+            resource-id="[[resourceId]]"
+            menu-detail-id="{{menuDetailId}}"
+            menu-detail-meta="{{menuDetailMeta}}">
+          </things-base-menu-detail-main>
+        </div>
+      </paper-card>
 
-      <iron-pages id="tabPages" selected="{{currentTabIdx}}" class="iron-pages">
-        <things-base-menu-detail-main
-          class="detail-flex"
-          resource-id="[[resourceId]]"
-          menu-detail-id="{{menuDetailId}}"
-          menu-detail-meta="{{menuDetailMeta}}">
-        </things-base-menu-detail-main>
+      <!-- right -->
+      <div id="right">
+        <!-- top -->
+        <paper-card id="right-top" 
+          heading="[[rightTopContentTitle]]" 
+          elevation="0" 
+          animated-shadow="false">
+          <div id="rightTopContent" class="layout-content">
+            <things-base-menu-detail-columns
+              class="detail-flex"
+              resource-id="{{menuDetailId}}"
+              menu-meta="{{menuDetails}}">
+            </things-base-menu-detail-columns>            
+          </div>
+        </paper-card>
 
-        <things-base-menu-detail-columns
-          class="detail-flex"
-          resource-id="{{menuDetailId}}"
-          menu-meta="{{menuDetails}}">
-        </things-base-menu-detail-columns>
-
-        <things-base-menu-detail-buttons
-          class="detail-flex"
-          resource-id="{{menuDetailId}}"
-          menu-meta="{{menuMeta}}">
-        </things-base-menu-detail-buttons>
-      </iron-pages>
-    </paper-header-panel>
+        <!-- bottom -->
+        <paper-card id="right-bottom" 
+          heading="[[rightBottomContentTitle]]" 
+          elevation="0" 
+          animated-shadow="false">
+          <div id="rightBottomContent" class="layout-content">
+            <things-base-menu-detail-buttons
+              class="detail-flex"
+              resource-id="{{menuDetailId}}"
+              menu-meta="{{menuMeta}}">
+            </things-base-menu-detail-buttons>            
+          </div>
+        </paper-card>
+      </div>
+    </div>
   </template>
 
   <script>
-    Polymer({
+  Polymer({
+    is: 'things-base-menu-detail',
 
-      is: 'things-base-menu-detail',
+    behaviors: [
+      Things.DetailLayoutBehavior,
+      Things.ViewOpenBehavior
+    ],
 
-      behaviors: [ 
-        Things.DetailTabViewBahavior
-      ],
-
-      properties: {
-        /**
-         * Menu Details URL
-         */
-        menuDetailsUrl: {
-          type: String,
-          computed: '_computeMenuDetailsUrl(resourceId)'
-        },
-
-        /**
-         * Menu Meta Details
-         */
-        menuDetailMeta: {
-          type: Object
-        },
-
-        /**
-         * Menu Detail ID
-         */
-        menuDetailId: {
-          type: String,
-          notify: true
-        }
+    properties: {
+      /**
+       * Title Of This Content
+       */
+      title: {
+        type: String
       },
 
       /**
-       * Life cycle - Element Ready
+       * Title Of Left Content
        */
-      ready: function() {
-        this._panels = [ {
-          title: Things.DataGlobal.t('title.detail'), 
-          elementId: 'things-base-menu-detail-main'
-        }, {
-          title: Things.DataGlobal.t('title.setup_columns'), 
-          elementId: 'things-base-menu-detail-columns'
-        }, {
-          title: Things.DataGlobal.t('title.setup_button'), 
-          elementId: 'things-base-menu-detail-buttons'
-        } ];
+      leftContentTitle: {
+        type: String
       },
 
       /**
-       * Menu Details를 찾기 위한 URL
-       *
-       * @param {String} menuId
+       * Title Of Right Top Content
        */
-      _computeMenuDetailsUrl: function(menuId) {
-        var query = JSON.stringify([{name: 'menu_id', value: menuId}]);
-        return 'menu_details?query=' + query;
+      rightTopContentTitle: {
+        type: String
+      },
+
+      /**
+       * Title Of Right Bottom Content
+       */
+      rightBottomContentTitle: {
+        type: String
+      },
+
+      /**
+       * Resource ID
+       */
+      resourceId: {
+        type: String
+      },
+
+      /**
+       * Resource
+       */
+      resource: {
+        type: Object,
+        observer: '_onResourceChanged'
+      },
+
+      /**
+       * Menu Details URL
+       */
+      menuDetailsUrl: {
+        type: String,
+        computed: '_computeMenuDetailsUrl(resourceId)'
+      },
+
+      /**
+       * Menu Meta Details
+       */
+      menuDetailMeta: {
+        type: Object
+      },
+
+      /**
+       * Menu Detail ID
+       */
+      menuDetailId: {
+        type: String,
+        notify: true
+      }
+    },
+
+    listeners: {
+      'sections-configured' : 'setupLayoutClass'
+    },
+
+    /**
+     * Menu Details를 찾기 위한 URL
+     *
+     * @param {String} menuId
+     */
+    _computeMenuDetailsUrl: function(menuId) {
+      var query = JSON.stringify([{name: 'menu_id', value: menuId}]);
+      return 'menu_details?query=' + query;
+    },
+
+    /**
+     * Resource가 변경되었을 경우 
+     *
+     * @param {Object} resource
+     */
+    _onResourceChanged: function(resource) {
+      this.resourceId = resource ? resource.id : null;
+    },    
+
+    /**
+     * Section이 모두 추가된 후 Layout Class를 설정한다.
+     *
+     * @param {Object} e sections-configured
+     */
+    setupLayoutClass: function(e) {
+      if(!this.sections || this.sections.length == 0) return;
+
+      this.sections['leftContent'].setAttribute('class', 'flex');
+      //this.sections['rightTopContent'].setAttribute('class', 'flex');
+      //this.sections['rightBottomContent'].setAttribute('class', 'flex');
+    },
+
+    /**
+     * Detail 화면을 오픈한다.
+     *
+     * @param {String} resourceId
+     * @param {Object} resource
+     */
+    showDetailView: function(resourceId, resource) {
+      if(this.resourceId != resourceId) {
+        this.resourceId = resourceId;
       }
 
-    });
+      this.openPopupView(this, true);
+    }
+
+  });
   </script>
 </dom-module>
