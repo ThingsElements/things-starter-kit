@@ -128,6 +128,8 @@
             fieldName: 'save_url'
           }, { 
             fieldName: 'master_field'
+          }, { 
+            fieldName: 'custom_view'
           } ]
         },
         
@@ -188,21 +190,29 @@
                   resourceName: 'Entity',
                   resourceUrl: 'entities',
                   ownerField: 'ref_name'
-                }              
+                }
             }, {
-              fieldName: 'association', name: 'association', width: 135,
+              fieldName: 'custom_view', name: 'custom_view', width: 175,
+              header: { 
+                text: Things.DataGlobal.t('label.custom_view')
+              }
+            }, {
+              fieldName: 'association', name: 'association', width: 90,
               header: { 
                 text: Things.DataGlobal.t('label.association')
+              },
+              lookupDisplay: true,
+              lookupValues: [ '', 'master', 'one-to-one', 'one-to-many' ],
+              lookupLabels: [ '', 'Master', '1:1', '1:N' ],
+              editor: { 
+                type: 'list',
+                domainOnly: true 
               }
+
             }, {
               fieldName: 'master_field', name: 'master_field', width: 120,
               header: { 
                 text: Things.DataGlobal.t('label.ref_field')
-              }
-            }, {
-              fieldName: 'data_prop', name: 'data_prop', width: 120,
-              header: { 
-                text: Things.DataGlobal.t('label.data_prop')
               }
             }, { 
               fieldName: 'search_url', name: 'search_url', width: 200,
@@ -212,7 +222,12 @@
             }, {
               fieldName: 'save_url', name: 'save_url', width: 300,
               header: { 
-                text: Things.DataGlobal.t('label.grid_save_url')
+                text: Things.DataGlobal.t('label.save_url')
+              }
+            }, {
+              fieldName: 'data_prop', name: 'data_prop', width: 120,
+              header: { 
+                text: Things.DataGlobal.t('label.data_prop')
               }
             } ]
           }
