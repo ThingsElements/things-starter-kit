@@ -33,7 +33,7 @@
       id="column-ajax"
       method="GET"
       resource-id="[[resourceId]]"
-      resource-url="menu_details/:id/menu_detail_columns"
+      resource-url="menu_details/:id/menu_detail_columns?no_trans_term=true"
       last-response="{{menuDetailColumns}}">
     </things-ajax>
 
@@ -42,7 +42,7 @@
       config="[[gridConfig]]"
       model="[[gridModel]]" 
       columns="[[gridColumns]]"
-      data="[[menuDetailColumns]]"
+      data="[[items]]"
       grid-save-action="[[gridSaveUrl]]"
       buttons="[[buttons]]">
     </things-resource-grid>
@@ -91,6 +91,13 @@
           type: Object,
           notify: true,
           observer: '_detailColumnsChanged'
+        },
+
+        /**
+         * Grid에 매핑될 Menu Detail Columns
+         */
+        items: {
+          type: Array
         },
 
         /**
@@ -457,7 +464,7 @@
        * @param {Object} e 버튼 클릭 이벤트
        */
       _syncColumns: function(e) {
-        this.$['column-ajax'].resourceId = this.resourceId;
+        this.$['columns-sync-ajax'].resourceId = this.resourceId;
         this.$['columns-sync-ajax'].generateRequest();
       },
 
@@ -484,6 +491,8 @@
             column.grid_check = column.grid_rank && column.grid_rank > 0;
           });
         }
+
+        this.items = detailColumns;
       },
 
       /**
@@ -541,7 +550,6 @@
         }
 
         var resourceObj = { 
-          // TODO valueField가 한 개 이상일 필요가 있다.
           resourceType : 'Entity',
           resourceName : row.ref_type,
           ownerField : 'ref_name'          
