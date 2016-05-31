@@ -113,11 +113,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <div title></div>
                         <things-profile></things-profile>
                         <things-setting></things-setting>
-                        <paper-icon-button icon="info" onclick="document.getElementById('informationContainer').toggleAttribute('hidden');"></paper-icon-button>
+                        <paper-icon-button icon="info" onclick="document.getElementById('informationContainer').toggle()"></paper-icon-button>
                     </app-toolbar>
                 </app-header>
                 <div id="scrollingRegion">
-                    <paper-item id ="informationContainer" class="layout horizontal">
+                    <iron-collapse id ="informationContainer" class="layout horizontal">
                         <div class ="flex-1">order informatin</div>
                         <div class ="flex-4">
                             <span>routing information</span>
@@ -127,23 +127,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                     class="layout vertical flex"
                             ></things-wip-routing-detail>
                         </div>
-                    </paper-item>
-<!--                     <paper-card id="thingsRoutingContainer" >
-                        <div class="card-content">
-                          <span>routing infomation</span>
-                          <paper-icon-button 
-                            icon="hardware:keyboard-arrow-up" 
-                            title="more info" 
-                            on-tap="_toggle"
-                            style="float:right;">
-                          </paper-icon-button>
-                        </div>
-                        <div class="card-actions">
-                          <iron-collapse id="things-routing" style="width:100%;">
-
-                          </iron-collapse>
-                        </div>
-                    </paper-card> -->
+                    </iron-collapse>
                     <iron-pages attr-for-selected="data-route" selected="{{route}}" id="content">
                         <div class ="layout flex"></div>
                     </iron-pages>

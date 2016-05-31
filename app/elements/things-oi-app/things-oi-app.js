@@ -15,14 +15,11 @@ Polymer({
        console.log(value);
        console.log(Things.DataGlobal);
     },
-    ready: function(){
-      this.$['things-routing'].show();
-    }
     /**
      * toggle 
      */
     _toggle :function(){
-      var thingsRouting = this.$['things-routing'];
+      var thingsRouting = this.$['informationContainer'];
       var iconButton = Polymer.dom(event).localTarget;
       iconButton.icon = thingsRouting.opened ? 'hardware:keyboard-arrow-up'
                         : 'hardware:keyboard-arrow-down';
