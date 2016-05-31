@@ -19,5 +19,5 @@ module.exports = {
   xmesOiTheme: config.xmesOiTheme,
   // App version
   appVersion: config.appVersion,
-  responsiveWidth :'4096px'
+  responsiveWidth :'640px'
 };

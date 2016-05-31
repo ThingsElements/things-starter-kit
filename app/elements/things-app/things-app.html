@@ -59,16 +59,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <paper-drawer-panel id="paperDrawerPanel" responsive-width="599px" drawer-width="256px">
       <!-- Layout Sidebar -->
       <things-sidebar drawer
+        menu-category="STANDARD"
         drawer-id='paperDrawerPanel' 
         page-content-id='content'
         class="layout vertical" 
-        title="Elidom" 
+        title="Elidom"
         selected-menu=1 
         screens="{{screens}}" 
         resource-screens="{{resourceScreens}}"
         diy-screens="{{diyScreens}}"
-        action="menus.json?mode=auth">
-          <div class="user-menu">
+        resource-url="menus.json?mode=auth"
+        resource-action="index"
+        query-fields = '[{ "name" :"category","operator":"noteq", "value":"TERMINAL"}]'>
+          <div class="user-menu header">
             <!-- sidebar header toolbar menu start-->
             <things-profile></things-profile>
             <!-- setting -->
