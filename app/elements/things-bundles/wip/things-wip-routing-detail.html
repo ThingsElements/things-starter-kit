@@ -11,6 +11,16 @@
 	    	width: 100%
 	    }
 		</style>
+
+		<things-ajax
+			auto
+      id="label-search"
+      method="GET"
+      resource-url="[[searchUrl]]"
+      resource-id="[[resourceId]]"
+      last-response="{{lastResponse}}">
+		</things-ajax>
+
 		<paper-icon-button icon="arrow-back" on-tap="moveLeft"></paper-icon-button>
 		<div id="scrollable-element" class="flex container">
 			<things-wip-routing-detail-scrollable id="scrollable" scroll-target="scrollable-element"></things-wip-routing-detail-scrollable>
@@ -25,6 +35,38 @@
       behaviors: [ 
         Things.ResourceDetailTabViewBahavior
       ],
+
+      properties: {
+
+      	/**
+      	 * resourcd id
+      	 */
+				resourceId: {
+					type: String
+				},
+
+				/**
+				 * search url
+				 */
+				searchUrl: {
+					type: String
+				},
+
+				/**
+				 * things ajax response
+				 */
+	      lastResponse: {
+	      	type: Object,
+	      	observer: '_itemsChanged'
+	      },      	
+      },
+
+      /**
+       * request를 통해 얻은 items를 things-wip-routing-detail-scrollable로 넘겨준다.
+       */
+      _itemsChanged: function(items) {
+      	this.$.scrollable.items = items;
+      },
 
       /**
        * things-wip-routing-detail-scrollable 파일의 moveLeft를 호출하여 스크롤을 이동

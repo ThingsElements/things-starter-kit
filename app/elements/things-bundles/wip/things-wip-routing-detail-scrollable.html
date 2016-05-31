@@ -1,6 +1,7 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../../../bower_components/iron-scroll-target-behavior/iron-scroll-target-behavior.html">
+<link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
 
 <dom-module id="things-wip-routing-detail-scrollable">
 	<template>
@@ -8,8 +9,8 @@
 	    .container {
 	    	@apply(--layout-horizontal);
 	    }
-		</style>
-		
+		</style>		
+
 		<div id="scrollable-element" class="container">
 			<template is="dom-repeat" items="[[finalItem]]">
 				<iron-image width="[[item.width]]" height="[[item.height]]" align="center" src="[[item.img]]">
@@ -30,35 +31,14 @@
        * TODO : routing ajax call & data mapping
        */
 			properties: {
-				items: {
-					type: Object,
-					value: [{
-						img: '../../../images/icon-nametag.png', name: 'oper1', width: 80, height: 80
-					}, {
-						img: '../../../images/icon-nametag.png', name: 'oper2', width: 80, height: 80
-					}, {
-						img: '../../../images/icon-nametag.png', name: 'oper3', width: 80, height: 80
-					}, {
-						img: '../../../images/icon-nametag.png', name: 'oper4', width: 80, height: 80
-					}, {
-						img: '../../../images/icon-nametag.png', name: 'oper5', width: 80, height: 80
-					}, {
-						img: '../../../images/icon-nametag.png', name: 'oper6', width: 80, height: 80
-					}, {
-						img: '../../../images/icon-nametag.png', name: 'oper7', width: 80, height: 80
-					}, {
-						img: '../../../images/icon-nametag.png', name: 'oper7', width: 80, height: 80
-					}, {
-						img: '../../../images/icon-nametag.png', name: 'oper7', width: 80, height: 80
-					}, {
-						img: '../../../images/icon-nametag.png', name: 'oper7', width: 80, height: 80
-					}, {
-						img: '../../../images/icon-nametag.png', name: 'oper7', width: 80, height: 80
-					}, {
-						img: '../../../images/icon-nametag.png', name: 'oper7', width: 80, height: 80
-					}],
-					observer: '_itemsChanged'
-				},
+				
+				/**
+				 * things-wip-routing-detail에서 items를 받는다.
+				 */
+	      items: {
+	      	type: Object,
+	      	observer: '_itemsChanged'
+	      },
 
 				/**
 				 * _itemsChanged() 를 통해 산출되는 최종 item 리스트
@@ -105,6 +85,8 @@
 				var itemsLength = items.length;
 				this.finalItem = [];
 				for(var i = 0; i < itemsLength; i++) {
+					items[i].img = "../../../images/icon-nametag.png";
+					items[i].width = 80;
 					this.push('finalItem', items[i]);
 					
 					if(i < itemsLength-1) {	
