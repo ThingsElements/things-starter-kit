@@ -184,8 +184,11 @@ Things.ResourceMenuContentBehaviorImpl = {
 			this.showLayoutView(event.detail);
 
 		} else if(this.menuInfo.detail_form_id && this.menuInfo.detail_form_id == 'things-resource-detail') {
-			var event = new CustomEvent('things-open-menu-detail-view', { detail: { resource: event.detail, menuInfo: this.menuInfo }});
-			document.dispatchEvent(event);			
+			if(this.menuInfo.detail_layout) {
+				var detail = { detail: { menuInfo: this.menuInfo, resource: event.detail, resourceFormFields: this.resourceFormFields }};
+				var event = new CustomEvent('things-open-menu-detail-view', detail);
+				document.dispatchEvent(event);
+			}
 
 		} else if(this.menuInfo.detail_form_id != 'custom') {
 			this.showCustomView(this.menuInfo.detail_form_id, event.detail, this.refreshGridData);
@@ -252,12 +255,6 @@ Things.ResourceMenuContentBehaviorImpl = {
 			viewElement.closePopupView();
 			saveCallback.apply(this);
 		}.bind(this));
-	},
-
-	/**
-	 * 화면 초기화 함수, 현재는 없어도 무방, 추후 삭제 예정
-	 */
-	initializeContent: function() {
 	}
 
 };

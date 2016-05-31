@@ -7,139 +7,164 @@
 <link rel="import" href="../../../bower_components/things-detail/things-detail-tab-view-behavior.html">
 
 <link rel="import" href="things-detail-layout-behavior.html">
+
 <!--
-A comment describing this element
-
-Example:
-
-    <my-elem></my-elem>
-
-Example:
-
-    <my-elem>
-      <h2>Hello my-elem</h2>
-    </my-elem>
-
-@demo demo/index.html
+좌/우 분할 & 우측 상하 분할 레이아웃
 -->
+
 <dom-module id="things-detail-layout-l1-r2">
-    <template>
-        <style>
-        :host {
-            display: inline-block;
-            @apply(--things-detail-layout-l1-r2);
-            @apply(--layout-horizontal);
-        }
-        
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+        @apply(--things-detail-layout-l1-r2);
+        @apply(--layout-horizontal);
+      }
 
-        paper-card {
-            @apply(--layout-vertical);
-            @apply(--layout-flex);
-            @apply(--layout-wrap);
-            @apply(--things-detail-layout-l1-r2-container);
-            --paper-card-header-text: {
-            	font-size: 14px;
-            	@apply(--things-detail-header-text);
-            };
-        }
+      paper-card {
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+        @apply(--layout-wrap);
+        @apply(--things-detail-layout-l1-r2-container);
+        --paper-card-header-text: {
+          font-size: 14px;
+          @apply(--things-detail-header-text);
+        };
+      }
 
-        .container {
-            @apply(--things-detail-layout-l1-r2);
-            @apply(--layout-flex);
-            @apply(--layout-horizontal);
-        }
+      .container {
+        @apply(--things-detail-layout-l1-r2);
+        @apply(--layout-flex);
+        @apply(--layout-horizontal);
+      }
 
-        .detail-flex {
-            @apply(--layout-flex);
-        }
-        
-        .layout-content {
-        	@apply(--layout-flex);
-            @apply(--layout-vertical);
-        }
+      .detail-flex {
+        @apply(--layout-flex);
+      }
 
-        .card-actions {
-            @apply(--layout-horizontal-reverse);
-        }
-        
-        #left {
-            @apply(--layout-flex);
-            @apply(--layout-vertical);
-            @apply(--things-detail-layout-l1-r2-left);
-        }
-        
-        #right {
-            @apply(--layout-flex);
-            @apply(--layout-vertical);
-            @apply(--things-detail-layout-l1-r2-right);
-        }
-        
-        #right-top {
-            @apply(--layout-flex-4);
-            @apply(--things-detail-layout-l1-r2-right-top);
-        }
-        
-        #right-bottom {
-            @apply(--layout-flex-3);
-            @apply(--things-detail-layout-l1-r2-right-bottom);
-        }
-        </style>
+      .layout-content {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+      }
 
-        	<div class ="container">
-				<!-- left -->
-	            <paper-card id="left" 
-	            	heading="[[title1]]" 
-	            	elevation="0" 
-	            	animated-shadow="false">
+      .card-actions {
+        @apply(--layout-horizontal-reverse);
+      }
 
-		                <div id="leftContent" class="layout-content">
+      #left {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+        @apply(--things-detail-layout-l1-r2-left);
+      }
 
-		                </div>
-	            </paper-card>
+      #right {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+        @apply(--things-detail-layout-l1-r2-right);
+      }
 
-	            <!-- right -->
-	            <div id="right">
-		            <paper-card id="right-top" 
-		            	heading="[[title2]]" 
-		            	elevation="0" 
-		            	animated-shadow="false">
-			                <div id="rightTopContent" class="layout-content">
+      #right-top {
+        @apply(--layout-flex-4);
+        @apply(--things-detail-layout-l1-r2-right-top);
+      }
 
-			                </div>
-			                <div class="card-actions">
-			                    <things-button-bar buttons="[[rightTopButtons]]">
-			                    </things-buttons>
-			                </div>
-		            </paper-card>
+      #right-bottom {
+        @apply(--layout-flex-3);
+        @apply(--things-detail-layout-l1-r2-right-bottom);
+      }
 
-	        	    <paper-card id="right-bottom" 
-	        	    	heading="[[title3]]" 
-	        	    	image="" 
-	        	    	elevation="0" 
-	        	    	animated-shadow="false">
-		                    <div id="rightBottomContent" class="layout-content">
+      .subtitle:before {
+        content: '';
+        @apply(--things-subtitle-icon);
+      }
 
-		                    </div>
-	                </paper-card>
-                </div>
-            </div>
-    </template>
-    <script>
-    (function() {
-        'use strict';
+      .subtitle {
+        @apply(--things-default-padding);
+        padding-bottom:7px;
+        @apply(--things-subtitle);
+      }      
+    </style>
 
-        Polymer({
-            is: 'things-detail-layout-l1-r2',
+    <div class ="container">
+      <!-- left -->
+      <paper-card id="left" 
+        heading="[[leftContentTitle]]" 
+        elevation="0" 
+        animated-shadow="false">
+        <div id="leftContent" class="layout-content"></div>
+      </paper-card>
 
-            behaviors: [
-                Things.DetailLayoutBehavior,
-                Things.DetailTabViewBahavior,
-                Polymer.IronSelectableBehavior,
-                Polymer.IronResizableBehavior,
-            ]
+      <!-- right -->
+      <div id="right">
+        <!-- top -->
+        <paper-card id="right-top" 
+          heading="[[rightTopContentTitle]]" 
+          elevation="0" 
+          animated-shadow="false">
+          <div id="rightTopContent" class="layout-content"></div>
+        </paper-card>
 
+        <!-- bottom -->
+        <paper-card id="right-bottom" 
+          heading="[[rightBottomContentTitle]]" 
+          elevation="0" 
+          animated-shadow="false">
+          <div id="rightBottomContent" class="layout-content"></div>
+        </paper-card>
+      </div>
+    </div>
+  </template>
 
-        });
-    })();
-    </script>
+  <script>
+  Polymer({
+    is: 'things-detail-layout-l1-r2',
+
+    behaviors: [
+      Things.DetailLayoutBehavior,
+      Things.DetailTabViewBahavior,
+      Polymer.IronSelectableBehavior,
+      Polymer.IronResizableBehavior
+    ],
+
+    properties: {
+      /**
+       * Title Of Left Content
+       */
+      leftContentTitle: {
+        type: String
+      },
+
+      /**
+       * Title Of Right Top Content
+       */
+      rightTopContentTitle: {
+        type: String
+      },
+
+      /**
+       * Title Of Right Bottom Content
+       */
+      rightBottomContentTitle: {
+        type: String
+      }
+    },
+
+    listeners: {
+      'sections-configured' : 'setupLayoutClass'
+    },
+
+    /**
+     * Section이 모두 추가된 후 Layout Class를 설정한다.
+     *
+     * @param {Object} e sections-configured
+     */
+    setupLayoutClass: function(e) {
+      if(!this.sections || this.sections.length == 0) return;
+
+      this.sections['leftContent'].setAttribute('class', 'flex');
+      //this.sections['rightTopContent'].setAttribute('class', 'flex');
+      //this.sections['rightBottomContent'].setAttribute('class', 'flex');
+    }
+  });
+  </script>
 </dom-module>

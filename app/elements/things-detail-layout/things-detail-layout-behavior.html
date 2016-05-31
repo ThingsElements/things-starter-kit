@@ -5,50 +5,46 @@
 window.Things = window.Things || {};
 
 /**
- * 기본 Form Behavior
- * Things.FormBehavior를 사용하고자 한다면 반드시 reconfigureMyForm() 함수를 구현해야 한다.
- * 구현 내용 - Things.FormBehavior를 이용하여 Form을 구성한다.
+ * 리소스 상세 폼 레이아웃의 기본 동작을 정의한다.
  *
- * @polymerBehavior Things.FormBehavior
+ * @polymerBehavior Things.DetailLayoutBehavior
  */
 Things.DetailLayoutBehavior = {
 
-	properties: {
-		sections:{
-		    type: Array,
-		    observer : '_createSection'
-		},
-
-		contents:{
-		    type: Array
-		}
-	},
-    ready : function(){
-        this._createSection();
-    },
-    _createSection : function(){
-        if(!this.sections || this.sections.length <= 0 ) return;
-        this.set('contents', Polymer.dom(this.root).querySelectorAll('.layout-content'));
-        this.contents.forEach(function(content,index){
-            var child = this.sections[index];
-            if(child&&!child.renderFinish){
-                child.element = document.createElement(child.elementName);
-                child.element = this._makeAttributes(child.element, child.attributes);
-                content.appendChild(child.element);
-                this.set('title'+(index+1),child.title);
-                child.renderFinish = true;
-            }
-        }.bind(this));
-    },
-
-    _makeAttributes : function(element, attrs){
-        var attr;
-        for(index in attrs) {
-            attr = attrs[index];
-            element.setAttribute(attr.name, attr.value);
-        }
-        return element;
+  properties: {
+    /**
+     * View Section 정보 - View Section Id : View 매핑 정보 
+     */
+    sections: {
+      type: Object,
+      observer: '_sectionChanged'
     }
+  },
+
+  /**
+   * Sections 정보로 View를 설정한다.
+   * 
+   * @param {Object} sections
+   */
+  _sectionChanged: function(sections) {
+    if(!sections) return;
+
+    var insertionPoints = Polymer.dom(this.root).querySelectorAll('.layout-content');
+
+    for(var i = 0 ; i < insertionPoints.length ; i++) {
+      // 1. sectionId로 section을 찾는다.
+      var insertionPoint = insertionPoints[i];
+      // 2. section에 view를 추가 
+      var section = sections[insertionPoint.id];
+      if(section) {
+        this.set(insertionPoint.id + 'Title', section.title);
+        insertionPoint.appendChild(section);
+        this.$[section.id] = section;
+      }
+    }
+
+    this.fire('sections-configured');
+  }
 }
 
 </script>

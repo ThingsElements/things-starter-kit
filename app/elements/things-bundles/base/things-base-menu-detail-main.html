@@ -126,6 +126,8 @@
             fieldName: 'search_url'
           }, { 
             fieldName: 'save_url'
+          }, { 
+            fieldName: 'master_field'
           } ]
         },
         
@@ -191,6 +193,11 @@
               fieldName: 'association', name: 'association', width: 135,
               header: { 
                 text: Things.DataGlobal.t('label.association')
+              }
+            }, {
+              fieldName: 'master_field', name: 'master_field', width: 120,
+              header: { 
+                text: Things.DataGlobal.t('label.ref_field')
               }
             }, {
               fieldName: 'data_prop', name: 'data_prop', width: 120,

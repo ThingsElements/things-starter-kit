@@ -118,8 +118,6 @@
           }, { 
             fieldName: 'nullable'
           }, { 
-            fieldName: 'grid_rank'
-          }, { 
             fieldName: 'ref_type'
           }, { 
             fieldName: 'ref_name'
@@ -133,6 +131,24 @@
             fieldName: 'def_val'
           }, {
             fieldName: 'grid_check'
+          }, { 
+            fieldName: 'grid_rank'
+          }, { 
+            fieldName: 'grid_align'
+          }, { 
+            fieldName: 'grid_width'
+          }, { 
+            fieldName: 'grid_editor'
+          }, { 
+            fieldName: 'grid_format'
+          }, { 
+            fieldName: 'form_editor'
+          }, { 
+            fieldName: 'form_validator'
+          }, { 
+            fieldName: 'form_format'
+          }, { 
+            fieldName: 'ignore_on_save'
           } ]
         },
         
@@ -142,10 +158,10 @@
         gridColumns: {
           type: Array,
           value: function() {
-            var colTypes = [ 
-              '', 'binary', 'boolean', 'date', 'datetime', 'decimal', 'double', 
-              'float', 'integer', 'long', 'string', 'text', 'time', 'timestamp' 
-            ];
+            var validators = document.querySelector('#validators').allValidators();
+            var colTypes = ['', 'binary', 'boolean', 'date', 'datetime', 'decimal', 'double', 'float', 'integer', 'long', 'string', 'text', 'time', 'timestamp'];
+            var gridEditors = ['', 'hidden', 'readonly', 'checkbox', 'text', 'code-combo', 'number', 'textarea', 'resource-column', 'resource-selector', 'date-picker', 'datetime-picker'];
+            var formEditors = ['', 'hidden', 'readonly', 'checkbox', 'text', 'code-combo', 'number','textarea', 'resource-field', 'resource-selector', 'date-picker', 'time-picker', 'datetime-picker', 'tristate-radio'];
 
             return [ { 
               fieldName: 'id', name: 'id', width: 0 
@@ -289,6 +305,80 @@
               fieldName: 'ref_related', name: 'ref_related', width: 180,
               header: {
                 text: Things.DataGlobal.t('label.ref_related')
+             }
+            }, { 
+              name: 'grid_align', 
+              fieldName: 'grid_align', 
+              width: 80,
+              lookupDisplay: true,
+              header: { 
+                text: Things.DataGlobal.t('label.align') 
+              },
+              editor: { 
+                type: 'list', 
+                domainOnly: true 
+              },
+              lookupValues: [ '', 'center', 'far' ],
+              lookupLabels: [ '', 'Center', 'Far' ]
+            }, { 
+              fieldName: 'grid_width', name: 'grid_width', width: 80, type: 'number',
+              header: {
+                text: Things.DataGlobal.t('label.width')
+              },
+              styles: { 
+                textAlignment: 'far' 
+              }
+            }, { 
+              name: 'grid_editor', 
+              fieldName: 'grid_editor', 
+              width: 150,
+              lookupDisplay: true,
+              header: { 
+                text: Things.DataGlobal.t('label.editor') 
+              },
+              editor: { 
+                type: 'list', 
+                domainOnly: true 
+              },
+              lookupValues: gridEditors,
+              lookupLabels: gridEditors
+            }, { 
+              fieldName: 'grid_format', name: 'grid_format', width: 135,
+              header: {
+                text: Things.DataGlobal.t('label.format')
+              }
+            }, { 
+              name: 'form_editor', 
+              fieldName: 'form_editor', 
+              width: 150,
+              lookupDisplay: true,
+              header: { 
+                text: Things.DataGlobal.t('label.editor') 
+              },
+              editor: { 
+                type: 'list', 
+                domainOnly: true 
+              },
+              lookupValues: formEditors,
+              lookupLabels: formEditors
+            }, { 
+              name: 'form_validator', 
+              fieldName: 'form_validator', 
+              width: 120,
+              lookupDisplay: true,
+              lookupValues: validators,
+              lookupLabels: validators,
+              header: { 
+                text: Things.DataGlobal.t('label.validator') 
+              },
+              editor: { 
+                type: 'list', 
+                domainOnly: true 
+              }          
+            }, { 
+              fieldName: 'form_format', name: 'form_format', width: 125,
+              header: {
+                text: Things.DataGlobal.t('label.format')
              }
             }, { 
               fieldName: 'def_val', name: 'def_val', width: 100,

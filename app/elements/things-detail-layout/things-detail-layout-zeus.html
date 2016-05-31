@@ -1,0 +1,107 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
+<link rel="import" href="../../../bower_components/iron-selector/iron-selectable.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+
+<link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../bower_components/things-detail/things-detail-tab-view-behavior.html">
+
+<link rel="import" href="things-detail-layout-behavior.html">
+
+<!--
+	상하 1:1 분할 레이아웃
+-->
+
+<dom-module id="things-detail-layout-zeus">
+	<template>
+		<style>
+			:host {
+				display: inline-block;
+				@apply(--layout-vertical);
+			}
+
+			#topContent {
+				@apply(--layout-flex);
+				@apply(--layout-vertical);
+				@apply(--things-default-padding);
+			}
+
+			#bottomContent {
+				@apply(--layout-flex);
+				@apply(--layout-vertical);
+				@apply(--things-default-padding);
+			}
+
+      .subtitle:before {
+        content: '';
+        @apply(--things-subtitle-icon);
+      }
+
+      .subtitle {
+        @apply(--things-default-padding);
+        @apply(--things-subtitle);
+      }
+		</style>
+
+    <!-- top -->
+		<span class="subtitle">[[topContentTitle]]</span>
+
+    <div id="topContent" class="layout-content"></div>
+
+    <!-- bottom -->
+    <span class="subtitle">[[bottomContentTitle]]</span>
+
+    <div id="bottomContent" class="layout-content"></div>
+
+	</template>
+
+	<script>
+		Polymer({
+			is: 'things-detail-layout-zeus',
+
+			properties: {
+				/**
+				 * Title Of Top Content
+				 */
+				topContentTitle: {
+					type: String,
+					value: 'Top Title'
+				},
+
+				/**
+				 * Title Of Bottom Content
+				 */
+				bottomContentTitle: {
+					type: String,
+					value: 'Bottom Title'
+				}
+			},
+
+			behaviors: [
+				Things.DetailLayoutBehavior,
+				Things.DetailTabViewBahavior,
+				Polymer.IronSelectableBehavior,
+				Polymer.IronResizableBehavior,
+			],
+
+			listeners: {
+				'sections-configured' : 'setupLayoutClass'
+			},
+
+			/**
+			* Section이 모두 추가된 후 Layout Class를 설정한다.
+			*
+			* @param {Object} e sections-configured
+			*/
+			setupLayoutClass: function(e) {
+				if(!this.sections || this.sections.length == 0) return;
+
+				if(this.sections['topContent'])
+					this.sections['topContent'].setAttribute('class', 'flex');
+
+				if(this.sections['bottomContent'])
+					this.sections['bottomContent'].setAttribute('class', 'flex');
+			}
+		});
+	</script>
+</dom-module>
