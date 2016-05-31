@@ -7,68 +7,37 @@
 		<style>
 	    .container {
 	    	@apply(--layout-horizontal);
-	    	overflow-x: auto;
+	    	overflow-x: hidden;
 	    	width: 100%
 	    }
 		</style>
-		
+		<paper-icon-button icon="arrow-back" on-tap="moveLeft"></paper-icon-button>
 		<div id="scrollable-element" class="flex container">
 			<things-wip-routing-detail-scrollable id="scrollable" scroll-target="scrollable-element"></things-wip-routing-detail-scrollable>
 		</div>
-
-		<!--TODO Ajax Call로 전환 -->		
-		<paper-button raised on-tap="insertItem">insert</paper-button>
+		<paper-icon-button icon="icons:arrow-forward" on-tap="moveRight"></paper-icon-button>
 	</template>
 
 	<script>
 		Polymer({
 			is: 'things-wip-routing-detail',
 
-			properties: {
-			},
-
       behaviors: [ 
         Things.ResourceDetailTabViewBahavior
       ],
 
-			insertItem: function() {
-				this.$.scrollable.items = [{
-					img: '../../../images/icon-nametag.png',
-					name: 'oper1'
-				}, {
-					img: '../../../images/icon-nametag.png',
-					name: 'oper2'
-				}, {
-					img: '../../../images/icon-nametag.png',
-					name: 'oper3'
-				}, {
-					img: '../../../images/icon-nametag.png',
-					name: 'oper4'
-				}, {
-					img: '../../../images/icon-nametag.png',
-					name: 'oper5'
-				}, {
-					img: '../../../images/icon-nametag.png',
-					name: 'oper6'
-				}, {
-					img: '../../../images/icon-nametag.png',
-					name: 'oper7'
-				}, {
-					img: '../../../images/icon-nametag.png',
-					name: 'oper7'
-				}, {
-					img: '../../../images/icon-nametag.png',
-					name: 'oper7'
-				}, {
-					img: '../../../images/icon-nametag.png',
-					name: 'oper7'
-				}, {
-					img: '../../../images/icon-nametag.png',
-					name: 'oper7'
-				}, {
-					img: '../../../images/icon-nametag.png',
-					name: 'oper7'
-				}]
+      /**
+       * things-wip-routing-detail-scrollable 파일의 moveLeft를 호출하여 스크롤을 이동
+       */
+			moveLeft: function() {
+				this.$.scrollable.moveLeft();
+			},
+
+      /**
+       * things-wip-routing-detail-scrollable 파일의 moveLeft를 호출하여 스크롤을 이동
+       */
+			moveRight: function() {
+				this.$.scrollable.moveRight();
 			}
 		});
 	</script>

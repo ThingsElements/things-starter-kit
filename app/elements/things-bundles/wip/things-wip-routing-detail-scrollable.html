@@ -1,5 +1,5 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../../../bower_components/things-detail/things-resource-detail-tab-view-behavior.html">
+<link rel="import" href="../../../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../../../bower_components/iron-scroll-target-behavior/iron-scroll-target-behavior.html">
 
 <dom-module id="things-wip-routing-detail-scrollable">
@@ -12,7 +12,7 @@
 		
 		<div id="scrollable-element" class="container">
 			<template is="dom-repeat" items="[[finalItem]]">
-				<img src="[[item.img]]">
+				<iron-image width="[[item.width]]" height="[[item.height]]" align="center" src="[[item.img]]">
 			</template>
 		</div>
 	</template>
@@ -22,35 +22,125 @@
 			is: 'things-wip-routing-detail-scrollable',
 
       behaviors: [ 
-        Things.ResourceDetailTabViewBahavior,
         Polymer.IronScrollTargetBehavior
-      ],		
+      ],
 
+      /**
+       * test data 하드코딩
+       * TODO : routing ajax call & data mapping
+       */
 			properties: {
 				items: {
 					type: Object,
+					value: [{
+						img: '../../../images/icon-nametag.png', name: 'oper1', width: 80, height: 80
+					}, {
+						img: '../../../images/icon-nametag.png', name: 'oper2', width: 80, height: 80
+					}, {
+						img: '../../../images/icon-nametag.png', name: 'oper3', width: 80, height: 80
+					}, {
+						img: '../../../images/icon-nametag.png', name: 'oper4', width: 80, height: 80
+					}, {
+						img: '../../../images/icon-nametag.png', name: 'oper5', width: 80, height: 80
+					}, {
+						img: '../../../images/icon-nametag.png', name: 'oper6', width: 80, height: 80
+					}, {
+						img: '../../../images/icon-nametag.png', name: 'oper7', width: 80, height: 80
+					}, {
+						img: '../../../images/icon-nametag.png', name: 'oper7', width: 80, height: 80
+					}, {
+						img: '../../../images/icon-nametag.png', name: 'oper7', width: 80, height: 80
+					}, {
+						img: '../../../images/icon-nametag.png', name: 'oper7', width: 80, height: 80
+					}, {
+						img: '../../../images/icon-nametag.png', name: 'oper7', width: 80, height: 80
+					}, {
+						img: '../../../images/icon-nametag.png', name: 'oper7', width: 80, height: 80
+					}],
 					observer: '_itemsChanged'
 				},
 
+				/**
+				 * _itemsChanged() 를 통해 산출되는 최종 item 리스트
+				 */
 				finalItem: {
 					type: Object
-				}
+				},
+
+				/**
+				 * x 축 scroll bar의 현재 값
+				 */
+	      xScrollLeft: {
+	        type: Number,
+	        readOnly: true,
+	        value: 50
+	      },
+
+	      /**
+	       * calcMoveLength()를 통해 산출되는 클릭당 이동 픽셀수 
+	       */
+	      moveLength: {
+	      	type: Number
+	      }
 			},
 
+			/**
+			 * Runs on every scroll event. Consumer of this behavior may override this method.
+			 */
+	    attached: function() {
+	      this._scrollHandler();
+	    },			
+
+	    /**
+	     * override to set xscroll value
+	     */
+	    _scrollHandler: function() {
+	      this._setXScrollLeft(this._scrollLeft);
+	    },
+
+	    /**
+	     * image data를 받아 이미지 사이에 화살표 이미지를 추가 합니다.
+	     */
 			_itemsChanged: function(items) {
 				var itemsLength = items.length;
 				this.finalItem = [];
-				for(var i = 0; i <= itemsLength; i++) {
+				for(var i = 0; i < itemsLength; i++) {
 					this.push('finalItem', items[i]);
 					
 					if(i < itemsLength-1) {	
 						var arrowIcon = { 
-							img: "../../../images/icon-brand.png",
-							name: "arrow"
+							img: "../../../bower_components/grid/assets/group_right_hover.png",
+							name: "arrow",
+							width: 10,
+							height: 10
 						};
 						this.push('finalItem', arrowIcon);
 					}
 				}
+				this.calcMoveLength(this.finalItem[0].width, this.finalItem[1].width);
+			},
+
+			/**
+			 * 버튼 클릭당 이동할 픽셀 수를 계산
+			 */
+			calcMoveLength: function(imageWidth, arrowWidth) {
+				this.moveLength = imageWidth + arrowWidth;
+			},
+
+			/**
+			 * 왼쪽으로 이동
+			 */
+			moveLeft: function() {
+				var x = this.xScrollLeft;
+				this.scroll(x - this.moveLength, 0);
+			},
+
+			/**
+			 * 오른쪽으로 이동
+			 */
+			moveRight: function() {
+				var x = this.xScrollLeft;
+				this.scroll(x + this.moveLength, 0);
 			}
 		});
 	</script>
