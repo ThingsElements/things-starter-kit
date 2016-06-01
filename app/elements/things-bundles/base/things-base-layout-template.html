@@ -7,10 +7,10 @@
 <link rel="import" href="../../things-content/things-resource-menu-content-behavior.html">
 
 <!--
-	화면 레이아웃 템플릿 정의 화면 
+	화면 레이아웃 레이아웃 템플릿 정의 화면 
 -->
 
-<dom-module id="things-base-view-template">
+<dom-module id="things-base-layout-template">
 	<template>
 		<style>
 			:host {
@@ -60,17 +60,18 @@
 
 	<script>
 		Polymer({
-			is: 'things-base-view-template',
+			is: 'things-base-layout-template',
 
 			behaviors: [
 				Things.ResourceMenuContentBehavior
 			],
 
-			listeners: {
-				'grid.things-grid-detail-tap': 'showViewTemplate',
-			},
-
-			showViewTemplate: function(event) {
+			/**
+			 * Override 함수 - 디테일 뷰를 표시한다.
+			 *
+			 * @param {Event} event 그리드에서 선택된 event
+			 */
+			showDetailView: function(event) {
 				var record = event.detail;
 				var viewElement = document.createElement(record.name);
 				viewElement.id = 'detail-view';
