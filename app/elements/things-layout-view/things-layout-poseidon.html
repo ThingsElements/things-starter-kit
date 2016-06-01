@@ -18,19 +18,37 @@
 				@apply(--layout-flex);
 				@apply(--layout-vertical);
 			}
-			:root{
+			:root {
 			}
 			iron-pages {
 				@apply(--layout-vertical);
 				@apply(--layout-flex);
 			}
-			.layout-content {
+
+			#top {
 				@apply(--layout-flex);
 				@apply(--layout-vertical);
 			}
+
+			#topContent {
+				@apply(--layout-flex);
+			}
+
+      .subtitle:before {
+        content: '';
+        @apply(--things-subtitle-icon);
+      }
+
+      .subtitle {
+        @apply(--things-default-padding);
+        @apply(--things-subtitle);
+      }			
 			
 		</style>
-    	<div class="layout-content"></div>
+			<paper-card id="top" elevation="1">
+				<span class="subtitle">[[topContentTitle]]</span>
+	    	<div id="topContent" class="layout-content"></div>
+    	</paper-card>
 
 	    <paper-tabs id="tabGroup" selected="{{currentTabIdx}}" noink>
 	      <template is="dom-repeat" items="{{sections}}" filter="isTabs">
@@ -56,6 +74,15 @@
 			is: 'things-layout-poseidon',
 
 			properties: {
+				
+				/**
+				 * Top content title
+				 */
+				topContentTitle: {
+					type: String,
+					value: 'topContent'
+				},
+
 				/**
 				 * Sections
 				 */
