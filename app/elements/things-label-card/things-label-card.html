@@ -23,6 +23,12 @@
       paper-toolbar::shadow #topBar{
         height:45px;
       }
+      paper-toolbar::shadow #bottomBar {
+        height: 45px;
+        @apply(--layout-horizontal);
+        @apply(--layout-end-justified);
+        padding: 0 10px;
+      }      
       paper-toolbar .title{
         margin-left:32px !important;
         line-height:initial !important;
@@ -132,7 +138,12 @@
 		  		<things-input-field label="Updated At" value="[[singleItem.updated_at]]" readonly></things-input-field>
 	  		</div>
   		</div>
-			<things-button-bar id="button-bar" buttons="[[buttons]]"></things-button-bar>
+
+			<paper-toolbar>
+				<div class="bottom">
+					<things-button-bar id="button-bar" buttons="[[buttons]]"></things-button-bar>
+				</div>
+			</paper-toolbar>
 
 		</paper-dialog>
 
