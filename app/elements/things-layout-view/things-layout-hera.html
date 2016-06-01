@@ -54,17 +54,17 @@
 
       #bottom {
         @apply(--layout-flex);
-        @apply(--layout-vertical);
+        @apply(--layout-horizontal);
         @apply(--things-layout-hera-bottom);
       }
 
       #bottom-left {
-        @apply(--layout-flex-4);
+        @apply(--layout-flex);
         @apply(--things-layout-hera-bottom-left);
       }
 
       #bottom-right {
-        @apply(--layout-flex-3);
+        @apply(--layout-flex);
         @apply(--things-layout-hera-bottom-right);
       }
     </style>
@@ -104,7 +104,7 @@
     is: 'things-layout-hera',
 
     behaviors: [
-      Things.DetailLayoutBehavior
+      Things.LayoutBehavior
     ],
 
     properties: {
