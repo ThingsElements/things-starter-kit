@@ -7,18 +7,23 @@
 <link rel="import" href="../../../../bower_components/things-grid/things-basic-grid.html">
 
 <dom-module id="things-base-rest-detail-api-inout">
-
   <template>
-    <div class="[[layout]]">
-      <things-basic-grid 
-        id="grid"
-        grid-height=150
-        config="[[gridConfig]]"
-        model="[[gridModel]]" 
-        columns="[[gridColumns]]"
-        data="[[items]]">
-      </things-basic-grid>
-    </div>
+    <style>
+      :host {
+        display: block;
+        @apply(--layout-vertical)
+        @apply(--layout-flex)
+      }
+    </style>
+
+    <things-basic-grid 
+      id="grid"
+      class="flex"
+      config="[[gridConfig]]"
+      model="[[gridModel]]" 
+      columns="[[gridColumns]]"
+      data="[[items]]">
+    </things-basic-grid>
   </template>
 
   <script>
@@ -32,7 +37,8 @@
          * entity resource
          */
         resource: {
-          type: Object
+          type: Object,
+          observer: '_resourceChanged'
         },
 
         /**
@@ -67,18 +73,27 @@
         gridColumns: {
           type: Array,
           value: [ { 
-            fieldName: 'name', name: 'name', width: 250,
+            fieldName: 'name', name: 'name', width: 200,
             header: { text : 'Name' }
           }, { 
-            fieldName: 'type', name: 'type', width: 250,
+            fieldName: 'type', name: 'type', width: 180,
             header: { text : 'Type' }
           } ] 
         }
       },
 
-      /***************************************************************************************
-       *                            Start detail item view interface
-       ***************************************************************************************/
+      /**
+       * API 데이터 변경시
+       *
+       * @return {Object} API 데이터
+       */
+      _resourceChanged: function(resource) {
+        this.resource = resource;
+        this.items = [];
+        if(resource) {
+          this.items = (this.mode == 'in') ? this.resource.input_type_list : this.resource.output_type_list;
+        }
+      },
 
       /**
        * detail item view를 구성하기 위한 필수 함수 
@@ -89,14 +104,8 @@
       loadDetailData: function(resource) {
         if(resource) {
           this.resource = resource;
-          this.items = [];
-          this.items = (this.mode == 'in') ? this.resource.input_type_list : this.resource.output_type_list;
         }
       }
-
-      /***************************************************************************************
-       *                            End detail item view interface
-       ***************************************************************************************/ 
 
     });
   </script>

@@ -36,10 +36,11 @@ Example:
 
 <dom-module id="things-base-rest-detail-api">
   <template>
-
     <style>
       :host {
         display: block;
+        @apply(--layout-vertical)
+        @apply(--layout-flex)
       }
     </style>
 
@@ -57,17 +58,16 @@ Example:
       </template>
     </paper-tabs>
 
-    <iron-pages id="tabPages" selected="{{currentTabIdx}}">
-      <things-base-rest-detail-api-inout id="rest-in" mode="in">
+    <iron-pages id="tabPages" selected="{{currentTabIdx}}" class="flex layout vertical">
+      <things-base-rest-detail-api-inout id="rest-in" mode="in" class="flex">
       </things-base-rest-detail-api-inout>
 
-      <things-base-rest-detail-api-inout id="rest-out" mode="out">
+      <things-base-rest-detail-api-inout id="rest-out" mode="out" class="flex">
       </things-base-rest-detail-api-inout>
 
-      <things-base-rest-detail-api-test id="rest-test">
+      <things-base-rest-detail-api-test id="rest-test" class="flex">
       </things-base-rest-detail-api-test>
     </iron-pages>
-
   </template>
 
   <script>
@@ -165,8 +165,9 @@ Example:
        * API Detail 값이 변경된 경우 
        */
       _onApiDetailChanged: function(apiDetail) {
+        var prevTabIdx = this.currentTabIdx;
         this.setActiveTab(-1);
-        this.setActiveTab(0);
+        this.setActiveTab(prevTabIdx);
       },
 
       /**
@@ -176,10 +177,6 @@ Example:
           return resource ? 'rests/api/' + resource.id + '?api_id=' + resource.id : null;
       },
 
-      /***************************************************************************************
-       *                            Start detail item view interface
-       ***************************************************************************************/
-
       /**
        * detail item view를 구성하기 위한 필수 함수 
        * item view를 구성한다.
@@ -187,16 +184,8 @@ Example:
        * @return {Object} resource 리소스 데이터 (Object) 혹은 리소스 아이디 (Number)
        */
       loadDetailData: function(resource) {
-        if(resource) {
-          this.resource = resource;
-        }
+        this.resource = resource;
       }
-
-      /***************************************************************************************
-       *                            End detail item view interface
-       ***************************************************************************************/ 
-
-
     });
   </script>
 </dom-module>

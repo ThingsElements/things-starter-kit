@@ -23,12 +23,39 @@ Example:
 
 <dom-module id="things-base-rest-detail-api-test">
 	<template>
+    <style>
+      :host {
+        display: block;
+        @apply(--layout-vertical);
+        @apply(--things-table-padding);
+      }
+      paper-toolbar {
+        background-color:var(--things-white-background-color);
+        height: 50px;
+        @apply(--things-tight-padding);
+      }
+      paper-toolbar::shadow #bottomBar {
+        height: 50px;
+        @apply(--layout-horizontal);
+        @apply(--layout-end-justified);
+        padding: 0 10px;
+      }
+    </style>
+
 		<things-ajax 
 			id="put-resource"
 			method="PUT"
 			content-type="application/json"
 			last-response="{{lastResponse}}">
 		</things-ajax>
+
+		<paper-toolbar>
+			<div class="bottom">
+				<things-button-bar buttons="[[buttons]]"></things-button-bar>
+			</div>
+		</paper-toolbar>
+
+		<br/>
 
 		<form is="iron-form" 
 			id="form" 
@@ -51,9 +78,6 @@ Example:
 
 			<things-textarea id="result" label="Result" rows=4></things-textarea>
 		</form>
-
-		<paper-button raised on-click ="_invoke">invoke</paper-button>
-		<paper-button raised on-click ="_resetForm">reset</paper-button>
 	</template>
 
 	<script>
@@ -90,6 +114,19 @@ Example:
 				 */
 				invokeUrl: {
 					type: String
+				},
+
+				buttons: {
+					type: Array,
+					value: function() {
+						return [{
+							id: 'invoke-btn',
+							text: 'invoke'
+						}, {
+							id: 'reset-btn',
+							text: 'reset'
+						}];
+					}
 				}
 			},
 			
@@ -102,7 +139,9 @@ Example:
       	'iron-form-response' :'_successResponseHandler',
       	'iron-form-error' : '_errorResponseHandler',
 				'put-resource.things-ajax-response': '_successResponseHandler',
-				'put-resource.things-ajax-error': '_errorResponseHandler'      	
+				'put-resource.things-ajax-error': '_errorResponseHandler',
+				'invoke-btn-tap' : '_invoke',
+				'reset-btn-tap' : '_resetForm'      	
 			},
 
 			/**
@@ -296,9 +335,6 @@ Example:
 				putResource.generateRequest();
 			},
 
-			/***************************************************************************************
-			*                            Start detail item view interface
-			***************************************************************************************/
 			/**
 			 * detail item view를 구성하기 위한 필수 함수 
 			 * item view를 구성한다.
