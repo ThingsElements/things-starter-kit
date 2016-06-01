@@ -6,7 +6,7 @@
   </section-->
 
   <!-- sample page -->
-  <!--section class="Page" data-route="image_viewer">
+  <section class="Page" data-route="image_viewer">
     <paper-material class="Page-paper" elevation="1">
       <things-ajax
         auto
@@ -18,7 +18,7 @@
 
       <things-card-list items="[[cardResult.items]]"></things-card-list>
     </paper-material>
-  </section-->
+  </section>
 
   <!-- API Document page -->
   <!--section class="Page" data-route="apidoc">
@@ -114,4 +114,10 @@
     <paper-material class="Page-paper" elevation="1">
       <things-validate-test></things-validate-test>
     </paper-material>
+  </section>
+
+  <section class="page" data-route="things-card-image-list">
+    <things-card-image-list
+      detail-fields="name,description">
+    </things-card-image-list>
   </section>
