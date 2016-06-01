@@ -1,0 +1,124 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+
+<link rel="import" href="./things-layout-behavior.html">
+
+<!--
+	상하 1:1 분할 & 하단 좌우 1:1 분할
+-->
+
+<dom-module id="things-layout-test">
+	<template>
+		<style>
+			:host {
+				display: inline-block;
+				@apply(--layout-vertical);
+			}
+
+			#topContent {
+				@apply(--layout-flex);
+				@apply(--layout-vertical);
+				@apply(--things-default-padding);
+			}
+
+			#bottomContents {
+				@apply(--layout-flex);
+				@apply(--layout-horizontal);
+		    padding-top: 0px;
+		    padding-right: 0px;
+		    padding-bottom: 0px;
+		    padding-left: 0px;
+			}
+
+			#bottomContent {
+				width: 50%;
+			}
+
+      .subtitle:before {
+        content: '';
+        @apply(--things-subtitle-icon);
+      }
+
+      .subtitle {
+        @apply(--things-default-padding);
+        @apply(--things-subtitle);
+      }
+		</style>
+
+    <!-- top -->
+		<span class="subtitle">[[topContentTitle]]</span>
+
+    <div id="topContent" class="layout-content"></div>
+
+  	<div id="bottomContents">
+	    <span id="bottomContent" class="subtitle">[[bottomLeftContentTitle]]
+	    	<div id="bottomLeftContent" class="layout-content"></div>
+	    </span>
+
+	    <!-- bottom-right-->
+	    <span id="bottomContent" class="subtitle">[[bottomRightContentTitle]]
+		    <div id="bottomRightContent" class="layout-content"></div>    
+	    </span>
+    </div>
+
+
+    <!-- bottom-left-->
+
+
+	</template>
+
+	<script>
+		Polymer({
+			is: 'things-layout-test',
+
+			properties: {
+				/**
+				 * Title Of Top Content
+				 */
+				topContentTitle: {
+					type: String,
+					value: 'Test Title'
+				},
+
+
+				bottomLeftContentTitle: {
+					type: String,
+					value: 'Bottom Right Title'
+				},
+
+				/**
+				 * Title Of Bottom Content
+				 */
+				bottomRightContentTitle: {
+					type: String,
+					value: 'Bottom Left Title'
+				}
+
+			},
+
+			behaviors: [
+				Things.LayoutBehavior
+			],
+
+			listeners: {
+				'sections-configured' : 'setupLayoutClass'
+			},
+
+			/**
+			* Section이 모두 추가된 후 Layout Class를 설정한다.
+			*
+			* @param {Object} e sections-configured
+			*/
+			setupLayoutClass: function(e) {
+				// TODO
+				// if(!this.sections || this.sections.length == 0) return;
+
+				// if(this.sections['topContent'])
+				// 	this.sections['topContent'].setAttribute('class', 'flex');
+
+				// if(this.sections['bottomContent'])
+				// 	this.sections['bottomContent'].setAttribute('class', 'flex');
+			}
+		});
+	</script>
+</dom-module>
