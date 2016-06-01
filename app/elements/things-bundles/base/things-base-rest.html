@@ -23,7 +23,7 @@
 				@apply(--layout-flex)
 			}
 			
-			.subtitle: before {
+			.subtitle:before {
 				content: '';
 				@apply(--things-subtitle-icon);
 			}
@@ -94,25 +94,27 @@
 			last-response="{{lastResponse}}">
 		</things-search-form>
 
-		<things-resource-grid 
-			id="grid"
-			class="rest-main"
-			config="[[gridConfig]]"
-			model="[[gridModel]]" 
-			columns="[[gridColumns]]"
-			data="[[items]]"
-			buttons="[[buttons]]"
-			fixed-column-count="3"
-			export-file-name="[[menuInfo.title]]"
-			export-sheet-name="[[menuInfo.title]]"
-			!paginatable>
-		</things-resource-grid>
+		<paper-card elevation="1">
+			<things-resource-grid 
+				id="grid"
+				class="rest-main"
+				config="[[gridConfig]]"
+				model="[[gridModel]]" 
+				columns="[[gridColumns]]"
+				data="[[items]]"
+				buttons="[[buttons]]"
+				fixed-column-count="3"
+				export-file-name="[[menuInfo.title]]"
+				export-sheet-name="[[menuInfo.title]]"
+				!paginatable>
+			</things-resource-grid>
+		</paper-card>
 
 		<!-- BOTTOM -->
 		<div id="bottom" class="rest-api">
 
 			<!-- BOTTOM LEFT -->
-			<div class="api-list layout vertical">
+			<paper-card class="api-list layout vertical" elevation="1">
 				<span class="subtitle"><things-i18n-msg msgid="title.api_list">API List</things-i18n-msg></span>
 
 				<things-basic-grid 
@@ -123,16 +125,16 @@
 					fixed-column-count="2"
 					data="[[apiItems]]">
 				</things-basic-grid>
-			</div>
+			</paper-card>
 
 			<!-- BOTTOM RIGHT -->
-			<div class="api-params layout vertical">
+			<paper-card class="api-params layout vertical" elevation="1">
 				<things-base-rest-detail-api 
 					id="api-detail" 
 					class="flex"
 					resource="[[apiDetailResponse]]">
       	</things-base-rest-detail-api>
-			</div>
+			</paper-card>
 		</div>
 	</template>
 
