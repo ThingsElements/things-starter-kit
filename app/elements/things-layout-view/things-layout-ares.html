@@ -4,10 +4,10 @@
 <link rel="import" href="./things-layout-behavior.html">
 
 <!--
-	상하 1:1 분할, 하단 좌우 1:1 분할 레이아웃
+	상하 1:1분할 상단 좌우 분할 레이아웃
 -->
 
-<dom-module id="things-layout-apollon">
+<dom-module id="things-layout-ares">
 	<template>
 		<style>
 			:host {
@@ -17,33 +17,33 @@
 
 			#top {
 				@apply(--layout-flex);
+				@apply(--layout-horizontal);
+			}
+
+			#topLeft {
+				@apply(--layout-flex);
 				@apply(--layout-vertical);
 			}
 
-			#topContent {
+			#topRight {
+				@apply(--layout-flex);
+				@apply(--layout-vertical);
+			}
+
+			#topLeftContent {
+				@apply(--layout-flex);
+			}
+
+			#topRightContent {
 				@apply(--layout-flex);
 			}
 
 			#bottom {
 				@apply(--layout-flex);
-				@apply(--layout-horizontal);
-			}
-
-			#bottomLeft {
-				@apply(--layout-flex);
 				@apply(--layout-vertical);
 			}
 
-			#bottomRight {
-				@apply(--layout-flex);
-				@apply(--layout-vertical);
-			}
-
-			#bottomLeftContent {
-				@apply(--layout-flex);
-			}
-
-			#bottomRightContent {
+			#bottomContent {
 				@apply(--layout-flex);
 			}			
 
@@ -58,55 +58,47 @@
       }
 		</style>
 
-    <!-- top -->
-    <div id="top">
-			<span class="subtitle">[[topContentTitle]]</span>
-			<div id="topContent" class="layout-content"></div>
-		</div>
-
-		<!-- bottom -->
-  	<div id="bottom">
-	    <!-- bottom-left-->
-  		<paper-card id="bottomLeft" elevation="1">
-		    <span class="subtitle">[[bottomLeftContentTitle]]</span>
-	    	<div id="bottomLeftContent" class="layout-content"></div>
+		<!-- top -->
+  	<div id="top">
+	    <!-- top-left-->
+  		<paper-card id="topLeft" elevation="1">
+		    <span class="subtitle">[[topLeftContentTitle]]</span>
+	    	<div id="topLeftContent" class="layout-content"></div>
 	    </paper-card>
 
-	    <!-- bottom-right-->
-	    <paper-card id="bottomRight" elevation="1">
-		    <span class="subtitle">[[bottomRightContentTitle]]</span>
-		    <div id="bottomRightContent" class="layout-content"></div>
+	    <!-- top-right-->
+	    <paper-card id="topRight" elevation="1">
+		    <span class="subtitle">[[topRightContentTitle]]</span>
+		    <div id="topRightContent" class="layout-content"></div>
 	    </paper-card>
     </div>
+
+    <!-- bottom -->
+    <div id="bottom">
+			<span class="subtitle">[[bottomContentTitle]]</span>
+			<div id="bottomContent" class="layout-content"></div>
+		</div>
 	</template>
 
 	<script>
 		Polymer({
-			is: 'things-layout-apollon',
+			is: 'things-layout-ares',
 
 			properties: {
-				/**
-				 * Title Of Top Content
-				 */
-				topContentTitle: {
+				topLeftContentTitle: {
 					type: String,
-					value: 'topContent'
+					value: 'topLeftContent'
 				},
 
-
-				bottomLeftContentTitle: {
+				topRightContentTitle: {
 					type: String,
-					value: 'bottomLeftContent'
+					value: 'topRightContent'
 				},
 
-				/**
-				 * Title Of Bottom Content
-				 */
-				bottomRightContentTitle: {
+				bottomContentTitle: {
 					type: String,
-					value: 'bottomRightContent'
+					value: 'bottomContent'
 				}
-
 			},
 
 			behaviors: [

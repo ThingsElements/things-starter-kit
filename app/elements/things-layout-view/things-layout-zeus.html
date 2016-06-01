@@ -15,16 +15,22 @@
 				@apply(--layout-vertical);
 			}
 
-			#topContent {
+			#top {
 				@apply(--layout-flex);
 				@apply(--layout-vertical);
-				@apply(--things-default-padding);
+			}
+
+			#topContent {
+				@apply(--layout-flex);
+			}
+
+			#bottom {
+				@apply(--layout-flex);
+				@apply(--layout-vertical);
 			}
 
 			#bottomContent {
 				@apply(--layout-flex);
-				@apply(--layout-vertical);
-				@apply(--things-default-padding);
 			}
 
       .subtitle:before {
@@ -39,14 +45,16 @@
 		</style>
 
     <!-- top -->
-		<span class="subtitle">[[topContentTitle]]</span>
-
-    <div id="topContent" class="layout-content"></div>
+    <paper-card id="top" elevation="1">
+			<span class="subtitle">[[topContentTitle]]</span>
+	    <div id="topContent" class="layout-content"></div>
+    </paper-card>
 
     <!-- bottom -->
-    <span class="subtitle">[[bottomContentTitle]]</span>
-
-    <div id="bottomContent" class="layout-content"></div>
+    <paper-card id="bottom" elevation="1">
+	    <span class="subtitle">[[bottomContentTitle]]</span>
+	    <div id="bottomContent" class="layout-content"></div>
+    </paper-card>
 
 	</template>
 
