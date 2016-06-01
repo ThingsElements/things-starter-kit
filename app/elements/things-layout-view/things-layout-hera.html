@@ -4,7 +4,7 @@
 <link rel="import" href="./things-layout-behavior.html">
 
 <!--
-상/하 분할 & 하단 좌우 분할 레이아웃
+  좌우 1:1 분할 레이아웃
 -->
 
 <dom-module id="things-layout-hera">
@@ -12,140 +12,101 @@
     <style>
       :host {
         display: inline-block;
-        @apply(--things-layout-hera);
         @apply(--layout-horizontal);
       }
 
-      paper-card {
-        @apply(--layout-vertical);
-        @apply(--layout-flex);
-        @apply(--layout-wrap);
-        @apply(--things-layout-hera-container);
-          --paper-card-header-text: {
-          font-size: 14px;
-          @apply(--things-detail-header-text);
-        };
-      }
-
-      .container {
-        @apply(--things-layout-hera);
-        @apply(--layout-flex);
-        @apply(--layout-horizontal);
-      }
-
-      .detail-flex {
-        @apply(--layout-flex);
-      }
-
-      .layout-content {
+      #left {
         @apply(--layout-flex);
         @apply(--layout-vertical);
+        @apply(--things-default-padding);
       }
 
-      .card-actions {
-        @apply(--layout-horizontal-reverse);
-      }
-
-      #top {
+      #right {
         @apply(--layout-flex);
         @apply(--layout-vertical);
-        @apply(--things-layout-hera-top);
+        @apply(--things-default-padding);
       }
 
-      #bottom {
+      #leftContent {
         @apply(--layout-flex);
-        @apply(--layout-horizontal);
-        @apply(--things-layout-hera-bottom);
+        @apply(--layout-vertical);
+        @apply(--things-default-padding);
       }
 
-      #bottom-left {
+      #rightContent {
         @apply(--layout-flex);
-        @apply(--things-layout-hera-bottom-left);
+        @apply(--layout-vertical);
+        @apply(--things-default-padding);
       }
 
-      #bottom-right {
-        @apply(--layout-flex);
-        @apply(--things-layout-hera-bottom-right);
+      .subtitle:before {
+        content: '';
+        @apply(--things-subtitle-icon);
+      }
+
+      .subtitle {
+        @apply(--things-default-padding);
+        @apply(--things-subtitle);
       }
     </style>
 
-    <div class ="container">
-      <!-- top -->
-      <paper-card id="top" 
-        heading="[[topContentTitle]]" 
-        elevation="1" 
-        animated-shadow="false">
-        <div id="topContent" class="layout-content"></div>
-      </paper-card>
+    <!-- Left -->
+    <div id="left">
+      <span class="subtitle">[[leftContentTitle]]</span>
+      <div id="leftContent" class="layout-content"></div>
+    </div>
 
-      <!-- bottom -->
-      <div id="bottom">
-        <!-- left -->
-        <paper-card id="bottom-left" 
-          heading="[[bottomLeftContentTitle]]" 
-          elevation="1" 
-          animated-shadow="false">
-          <div id="bottomLeftContent" class="layout-content"></div>
-        </paper-card>
-
-        <!-- right -->
-        <paper-card id="bottom-right" 
-          heading="[[bottomRightContentTitle]]" 
-          elevation="1"
-          animated-shadow="false">
-          <div id="bottomRigthContent" class="layout-content"></div>
-        </paper-card>
-      </div>
+    <!-- Right -->
+    <div id="right">
+      <span class="subtitle">[[rightContentTitle]]</span>
+      <div id="rightContent" class="layout-content"></div>
     </div>
   </template>
 
   <script>
-  Polymer({
-    is: 'things-layout-hera',
+    Polymer({
+      is: 'things-layout-hera',
 
-    behaviors: [
-      Things.LayoutBehavior
-    ],
+      properties: {
+        /**
+         * Title Of Left Content
+         */
+        leftContentTitle: {
+          type: String,
+          value: 'Left'
+        },
 
-    properties: {
-      /**
-       * Title Of Left Content
-       */
-      topContentTitle: {
-        type: String,
-        value: 'Top'
+        /**
+         * Title Of Right Content
+         */
+        rightContentTitle: {
+          type: String,
+          value: 'Right'
+        }
+      },
+
+      behaviors: [
+        Things.LayoutBehavior
+      ],
+
+      listeners: {
+        'sections-configured' : 'setupLayoutClass'
       },
 
       /**
-       * Title Of Right Top Content
-       */
-      bottomLeftContentTitle: {
-        type: String,
-        value: 'Bottom Left'
-      },
+      * Section이 모두 추가된 후 Layout Class를 설정한다.
+      *
+      * @param {Object} e sections-configured
+      */
+      setupLayoutClass: function(e) {
+        if(!this.sections || this.sections.length == 0) return;
 
-      /**
-       * Title Of Right Bottom Content
-       */
-      bottomRightContentTitle: {
-        type: String,
-        value: 'Bottom Right'
+        if(this.sections['leftContent'])
+          this.sections['leftContent'].setAttribute('class', 'flex');
+
+        if(this.sections['rightContent'])
+          this.sections['rightContent'].setAttribute('class', 'flex');
       }
-    },
-
-    listeners: {
-      'sections-configured' : 'setupLayoutClass'
-    },
-
-    /**
-     * Section이 모두 추가된 후 Layout Class를 설정한다.
-     *
-     * @param {Object} e sections-configured
-     */
-    setupLayoutClass: function(e) {
-      if(!this.sections || this.sections.length == 0) return;
-      this.sections['topContent'].setAttribute('class', 'flex');
-    }
-  });
+    });
   </script>
 </dom-module>
