@@ -1,18 +1,13 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
-<link rel="import" href="../../../bower_components/iron-selector/iron-selectable.html">
 <link rel="import" href="../../../bower_components/paper-card/paper-card.html">
 
-<link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
-<link rel="import" href="../../../bower_components/things-detail/things-detail-tab-view-behavior.html">
-
-<link rel="import" href="things-detail-layout-behavior.html">
+<link rel="import" href="./things-layout-behavior.html">
 
 <!--
 	상하 1:1 분할 레이아웃
 -->
 
-<dom-module id="things-detail-layout-zeus">
+<dom-module id="things-layout-zeus">
 	<template>
 		<style>
 			:host {
@@ -57,7 +52,7 @@
 
 	<script>
 		Polymer({
-			is: 'things-detail-layout-zeus',
+			is: 'things-layout-zeus',
 
 			properties: {
 				/**
@@ -78,10 +73,7 @@
 			},
 
 			behaviors: [
-				Things.DetailLayoutBehavior,
-				Things.DetailTabViewBahavior,
-				Polymer.IronSelectableBehavior,
-				Polymer.IronResizableBehavior,
+				Things.DetailLayoutBehavior
 			],
 
 			listeners: {

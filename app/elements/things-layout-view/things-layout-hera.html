@@ -1,0 +1,151 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+
+<link rel="import" href="./things-layout-behavior.html">
+
+<!--
+상/하 분할 & 하단 좌우 분할 레이아웃
+-->
+
+<dom-module id="things-layout-hera">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+        @apply(--things-layout-hera);
+        @apply(--layout-horizontal);
+      }
+
+      paper-card {
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+        @apply(--layout-wrap);
+        @apply(--things-layout-hera-container);
+          --paper-card-header-text: {
+          font-size: 14px;
+          @apply(--things-detail-header-text);
+        };
+      }
+
+      .container {
+        @apply(--things-layout-hera);
+        @apply(--layout-flex);
+        @apply(--layout-horizontal);
+      }
+
+      .detail-flex {
+        @apply(--layout-flex);
+      }
+
+      .layout-content {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+      }
+
+      .card-actions {
+        @apply(--layout-horizontal-reverse);
+      }
+
+      #top {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+        @apply(--things-layout-hera-top);
+      }
+
+      #bottom {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+        @apply(--things-layout-hera-bottom);
+      }
+
+      #bottom-left {
+        @apply(--layout-flex-4);
+        @apply(--things-layout-hera-bottom-left);
+      }
+
+      #bottom-right {
+        @apply(--layout-flex-3);
+        @apply(--things-layout-hera-bottom-right);
+      }
+    </style>
+
+    <div class ="container">
+      <!-- top -->
+      <paper-card id="top" 
+        heading="[[topContentTitle]]" 
+        elevation="1" 
+        animated-shadow="false">
+        <div id="topContent" class="layout-content"></div>
+      </paper-card>
+
+      <!-- bottom -->
+      <div id="bottom">
+        <!-- left -->
+        <paper-card id="bottom-left" 
+          heading="[[bottomLeftContentTitle]]" 
+          elevation="1" 
+          animated-shadow="false">
+          <div id="bottomLeftContent" class="layout-content"></div>
+        </paper-card>
+
+        <!-- right -->
+        <paper-card id="bottom-right" 
+          heading="[[bottomRightContentTitle]]" 
+          elevation="1"
+          animated-shadow="false">
+          <div id="bottomRigthContent" class="layout-content"></div>
+        </paper-card>
+      </div>
+    </div>
+  </template>
+
+  <script>
+  Polymer({
+    is: 'things-layout-hera',
+
+    behaviors: [
+      Things.DetailLayoutBehavior
+    ],
+
+    properties: {
+      /**
+       * Title Of Left Content
+       */
+      topContentTitle: {
+        type: String,
+        value: 'Top'
+      },
+
+      /**
+       * Title Of Right Top Content
+       */
+      bottomLeftContentTitle: {
+        type: String,
+        value: 'Bottom Left'
+      },
+
+      /**
+       * Title Of Right Bottom Content
+       */
+      bottomRightContentTitle: {
+        type: String,
+        value: 'Bottom Right'
+      }
+    },
+
+    listeners: {
+      'sections-configured' : 'setupLayoutClass'
+    },
+
+    /**
+     * Section이 모두 추가된 후 Layout Class를 설정한다.
+     *
+     * @param {Object} e sections-configured
+     */
+    setupLayoutClass: function(e) {
+      if(!this.sections || this.sections.length == 0) return;
+      this.sections['topContent'].setAttribute('class', 'flex');
+    }
+  });
+  </script>
+</dom-module>

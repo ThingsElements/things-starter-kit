@@ -1,23 +1,18 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
-<link rel="import" href="../../../bower_components/iron-selector/iron-selectable.html">
 <link rel="import" href="../../../bower_components/paper-card/paper-card.html">
 
-<link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
-<link rel="import" href="../../../bower_components/things-detail/things-detail-tab-view-behavior.html">
-
-<link rel="import" href="things-detail-layout-behavior.html">
+<link rel="import" href="./things-layout-behavior.html">
 
 <!--
 좌/우 분할 & 우측 상하 분할 레이아웃
 -->
 
-<dom-module id="things-detail-layout-l1-r2">
+<dom-module id="things-layout-athena">
   <template>
     <style>
       :host {
         display: inline-block;
-        @apply(--things-detail-layout-l1-r2);
+        @apply(--things-layout-athena);
         @apply(--layout-horizontal);
       }
 
@@ -25,7 +20,7 @@
         @apply(--layout-vertical);
         @apply(--layout-flex);
         @apply(--layout-wrap);
-        @apply(--things-detail-layout-l1-r2-container);
+        @apply(--things-layout-athena-container);
         --paper-card-header-text: {
           font-size: 14px;
           @apply(--things-detail-header-text);
@@ -33,7 +28,7 @@
       }
 
       .container {
-        @apply(--things-detail-layout-l1-r2);
+        @apply(--things-layout-athena);
         @apply(--layout-flex);
         @apply(--layout-horizontal);
       }
@@ -54,23 +49,23 @@
       #left {
         @apply(--layout-flex);
         @apply(--layout-vertical);
-        @apply(--things-detail-layout-l1-r2-left);
+        @apply(--things-layout-athena-left);
       }
 
       #right {
         @apply(--layout-flex);
         @apply(--layout-vertical);
-        @apply(--things-detail-layout-l1-r2-right);
+        @apply(--things-layout-athena-right);
       }
 
       #right-top {
         @apply(--layout-flex-4);
-        @apply(--things-detail-layout-l1-r2-right-top);
+        @apply(--things-layout-athena-right-top);
       }
 
       #right-bottom {
         @apply(--layout-flex-3);
-        @apply(--things-detail-layout-l1-r2-right-bottom);
+        @apply(--things-layout-athena-right-bottom);
       }
 
       .subtitle:before {
@@ -89,7 +84,7 @@
       <!-- left -->
       <paper-card id="left" 
         heading="[[leftContentTitle]]" 
-        elevation="0" 
+        elevation="1" 
         animated-shadow="false">
         <div id="leftContent" class="layout-content"></div>
       </paper-card>
@@ -99,7 +94,7 @@
         <!-- top -->
         <paper-card id="right-top" 
           heading="[[rightTopContentTitle]]" 
-          elevation="0" 
+          elevation="1" 
           animated-shadow="false">
           <div id="rightTopContent" class="layout-content"></div>
         </paper-card>
@@ -107,7 +102,7 @@
         <!-- bottom -->
         <paper-card id="right-bottom" 
           heading="[[rightBottomContentTitle]]" 
-          elevation="0" 
+          elevation="1" 
           animated-shadow="false">
           <div id="rightBottomContent" class="layout-content"></div>
         </paper-card>
@@ -117,13 +112,10 @@
 
   <script>
   Polymer({
-    is: 'things-detail-layout-l1-r2',
+    is: 'things-layout-athena',
 
     behaviors: [
-      Things.DetailLayoutBehavior,
-      Things.DetailTabViewBahavior,
-      Polymer.IronSelectableBehavior,
-      Polymer.IronResizableBehavior
+      Things.DetailLayoutBehavior
     ],
 
     properties: {
@@ -131,21 +123,24 @@
        * Title Of Left Content
        */
       leftContentTitle: {
-        type: String
+        type: String,
+        value: 'Left'
       },
 
       /**
        * Title Of Right Top Content
        */
       rightTopContentTitle: {
-        type: String
+        type: String,
+        value: 'Right Top'
       },
 
       /**
        * Title Of Right Bottom Content
        */
       rightBottomContentTitle: {
-        type: String
+        type: String,
+        value: 'Right Bottom'
       }
     },
 
