@@ -7,23 +7,5 @@ Polymer({
     is: 'things-oi-app',
     behaviors:[
       Things.GlobalBehavior
-    ],
-    observers:[
-      'observerGlobals(globals.*)'
-    ],
-    observerGlobals : function (value) {
-       console.log(value);
-       console.log(Things.DataGlobal);
-    },
-    /**
-     * toggle 
-     */
-    _toggle :function(){
-      var thingsRouting = this.$['informationContainer'];
-      var iconButton = Polymer.dom(event).localTarget;
-      iconButton.icon = thingsRouting.opened ? 'hardware:keyboard-arrow-up'
-                        : 'hardware:keyboard-arrow-down';
-      thingsRouting.toggle();
-    }
-
+    ]
 });

@@ -1,35 +1,39 @@
+
 <!DOCTYPE HTML>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <style type="text/css">
-        #loader{
+        .loader {
             position: fixed;
             left: 0px;
-            top: 0px;
-            width: 100%;
-            height: 100%;
+            top: 20px;
+            width: 80%;
+            height: 80%;
             z-index: 9999;
-            background: url('bower_components/grid/assets/print-loader.gif') 50% 50% no-repeat rgb(249,249,249);
+            background: url('print-loader.gif') 50% 50% no-repeat rgb(249,249,249);
         }
     </style>
     <script type="text/javascript" src="bower_components/grid/dataludi.lic.eval.min.js"></script>
-    <script type="text/javascript" src="bower_components/grid/dataludi.min.js"></script>
-    <script type="text/javascript" src="bower_components/grid/dataludi-report.min.js"></script>
+    <script type="text/javascript" src="bower_components/grid/dataludi.eval.min.js"></script>
+    <script type="text/javascript" src="bower_components/things-grid-behavior/dataludi-report.min.js"></script>
     <script type="text/javascript">
         var loaded;
         var pvMain;
         var grdSource;
         var options;
+        var originBody;
 
         function load() {
-            DataLudi.setRootContext('bower_components/grid/')
+            DataLudi.setRootContext('images/grid')
             DataLudi.setDebug(true);
             DataLudi.setTrace(true);
 
             pvMain = DLReport.createPrintPreviewer('container');
             pvMain.setFocus();
             loaded = true;
+            window.onbeforeprint = beforePrint;
+            window.onafterprint = afterPrint;
         }
 
         function preview(grid, model, data, options, print) {
@@ -46,10 +50,36 @@
                 });
             }
         }
+        function printContent(){
+            window.print();
+        }
+
+        var beforePrint = function (){
+            // originBody = document.body.innerHTML;
+            // document.body.innerHTML = document.getElementById('container').innerHTML;
+        };
+
+        var afterPrint = function (originBody) {
+            window.close();
+            // document.body.innerHTML = originBody;
+        };
+
+        if (window.matchMedia) {
+            var mediaQueryList = window.matchMedia('print');
+            mediaQueryList.addListener(function(mql) {
+                if (mql.matches) {
+                    beforePrint();
+                } else {
+                    afterPrint();
+                }
+            });
+        }
     </script>
 </head>
 <body style="margin:0;padding:0" onload="load();">
-<div id="loader"></div>
-<div id="container" style="height:0px;"></div>
+
+<div id="loader" class="loader">
+</div>
+<div id="container" style="height:0px;" class="loader"></div>
 </body>
 </html>

@@ -160,7 +160,7 @@ gulp.task('vulcanize', function() {
     // Remove CSS comments
     .pipe($.if('*.html', $.stripCssComments({preserve: false})))
     // Minify base-bundle.js
-    .pipe($.if('*.js', $.uglify()))
+    // .pipe($.if('*.js', $.uglify()))
     .pipe(gulp.dest('dist/elements'))
     .pipe($.size({title: 'Copy vulcanized elements to dist/elements dir:'}));
 });
