@@ -11,6 +11,8 @@
 <link rel="import" href="../../../../bower_components/things-extension/things-extension.html">
 <link rel="import" href="../../../../bower_components/things-form/things-resource-form.html">
 
+<link rel="import" href="./things-base-view-columns-grid.html">
+
 <!--
   Diy Grid 상세 View
 -->
@@ -65,7 +67,7 @@
           remove-fields-on-save="[[removeFieldsOnSave]]">
         </things-resource-form>
 
-        <things-template-editor 
+        <!--things-template-editor 
           id="configuration"
           class="detail-flex"
           theme="ace/theme/monokai"
@@ -93,7 +95,15 @@
           resource="{{resource}}"
           template-field="columns"
           save-url="[[resourceUrl]]">
-        </things-template-editor>
+        </things-template-editor-->
+
+        <things-base-view-columns-grid
+          id="column-grid"
+          class="detail-flex"
+          src-resource-name="[[resource.entity_name]]"
+          resource-name="DiyGrid"
+          resource-id="[[resourceId]]">
+        </things-base-view-columns-grid>        
       </iron-pages>
     </paper-header-panel>
   </template>
@@ -121,7 +131,7 @@
         this._panels = [ {
           title: Things.DataGlobal.t('title.basic_info'),
           elementId: 'things-resource-form'
-        }, {
+        }, /*{
           title: Things.DataGlobal.t('title.config'),
           elementId: 'things-template-editor'
         }, {
@@ -130,6 +140,9 @@
         }, {
           title: Things.DataGlobal.t('title.columns'),
           elementId: 'things-template-editor'
+        },*/ {
+          title: Things.DataGlobal.t('title.search_fields'),
+          elementId: 'things-base-view-columns-grid'
         } ];
       }
 

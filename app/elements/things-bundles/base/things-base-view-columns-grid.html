@@ -33,6 +33,14 @@
       last-response="{{items}}">
     </things-ajax>
 
+    <things-ajax 
+      id="columns-ajax" 
+      method="GET"
+      content-type="application/json"
+      resource-url = "[[searchColumnsUrl]]"
+      last-response="{{items}}">
+    </things-ajax>
+
     <things-menu-based-grid 
       id="view-columns-grid"
       menu-name="ViewColumn"
@@ -57,7 +65,7 @@
         /**
          * 동기화 할 Source Entity 명 
          */
-        syncSrcResourceName: {
+        srcResourceName: {
           type: String
         },
 
@@ -76,11 +84,19 @@
         },
 
         /**
+         * Search Columns URL
+         */
+        searchColumnsUrl: {
+          type: String,
+          computed: '_computeSearchColumnsUrl(resourceName,resourceId)'
+        },
+
+        /**
          * Entity와 컬럼 동기화를 위한 URL
          */
         syncColumnsUrl: {
           type: String,
-          computed: '_computeSyncColumnsUrl(syncSrcResourceName,resourceName,resourceId)'
+          computed: '_computeSyncColumnsUrl(srcResourceName,resourceName,resourceId)'
         },
 
         /**
@@ -123,8 +139,9 @@
 
 
       listeners: {
-        'sync-btn-tap' : '_syncWithTable',
+        'sync-btn-tap' : '_syncWithSourceEntity',
         'check-columns-btn-tap' : 'checkColumns',
+        'view-columns-grid.things-grid-configured' : '_gridConfigured',
         'view-columns-grid.things-grid-handle-addrow' : '_addRow',
         'view-columns-grid.things-grid-handle-built-writedata' : '_setupWriteData',
         'view-columns-grid.things-grid-resource-column-edit' : '_onGridColumnRefEdit',
@@ -132,15 +149,35 @@
       },
 
       /**
+       * 그리드 구성 완료 후
+       *
+       * @param {Object} event
+       */
+      _gridConfigured: function(event) {
+        this.$['columns-ajax'].generateRequest();
+      },
+
+      /**
+       * resourceName, resourceId로 Entity Column과 조회 URL 생성
+       *
+       * @param {String} resourceName 조회 할  엔티티 명
+       * @param {String} resourceId 조회 할 리소스 아이디
+       * @return {String} 리소스 컬럼 조회 URL
+       */
+      _computeSearchColumnsUrl: function(resourceName, resourceId) {
+        return 'view_columns/' + resourceName + '/' + resourceId;
+      },
+
+      /**
        * resourceName, resourceId로 Entity Column과 동기화 URL 생성
        *
-       * @param {String} syncSrcResourceName 동기화 할 소스 엔티티 명 
+       * @param {String} srcResourceName 동기화 할 소스 엔티티 명 
        * @param {String} resourceName 동기화 할 타겟 엔티티 명
        * @param {String} resourceId 동기화 할 타겟 리소스 아이디
        * @return {String} Entity Column과 동기화 URL
        */
-      _computeSyncColumnsUrl: function(syncSrcResourceName, resourceName, resourceId) {
-        return 'view_columns/' + resourceName + '/' + resourceId + '/sync_with_entity_columns/' + syncSrcResourceName;
+      _computeSyncColumnsUrl: function(srcResourceName, resourceName, resourceId) {
+        return 'view_columns/' + resourceName + '/' + resourceId + '/sync_with_entity_columns/' + srcResourceName;
       },
 
       /**
@@ -148,8 +185,17 @@
        *
        * @param {Object} e 버튼 클릭 이벤트 
        */
-      _syncWithTable: function(e) {
-        this.$['sync-service'].generateRequest();
+      _syncWithSourceEntity: function(e) {
+        if(this.srcResourceName) {
+          this.$['sync-service'].generateRequest();  
+        } else {
+          this.openInfoMsg({
+            type : 'warning',
+            title : 'Entity should not be empty! Please set Entity if you want to synchroize columns with entity.',
+            showCancelButton: true,
+            closeOnConfirm : true
+          });
+        }
       },
 
       /**
