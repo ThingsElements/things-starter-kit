@@ -144,12 +144,14 @@
 				for(var i = 0; i < tempItems.length; i++) {
 					if(tempItems[i].mimetype == 'csv' || tempItems[i].mimetype == 'xlsx' || tempItems[i].mimetype == 'html') {
 						tempItems.splice(i, 1);
+						i--;
 					} else if (!tempItems[i].mimetype) {
 						var fileNameArr = tempItems[i].name.split(".");
 						var fileExtention = fileNameArr[1];
 						
 						if(fileExtention == 'csv' || fileExtention == 'xlsx' || fileExtention == 'html') {
 							tempItems.splice(i, 1);
+							i--;
 						} else {
 							tempItems[i].attachment_id = tempItems[i].id;
 						}
