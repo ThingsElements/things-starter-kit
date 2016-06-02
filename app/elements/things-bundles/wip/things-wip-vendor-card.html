@@ -1,0 +1,71 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/things-card-image/things-card-image-list.html">
+
+<dom-module id="things-wip-vendor-card">
+	<template>
+		<style>
+			:host{
+				display: block;
+				background-color:var(--things-whitegrey-background-color);
+			}
+      paper-toolbar{
+        background-color:var(--things-primary-background-color);
+	      height:45px;
+	      margin-top:0px !important;
+	      @apply(--things-padding-clear)
+      }
+      paper-toolbar::shadow #topBar{
+        height:45px;
+      }
+      paper-toolbar::shadow #bottomBar {
+        height: 45px;
+        @apply(--layout-horizontal);
+        @apply(--layout-end-justified);
+        padding: 0 10px;
+      }      
+      paper-toolbar .title{
+        margin-left:32px !important;
+        line-height:initial !important;
+      }
+      form{
+        @apply(--things-default-padding);
+        padding-bottom:5px;
+        border-bottom:1px solid rgba(0,0,0,.1);
+      }
+      paper-fab{
+        @apply(--things-search-fab);
+      }
+      #fullscreen-btn{
+        @apply(--things-header-button);
+        background:url(/images/icon-fullscreen.png) 100% 50% no-repeat;
+      }            
+    </style>
+
+    <paper-toolbar>
+      <span class="title">[[menuInfo.title]]</span>
+      <button id="fullscreen-btn" on-tap="toggleFullscreen">
+      </button>
+      <paper-tooltip for="fullscreen-btn" offset="0">
+        <things-i18n-msg msgid="button.fullscreen">Full Screen</things-i18n-msg>
+      </paper-tooltip>
+    </paper-toolbar>
+
+    <things-ajax
+      auto
+      id="label-search"
+      method="GET"
+      resource-url="/vendors"
+      last-response="{{items}}">
+    </things-ajax>
+
+ 		<things-card-image-list
+      items="[[items.items]]"
+			detail-fields="name,description,ceo,addr,zip_code,phone">
+		</things-card-image-list>
+	</template>
+	<script>
+		Polymer({
+			is: 'things-wip-vendor-card'
+		});
+	</script>
+</dom-module>
