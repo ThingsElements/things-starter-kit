@@ -84,11 +84,24 @@ Things.ResourceMenuContentBehaviorImpl = {
 		}
 	},
 
-	listeners : {
+	/*listeners : {
 		'grid.things-grid-configured' : 'refreshGridData',
 		'grid.things-grid-save-success': 'refreshGridData',
 		'grid.things-grid-resource-column-edit' : 'openResourceSelector',
 		'grid.things-grid-detail-tap': 'showDetailView'
+	},*/
+
+	/**
+	 * Life Cycle - Ready
+	 */
+	ready: function() {
+    var grid = this.$['grid'];
+    if(grid) {
+      this.listen(grid, 'things-grid-configured', 'refreshGridData');
+      this.listen(grid, 'things-grid-save-success', 'refreshGridData');  
+      this.listen(grid, 'things-grid-resource-column-edit', 'openResourceSelector');  
+      this.listen(grid, 'things-grid-detail-tap', 'showDetailView');  
+    }
 	},
 
 	/**
@@ -127,11 +140,15 @@ Things.ResourceMenuContentBehaviorImpl = {
 	_menuInfoChanged: function(menuInfo) {
 		if(menuInfo) {
 			this.menuId = menuInfo.id;
-			this.getResourceGrid().enableDetailColumn = menuInfo.detail_form_id ? true : false;
-			this.getResourceGrid().paginatable = menuInfo.pagination;
 			this.itemsProp = menuInfo.items_prop;
 			this.totalProp = menuInfo.total_prop;
 			var searchForm = this.getResourceSearchForm();
+			var resourceGrid = this.getResourceGrid();
+
+			if(resourceGrid) {
+				resourceGrid.enableDetailColumn = menuInfo.detail_form_id ? true : false;
+				resourceGrid.paginatable = menuInfo.pagination;
+			}
 
 			if(menuInfo.resource_type == 'ENTITY') {
 				searchForm.paramType = 'RESOURCE';
