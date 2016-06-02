@@ -7,27 +7,27 @@
 window.Things = window.Things || {};
 
 /**
- * 구성하고자 하는 메뉴 화면 구성을 위해 메타 데이터를 조회하여 모델 정보를 제공하는 Behavior
+ * 화면 구성을 위해 DiyGrid 기반 메타 데이터를 조회하여 모델 정보를 제공하는 Behavior
  * 화면의 메타 데이터를 조회하는 URL 구성과 메타 데이터를 받은 후 그리드에 필요한 모델 정보를 제공한다.
  *
- * @polymerBehavior Things.MenuGridMetaBehavior
+ * @polymerBehavior Things.DiyBasedGridMetaBehavior
  */
-Things.MenuGridMetaBehaviorImpl = {
+Things.DiyBasedGridMetaBehaviorImpl = {
 
 	properties: {
 		/**
-		 * 메뉴 ID
+		 * DiyGrid ID
 		 */
-		menuId: {
+		diyGridId: {
 			type: String
 		},
 
 		/**
 		 * 화면 구성을 위해 필요한 메뉴 메타 데이터를 조회하기 위한 URL
 		 */
-		menuMetaUrl: {
+		gridMetaUrl: {
 			type: String,
-			computed: '_computeMenuMetaUrl(menuId)'
+			computed: '_computeGridMetaUrl(diyGridId)'
 		},		
 
 		/**
@@ -40,13 +40,13 @@ Things.MenuGridMetaBehaviorImpl = {
 	},
 
 	/**
-	 * menuId로 부터 Menu Meta URL을 생성
+	 * diyGridId로 부터 Diy Grid URL을 생성
 	 *
-	 * @param {String} menuId
-	 * @return {String} Get Menu Meta URL
+	 * @param {String} diyGridId
+	 * @return {String} Get DiyGrid Meta URL
 	 */
-	_computeMenuMetaUrl: function(menuId) {
-		return 'menus/' + menuId + '/menu_meta';
+	_computeGridMetaUrl: function(diyGridId) {
+		return 'view_columns/DiyGrid/' + diyGridId + '/meta';
 	},
 
 	/**
@@ -57,18 +57,16 @@ Things.MenuGridMetaBehaviorImpl = {
 	parseMetaData: function(metaData) {
 		if(!metaData || metaData.length == 0) return;
 
-		// 1. Buttons
-		// this.buttons = this._parseButtons(metaData.buttons);
-		// 2. Parse Grid Models - grid form
+		// 1. Parse Grid Models - grid form
 		this.gridModel = this._parseGridModel(metaData.columns);
-		// 3. Parse Grid Columns - grid form
+		// 2. Parse Grid Columns - grid form
 		this.gridColumns = this._parseGridColumns(metaData.columns);
 	}	
 
 };
 
-Things.MenuGridMetaBehavior = [
-	Things.MenuGridMetaBehaviorImpl,
+Things.DiyBasedGridMetaBehavior = [
+	Things.DiyBasedGridMetaBehaviorImpl,
 	Things.GridMetaBehavior
 ];
 
