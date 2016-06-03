@@ -42,11 +42,11 @@
 
 		<things-form
 			id="form"
-			form-fields="{{formFields}}"
+			form-fields="[[formFields]]"
+			column-count="[[diyForm.columns_per_row]]"
 			resource="[[resource]]"
 			resource-id="[[resourceId]]"
-			buttons="[[buttons]]"
-			column-count="3">
+			buttons="[[buttons]]">
 		</things-form>
 	</template>
 

@@ -1,0 +1,131 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+
+<link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
+<link rel="import" href="../../things-meta-view/things-diy-based-form.html">
+
+<!--
+  OI - SMT 공정 
+-->
+
+<dom-module id="things-term-smt">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+        @apply(--layout-horizontal);
+      }
+
+      #left {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+      }
+
+      #right {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+      }
+
+      .layout-content {
+        @apply(--layout-flex);
+        overflow: auto;
+      } 
+
+
+      .subtitle:before {
+        content: '';
+        @apply(--things-subtitle-icon);
+      }
+
+      .subtitle {
+        @apply(--things-default-padding);
+        @apply(--things-subtitle);
+      }
+    </style>
+
+    <!-- Left -->
+    <paper-card id="left" elevation="1">
+      <span class="subtitle">[[leftContentTitle]]</span>
+      <div id="leftContent" class="layout-content">
+        <things-diy-based-grid
+          id="grid"
+          class="flex"
+          diy-grid-name="OI-WorkOrders">
+        </things-diy-based-grid>
+      </div>
+    </paper-card>
+
+    <!-- Right -->
+    <paper-card id="right" elevation="1">
+      <span class="subtitle">[[rightContentTitle]]</span>
+      <div id="rightContent" class="layout-content">
+        <things-diy-based-form
+          id="form"
+          class="flex"
+          diy-form-name="OI-StartLot">
+        </things-diy-based-form>        
+      </div>
+    </paper-card>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'things-term-smt',
+
+      properties: {
+        /**
+         * 메뉴 정보
+         */
+        menuInfo: {
+          type: Object
+        },
+
+        /**
+         * 라우팅 정보
+         */
+        dataRoute: {
+          type: String
+        },
+
+        /**
+         * Title Of Left Content
+         */
+        leftContentTitle: {
+          type: String,
+          value: 'leftContent'
+        },
+
+        /**
+         * Title Of Right Content
+         */
+        rightContentTitle: {
+          type: String,
+          value: 'rightContent'
+        }
+      },
+
+      /*behaviors: [
+        Things.LayoutBehavior
+      ],
+
+      listeners: {
+        'sections-configured' : 'setupLayoutClass'
+      },*/
+
+      /**
+      * Section이 모두 추가된 후 Layout Class를 설정한다.
+      *
+      * @param {Object} e sections-configured
+      */
+      setupLayoutClass: function(e) {
+        if(!this.sections || this.sections.length == 0) return;
+
+        if(this.sections['leftContent'])
+          this.sections['leftContent'].setAttribute('class', 'flex');
+
+        if(this.sections['rightContent'])
+          this.sections['rightContent'].setAttribute('class', 'flex');
+      }
+    });
+  </script>
+</dom-module>
