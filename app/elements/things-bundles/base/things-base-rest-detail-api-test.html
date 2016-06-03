@@ -59,7 +59,7 @@ Example:
 
 		<form is="iron-form" 
 			id="form" 
-			action="[[action]]"
+			action="{{action}}"
 			headers="[[headers]]"
 			with-credentials
 			content-type="[[apiContentType]]"
@@ -106,13 +106,6 @@ Example:
 				 * Content Type
 				 */
 				apiContentType: {
-					type: String
-				},
-
-				/**
-				 * Invoke URL
-				 */
-				invokeUrl: {
 					type: String
 				},
 
@@ -288,6 +281,8 @@ Example:
 			_invoke: function(event) {
 				var validResult = this._validateInput();
 				if(validResult) {
+					this.invokeUrl = this.$['invoke-url'].value;
+					this.actionUrl = this.invokeUrl.replace('/rest/', '');
 					if(this.resource.http_method == 'PUT') {
 						this._invokePutApi(validResult);
 					} else {
@@ -329,9 +324,8 @@ Example:
 			 * Invoke PUT API
 			 */
 			_invokePutApi: function(params) {
-				var invokeUrl = this.$['invoke-url'].value;
 				var putResource = this.$['put-resource'];
-				var url = invokeUrl.substr(invokeUrl.indexOf('/rest/') + 6);
+				var url = this.invokeUrl.substr(this.invokeUrl.indexOf('/rest/') + 6);
 				putResource.resourceUrl = url;
 				putResource.body = (params === true) ? null : params;
 				putResource.generateRequest();
