@@ -77,6 +77,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 diy-screens="{{diyScreens}}"
                 resource-url="menus.json?mode=auth"
                 resource-action="index">
+                  <div class="user-menu header">
+                    <!-- sidebar header toolbar menu start-->
+                    <things-profile></things-profile>
+                    <!-- setting -->
+                    <things-setting></things-setting>            
+                    <!-- logout -->
+                    <things-logout id="logout" action="logout" icon="icons:power-settings-new"></things-logout>
+                    <!-- sidebar header toolbar menu end -->
+                  </div>
               </things-sidebar>
             </app-drawer>
             <app-header-layout>
@@ -111,9 +120,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                               resource-title-field="name">
                             </things-resource-selector>
                         </form>
-                        <div title></div>
-                        <things-profile></things-profile>
-                        <things-setting></things-setting>
                         <paper-icon-button icon="info" onclick="document.getElementById('informationContainer').toggle()"></paper-icon-button>
                     </app-toolbar>
                 </app-header>
