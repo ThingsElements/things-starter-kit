@@ -10,6 +10,7 @@ OI Screen - Order List
 			:host {
 				display: inline-block;
 				@apply(--layout-vertical);
+				@apply(--layout-flex);
 			}
 
 			.layout-content {
@@ -31,13 +32,11 @@ OI Screen - Order List
 
 		<span class="subtitle">[[menuInfo.title]]</span>
 
-		<!--div id="content" class="layout-content"-->
-			<things-diy-based-grid
-				id="grid"
-				class="layout-content"
-				diy-grid-name="MaterialGrid">
-			</things-diy-based-grid>
-		<!--/div-->
+		<things-diy-based-grid
+			id="grid"
+			class="layout-content"
+			diy-grid-name="MaterialGrid">
+		</things-diy-based-grid>
 	</template>
 
 	<script>
