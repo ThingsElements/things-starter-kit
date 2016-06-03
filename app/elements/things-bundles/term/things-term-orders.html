@@ -1,38 +1,64 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
 
 <!--
-A comment describing this element
-
-Example:
-
-    <my-elem></my-elem>
-
-Example:
-
-    <my-elem>
-      <h2>Hello my-elem</h2>
-    </my-elem>
-
-@demo demo/index.html
+OI Screen - Order List
 -->
 
 <dom-module id="things-term-orders">
 	<template>
 		<style>
 			:host {
-				display: block;
+				display: inline-block;
+				@apply(--layout-vertical);
+			}
+
+			.layout-content {
+				@apply(--layout-flex);
+				@apply(--layout-vertical);
+				overflow: auto;
+			}	
+
+			.subtitle: before {
+				content: '';
+				@apply(--things-subtitle-icon);
+			}
+
+			.subtitle {
+				@apply(--things-default-padding);
+				@apply(--things-subtitle);
 			}
 		</style>
-		<span>This is things-term-orders</span>
-		
-	</template>
-	<script>
-		(function() {
-			'use strict';
 
-			Polymer({
-				is: 'things-term-orders'
-			});
-		})();
+		<span class="subtitle">[[menuInfo.title]]</span>
+
+		<!--div id="content" class="layout-content"-->
+			<things-diy-based-grid
+				id="grid"
+				class="layout-content"
+				diy-grid-name="MaterialGrid">
+			</things-diy-based-grid>
+		<!--/div-->
+	</template>
+
+	<script>
+		Polymer({
+			is: 'things-term-orders',
+
+			properties: {
+				/**
+				 * 메뉴 정보
+				 */
+				menuInfo: {
+					type: Object
+				},
+
+				/**
+				 * 라우팅 정보
+				 */
+				dataRoute: {
+					type: String
+				}
+			}
+		});
 	</script>
 </dom-module>
