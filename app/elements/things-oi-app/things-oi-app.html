@@ -57,6 +57,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 @apply(--layout-vertical);
                 @apply(--layout-flex);
             }
+            things-logout::shadow paper-icon-button{
+                @apply(--things-small-icon);
+                float:right;
+                top:1px;left:37px;
+            }
+            app-toolbar{
+                @apply(--things-oi-header)
+            }
+            things-code-combo::shadow label,things-resource-selector::shadow label{
+                @apply(--things-header-label)
+            }
+            things-code-combo::shadow iron-icon.things-combo{
+                background-position:54% -43px;
+            }
+            things-resource-selector::shadow iron-icon.things-resource-selector{
+                background-position:54% 6px;
+            }
         </style>
         <things-validators id="validators">
         </things-validators>
@@ -92,7 +109,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </app-drawer>
             <app-header-layout>
                 <app-header>
-                    <app-toolbar class="user-menu">
+                    <app-toolbar>
                         <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
                         <form is="iron-form" id="header-form" method="post" action="/form/handler">
                             <things-code-combo 
