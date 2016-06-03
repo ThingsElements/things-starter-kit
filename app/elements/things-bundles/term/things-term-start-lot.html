@@ -1,12 +1,12 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
 
-<link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
+<link rel="import" href="../../things-meta-view/things-diy-based-form.html">
 
 <!--
 OI Screen - Order List
 -->
 
-<dom-module id="things-term-orders">
+<dom-module id="things-term-start-lot">
 	<template>
 		<style>
 			:host {
@@ -34,17 +34,17 @@ OI Screen - Order List
 
 		<span class="subtitle">[[menuInfo.title]]</span>
 
-		<things-diy-based-grid
-			id="grid"
+		<things-diy-based-form
+			id="form"
 			class="layout-content"
-			diy-grid-name="MaterialGrid">
-		</things-diy-based-grid>
+			diy-form-name="WorkOrderForm">
+		</things-diy-based-form>
 	</template>
 
 	<script>
 		Polymer({
 			
-			is: 'things-term-orders',
+			is: 'things-term-start-lot',
 
 			properties: {
 				/**
