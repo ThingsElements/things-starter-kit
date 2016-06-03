@@ -1,15 +1,45 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../../bower_components/things-card-image/things-card-image-list.html">
+<link rel="import" href="../../../../bower_components/things-button/things-button-bar.html">
 <link rel="import" href="../../things-content/things-resource-menu-content-behavior.html">
 
 <dom-module id="things-wip-customer-card">
-	<template>
-		<style>
-			:host {
-				display: block;
-				background-color:var(--things-whitegrey-background-color);
+  <template>
+    <style>
+      :host {
+        display: block;
+        background-color:var(--things-whitegrey-background-color);
+      }
+      paper-toolbar{
+        background-color:var(--things-primary-background-color);
+        height:45px;
+        margin-top:0px !important;
+        @apply(--things-padding-clear)
+      }
+      paper-toolbar::shadow #topBar{
+        height:45px;
+      }
+      paper-toolbar::shadow #bottomBar {
+        height: 45px;
+        @apply(--layout-horizontal);
+        @apply(--layout-end-justified);
+        padding: 0 10px;
+      }      
+      paper-toolbar .title{
+        margin-left:32px !important;
+        line-height:initial !important;
+      }
+      .detail-card {
+        @apply(--layout-horizontal);
+      }
+      .detail-content {
         @apply(--layout-vertical);
-			}  
+      }      
+      .close-btn{
+        @apply(--things-header-button);
+        background:url(/images/icon-close.png) 100% 50% no-repeat;
+        margin-right:10px;
+      }      
     </style>
 
     <things-ajax 
@@ -18,6 +48,13 @@
       method="GET"
       resource-url="[[menuMetaUrl]]"
       last-response="{{metaData}}">
+    </things-ajax>
+
+    <things-ajax
+      id="save-request"
+      resource-action="update"
+      resource-url="[[saveUrl]]"
+      resource-id="[[singleItemId]]">
     </things-ajax>
 
     <things-search-form 
@@ -30,29 +67,124 @@
       last-response="{{lastResponse}}">
     </things-search-form>  
 
-    <!--things-ajax
-      auto
-      id="label-search"
-      method="GET"
-      resource-url="/customers"
-      last-response="{{items}}">
-    </things-ajax-->
-
- 		<things-card-image-list
+    <things-card-image-list
       class="flex"
-      items="[[lastResponse.items]]"
-			detail-fields="name,description,ceo,addr,zip_code,phone">
-		</things-card-image-list>
-	</template>
+      items="[[lastResponse.items]]">
+    </things-card-image-list>
 
-	<script>
-		Polymer({
-			is: 'things-wip-customer-card',
+    <paper-dialog
+      id="dialog"
+      entry-animation="scale-up-animation"
+      exit-animation="fade-out-animation"
+      modal>
+      <paper-toolbar>
+        <span class="title">[[singleItem.name]]</span>
+        <div class="buttonsGroup">
+          <button class="close-btn" on-tap="closeDialog"></button>
+        </div>
+      </paper-toolbar>
+      <div class="detail-card">
+        <iron-image src="[[imageSrc]]" width="450" height="450" sizing="contain"></iron-image>
+        <div class="detail-content">
+          <things-input-field label="Name" value="{{singleItem.name}}"></things-input-field>
+          <things-input-field label="CEO" value="{{singleItem.ceo}}"></things-input-field>
+          <things-input-field label="Phone" value="{{singleItem.phone}}"></things-input-field>
+          <things-input-field label="E-Mail" value="{{singleItem.email}}"></things-input-field>
+          <things-input-field label="Homepage" value="{{singleItem.homepage}}"></things-input-field>
+          <things-input-field label="Address" value="{{singleItem.addr}}"></things-input-field>
+          <things-input-field label="Detail Address" value="{{singleItem.detail_addr}}"></things-input-field>
+          <things-input-field label="ZIP Code" value="{{singleItem.zip_code}}"></things-input-field>
+          <things-input-field label="Image Name" value="{{singleItem.attachment.name}}"></things-input-field>
+          <things-input-field label="Updator" value="{{singleItem.updater.name}}"></things-input-field>
+          <things-input-field label="Updated At" value="{{singleItem.updated_at}}"></things-input-field>
+        </div>
+      </div>
+
+      <paper-toolbar>
+        <div class="bottom">
+          <button on-tap="saveButtonTapped">save</button>
+          <things-button-bar id="button-bar" buttons="[[buttons]]"></things-button-bar>
+        </div>
+      </paper-toolbar>
+    </paper-dialog>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'things-wip-customer-card',
 
       behaviors: [
         Things.ResourceMenuContentBehavior
-      ]
+      ],
 
-		});
-	</script>
+      properties: {
+        
+        singleItem: {
+          type: Object,
+        },
+
+        singleItemId: {
+          type: String
+        },
+
+        imageSrc: {
+          type: String
+        },
+
+        resourceUrl: {
+          type: String
+        },
+
+        saveUrl: {
+          type: String,
+          computed: '_computeSaveUrl(resourceUrl)'
+        },
+
+        /**
+         * 버튼 종류
+         */
+        buttons: {
+          type: Array,
+          value: function() {
+            return [ {
+              id: 'save-btn',
+              text: 'save'
+            } ];
+          }
+        }
+      },
+
+      listeners: {
+        'things-card-image-selected' : '_onImageSelected',
+        'button-bar.save-btn-tap': '_saveButtonTapped'
+      },
+
+      _onImageSelected: function(e) {
+        this.resourceUrl = this.metaData.menu.resource_url;
+        this.singleItem = e.detail;
+        this.singleItemId = e.detail.attachment_id;
+        this.getSingleImageSrc(this.singleItemId);
+        this.$['dialog'].toggle();
+      },
+
+      _computeSaveUrl: function(resourceUrl) {
+        return resourceUrl + '/:id';
+      },
+
+      getSingleImageSrc: function(id) {
+        var baseUrl = this.get('globals.baseUrl');
+        this.imageSrc = baseUrl + '/download/' + id;
+      },
+
+      saveButtonTapped: function() {
+        this.$['save-request'].body = this.singleItem;
+        this.$['save-request'].generateRequest();
+        this.closeDialog();
+      },
+
+      closeDialog: function() {
+        this.$['dialog'].toggle();
+      }
+    });
+  </script>
 </dom-module>
