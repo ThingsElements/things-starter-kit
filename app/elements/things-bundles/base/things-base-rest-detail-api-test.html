@@ -300,7 +300,8 @@ Example:
 			 * validate input json
 			 */
 			_validateInput: function() {
-				if(this.invokeUrl.indexOf('{id}') >= 0) {
+				var invokeUrl = this.$['invoke-url'].value;
+				if(invokeUrl.indexOf('{id}') >= 0) {
 					this.$.result.value = 'Error : Invalid Invoke Url - "{id}" must be replaced by resource id';
 					return false;
 				}
@@ -328,8 +329,9 @@ Example:
 			 * Invoke PUT API
 			 */
 			_invokePutApi: function(params) {
+				var invokeUrl = this.$['invoke-url'].value;
 				var putResource = this.$['put-resource'];
-				var url = this.invokeUrl.substr(this.invokeUrl.indexOf('/rest/') + 6);
+				var url = invokeUrl.substr(invokeUrl.indexOf('/rest/') + 6);
 				putResource.resourceUrl = url;
 				putResource.body = (params === true) ? null : params;
 				putResource.generateRequest();
