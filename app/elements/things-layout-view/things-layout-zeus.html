@@ -22,6 +22,7 @@
 
 			#topContent {
 				@apply(--layout-flex);
+				overflow: auto;
 			}
 
 			#bottom {
@@ -32,17 +33,18 @@
 			#bottomContent {
 				@apply(--layout-flex);
 				@apply(--layout-vertical);
+				overflow: auto;
 			}
 
-      .subtitle:before {
-        content: '';
-        @apply(--things-subtitle-icon);
-      }
+			.subtitle:before {
+				content: '';
+				@apply(--things-subtitle-icon);
+			}
 
-      .subtitle {
-        @apply(--things-default-padding);
-        @apply(--things-subtitle);
-      }
+			.subtitle {
+				@apply(--things-default-padding);
+				@apply(--things-subtitle);
+			}
 		</style>
 
     <!-- top -->

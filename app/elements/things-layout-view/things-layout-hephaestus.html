@@ -20,10 +20,6 @@
 				@apply(--layout-vertical);
 			}
 
-			#topContent {
-				@apply(--layout-flex);
-			}
-
 			#bottom {
 				@apply(--layout-flex);
 				@apply(--layout-horizontal);
@@ -44,27 +40,20 @@
 				@apply(--layout-vertical);				
 			}
 
-			#bottomLeftContent {
+			.layout-content {
 				@apply(--layout-flex);
+				overflow: auto;
+			}	
+
+			.subtitle:before {
+				content: '';
+				@apply(--things-subtitle-icon);
 			}
 
-			#bottomCenterContent {
-				@apply(--layout-flex);				
+			.subtitle {
+				@apply(--things-default-padding);
+				@apply(--things-subtitle);
 			}
-
-			#bottomRightContent {
-				@apply(--layout-flex);				
-			}
-
-      .subtitle:before {
-        content: '';
-        @apply(--things-subtitle-icon);
-      }
-
-      .subtitle {
-        @apply(--things-default-padding);
-        @apply(--things-subtitle);
-      }
 		</style>
 
     <!-- top -->

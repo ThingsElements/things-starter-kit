@@ -25,17 +25,9 @@
 				@apply(--layout-vertical);
 			}
 
-			#topLeftContent {
-				@apply(--layout-flex);
-			}
-
 			#topRight {
 				@apply(--layout-flex);
 				@apply(--layout-vertical);				
-			}
-
-			#topRightContent {
-				@apply(--layout-flex);
 			}
 
 			#bottom {
@@ -48,28 +40,25 @@
 				@apply(--layout-vertical);
 			}
 
-			#bottomLeftContent {
-				@apply(--layout-flex);
-			}
-
 			#bottomRight {
 				@apply(--layout-flex);
 				@apply(--layout-vertical);				
 			}
 
-			#bottomRightContent {
+			.layout-content {
 				@apply(--layout-flex);
-			}			
+				overflow: auto;
+			}	
 
-      .subtitle:before {
-        content: '';
-        @apply(--things-subtitle-icon);
-      }
+			.subtitle:before {
+				content: '';
+				@apply(--things-subtitle-icon);
+			}
 
-      .subtitle {
-        @apply(--things-default-padding);
-        @apply(--things-subtitle);
-      }
+			.subtitle {
+				@apply(--things-default-padding);
+				@apply(--things-subtitle);
+			}
 		</style>
 
   	<!-- top -->

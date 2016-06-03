@@ -25,27 +25,21 @@
         @apply(--layout-vertical); 
       }
 
-      #topLeftContent {
-        @apply(--layout-flex);
-      }
-
       #bottomLeft {
         @apply(--layout-flex);
         @apply(--layout-vertical); 
-      }
-
-      #bottomLeftContent {
-        @apply(--layout-flex);
       }
 
       #right {
         @apply(--layout-flex);
         @apply(--layout-vertical);
       }
-
-      #rightContent {
+      
+      .layout-content {
         @apply(--layout-flex);
-      }
+        overflow: auto;
+      } 
+
 
       .subtitle:before {
         content: '';
