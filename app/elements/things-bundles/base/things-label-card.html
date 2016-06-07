@@ -6,6 +6,7 @@
 <link rel="import" href="../../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../../bower_components/things-i18n-msg/things-i18n-msg.html">
 <link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../bower_components/things-card-image/things-card-image-list.html">
 
 <dom-module id="things-label-card">
 	<template>
@@ -79,6 +80,10 @@
 	      background:url(/images/icon-close.png) 100% 50% no-repeat;
 	      margin-right:10px;
 	    }
+	    .container{
+	    	height: 90vh;
+	    	overflow-y: auto;
+	    }
 		</style>
 
     <paper-toolbar>
@@ -94,25 +99,19 @@
 			auto
       id="label-search"
       method="GET"
+      resource-action="index" 
       resource-url="[[searchUrl]]"
+      page="[[page]]"
+      limit="[[limit]]"
       last-response="{{lastResponse}}">
 		</things-ajax>
-
-		<template is="dom-repeat" items="[[lastResponse]]">
-			<paper-card
-		    heading="[[item.name]]"
-		    image="[[item.thumbnail]]"
-		    animated="[[animated]]"
-		    animated-shadow="[[animatedShadow]]"
-		    preload-image="[[preloadImage]]"
-		    fade-image="[[fadeImage]]"
-		    elevation="[[elevation]]"
-		    on-tap="itemTaped">
-		    <div class="card-info">
-        	[[item.description]]
-        </div>
-			</paper-card>
-		</template>
+		
+		<div id="card-list" class="container">
+			<things-card-image-list
+				items="[[items]]"
+				image-field="thumbnail"
+			</things-card-image-list>
+		</div>
 
 		<paper-dialog
 			id="dialog"
@@ -147,6 +146,11 @@
 
 		</paper-dialog>
 
+    <iron-scroll-threshold
+      id="scroller"
+      scroll-target="card-list"
+      on-lower-threshold="goNextPage">
+    </iron-scroll-threshold>  
 	</template>
 
 	<script>
@@ -169,6 +173,32 @@
 				searchUrl: {
 					type: String,
 					value: '/labels'
+				},
+
+				lastResponse: {
+					type: Object,
+					observer: '_responseChanged'
+				},
+
+				items: {
+					type: Array,
+					value: function() {
+						return []
+					}
+				},
+
+				limit: {
+					type: Number,
+					value: 10
+				},
+
+				page: {
+					type: Number,
+					value: 1
+				},
+
+				totalCount: {
+					type: Number
 				},
 
 				card: {
@@ -231,15 +261,23 @@
 			},
 
 			listeners: {
-				'button-bar.print-btn-tap': '_printLabel'
+				'button-bar.print-btn-tap': '_printLabel',
+				'things-card-image-selected' : '_onImageSelected',
+				'scroller.lower-threshold':'goNextPage'
+			},
+
+			_responseChanged: function(lastResponse) {
+        var newItems = lastResponse && lastResponse.items ? lastResponse.items : [];
+        this.totalCount = lastResponse && lastResponse.total ? lastResponse.total : this.items.length;
+        this.items = this.items.concat(newItems);
 			},
 
 			/**
 			 * item 클릭시 발생하는 이벤트
 			 * 클릭한 아이템의 meta 정보를 초기화 하고 dialog를 오픈 합니다.
 			 */
-			itemTaped: function(e) {
-				this.singleItem = e.model.item;
+			_onImageSelected: function(e) {
+				this.singleItem = e.detail;
 				this.$['dialog'].open();
 			},
 
@@ -249,6 +287,19 @@
 			_printLabel: function(e) {
 				console.log(e);
 				console.log("TODO: inserting print logic");
+			},
+
+			goNextPage: function() {
+        if(this.totalCount == 0){
+          this.$.scroller.clearTriggers();
+          return;
+        }
+
+        if((this.page * this.limit) < this.totalCount) {
+          this.page = this.page + 1;
+          this.$['label-search'].generateRequest();
+        }
+        this.$.scroller.clearTriggers();				
 			}
 		});
 	</script>
