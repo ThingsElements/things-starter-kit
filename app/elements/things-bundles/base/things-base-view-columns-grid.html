@@ -145,7 +145,7 @@
         'view-columns-grid.things-grid-handle-addrow' : '_addRow',
         'view-columns-grid.things-grid-handle-built-writedata' : '_setupWriteData',
         'view-columns-grid.things-grid-resource-column-edit' : '_onGridColumnRefEdit',
-        'view-columns-grid.things-grid-save-success' : '_responseTransaction',
+        'view-columns-grid.things-grid-save-success' : '_refreshGrid'
       },
 
       /**
@@ -154,7 +154,7 @@
        * @param {Object} event
        */
       _gridConfigured: function(event) {
-        this.$['columns-ajax'].generateRequest();
+        this._refreshGrid();
       },
 
       /**
@@ -178,6 +178,13 @@
        */
       _computeSyncColumnsUrl: function(srcResourceName, resourceName, resourceId) {
         return 'view_columns/' + resourceName + '/' + resourceId + '/sync_with_entity_columns/' + srcResourceName;
+      },
+
+      /**
+       * Refresh Grid
+       */
+      _refreshGrid: function() {
+        this.$['columns-ajax'].generateRequest();
       },
 
       /**
@@ -301,15 +308,6 @@
         }
 
         this.openResourceSelectorByGrid(index._grid, index.rowIndex, resourceObj, true);
-      },
-
-      /**
-       * Entity Column 관련 트랜잭션 성공 후 
-       *
-       * @param {Object} e 트랜잭션 성공 이벤트 
-       */
-      _responseTransaction: function(e) {
-        this.items = e.detail;
       }
 
     });
