@@ -159,6 +159,10 @@
         'button-bar.save-btn-tap': '_saveButtonTapped'
       },
 
+      attached: function() {
+        this.$['search-form'].submitMyForm();
+      },
+
       _onImageSelected: function(e) {
         this.resourceUrl = this.metaData.menu.resource_url;
         this.singleItem = e.detail;
