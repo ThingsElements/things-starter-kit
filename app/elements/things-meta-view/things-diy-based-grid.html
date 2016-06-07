@@ -105,6 +105,10 @@
 				}
 			},
 
+			observers: [
+				'_gridColumnsChanged(gridColumns)'
+			],
+
 			/**
 			 * DiyGrid 명이 변경되면 DiyGrid 조회 URL을 리턴 
 			 *
@@ -119,6 +123,13 @@
 			 */
 			getGrid: function() {
 				return this.$.grid;
+			},
+
+			/**
+			 * Grid Columns 변경
+			 */
+			_gridColumnsChanged: function(gridColumns) {
+				this.fire('things-view-columns-grid-meta-changed', gridColumns);
 			}
 		});
 	</script>

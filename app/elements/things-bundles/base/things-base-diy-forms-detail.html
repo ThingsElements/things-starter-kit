@@ -89,6 +89,7 @@
         <things-base-view-columns-grid
           id="column-grid"
           class="detail-flex"
+          ignore-display-fields="ref_url,sort_rank,reverse_sort,search_rank,search_editor,search_format,search_name,search_oper,grid_rank,grid_editor,grid_validator,grid_format,grid_width,grid_align"
           src-resource-name="[[resource.entity_name]]"
           resource-name="DiyForm"
           resource-id="[[resourceId]]">
@@ -127,11 +128,10 @@
           title: Things.DataGlobal.t('title.detail_form_fields'),
           elementId: 'things-template-editor'
         }, */{
-          title: Things.DataGlobal.t('title.search_fields'),
+          title: Things.DataGlobal.t('title.columns'),
           elementId: 'things-base-view-columns-grid'
         } ];
       }
-
     });
   </script>
 </dom-module>

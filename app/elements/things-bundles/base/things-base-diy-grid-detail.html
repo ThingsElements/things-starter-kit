@@ -100,6 +100,7 @@
         <things-base-view-columns-grid
           id="column-grid"
           class="detail-flex"
+          ignore-display-fields="grid_rank,ref_url,sort_rank,reverse_sort,search_rank,search_editor,search_format,search_name,search_oper,form_editor,form_validator,form_format,ignore_on_save"
           src-resource-name="[[resource.entity_name]]"
           resource-name="DiyGrid"
           resource-id="[[resourceId]]">
@@ -141,7 +142,7 @@
           title: Things.DataGlobal.t('title.columns'),
           elementId: 'things-template-editor'
         },*/ {
-          title: Things.DataGlobal.t('title.search_fields'),
+          title: Things.DataGlobal.t('title.columns'),
           elementId: 'things-base-view-columns-grid'
         } ];
       }

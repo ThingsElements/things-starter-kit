@@ -114,6 +114,14 @@
         },
 
         /**
+         * 표시에서 제외할 필드 리스
+         */
+        ignoreDisplayFields: {
+          type: String,
+          value: ''
+        },
+
+        /**
          * 버튼 정보 
          */
         buttons: {
@@ -141,6 +149,7 @@
       listeners: {
         'sync-btn-tap' : '_syncWithSourceEntity',
         'check-columns-btn-tap' : 'checkColumns',
+        'view-columns-grid.things-view-columns-grid-meta-changed' : '_gridMetaColumnsChanged',
         'view-columns-grid.things-grid-configured' : '_gridConfigured',
         'view-columns-grid.things-grid-handle-addrow' : '_addRow',
         'view-columns-grid.things-grid-handle-built-writedata' : '_setupWriteData',
@@ -155,6 +164,23 @@
        */
       _gridConfigured: function(event) {
         this._refreshGrid();
+      },
+
+      /**
+       * View Columns Grid를 구성하기 위한 그리드 메타 컬럼이 변경되었을 경우
+       *
+       * @param {Object} event
+       */
+      _gridMetaColumnsChanged: function(event) {
+        var metaColumns = event.detail;
+        if(this.ignoreDisplayFields && this.ignoreDisplayFields.length > 2) {
+          var ignoreArr = this.ignoreDisplayFields.split(',');
+          metaColumns.forEach(function(column) {
+            if(ignoreArr.includes(column.name)) {
+              column.width = 0;
+            }
+          });          
+        }
       },
 
       /**
@@ -255,21 +281,7 @@
           writeData.forEach(function(changedData) {
             changedData.entity_id = entityId;
             if(!changedData.uniq_rank) changedData.uniq_rank = 0;
-
-            if(!changedData.search_check || 'false' === changedData.search_check) {
-              changedData.search_rank = 0;
-            } else {
-              if(!changedData.search_rank || changedData.search_rank <= 0)
-                changedData.search_rank = changedData.rank;
-            }
-
-            if(!changedData.grid_check || 'false' === changedData.grid_check) {
-              changedData.grid_rank = 0;
-            } else {
-              if(!changedData.grid_rank || changedData.grid_rank <= 0)
-                changedData.grid_rank = changedData.rank;
-            }
-
+            changedData.grid_rank = changedData.rank;
             delete changedData['ref_name_editor'];
             delete changedData['trans'];
             delete changedData['search_check'];
