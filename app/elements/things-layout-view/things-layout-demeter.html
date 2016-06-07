@@ -46,6 +46,7 @@
 			}
 
 			.layout-content {
+				@apply(--layout-vertical);
 				@apply(--layout-flex);
 				overflow: auto;
 			}	
@@ -66,13 +67,17 @@
   		<!-- top left -->
   		<paper-card id="topLeft" elevatio="1">
 				<span class="subtitle">[[topLeftContentTitle]]</span>
-				<div id="topLeftContent" class="layout-content"></div>
+				<div id="topLeftContent" class="layout-content">
+					<content select="[top-left]"></content>
+				</div>
 			</paper-card>
 
 			<!-- top right -->
 			<paper-card id="topRight" elevation="1">
 				<span class="subtitle">[[topRightContentTitle]]</span>
-				<div id="topRightContent" class="layout-content"></div>
+				<div id="topRightContent" class="layout-content">
+					<content select="[top-right]"></content>
+				</div>
 			</paper-card>
 		</div>
 
@@ -81,13 +86,17 @@
 			<!-- bottom left -->
 			<paper-card id="bottomLeft" elevation="1">
 				<span class="subtitle">[[bottomLeftContentTitle]]</span>
-				<div id="bottomLeftContent" class="layout-content"></div>
+				<div id="bottomLeftContent" class="layout-content">
+					<content select="[buttom-left]"></content>
+				</div>
 			</paper-card>
 
 			<!-- bottom right -->
 			<paper-card id="bottomRight" elevation="1">
 				<span class="subtitle">[[bottomRightContentTitle]]</span>
-				<div id="bottomRightContent" class="layout-content"></div>
+				<div id="bottomRightContent" class="layout-content">
+					<content select="[buttom-right]"></content>
+				</div>
 			</paper-card>
 		</div>
 

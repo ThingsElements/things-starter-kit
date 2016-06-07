@@ -87,7 +87,9 @@
         heading="[[leftContentTitle]]" 
         elevation="1" 
         animated-shadow="false">
-        <div id="leftContent" class="layout-content"></div>
+        <div id="leftContent" class="layout-content">
+          <content select="[left]"></content>
+        </div>
       </paper-card>
 
       <!-- right -->
@@ -97,7 +99,9 @@
           heading="[[rightTopContentTitle]]" 
           elevation="1" 
           animated-shadow="false">
-          <div id="rightTopContent" class="layout-content"></div>
+          <div id="rightTopContent" class="layout-content">
+            <content select="[right-top]"></content>
+          </div>
         </paper-card>
 
         <!-- bottom -->
@@ -105,7 +109,9 @@
           heading="[[rightBottomContentTitle]]" 
           elevation="1" 
           animated-shadow="false">
-          <div id="rightBottomContent" class="layout-content"></div>
+          <div id="rightBottomContent" class="layout-content">
+            <content select="[right-buttom]"></content>
+          </div>
         </paper-card>
       </div>
     </div>

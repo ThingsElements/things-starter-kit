@@ -1,0 +1,45 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<!--
+입 화면
+-->
+
+<dom-module id="things-term-instock">
+	<template>
+		<style>
+			:host {
+				display: block;
+			}
+		</style>
+		<things-layout-ares top-left-content-title =""
+							top-right-content-title =""
+							bottom-content-title="">
+			<things-diy-based-form
+				top-left
+				class="flex"
+				diy-form-name="OI-StartLot">
+			</things-diy-based-form>
+
+			<things-diy-based-grid
+				top-right
+				class="flex"
+				diy-grid-name="OI-Test-Defects">
+			</things-diy-based-grid>
+
+			<things-diy-based-grid
+				bottom
+				class="flex"
+				diy-grid-name="OI-Test-Defects">
+			</things-diy-based-grid>
+		</things-layout-ares>
+	</template>
+	<script>
+		(function() {
+			'use strict';
+
+			Polymer({
+				is: 'things-term-instock'
+			});
+		})();
+	</script>
+</dom-module>

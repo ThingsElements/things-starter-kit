@@ -36,6 +36,7 @@
 			}
 
 			.layout-content {
+				@apply(--layout-vertical);
 				@apply(--layout-flex);
 				overflow: auto;
 			}
@@ -49,15 +50,15 @@
 				@apply(--layout-flex);
 			}
 
-      .subtitle:before {
-        content: '';
-        @apply(--things-subtitle-icon);
-      }
+			.subtitle:before {
+				content: '';
+				@apply(--things-subtitle-icon);
+			}
 
-      .subtitle {
-        @apply(--things-default-padding);
-        @apply(--things-subtitle);
-      }
+			.subtitle {
+				@apply(--things-default-padding);
+				@apply(--things-subtitle);
+			}
 		</style>
 
     <!-- top -->
@@ -65,27 +66,35 @@
   		<!-- top left -->
   		<paper-card id="topLeft" elevation="1">
   			<span class="subtitle">[[topLeftContentTitle]]</span>
-  			<div id="topLeftContent" class="layout-content"></div>
+  			<div id="topLeftContent" class="layout-content">
+  				<content select="[top-left]"></content>
+  			</div>
   		</paper-card>
 
   		<!-- top center -->
   		<paper-card id="topCenter" elevation="1">
   			<span class="subtitle">[[topCenterContentTitle]]</span>
-  			<div id="topCenterContent"></div>
+  			<div id="topCenterContent">
+  				<content select="[top-center]"></content>
+  			</div>
   		</paper-card>
 
   		<!-- top right -->
   		<paper-card id="topRight" elevation="1">
   			<span class="subtitle">[[topRightContentTitle]]</span>
-  			<div id="topRightContent" class="layout-content"></div>
+  			<div id="topRightContent" class="layout-content">
+  				<content select="[top-right]"></content>
+  			</div>
   		</paper-card>
-		</div>
+	</div>
 
-		<!-- bottom -->
-		<div id="bottom">
-			<span class="subtitle">[[bottomContentTitle]]</span>
-			<div id="bottomContent" class="layout-content"></div>
+	<!-- bottom -->
+	<div id="bottom">
+		<span class="subtitle">[[bottomContentTitle]]</span>
+		<div id="bottomContent" class="layout-content">
+			<content select="[buttom]"></content>
 		</div>
+	</div>
 	</template>
 
 	<script>

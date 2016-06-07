@@ -31,6 +31,7 @@
 			}
 
 			.layout-content {
+				@apply(--layout-vertical);
 				@apply(--layout-flex);
 				overflow: auto;
 			}	
@@ -58,15 +59,33 @@
 	    </paper-tabs>
 
 	    <iron-pages id="tabPages" selected="{{currentTabIdx}}">
-	    	<div class="layout-content"></div>
-	    	<div class="layout-content"></div>
-	    	<div class="layout-content"></div>
-	    	<div class="layout-content"></div>
-	    	<div class="layout-content"></div>
-	    	<div class="layout-content"></div>
-	    	<div class="layout-content"></div>
-	    	<div class="layout-content"></div>
-	    	<div class="layout-content"></div>
+	    	<div class="layout-content">
+	    		<content select="[tap-content-1]"></content>
+	    	</div>
+	    	<div class="layout-content">
+	    		<content select="[tap-content-2]"></content>
+	    	</div>
+	    	<div class="layout-content">
+	    		<content select="[tap-content-3]"></content>
+	    	</div>
+	    	<div class="layout-content">
+	    		<content select="[tap-content-4]"></content>
+	    	</div>
+	    	<div class="layout-content">
+	    		<content select="[tap-content-5]"></content>
+	    	</div>
+	    	<div class="layout-content">
+	    		<content select="[tap-content-6]"></content>
+	    	</div>
+	    	<div class="layout-content">
+	    		<content select="[tap-content-7]"></content>
+	    	</div>
+	    	<div class="layout-content">
+	    		<content select="[tap-content-8]"></content>
+	    	</div>
+	    	<div class="layout-content">
+	    		<content select="[tap-content-9]"></content>
+	    	</div>
 	    </iron-pages>
 	</template>
 

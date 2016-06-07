@@ -4,7 +4,7 @@
 <link rel="import" href="./things-layout-behavior.html">
 
 <!--
-	화면 1:1:1:1 상하좌우 분할 레이아웃
+	
 -->
 
 <dom-module id="things-layout-gaia">
@@ -16,6 +16,7 @@
 			}
 
 			.layout-content {
+				@apply(--layout-vertical);
 				@apply(--layout-flex);
 				overflow: auto;
 			}	
@@ -32,7 +33,9 @@
 		</style>
 
 		<span class="subtitle">[[contentTitle]]</span>
-		<div id="content" class="layout-content"></div>
+		<div id="content" class="layout-content">
+			<content select="[content]"></content>
+		</div>
 	</template>
 
 	<script>
