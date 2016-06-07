@@ -39,7 +39,11 @@
         @apply(--things-header-button);
         background:url(/images/icon-close.png) 100% 50% no-repeat;
         margin-right:10px;
-      }      
+      }
+      .container{
+        height: 90vh;
+        overflow: auto;        
+      }
     </style>
 
     <things-ajax 
@@ -67,10 +71,12 @@
       last-response="{{lastResponse}}">
     </things-search-form>  
 
-    <things-card-image-list
-      class="flex"
-      items="[[lastResponse.items]]">
-    </things-card-image-list>
+    <div id="card-list" class="container">
+      <things-card-image-list
+        class="flex"
+        items="[[lastResponse.items]]">
+      </things-card-image-list>
+    </div>
 
     <paper-dialog
       id="dialog"
@@ -107,6 +113,12 @@
         </div>
       </paper-toolbar>
     </paper-dialog>
+
+    <iron-scroll-threshold
+      id="scroller"
+      scroll-target="card-list"
+      on-lower-threshold="goNextPage">
+    </iron-scroll-threshold>        
   </template>
 
   <script>
@@ -118,27 +130,74 @@
       ],
 
       properties: {
-        
+
+        /**
+         * list에서 선택된 개별 item
+         */        
         singleItem: {
           type: Object,
         },
 
+        /**
+         * list에서 선택된 개별 item의 id
+         */
         singleItemId: {
           type: String
         },
 
+        /**
+         * 개별 이미지의 source url
+         */
         imageSrc: {
           type: String
         },
 
+        /**
+         * resource url
+         */
         resourceUrl: {
           type: String
         },
 
+        /**
+         * save url
+         */
         saveUrl: {
           type: String,
           computed: '_computeSaveUrl(resourceUrl)'
         },
+
+        /**
+         * search-form을 통해 구한 response
+         */
+        lastResponse: {
+          type: Object,
+          observer: '_responseChanged'
+        },
+
+        /**
+         * 총 페이지 수
+         */
+        totalCount: {
+          type: Number,
+          value: 0
+        },        
+
+        /**
+         * 현재 페이지
+         */
+        page: {
+          type: Number,
+          value: 1
+        },        
+
+        /**
+         * 한 페이지 당 보여질 레코드 수 
+         */
+        perPage: {
+          type: Number,
+          value: 10
+        },        
 
         /**
          * 버튼 종류
@@ -156,13 +215,27 @@
 
       listeners: {
         'things-card-image-selected' : '_onImageSelected',
-        'button-bar.save-btn-tap': '_saveButtonTapped'
+        'button-bar.save-btn-tap': '_saveButtonTapped',
+        'scroller.lower-threshold': 'goNextPage'        
       },
 
+      /**
+       * search-form request
+       */
       attached: function() {
         this.$['search-form'].submitMyForm();
       },
 
+      /**
+       * search 결과 totalCount를 초기화 하기 위한 function
+       */
+      _responseChanged: function(lastResponse) {
+        this.totalCount = lastResponse.total;
+      },      
+
+      /**
+       * 개별 item이 클릭 되었을때 해당 item의 detail 정보를 초기화 하고 dialog를  toggle
+       */
       _onImageSelected: function(e) {
         this.resourceUrl = this.metaData.menu.resource_url;
         this.singleItem = e.detail;
@@ -171,23 +244,51 @@
         this.$['dialog'].toggle();
       },
 
+      /**
+       * resource url과 resourc_id를 통해 save url을 계산
+       */
       _computeSaveUrl: function(resourceUrl) {
         return resourceUrl + '/:id';
       },
 
+      /**
+       * 개별 item을 클릭하면 id를 통해 해당 아이템의 imageSrc를 구한다.
+       */
       getSingleImageSrc: function(id) {
         var baseUrl = this.get('globals.baseUrl');
         this.imageSrc = baseUrl + '/download/' + id;
       },
 
+      /**
+       * save 버튼이 클릭 되었을때 변경사항을 저장하기 위한 ajax 호출
+       */
       saveButtonTapped: function() {
         this.$['save-request'].body = this.singleItem;
         this.$['save-request'].generateRequest();
         this.closeDialog();
       },
 
+      /**
+       * dialog를 닫는 function
+       */
       closeDialog: function() {
         this.$['dialog'].toggle();
+      },
+
+      /**
+       * 다음 페이지 이동
+       */
+      goNextPage: function() {
+        if(this.totalCount == 0){
+          this.$.scroller.clearTriggers();
+          return;
+        }
+
+        if((this.page * this.perPage) < this.totalCount) {
+          this.perPage += this.perPage;
+          this.$['search-form'].submitMyForm();
+        }
+        this.$.scroller.clearTriggers();        
       }
     });
   </script>
