@@ -8,9 +8,39 @@ OQC 화면
 	<template>
 		<style>
 			:host {
-				display: block;
+				@apply(--layout-vertical);
+				@apply(--layout-flex);
+			}
+			things-layout-hephaestus {
+				@apply(--layout-flex);
 			}
 		</style>
+
+		<things-layout-hephaestus>
+			<things-diy-based-grid
+				top
+				class="flex"
+				diy-grid-name="OI-WorkOrders">
+			</things-diy-based-grid>
+
+			<things-diy-based-form
+				bottom-left
+				class="flex"
+				diy-form-name="OI-Assy">
+			</things-diy-based-form>
+
+			<things-diy-based-form
+				bottom-center
+				class="flex"
+				diy-form-name="OI-LotAssy">
+			</things-diy-based-form>
+
+			<things-diy-based-form
+				bottom-right
+				class="flex"
+				diy-form-name="OI-StartLot">
+			</things-diy-based-form>
+		</things-layout-hephaestus>
 		
 	</template>
 	<script>

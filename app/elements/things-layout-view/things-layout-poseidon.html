@@ -49,7 +49,9 @@
 		</style>
 			<paper-card id="top" elevation="1">
 				<span class="subtitle">[[topContentTitle]]</span>
-	    	<div id="topContent" class="layout-content"></div>
+	    	<div id="topContent" class="layout-content">
+	    		<content select="[top]"></content>
+	    	</div>
     	</paper-card>
 
 	    <paper-tabs id="tabGroup" selected="{{currentTabIdx}}" noink>

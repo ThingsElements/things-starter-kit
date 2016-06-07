@@ -10,35 +10,34 @@ OI Screen - Order List
 	<template>
 		<style>
 			:host {
-				display: inline-block;
+				display: block;
 				@apply(--layout-vertical);
 				@apply(--layout-flex);
 			}
-
-			.layout-content {
+			things-layout-ares {
 				@apply(--layout-flex);
-				@apply(--layout-vertical);
-				overflow: auto;
-			}	
-
-			.subtitle:before {
-				content: '';
-				@apply(--things-subtitle-icon);
-			}
-
-			.subtitle {
-				@apply(--things-default-padding);
-				@apply(--things-subtitle);
 			}
 		</style>
 
-		<span class="subtitle">[[menuInfo.title]]</span>
+		<things-layout-ares>
+			<things-diy-based-grid
+				top-left
+				class="flex"
+				diy-grid-name="OI-WorkOrders">
+			</things-diy-based-grid>
 
-		<things-diy-based-form
-			id="form"
-			class="layout-content"
-			diy-form-name="OI-StartLot">
-		</things-diy-based-form>
+			<things-diy-based-grid
+				top-right
+				class="flex"
+				diy-grid-name="OI-Test-Defects">
+			</things-diy-based-grid>
+
+			<things-diy-based-form
+				bottom
+				class="flex"
+				diy-form-name="OI-StartLot">
+			</things-diy-based-form>
+		</things-layout-ares>
 	</template>
 
 	<script>

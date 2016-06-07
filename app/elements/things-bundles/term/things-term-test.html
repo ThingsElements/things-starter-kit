@@ -12,117 +12,34 @@
   <template>
     <style>
       :host {
-        display: inline-block;
-        @apply(--things-term-test);
-        @apply(--layout-horizontal);
-        @apply(--layout-flex);
-      }
-
-      paper-card {
+        display: block;
         @apply(--layout-vertical);
         @apply(--layout-flex);
-        @apply(--layout-wrap);
-        @apply(--things-term-test-container);
-        --paper-card-header-text: {
-          font-size: 14px;
-          @apply(--things-detail-header-text);
-        };
       }
-
-      .container {
-        @apply(--things-term-test);
-        @apply(--layout-flex);
-        @apply(--layout-horizontal);
-      }
-
-      .detail-flex {
+      things-layout-athena {
         @apply(--layout-flex);
       }
-
-      .layout-content {
-        @apply(--layout-flex);
-        @apply(--layout-vertical);
-        overflow: auto;
-      }
-
-      .card-actions {
-        @apply(--layout-horizontal-reverse);
-      }
-
-      #left {
-        @apply(--layout-flex);
-        @apply(--layout-vertical);
-        @apply(--things-term-test-left);
-      }
-
-      #right {
-        @apply(--layout-flex);
-        @apply(--layout-vertical);
-        @apply(--things-term-test-right);
-      }
-
-      #right-top {
-        @apply(--layout-flex-4);
-        @apply(--things-term-test-right-top);
-      }
-
-      #right-bottom {
-        @apply(--layout-flex-3);
-        @apply(--things-term-test-right-bottom);
-      }
-
-      .subtitle:before {
-        content: '';
-        @apply(--things-subtitle-icon);
-      }
-
-      .subtitle {
-        @apply(--things-default-padding);
-        padding-bottom:7px;
-        @apply(--things-subtitle);
-      }      
     </style>
 
-    <div class ="container">
-      <!-- left -->
-      <paper-card id="left" 
-        heading="[[leftContentTitle]]" 
-        elevation="1" 
-        animated-shadow="false">
-				<things-diy-based-grid
-					id="leftContent"
-					class="layout-content flex"
-					diy-grid-name="OI-WorkOrders">
-				</things-diy-based-grid>
-      </paper-card>
+    <things-layout-athena>
+      <things-diy-based-grid
+        left
+        class="flex"
+        diy-grid-name="OI-WorkOrders">
+      </things-diy-based-grid>
 
-      <!-- right -->
-      <div id="right">
-        <!-- top -->
-        <paper-card id="right-top" 
-          heading="[[rightTopContentTitle]]" 
-          elevation="1" 
-          animated-shadow="false">
-					<things-diy-based-form
-						id="rightTopContent"
-						class="layout-content flex"
-						diy-form-name="OI-StartLot">
-					</things-diy-based-form>
-        </paper-card>
+      <things-diy-based-form
+        right-top
+        class="flex"
+        diy-form-name="OI-StartLot">
+      </things-diy-based-form>
 
-        <!-- bottom -->
-        <paper-card id="right-bottom" 
-          heading="[[rightBottomContentTitle]]" 
-          elevation="1" 
-          animated-shadow="false">
-					<things-diy-based-grid
-						id="rightBottomContent"
-						class="layout-content flex"
-						diy-grid-name="OI-Test-Defects">
-					</things-diy-based-grid>          
-        </paper-card>
-      </div>
-    </div>
+      <things-diy-based-grid
+        right-buttom
+        class="flex"
+        diy-grid-name="OI-Test-Defects">
+      </things-diy-based-grid>      
+    </things-layout-athena>
   </template>
 
   <script>

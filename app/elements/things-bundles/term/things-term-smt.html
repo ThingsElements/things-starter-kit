@@ -12,61 +12,29 @@
   <template>
     <style>
       :host {
-        display: inline-block;
-        @apply(--layout-horizontal);
-        @apply(--layout-flex);
-      }
-
-      #left {
-        @apply(--layout-flex);
+        display: block;
         @apply(--layout-vertical);
-      }
-
-      #right {
         @apply(--layout-flex);
-        @apply(--layout-vertical);
       }
-
-      .layout-content {
+      things-layout-hera {
         @apply(--layout-flex);
-        overflow: auto;
-      } 
-
-
-      .subtitle:before {
-        content: '';
-        @apply(--things-subtitle-icon);
-      }
-
-      .subtitle {
-        @apply(--things-default-padding);
-        @apply(--things-subtitle);
       }
     </style>
 
     <!-- Left -->
-    <paper-card id="left" elevation="1">
-      <span class="subtitle">[[leftContentTitle]]</span>
-      <div id="leftContent" class="layout-content">
-        <things-diy-based-grid
-          id="grid"
-          class="flex"
-          diy-grid-name="OI-WorkOrders">
-        </things-diy-based-grid>
-      </div>
-    </paper-card>
+    <things-layout-hera>
+      <things-diy-based-grid
+        left
+        class="flex"
+        diy-grid-name="OI-WorkOrders">
+      </things-diy-based-grid>
 
-    <!-- Right -->
-    <paper-card id="right" elevation="1">
-      <span class="subtitle">[[rightContentTitle]]</span>
-      <div id="rightContent" class="layout-content">
-        <things-diy-based-form
-          id="form"
-          class="flex"
-          diy-form-name="OI-StartLot">
-        </things-diy-based-form>        
-      </div>
-    </paper-card>
+      <things-diy-based-form
+        right
+        class="flex"
+        diy-form-name="OI-StartLot">
+      </things-diy-based-form>
+    </things-layout-hera>
   </template>
 
   <script>

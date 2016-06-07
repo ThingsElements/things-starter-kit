@@ -9,8 +9,39 @@
 		<style>
 			:host {
 				display: block;
+				@apply(--layout-vertical);
+				@apply(--layout-flex);
+			}
+			things-layout-artemis {
+				@apply(--layout-flex);
 			}
 		</style>
+
+		<things-layout-artemis>
+			<things-diy-based-grid
+				top-left
+				class="flex"
+				diy-grid-name="OI-WorkOrders">
+			</things-diy-based-grid>
+
+			<things-diy-based-grid
+				top-center
+				class="flex"
+				diy-grid-name="OI-Test-Defects">
+			</things-diy-based-grid>
+
+			<things-diy-based-grid
+				top-right
+				class="flex"
+				diy-grid-name="OI-WorkOrders">
+			</things-diy-based-grid>
+
+			<things-diy-based-form
+				bottom
+				class="flex"
+				diy-form-name="OI-Assy">
+			</things-diy-based-form>									
+		</things-layout-artemis>
 		
 	</template>
 	<script>

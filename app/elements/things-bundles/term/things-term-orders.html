@@ -14,31 +14,18 @@ OI Screen - Order List
 				@apply(--layout-vertical);
 				@apply(--layout-flex);
 			}
-
-			.layout-content {
+			things-layout-gaia {
 				@apply(--layout-flex);
-				@apply(--layout-vertical);
-				overflow: auto;
-			}	
-
-			.subtitle:before {
-				content: '';
-				@apply(--things-subtitle-icon);
-			}
-
-			.subtitle {
-				@apply(--things-default-padding);
-				@apply(--things-subtitle);
 			}
 		</style>
 
-		<span class="subtitle">[[menuInfo.title]]</span>
-
-		<things-diy-based-grid
-			id="grid"
-			class="layout-content"
-			diy-grid-name="OI-WorkOrders">
-		</things-diy-based-grid>
+		<things-layout-gaia>
+			<things-diy-based-grid
+				content
+				class="flex"
+				diy-grid-name="OI-WorkOrders">
+			</things-diy-based-grid>
+		</things-layout-gaia>
 	</template>
 
 	<script>

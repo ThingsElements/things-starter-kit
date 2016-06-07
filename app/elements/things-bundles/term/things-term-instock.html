@@ -9,29 +9,39 @@
 		<style>
 			:host {
 				display: block;
+				@apply(--layout-vertical);
+				@apply(--layout-flex);
+			}
+			things-layout-poseidon {;
+				@apply(--layout-flex);
 			}
 		</style>
-		<things-layout-ares top-left-content-title =""
-							top-right-content-title =""
-							bottom-content-title="">
+
+		<things-layout-poseidon>
 			<things-diy-based-form
-				top-left
+				top
 				class="flex"
 				diy-form-name="OI-StartLot">
 			</things-diy-based-form>
 
 			<things-diy-based-grid
-				top-right
+				tap-content-1
 				class="flex"
 				diy-grid-name="OI-Test-Defects">
 			</things-diy-based-grid>
 
 			<things-diy-based-grid
-				bottom
+				tap-content-2
+				class="flex"
+				diy-grid-name="OI-WorkOrders">
+			</things-diy-based-grid>
+
+			<things-diy-based-grid
+				tap-content-3
 				class="flex"
 				diy-grid-name="OI-Test-Defects">
-			</things-diy-based-grid>
-		</things-layout-ares>
+			</things-diy-based-grid>									
+		</things-layout-poseidon>
 	</template>
 	<script>
 		(function() {

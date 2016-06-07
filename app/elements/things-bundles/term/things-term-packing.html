@@ -9,9 +9,34 @@
 		<style>
 			:host {
 				display: block;
+				@apply(--layout-vertical);
+				@apply(--layout-flex);
+			}
+			things-layout-hermes {
+				@apply(--layout-flex);
 			}
 		</style>
 		
+		<things-layout-hermes>
+			<things-diy-based-grid
+				left-top
+				class="flex"
+				diy-grid-name="OI-Test-Defects">
+			</things-diy-based-grid>
+
+			<things-diy-based-grid
+				left-bottom
+				class="flex"
+				diy-grid-name="OI-WorkOrders">
+			</things-diy-based-grid>
+
+			<things-diy-based-form
+				right
+				class="flex"
+				diy-form-name="OI-LotAssy">
+			</things-diy-based-form>
+		</things-layout-hermes>
+
 	</template>
 	<script>
 		(function() {
