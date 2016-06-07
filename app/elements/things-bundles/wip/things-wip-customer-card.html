@@ -196,7 +196,7 @@
          */
         perPage: {
           type: Number,
-          value: 10
+          value: 30
         },
 
         /**
@@ -218,6 +218,13 @@
         'button-bar.save-btn-tap': '_saveButtonTapped',
         'scroller.lower-threshold': 'goNextPage'
       },
+
+      /**
+       * search-form request
+       */
+      attached: function() {
+        this.$['search-form'].submitMyForm();
+      },      
 
       /**
        * search 결과 totalCount를 초기화 하기 위한 function
