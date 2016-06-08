@@ -74,6 +74,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             things-resource-selector::shadow iron-icon.things-resource-selector{
                 background-position:54% 6px;
             }
+            #vertical-div{
+                @apply(--layout-vertical);
+            }
         </style>
         <things-validators id="validators">
         </things-validators>
@@ -112,7 +115,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <app-toolbar>
                         <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
                         <form is="iron-form" id="header-form" method="post" action="/form/handler">
-                            <things-code-combo 
+                            <things-date-picker
+                              id="date-picker"
+                              label="Date"
+                              value="{{date}}">     
+                            </things-date-picker>
+                            <things-code-combo
                               id="line-selector" 
                               label="Line" 
                               code-name="LINE"
@@ -133,9 +141,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                               id="resource-selector" 
                               label="Order" 
                               name="order"
-                              value="{{globals.wip.order}}"
-                              resource-type="Entity"
-                              resource-name="ProductOrder"
+                              obj-value="{{globals.wip.order}}"
+                              resource-type="Menu"
+                              resource-name="WorkOrder"
                               resource-title-field="name">
                             </things-resource-selector>
                         </form>
@@ -144,7 +152,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </app-header>
                 <div id="scrollingRegion">
                     <iron-collapse id ="informationContainer" opened class="layout horizontal">
-                        <div class ="flex-1">order informatin</div>
+                        <div id="vertical-div" class ="flex-1">
+                            <span>order informatin</span>
+                            <things-wip-order-info order="[[globals.wip.order]]"></things-wip-order-info>
+                        </div>
                         <div class ="flex-4">
                             <span>routing information</span>
                             <!-- {{globals.order.product_model.routing_id}}" -->

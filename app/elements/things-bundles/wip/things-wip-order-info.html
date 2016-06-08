@@ -1,0 +1,77 @@
+<dom-module id="things-wip-order-info">
+	<template>
+
+		<things-ajax
+      id="order-search"
+      resource-action="find"
+      resource-url="[[resourceUrl]]"
+      resource-id="[[orderId]]"
+      last-response="{{lastResponse}}">
+		</things-ajax>
+
+		<p>제품: [[lastResponse.name]]</p>
+		<p>계획: [[lastResponse.plan_qty]]</p>
+		<p>실적: [[lastResponse.actual_qty]]</p>
+		<p>스크랩: [[lastResponse.scrap_qty]]</p>
+
+	</template>
+	<script>
+		Polymer({
+			is: 'things-wip-order-info',
+
+			properties: {
+
+				/**
+				 * resource url
+				 */
+				resourceUrl: {
+					type: String,
+					computed: '_computeResourceUrl(order)'
+				},
+
+				/**
+				 * order id
+				 */
+				orderId: {
+					type: Number
+				},
+
+				/**
+				 * 전달받는 order object
+				 */
+				order: {
+					type: Object,
+					observer: '_orderChanged'
+				}
+			},
+
+			/**
+			 * order information refresh event listener
+			 */
+	    attached: function () {
+	      document.addEventListener('things-oi-refresh-order', function() {
+	      	this.$['order-search'].generateRequest();
+	      }.bind(this));
+	    },			
+
+	    /**
+	     * order object의 변화를 갑지하여 ajax를 호출 합니다.
+	     */
+			_orderChanged: function(order) {
+				this.orderId = order.id;
+				if(this.orderId) {
+					this.$['order-search'].generateRequest();
+				}
+			},
+
+			/**
+			 * order id를 통해 resource url을 계산합니다.
+			 */
+			_computeResourceUrl: function(order) {
+				return 'work_orders/' + order.id;
+			},
+
+
+		});
+	</script>
+</dom-module>
