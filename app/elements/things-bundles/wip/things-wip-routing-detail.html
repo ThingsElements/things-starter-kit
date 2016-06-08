@@ -8,7 +8,6 @@
 	    .container {
 	    	@apply(--layout-horizontal);
 	    	overflow-x: hidden;
-	    	width: 100%
 	    }
 		</style>
 
@@ -21,11 +20,13 @@
       last-response="{{lastResponse}}">
 		</things-ajax>
 
-		<paper-icon-button icon="arrow-back" on-tap="moveLeft"></paper-icon-button>
-		<div id="scrollable-element" class="flex container">
-			<things-wip-routing-detail-scrollable id="scrollable" scroll-target="scrollable-element"></things-wip-routing-detail-scrollable>
+		<div class="container">
+			<paper-icon-button icon="arrow-back" on-tap="moveLeft"></paper-icon-button>
+			<div id="scrollable-element" class="container">
+				<things-wip-routing-detail-scrollable id="scrollable" scroll-target="scrollable-element" show-info="[[showInfo]]"></things-wip-routing-detail-scrollable>
+			</div>
+			<paper-icon-button icon="icons:arrow-forward" on-tap="moveRight"></paper-icon-button>
 		</div>
-		<paper-icon-button icon="icons:arrow-forward" on-tap="moveRight"></paper-icon-button>
 	</template>
 
 	<script>
@@ -58,7 +59,15 @@
 	      lastResponse: {
 	      	type: Object,
 	      	observer: '_itemsChanged'
-	      },      	
+	      },
+
+	      /**
+	       * information을 보여줄지 여부를 결정 합니다.
+	       */
+	      showInfo: {
+	      	type: Boolean,
+	      	value: false
+	      }
       },
 
       /**

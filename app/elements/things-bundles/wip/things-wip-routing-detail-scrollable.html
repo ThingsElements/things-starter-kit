@@ -9,11 +9,20 @@
 	    .container {
 	    	@apply(--layout-horizontal);
 	    }
+	    #content {
+	    	@apply(--layout-vertical);
+	    }
 		</style>		
 
 		<div id="scrollable-element" class="container">
-			<template is="dom-repeat" items="[[finalItem]]">
-				<iron-image width="[[item.width]]" height="[[item.height]]" align="center" src="[[item.img]]">
+			<template is="dom-repeat" items="[[finalItem]]" class="layout vertical">
+				<div id="content">
+					<iron-image width="[[item.width]]" height="[[item.height]]" align="center" src="[[item.img]]"></iron-image>
+					<p hidden="[[item.arrow]]">[[item.operation.name]]</p>
+					<div hidden="[[!showInfo]]">
+						<p hidden="[[item.arrow]]">[[item.completedPlans]]/[[item.totalPlans]]</p>
+					</div>
+				</div>
 			</template>
 		</div>
 	</template>
@@ -61,6 +70,14 @@
 	       */
 	      moveLength: {
 	      	type: Number
+	      },
+
+	      /**
+	       * information을 보여줄지 여부를 결정 합니다.
+	       */
+	      showInfo: {
+	      	type: Boolean,
+	      	value: false
 	      }
 			},
 
@@ -84,15 +101,23 @@
 			_itemsChanged: function(items) {
 				var itemsLength = items.length;
 				this.finalItem = [];
+
 				for(var i = 0; i < itemsLength; i++) {
+					// TODO: 케이스에 따라 이미지 변경
 					items[i].img = "../../../images/icon-nametag.png";
 					items[i].width = 80;
+
+					//데이터 하드코딩
+					items[i].completedPlans = 40;
+					items[i].totalPlans = 120;
+
 					this.push('finalItem', items[i]);
 					
 					if(i < itemsLength-1) {	
 						var arrowIcon = { 
 							img: "../../../bower_components/grid/assets/group_right_hover.png",
 							name: "arrow",
+							arrow: true, //화살표 이미지에는 상세내용 (name, completedPlans, totalPlans)이 나오지 않게 하기 위한 flag
 							width: 10,
 							height: 10
 						};
