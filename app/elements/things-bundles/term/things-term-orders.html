@@ -1,7 +1,6 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
 
 <link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
-<link rel="import" href="../../../../bower_components/things-fullscreen/things-fullscreen-behavior.html">
 
 <!--
 OI Screen - Order List
@@ -38,15 +37,6 @@ OI Screen - Order List
       }			
 		</style>
 
-    <paper-toolbar>
-      <span class="title">[[menuInfo.title]]</span>
-      <button id="fullscreen-btn" on-tap="toggleFullscreen">
-      </button>
-      <paper-tooltip for="fullscreen-btn" offset="0">
-        <things-i18n-msg msgid="button.fullscreen">Full Screen</things-i18n-msg>
-      </paper-tooltip>
-    </paper-toolbar>		
-
 		<things-layout-gaia>
 			<things-diy-based-grid
 				content
@@ -60,10 +50,6 @@ OI Screen - Order List
 		Polymer({
 			
 			is: 'things-term-orders',
-
-			behaviors: [
-				Things.FullscreenBehavior
-			],
 
 			properties: {
 				/**

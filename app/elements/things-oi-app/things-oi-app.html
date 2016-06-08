@@ -65,6 +65,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             app-toolbar{
                 @apply(--things-oi-header)
             }
+            paper-toolbar{
+                background-color:var(--things-primary-background-color);
+                height:45px;
+            }
+            paper-toolbar::shadow #topBar{
+                height:45px;
+            }
+            paper-toolbar .title{
+                margin-left:32px !important;
+                line-height:initial !important;
+            }
             things-code-combo::shadow label,things-resource-selector::shadow label{
                 @apply(--things-header-label)
             }
@@ -86,15 +97,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-drawer-layout responsive-width="{$ responsiveWidth $}">
             <app-drawer swipe-open>
               <things-sidebar
+                id ="sidebar"
                 menu-category ="TERMINAL"
                 drawer-id='paperDrawerPanel' 
                 page-content-id='content'
                 class="layout vertical" 
                 title="Elidom" 
-                selected-menu=1 
                 screens="{{screens}}" 
                 resource-screens="{{resourceScreens}}"
                 diy-screens="{{diyScreens}}"
+                selected-menu ="{{selectedMenu}}"
                 resource-url="menus.json?mode=auth"
                 resource-action="index">
                   <div class="user-menu header">
@@ -110,7 +122,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   </div>
               </things-sidebar>
             </app-drawer>
-            <app-header-layout>
+            <app-header-layout id="contentArea">
                 <app-header>
                     <app-toolbar>
                         <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
@@ -147,7 +159,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                               resource-title-field="name">
                             </things-resource-selector>
                         </form>
-                        <paper-icon-button icon="info" onclick="document.getElementById('informationContainer').toggle()"></paper-icon-button>
+                        <div title>
+                            
+                        </div>
+                        <button id="fullscreen-btn" on-tap="_fullScreenTap">
+                        </button>
+                        <paper-tooltip for="fullscreen-btn" offset="0">
+                            <things-i18n-msg msgid="button.fullscreen">Full Screen</things-i18n-msg>
+                        </paper-tooltip>
+                        <paper-icon-button id="infoBtn" icon="info" onclick="document.getElementById('informationContainer').toggle()"></paper-icon-button>
                     </app-toolbar>
                 </app-header>
                 <div id="scrollingRegion">
@@ -167,6 +187,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             ></things-wip-routing-detail>
                         </div>
                     </iron-collapse>
+                    <paper-toolbar>
+                      <span class="title">[[selectedMenu.pageName]]</span>
+                    </paper-toolbar>        
                     <iron-pages attr-for-selected="data-route" selected="{{route}}" id="content">
                         <div class ="layout flex"></div>
                     </iron-pages>
