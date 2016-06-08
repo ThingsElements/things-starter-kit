@@ -1,6 +1,7 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
 
 <link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
+<link rel="import" href="../../../../bower_components/things-fullscreen/things-fullscreen-behavior.html">
 
 <!--
 OI Screen - Order List
@@ -11,13 +12,40 @@ OI Screen - Order List
 		<style>
 			:host {
 				display: inline-block;
+				background-color:var(--things-whitegrey-background-color);
 				@apply(--layout-vertical);
 				@apply(--layout-flex);
 			}
+      paper-toolbar{
+        background-color:var(--things-primary-background-color);
+	      height:45px;
+	      margin-top:0px !important;
+	      @apply(--things-padding-clear)
+      }
+      paper-toolbar::shadow #topBar{
+        height:45px;
+      }
+      paper-toolbar .title{
+        margin-left:32px !important;
+        line-height:initial !important;
+      }      
 			things-layout-gaia {
 				@apply(--layout-flex);
 			}
+      #fullscreen-btn{
+        @apply(--things-header-button);
+        background:url(/images/icon-fullscreen.png) 100% 50% no-repeat;
+      }			
 		</style>
+
+    <paper-toolbar>
+      <span class="title">[[menuInfo.title]]</span>
+      <button id="fullscreen-btn" on-tap="toggleFullscreen">
+      </button>
+      <paper-tooltip for="fullscreen-btn" offset="0">
+        <things-i18n-msg msgid="button.fullscreen">Full Screen</things-i18n-msg>
+      </paper-tooltip>
+    </paper-toolbar>		
 
 		<things-layout-gaia>
 			<things-diy-based-grid
@@ -32,6 +60,10 @@ OI Screen - Order List
 		Polymer({
 			
 			is: 'things-term-orders',
+
+			behaviors: [
+				Things.FullscreenBehavior
+			],
 
 			properties: {
 				/**
