@@ -88,7 +88,7 @@
 			grid-save-action="[[gridSaveUrl]]"
 			selected-row-data="{{selectedRow}}"
 			buttons="[[buttons]]"
-			enable-detail-column="">
+			enable-detail-column>
 		</things-resource-grid>
 
     <things-ajax
@@ -103,16 +103,17 @@
 			<things-i18n-msg msgid="label.sub_codes"></things-i18n-msg>
 		</span>
 
-		<things-resource-grid id="sub-grid"
+		<things-resource-grid 
+			id="sub-grid"
 			class="things-resource-grid-sub"
 			config="[[gridConfig]]"
-			model="[[gridModel]]"
+			model="[[detailModel]]"
 			columns="[[detailColumns]]"
 			current-page="1"
 			per-page="1000"
 			data="[[subCodeItems]]"
 			grid-save-action="[[detailSaveUrl]]"
-			buttons="[[buttons]]"
+			buttons="[[subButtons]]"
 			!enable-detail-column>
 		</things-resource-grid>
 	</template>
@@ -210,6 +211,25 @@
         	type: Array
         },
 
+        /**
+         * Code Detail Grid Model
+         */
+        detailModel: {
+          type: Array,
+          value: [ { 
+            fieldName: 'id' 
+          }, { 
+            fieldName: 'parent_id' 
+          }, { 
+            fieldName: 'rank',
+            dataType: 'Number'
+          }, { 
+            fieldName: 'name' 
+          }, { 
+            fieldName: 'description' 
+          } ]
+        },
+
 				/**
 				 * common code detail grid columns
 				 */
@@ -220,6 +240,10 @@
 							name: 'id',
 							fieldName: 'id',
 							width: 0
+						}, {
+							name: 'rank',
+							fieldName: 'rank',
+							width: 80
 						}, {
 							name: 'name',
 							fieldName: 'name',
@@ -242,6 +266,23 @@
 						}];
 					}
 				},
+
+        /**
+         * sub-grid 버튼 정보 
+         */
+        subButtons: {
+          type: Array,
+          value: [ {
+            id: 'add-btn',
+            text: 'add'
+          }, {
+            id: 'save-btn',
+            text: 'save'
+          }, {
+            id: 'delete-btn',
+            text: 'delete'
+          } ]
+        }				
 			},
 
 			listeners : {

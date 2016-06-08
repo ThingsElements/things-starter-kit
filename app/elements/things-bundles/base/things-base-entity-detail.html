@@ -211,16 +211,6 @@
           }, {
             fieldName: 'grid_check'
           } ]
-        },
-
-        /**
-         * 리소스 폼 필드
-         */
-        formFields: {
-          type: Array,
-          value: function() {
-            return [{"name":"id","label":"ID","type":"hidden","userObj":{"hidden":true}},{"name":"domain_id","label":"Domain","type":"hidden","userObj":{"hidden":true}},{"name":"name","label":"Name","type":"text","userObj":{"required":true,"max":64,"type":"string"}},{"name":"description","label":"Description","type":"text","userObj":{"max":255,"type":"string"}},{"name":"bundle","label":"bundle","type":"code-combo","codeName":"BUNDLE"},{"name":"table_name","label":"Table Name","type":"text","userObj":{"max":64,"type":"string"}},{"name":"search_url","label":"URL","type":"text","userObj":{"type":"string"}},{"name":"multi_save_url","label":"Grid Save URL","type":"text","userObj":{"type":"string"}},{"name":"id_field","label":"ID Field","type":"text","userObj":{"type":"string"}},{"name":"title_field","label":"Title Field","type":"text","userObj":{"type":"string"}},{"name":"master","label":"Parent","type":"resource-field","userObj":{"ownerField":"master","resourceType":"Entity","resourceName":"Entity","resourceUrl":"entities","submitName":"master_id"}},{"name":"ref_field","label":"Reference Name","type":"text","userObj":{"type":"string"}},{"name":"del_strategy","label":"Delete Details Strategy","type":"code-combo","codeName":"DELETE_STRATEGY"},{"name":"list_infographic_id","label":"List Infographic","type":"text","userObj":{"type":"integer"}},{"name":"item_infographic_id","label":"Item Infographic","type":"text","userObj":{"type":"integer"}},{"name":"creator_id","label":"Created By","userObj":{"type":"integer"}},{"name":"updater_id","label":"Updated By","type":"resource-column"},{"name":"created_at","label":"Created At","userObj":{"type":"datetime"}},{"name":"updated_at","label":"Updated At","userObj":{"type":"datetime"}}];
-          }
         }
       },
 
