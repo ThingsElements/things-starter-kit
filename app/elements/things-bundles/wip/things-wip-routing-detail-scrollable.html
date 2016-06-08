@@ -9,18 +9,18 @@
 	    .container {
 	    	@apply(--layout-horizontal);
 	    }
-	    #content {
+	    #information {
 	    	@apply(--layout-vertical);
 	    }
 		</style>		
 
 		<div id="scrollable-element" class="container">
 			<template is="dom-repeat" items="[[finalItem]]" class="layout vertical">
-				<div id="content">
+				<div id="information">
 					<iron-image width="[[item.width]]" height="[[item.height]]" align="center" src="[[item.img]]"></iron-image>
 					<p hidden="[[item.arrow]]">[[item.operation.name]]</p>
 					<div hidden="[[!showInfo]]">
-						<p hidden="[[item.arrow]]">[[item.completedPlans]]/[[item.totalPlans]]</p>
+						<p hidden="[[item.arrow]]">[[item.totalPlans]]/[[item.completedPlans]]</p>
 					</div>
 				</div>
 			</template>
