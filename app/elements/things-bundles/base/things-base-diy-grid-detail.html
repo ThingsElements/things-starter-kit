@@ -84,12 +84,12 @@
         </things-base-view-columns-grid>
 
         <things-template-editor 
-          id="columns"
+          id="configs"
           class="detail-flex"
           theme="ace/theme/monokai"
           mode="ace/mode/json"
           resource="{{resource}}"
-          template-field="columns"
+          template-field="config"
           save-url="[[resourceUrl]]"
           buttons="[[templateButtons]]">
         </things-template-editor>
@@ -151,7 +151,7 @@
           title: Things.DataGlobal.t('title.columns'),
           elementId: 'things-base-view-columns-grid'
         }, {
-          title: Things.DataGlobal.t('title.column_model'),
+          title: Things.DataGlobal.t('title.config'),
           elementId: 'things-template-editor'
         } ];
       },
@@ -176,8 +176,8 @@
         var gridModel = this._parseGridModel(columns);
         var gridColumns = this._parseGridColumns(columns);
         var model = { config: {}, model: gridModel, columns: gridColumns };
-        this.resource.columns = JSON.stringify(model, null, 2);
-        console.log(this.resource.columns);
+        this.resource.config = JSON.stringify(model, null, 2);
+        console.log(this.resource.config);
       }
 
     });
