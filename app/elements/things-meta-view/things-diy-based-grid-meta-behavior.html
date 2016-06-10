@@ -55,12 +55,21 @@ Things.DiyBasedGridMetaBehaviorImpl = {
 	 * @param {Array} metaData
 	 */
 	parseMetaData: function(metaData) {
-		if(!metaData || metaData.length == 0) return;
+		if(!metaData) return;
 
-		// 1. Parse Grid Models - grid form
-		this.gridModel = this._parseGridModel(metaData.columns);
-		// 2. Parse Grid Columns - grid form
-		this.gridColumns = this._parseGridColumns(metaData.columns);
+		// 1. 메타 데이터가 Object로 넘어올 경우
+		if(metaData.columns) {
+			// 1. Parse Grid Models
+			this.gridModel = this._parseGridModel(metaData.columns);
+			// 2. Parse Grid Columns
+			this.gridColumns = this._parseGridColumns(metaData.columns);
+
+		// 2. 메타 데이터가 Text로 넘어올 경우
+		} else {
+			var metaAll = JSON.parse(metaData.text);
+			this.gridModel = metaAll.model;
+			this.gridColumns = metaAll.columns;
+		}
 	}	
 
 };

@@ -10,6 +10,7 @@
 <link rel="import" href="../../../../bower_components/things-detail/things-resource-detail-tab-view-behavior.html">
 <link rel="import" href="../../../../bower_components/things-extension/things-extension.html">
 <link rel="import" href="../../../../bower_components/things-form/things-resource-form.html">
+<link rel="import" href="../../../../bower_components/things-meta/things-grid-meta-behavior.html">
 
 <link rel="import" href="./things-base-view-columns-grid.html">
 
@@ -58,6 +59,12 @@
         last-response="{{resource}}">
       </things-ajax>
 
+      <things-ajax 
+        id="create-column-model"
+        resource-action="find"
+        last-response="{{columnMeta}}">
+      </things-ajax>      
+
       <iron-pages id="tabPages" selected="{{currentTabIdx}}" class="iron-pages">
         <things-resource-form
           id="resource-form" 
@@ -67,25 +74,14 @@
           remove-fields-on-save="[[removeFieldsOnSave]]">
         </things-resource-form>
 
-        <!--things-template-editor 
-          id="configuration"
+        <things-base-view-columns-grid
+          id="column-grid"
           class="detail-flex"
-          theme="ace/theme/monokai"
-          mode="ace/mode/json"
-          resource="{{resource}}"
-          template-field="config"
-          save-url="[[resourceUrl]]">
-        </things-template-editor>
-
-        <things-template-editor 
-          id="fields"
-          class="detail-flex"
-          theme="ace/theme/monokai"
-          mode="ace/mode/json"
-          resource="{{resource}}"
-          template-field="fields"
-          save-url="[[resourceUrl]]">
-        </things-template-editor>
+          ignore-display-fields="on_type,on_id,grid_rank,ref_url,sort_rank,reverse_sort,search_rank,search_editor,search_format,search_name,search_oper,form_editor,form_validator,form_format,ignore_on_save"
+          src-resource-name="[[resource.entity_name]]"
+          resource-name="DiyGrid"
+          resource-id="[[resourceId]]">
+        </things-base-view-columns-grid>
 
         <things-template-editor 
           id="columns"
@@ -94,17 +90,9 @@
           mode="ace/mode/json"
           resource="{{resource}}"
           template-field="columns"
-          save-url="[[resourceUrl]]">
-        </things-template-editor-->
-
-        <things-base-view-columns-grid
-          id="column-grid"
-          class="detail-flex"
-          ignore-display-fields="on_type,on_id,grid_rank,ref_url,sort_rank,reverse_sort,search_rank,search_editor,search_format,search_name,search_oper,form_editor,form_validator,form_format,ignore_on_save"
-          src-resource-name="[[resource.entity_name]]"
-          resource-name="DiyGrid"
-          resource-id="[[resourceId]]">
-        </things-base-view-columns-grid>        
+          save-url="[[resourceUrl]]"
+          buttons="[[templateButtons]]">
+        </things-template-editor>
       </iron-pages>
     </paper-header-panel>
   </template>
@@ -115,36 +103,81 @@
       is: 'things-base-diy-grid-detail',
 
       behaviors: [ 
-        Things.ResourceDetailTabViewBahavior
+        Things.ResourceDetailTabViewBahavior,
+        Things.GridMetaBehavior
       ],
 
       properties: {
+        /**
+         * Meta Data List
+         */  
+        columnMeta: {
+          type: Array,
+          observer: '_metaDataChanged'
+        },
+
         /**
          * Save 하기 전에 폼에는 있지만 Save하는데 필요 없는 필드를 삭제하기 위한 필드명
          */
         removeFieldsOnSave: {
           type: Array,
           value: ['creator', 'updater', 'creator_id', 'updater_id', 'created_at', 'updated_at']
-        }
+        },
+
+        /**
+         * 버튼 정보 
+         */
+        templateButtons: {
+          type: Array,
+          value: [ {
+            id: 'save-btn',
+            text: 'save'
+          }, {
+            id: 'create-model-btn',
+            text: 'create-column-model'
+          } ]
+        }  
+      },
+
+      listeners: {
+        'create-model-btn-tap' : '_createColumnModel'
       },
 
       ready: function() {
         this._panels = [ {
           title: Things.DataGlobal.t('title.basic_info'),
           elementId: 'things-resource-form'
-        }, /*{
-          title: Things.DataGlobal.t('title.config'),
-          elementId: 'things-template-editor'
         }, {
-          title: Things.DataGlobal.t('title.fields'),
-          elementId: 'things-template-editor'
-        }, {
-          title: Things.DataGlobal.t('title.columns'),
-          elementId: 'things-template-editor'
-        },*/ {
           title: Things.DataGlobal.t('title.columns'),
           elementId: 'things-base-view-columns-grid'
+        }, {
+          title: Things.DataGlobal.t('title.column_model'),
+          elementId: 'things-template-editor'
         } ];
+      },
+
+      /**
+       * Create Column Model
+       *
+       * @param {Object} event
+       */
+      _createColumnModel: function(event) {
+        this.$['create-column-model'].resourceUrl = 'view_columns/DiyGrid/' + this.resourceId + '/meta';
+        this.$['create-column-model'].generateRequest();
+      },
+
+      /**
+       * Meta Data가 변경되었을 경우 
+       *
+       * @param {Array} columnMeta
+       */
+      _metaDataChanged: function(columnMeta) {
+        var columns = columnMeta.columns;
+        var gridModel = this._parseGridModel(columns);
+        var gridColumns = this._parseGridColumns(columns);
+        var model = { config: {}, model: gridModel, columns: gridColumns };
+        this.resource.columns = JSON.stringify(model, null, 2);
+        console.log(this.resource.columns);
       }
 
     });
