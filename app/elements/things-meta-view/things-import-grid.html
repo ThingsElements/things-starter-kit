@@ -3,10 +3,8 @@
 <link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
 <link rel="import" href="../../../bower_components/things-grid/things-resource-grid.html">
 
-<link rel="import" href="./things-import-grid-behavior.html">
-
 <!--
-메뉴 기반 Import 그리
+메뉴 기반 Import 그리드
 -->
 
 <dom-module id="things-import-grid">
@@ -23,35 +21,21 @@
 			}
 		</style>
 
-    <things-ajax 
-      auto
-      id="menu-ajax"
-      method="GET"
-      resource-url="[[menuUrl]]"
-      last-response="{{menuInfo}}">
-    </things-ajax> 
-
 		<things-ajax 
-			auto
-			id="resource-meta"
-			method="GET"
-			resource-url="[[menuMetaUrl]]"
-			last-response="{{metaData}}">
-		</things-ajax>
+			id="create-ajax"
+			sync
+			resource-action="create"
+			resource-url="[[menuInfo.resource_url]]">
+		</things-ajax> 
 
 		<things-resource-grid 
 			id="grid"
-			grid-height="[[gridHeight]]"
 			model="[[gridModel]]" 
 			columns="[[gridColumns]]"
 			config="[[gridConfig]]"
 			buttons="[[buttons]]"
-			current-page="[[page]]"
-			per-page="[[perPage]]"
 			data="[[items]]"
-			total-count="[[itemCount]]"
-			grid-save-action="[[menuInfo.grid_save_url]]"
-			fixed-column-count="[[menuInfo.fixed_columns]]"
+			fixed-column-count="2"
 			buttons="[[buttons]]">
 		</things-resource-grid>
 	</template>
@@ -60,76 +44,85 @@
 		Polymer({
 			is: 'things-import-grid',
 
-			behaviors: [
-				Things.ImportGridMetaBehavior
-			],
-
 			properties: {
 				/**
-				 * 메뉴 명
-				 */
-				menuName : {
-					type: String
+				* 메뉴 정보
+				*/
+				menuInfo : {
+					type: Object
 				},
 
 				/**
-				 * 메뉴 URL
-				 */
-				menuUrl: {
-					type: String,
-					computed: '_computeMenuUrl(menuName)'
-				},
-
-				/**
-				 * 버튼 
-				 */
+				* 버튼 
+				*/
 				buttons: {
 					type: Array,
 					value: [ {
-            id: 'add-btn',
-            text: 'add'
-          }, {
-            id: 'delete-btn',
-            text: 'delete'
-          }, {
-            id: 'save-btn',
-            text: 'save'
-          }, {
-            id: 'export-btn',
-            text: 'export'
-          }, {
-            id: 'import-btn',
-            text: 'import'
-          } ]
+						id: 'add-btn',
+						text: 'add'
+					}, {
+						id: 'delete-btn',
+						text: 'delete'
+					}, {
+						id: 'save-btn',
+						text: 'save'
+					}, {
+						id: 'export-btn',
+						text: 'export'
+					}, {
+						id: 'import-btn',
+						text: 'import'
+					} ]
 				}
 			},
 
-			observers: [
-				'_gridColumnsChanged(gridColumns)'
-			],
-
-			/**
-			 * 메뉴 명이 변경되면 Menu URL을 리턴 
-			 *
-			 * @param {String} menuName
-			 */
-			_computeMenuUrl: function(menuName) {
-				return 'menus/show_by_name?name=' + menuName;
+			listeners : {
+				'grid.things-grid-handle-save' : '_handleSave',
+				'create-ajax.things-ajax-response' : '_handleSaveSuccess',
+				'create-ajax.things-ajax-error' : '_handleSaveFailure'
 			},
 
 			/**
-			 * things-resource-grid를 리턴한다.
-			 */
+			* things-resource-grid를 리턴한다.
+			*/
 			getGrid: function() {
 				return this.$.grid;
 			},
 
 			/**
-			 * Grid Columns 변경시
-			 */
-			_gridColumnsChanged: function(gridColumns) {
-				this.fire('things-view-columns-grid-meta-changed', gridColumns);
-			}			
+			* 저장 액션을 커스터마이징
+			*
+			* @param {Object} event
+			*/
+			_handleSave: function(event) {
+				event.preventDefault();
+
+				var grid = event.target;
+				console.log(grid.writeData);
+
+				// TODO handle writeData & request save ...
+			},
+
+			/**
+			* 저장 성공시 액션
+			*
+			* @param {Object} event
+			*/
+			_handleSaveSuccess: function(event) {
+				// 그리드의 해당 Row에 'OK' 표시
+				console.log(event);
+			},
+
+			/**
+			* 저장 실패시 액션
+			*
+			* @param {Object} event
+			*/
+			_handleSaveFailure: function(event) {
+				// 그리드의 해당 Row에 빨간색으로 'Failure' 표시 & 간단한 메시지 
+				console.log(event);
+			}
+
 		});
 	</script>
 </dom-module>

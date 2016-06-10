@@ -26,16 +26,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       div.flex-horizontal-with-ratios{
         height:100%;
       }
-      iron-pages{
+      iron-pages {
         @apply(--layout-vertical)
-      }/*여기*/
+      }
       iron-pages * {
         @apply(--layout-flex)
       }
     </style>
-
-    <things-validators id="validators">
-    </things-validators>
     
     <iron-localstorage 
       id="localStorage" 
@@ -44,8 +41,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       on-iron-localstorage-load-empty="initializeDefaultStorage">
     </iron-localstorage>
     
-    <!-- Client Setting -->
-    <!-- <things-setting id="setting" hidden></things-setting> -->
+    <!-- form validators -->
+    <things-validators id="validators"></things-validators>
 
     <!-- full dialog -->
     <things-full-dialog id='common-full-dialog'></things-full-dialog>
@@ -60,8 +57,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <things-date-picker-dialog id="date-picker-dialog"></things-date-picker-dialog>
 
     <!-- import dialog -->
-    <things-import-dialog id="import-dialog">
-    </things-import-dialog>
+    <things-import-dialog id="import-dialog"></things-import-dialog>
 
     <paper-drawer-panel id="paperDrawerPanel" responsive-width="599px" drawer-width="256px">
       <!-- Layout Sidebar -->
@@ -77,7 +73,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         diy-screens="{{diyScreens}}"
         resource-url="menus.json?mode=auth"
         resource-action="index"
-        query-fields = '[{ "name" :"category","operator":"noteq", "value":"TERMINAL"}]'>
+        query-fields = '[{"name":"category","operator":"noteq","value":"TERMINAL"}]'>
           <div class="user-menu header">
             <!-- sidebar header toolbar menu start-->
             <things-profile></things-profile>

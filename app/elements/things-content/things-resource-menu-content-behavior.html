@@ -100,7 +100,8 @@ Things.ResourceMenuContentBehaviorImpl = {
       this.listen(grid, 'things-grid-configured', 'refreshGridData');
       this.listen(grid, 'things-grid-save-success', 'refreshGridData');  
       this.listen(grid, 'things-grid-resource-column-edit', 'openResourceSelector');  
-      this.listen(grid, 'things-grid-detail-tap', 'showDetailView');  
+      this.listen(grid, 'things-grid-detail-tap', 'showDetailView');
+      this.listen(grid, 'things-grid-handle-open-import', 'openImportDialog');
     }
 	},
 
@@ -174,6 +175,14 @@ Things.ResourceMenuContentBehaviorImpl = {
 	 */
 	refreshGridData: function(grid) {
 		this.getResourceSearchForm().submitMyForm();
+	},
+
+	/**
+	 * Import Dialog를 오픈한다.
+	 */
+	openImportDialog: function(event) {
+		event.preventDefault();
+		app.$['import-dialog'].open(this.gridConfig, this.gridModel, this.gridColumns, this.menuInfo);
 	},
 
 	/**
