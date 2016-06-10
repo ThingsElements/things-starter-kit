@@ -192,26 +192,12 @@
             }
           }, { 
               fieldName: 'date', name: 'date', width: 135,
+              editable: false,
               header: {
                 text: Things.DataGlobal.t('label.date')
-              }
-          }, {
-              name: 'date_picker_editor',
-              fieldName: 'date_picker_editor',
-              width: 30,
-              editable: false,
-              header: { text: '...' },
-              imageList: 'images',
-              renderer: { type: 'icon' },
-              styles:{
-                iconIndex: 'menu_button.png',
-                iconLocation: 'center'
               },
-              userObj: {
-                resourceType: 'Entity',
-                resourceName: 'Menu',
-                resourceUrl: 'menus',
-                ownerField: 'ref_name'
+              styles:{
+                iconIndex: 'date-picker'
               }
           } ] 
         },
