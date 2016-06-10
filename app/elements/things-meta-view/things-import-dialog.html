@@ -1,0 +1,105 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-dialog-behavior/paper-dialog-behavior.html">
+<link rel="import" href="../../../bower_components/paper-dialog-behavior/paper-dialog-shared-styles.html">
+<link rel="import" href="things-diy-based-grid.html">
+
+
+<dom-module id="things-import-dialog">
+  <style>
+    :host {
+      display: inline-block;
+      @apply(--layout-vertical)
+    }
+    paper-toolbar {
+      background-color:var(--things-primary-background-color);
+      height:45px;
+      margin-top:0px !important;
+      @apply(--things-padding-clear)
+    }
+    paper-toolbar::shadow #topBar {
+      height:45px;
+      @apply(--things-padding-clear)
+    }
+    paper-dialog {
+      position: fixed;
+      top: 10%;
+      bottom:10%;
+      left: 15%;
+      right: 15%;
+      margin: 0px;
+      @apply(--layout-flex);
+      @apply(--layout-vertical);
+    }
+    .buttonsGroup {
+      @apply(--layout-horizontal);
+      @apply(--layout-end-justified);
+      @apply(--layout-flex);
+    }
+    .scrollroot {
+      @apply(--layout-flex);
+      @apply(--layout-vertical);
+      @apply(--things-padding-clear);
+      @apply(--things-margin-clear);
+      overflow:auto;
+    }
+    .scrollroot::content #detail-view{
+      @apply(--layout-flex);
+    }
+    .title{
+      margin-left:20px !important;
+      font-size:20px;
+      font-weight:400;
+    }
+    .close-btn{
+      @apply(--things-header-button);
+      background:url(/images/icon-close.png) 100% 50% no-repeat;
+      margin-right:10px;
+    }
+    button:focus{
+      outline:none;
+    }
+  </style>
+
+  <template>
+    <paper-dialog
+      id='dialog' 
+      entry-animation="scale-up-animation"
+      exit-animation="fade-out-animation"
+      always-on-top>
+      <paper-toolbar>
+        <span class="title">[[title]]</span>
+        <div class="buttonsGroup">
+            <button dialog-dismiss class="close-btn"></button>
+        </div>
+      </paper-toolbar>
+
+      <div id="scrollroot" class="scrollroot">
+      	<things-import-grid></things-import-grid>
+      </div>
+      
+    </paper-dialog>
+  </template>
+	<script>
+		(function() {
+			'use strict';
+
+			Polymer({
+				is: 'things-import-dialog',
+				properties :{
+					resourceName:{
+						type: String
+					}
+				},
+				attached: function () {
+					 
+				},
+				detached: function () {
+					
+				},
+				open : function () {
+					this.$.dialog.open(); 
+				}
+			});
+		})();
+	</script>
+</dom-module>
