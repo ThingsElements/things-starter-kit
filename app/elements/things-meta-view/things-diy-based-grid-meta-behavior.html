@@ -68,6 +68,9 @@ Things.DiyBasedGridMetaBehaviorImpl = {
 		} else {
 			var metaAll = JSON.parse(metaData.text);
 			this.gridModel = metaAll.model;
+			metaAll.columns.forEach(function(column) {
+				if(column.header && column.header.text) { column.header.text = Things.DataGlobal.t(column.header.text); }
+			});
 			this.gridColumns = metaAll.columns;
 		}
 	}	
