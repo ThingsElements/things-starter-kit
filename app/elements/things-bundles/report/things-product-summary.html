@@ -1,0 +1,169 @@
+<script src='../../../bower_components/things-grid-behavior/dataludi.lic.min.js'></script>
+<script src='../../../bower_components/things-grid-behavior/dataludi.min.js'></script>
+
+<dom-module id="things-product-summary">
+	<template>
+		<div id="grid" style="height:300px;"></div>
+
+		<button on-tap="showGrid">+</button>
+		<button on-tap="gridDetail">+</button>
+	</template>
+	<script>
+		Polymer({
+			is: 'things-product-summary',
+
+			properties: {
+				
+				fields: {
+					type: Object,
+				},
+
+				columns: {
+					type: Object
+				},
+
+				data: {
+					type: Object
+				},
+
+				dataSet: {
+					type: Object
+				},
+
+				grdMain: {
+					type: Object
+				}
+			},
+
+			ready: function() {
+				this.setFields();
+				this.setColumns();
+				this.setData();
+			},
+
+			setFields: function() {
+				this.fields = [{
+					fieldName: 'material_id'
+				}, {
+					fieldName: 'line'
+				}, {
+					fieldName: 'operation_id'
+				}, {
+					fieldName: 'plan_qty'
+				}, {
+					fieldName: 'actual_qty'
+				}, {
+					fieldName: 'scrap_qty'
+				}, {
+					fieldName: 'ship_qty'
+				}]
+			},
+
+			setColumns: function() {
+				this.columns = [{
+					fieldName: 'material_id',
+      		mergeExpression: 'value',
+      		mergeCallback: function(item, column) {
+      			return 'm1';
+      		}
+				}, {
+					fieldName: 'line',
+					mergeExpression: 'value'
+				}, {
+					fieldName: 'operation_id'
+				}, {
+					fieldName: 'plan_qty'
+				}, {
+					fieldName: 'actual_qty'
+				}, {
+					fieldName: 'scrap_qty'
+				}, {
+					fieldName: 'ship_qty'
+				}]
+			},
+
+			setData: function() {
+				this.data = [{
+					material_id: 'm1',
+					line: 1,
+					operation_id: 'opertaion 1-1',
+					plan_qty: 100,
+					actual_qty: 80,
+					scrap_qty: 20,
+					ship_qty: 80
+				}, {
+					material_id: 'm1',
+					line: 1,
+					operation_id: 'opertaion 1-2',
+					plan_qty: 120,
+					actual_qty: 90,
+					scrap_qty: 30,
+					ship_qty: 70					
+				}, {
+					material_id: 'm1',
+					line: 1,
+					operation_id: 'opertaion 1-3',
+					plan_qty: 200,
+					actual_qty: 170,
+					scrap_qty: 30,
+					ship_qty: 169					
+				}, {
+					material_id: 'm1',
+					line: 1,
+					operation_id: 'opertaion 1-4',
+					plan_qty: 350,
+					actual_qty: 290,
+					scrap_qty: 60,
+					ship_qty: 280					
+				}, {
+					material_id: 'm2',
+					line: 1,
+					operation_id: 'opertaion 2-1',
+					plan_qty: 80,
+					actual_qty: 75,
+					scrap_qty: 5,
+					ship_qty: 60					
+				}, {
+					material_id: 'm2',
+					line: 1,
+					operation_id: 'opertaion 2-1',
+					plan_qty: 140,
+					actual_qty: 95,
+					scrap_qty: 45,
+					ship_qty: 75					
+				}, {
+					material_id: 'm2',
+					line: 1,
+					operation_id: 'opertaion 2-1',
+					plan_qty: 280,
+					actual_qty: 275,
+					scrap_qty: 5,
+					ship_qty: 120					
+				}]
+			},
+
+			showGrid: function() {
+				this.dataSet = new DataLudi.GridDataSet();
+		    this.dataSet = DataLudi.createGridDataSet();
+
+		    this.dataSet.setFields(this.fields);
+		    this.dataSet.setRows(this.data);
+
+    		this.grdMain = DataLudi.createGridView('grid', null, true);
+
+    		// col.setMergeCallback(function (item, column) {
+    	 //    return grdMain.getValueAt(item, column).substr(0, 1);
+		    // });
+
+	    	
+	    	this.grdMain.setColumns(this.fields);
+    		this.grdMain.setDataSource(this.dataSet);
+			},
+
+			gridDetail: function() {
+				console.log(this.grdMain);
+			}
+		});
+	</script>
+
+</dom-module>
