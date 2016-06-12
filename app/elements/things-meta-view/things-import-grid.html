@@ -26,7 +26,14 @@
 			sync
 			resource-action="create"
 			resource-url="[[menuInfo.resource_url]]">
-		</things-ajax> 
+		</things-ajax>
+
+		<things-ajax 
+			id="check-import-ajax"
+			method="POST"
+			content-type="application/json"
+			resource-url="[[checkImportUrl]]">
+		</things-ajax> 		
 
 		<things-resource-grid 
 			id="grid"
@@ -46,10 +53,18 @@
 
 			properties: {
 				/**
-				* 메뉴 정보
-				*/
+				 * 메뉴 정보
+				 */
 				menuInfo : {
-					type: Object
+					type: Object,
+					observer: '_menuInfoChanged'
+				},
+
+				/**
+				 * Check Import URL
+				 */
+				checkImportUrl: {
+					type: String
 				},
 
 				/**
@@ -58,6 +73,9 @@
 				buttons: {
 					type: Array,
 					value: [ {
+						id: 'check-btn',
+						text: 'check'
+					}, {
 						id: 'add-btn',
 						text: 'add'
 					}, {
@@ -77,9 +95,20 @@
 			},
 
 			listeners : {
+				'grid.things-grid-import-finished' : '_importFinished',
 				'grid.things-grid-handle-save' : '_handleSave',
+				'check-btn-tap' : '_checkForImport',
 				'create-ajax.things-ajax-response' : '_handleSaveSuccess',
-				'create-ajax.things-ajax-error' : '_handleSaveFailure'
+				'create-ajax.things-ajax-error' : '_handleSaveFailure',
+				'check-import-ajax:things-ajax-response' : '_handleCheckImportSuccess',
+				'check-import-ajax:things-ajax-error' : '_handleCheckImportFailure'
+			},
+
+			/**
+			 * Menu 정보가 변경되었을 때 
+			 */
+			_menuInfoChanged: function(menuInfo) {
+				this.checkImportUrl = menuInfo.resource_url + '/check_import';
 			},
 
 			/**
@@ -87,6 +116,56 @@
 			*/
 			getGrid: function() {
 				return this.$.grid;
+			},
+
+			/**
+			 * 참조 컬럼들을 추출한다.
+			 */
+			_extractRefColumns: function() {
+				var refColumns = [];
+
+        for(var i = 0 ; i < this.gridColumns.length ; i++) {
+          var column = this.gridColumns[i];
+          if(column.valueCallback && column.type == 'calced') {
+            refColumns.push(column);
+          }
+        }
+
+        return refColumns;
+			},
+
+			/**
+			 * import 완료
+			 *
+			 * @param {Object} event
+			 */
+			_importFinished: function(event) {
+				console.log(event.detail);
+				var items = event.detail;
+				var refColumns = this._extractRefColumns();
+
+				items.forEach(function(item) {
+					for(var i = 0 ; i < refColumns.length ; i++) {
+						var refColumn = refColumns[i];
+						item[refColumn.name] = { id: null, name : item[refColumn.name] };
+					}
+				});
+
+				console.log(items);
+				this.items = items;
+			},
+
+			/**
+			 * check
+			 *
+			 * @param {Object} event
+			 */
+			_checkForImport: function(event) {
+				if(!this.items || this.items.length == 0) return;
+
+				var checkImportAjax = this.$['check-import-ajax'];
+				checkImportAjax.body = this.items;
+				checkImportAjax.generateRequest();
 			},
 
 			/**
@@ -120,6 +199,25 @@
 			*/
 			_handleSaveFailure: function(event) {
 				// 그리드의 해당 Row에 빨간색으로 'Failure' 표시 & 간단한 메시지 
+				console.log(event);
+			},
+
+			/**
+			 * Import Check 성공시 액션
+			 *
+			 * @param {Object} event
+			 */
+			_handleCheckImportSuccess: function(event) {
+				console.log(event);
+				this.items = event.detail;
+			},
+
+			/**
+			 * Import Check 실패시 액션
+			 *
+			 * @param {Object} event
+			 */
+			_handleCheckImportFailure: function(event) {
 				console.log(event);
 			}
 

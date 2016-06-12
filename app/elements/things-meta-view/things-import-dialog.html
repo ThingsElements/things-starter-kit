@@ -164,6 +164,26 @@
        * @return {Array} gridColumns
        */
       _handleGridColumns: function(gridColumns) {
+        var newGridColumns = [];
+
+        for(var i = 0 ; i < gridColumns.length ; i++) {
+          var gridColumn = gridColumns[i];
+          if(this.excludeFieldNames.includes(gridColumn.fieldName)) continue;
+          newGridColumns.push(gridColumn);
+        }
+
+        newGridColumns.push({fieldName: '_result_', width: 80, header : { text : 'Result' }});
+        newGridColumns.push({fieldName: '_message_', width: 250, header : { text : 'Message' }});
+        return newGridColumns;
+      }
+
+      /**
+       * Import 할 수 있는 형식으로 컬럼 정보 변경
+       *
+       * @param {Array} gridColumns
+       * @return {Array} gridColumns
+       */
+      /*_handleGridColumns: function(gridColumns) {
         var newGridColumns = [], changedColumns = [];
 
         for(var i = 0 ; i < gridColumns.length ; i++) {
@@ -189,7 +209,7 @@
         newGridColumns.push({fieldName: '_result_', width: 80, header : { text : 'Result' }});
         newGridColumns.push({fieldName: '_message_', width: 250, header : { text : 'Message' }});
         return newGridColumns;
-      }
+      }*/
     });
   </script>
 </dom-module>
