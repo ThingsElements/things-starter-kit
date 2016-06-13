@@ -88,9 +88,9 @@
 					finalItems[i].retry_total = retryTotal;
 
 					//통과율
-					finalItems[i].pass_rate = ((inputQty - retryTotal)/inputQty) * 100;
+					finalItems[i].pass_rate = (((inputQty - retryTotal)/inputQty) * 100).toFixed(1);
 					//100%중 통과율이 아닌 나머지 퍼센트
-					finalItems[i].rest_rate = 100 - finalItems[i].pass_rate;
+					finalItems[i].rest_rate = (100 - finalItems[i].pass_rate).toFixed(1);
 				}
 				this.finalItems = finalItems;
 			}
