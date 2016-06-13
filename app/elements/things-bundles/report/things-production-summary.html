@@ -1,5 +1,7 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
 
+<link rel="import" href="../../things-content/things-resource-menu-content-behavior.html">
+
 <dom-module id="things-production-summary">
 	<template>
 		<style>
@@ -19,7 +21,7 @@
       method="GET"
       resource-url="[[menuMetaUrl]]"
       last-response="{{metaData}}">
-    </things-ajax>		
+    </things-ajax>
 
     <things-search-form 
       id="search-form"
@@ -40,8 +42,6 @@
 				diy-grid-name="Production-Summary">
 			</things-diy-based-grid>
 		</things-layout-gaia>
-
-
 	</template>
 
 	<script>
@@ -49,23 +49,11 @@
 			is: 'things-production-summary',
 
 			properties: {
-				
-				buttons: {
-					type: Array,
-          value: function() {
-            return [ {
-              id: 'save-btn',
-              text: 'save'
-            }, {
-            	id: 'add-btn',
-            	text: 'add',
-            }, {
-            	id: 'delete-btn',
-            	text: 'delete'
-            } ];
-          }
-				}
-			}
+			},
+
+			behaviors: [
+				Things.ResourceMenuContentBehavior
+			]
 		});
 	</script>
 </dom-module>

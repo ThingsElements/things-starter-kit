@@ -73,48 +73,10 @@
 			],
 			
 			properties: {
-				printOption: {
-					type: Object,
-					value: {
-						print: {
-							previewUrl: "preview.html"
-						},
-						reportHeaser: {
-							items: [{
-								text: "Terminology Document",
-								styles: {
-									fontSize: 30
-								}
-							}]
-						},
-						pageHeader: {
-							items: [{
-								text: 'HatioLab Inc.'
-							}, {
-								right: 0,
-								text: 'Terminology Document'
-							}]
-						},
-						grid: {
-							display: {
-								fitStyle: "even"
-							},
-							footer: {
-								visible: true
-							}
-						},
-						gridStyles: {
-							grid: {
-								border: null
-							}
-						}
-					}
-				}
 			},
 
 			listeners : {
-				'reload-btn-tap': 'reloadCache',
-				'print-btn-tap': 'printSheet'				
+				'reload-btn-tap': 'reloadCache'
 			},
 
 			/**
@@ -124,15 +86,6 @@
 			 */
 			reloadCache: function(e) {
 				this.$['reload-cache'].generateRequest();
-			},
-
-			/**
-			 * Print Sheet
-			 */
-			printSheet: function(e) {
-				var dsMain = this.$.grid.getGridDataSet();
-				var grdMain = this.$.grid.getGridObject();
-				DLReport.preview(grdMain, this.printOption, false);
 			}
 		});
 	</script>
