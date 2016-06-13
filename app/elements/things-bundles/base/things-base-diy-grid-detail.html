@@ -176,6 +176,7 @@
         var gridColumns = this._parseGridColumns(viewColumns);
         var model = { config: {}, model: gridModel, columns: gridColumns };
         this.resource.config = JSONfn.stringify(model, null, 2);
+        console.log(this.resource.config);
       }
 
     });
