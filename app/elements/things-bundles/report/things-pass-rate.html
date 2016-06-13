@@ -1,0 +1,76 @@
+<dom-module id="things-pass-rate">
+	<template>
+		<style>
+			:host {
+				display: block;
+				@apply(--layout-vertical);
+				@apply(--layout-flex);
+			}
+			things-layout-gaia {
+				@apply(--layout-flex);
+			}
+		</style>
+
+    <things-ajax 
+      auto
+      id="resource-meta"
+      method="GET"
+      resource-url="[[menuMetaUrl]]"
+      last-response="{{metaData}}">
+    </things-ajax>
+
+    <things-search-form 
+      id="search-form"
+      title="[[menuInfo.title]]"
+      form-fields="[[searchFormFields]]" 
+      action-url="production_summaries" 
+      page="{{page}}"
+      per-page="[[perPage]]"
+      last-response="{{lastResponse}}">
+    </things-search-form>
+
+		<things-layout-gaia>
+			<things-diy-based-grid
+				content
+				items="[[items]]"
+				buttons="[[buttons]]"
+				class="flex"
+				diy-grid-name="Pass-Rate">
+			</things-diy-based-grid>
+		</things-layout-gaia>    		
+	</template>
+	<script>
+		Polymer({
+			is: 'things-pass-rate',
+
+			properties: {
+				lastResponse: {
+					type: Object,
+					observer: '_lastResponseChanged'
+				},
+
+				items: {
+					type: Object
+				}
+			},
+
+			_lastResponseChanged: function(data) {
+				this.items = data.items;
+				var inputQty;
+				var repairQty;
+				var reworkQty;
+				var retryTotal;
+
+				for(var i = 0; i < data.items.length; i++) {
+					inputQty = this.items[i].input_qty;
+					repairQty = this.items[i].repair_qty;
+					reworkQty = this.items[i].rework_qty;
+					retryTotal = repairQty + reworkQty;
+					this.items[i].retry_total = retryTotal;
+					this.items[i].pass_rate = (inputQty - retryTotal)/inputQty;
+				}
+				console.log(this.items);
+			}
+		})
+	</script>
+</dom-module>
