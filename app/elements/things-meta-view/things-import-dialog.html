@@ -132,8 +132,6 @@
         this.importView.gridConfig = gridConfig;
         this.importView.gridModel = this._handleGridModel(gridModel);
         this.importView.gridColumns = this._handleGridColumns(gridColumns);
-        console.log(gridColumns);
-        console.log(gridModel);
         this.importView.menuInfo = menuInfo;
         scrollable.appendChild(this.importView);
         this.$.dialog.open();
@@ -146,11 +144,7 @@
        * @return {Array} gridModel
        */
       _handleGridModel: function(gridModel) {
-        var newGridModel = [];
-        gridModel.unshift({
-          fieldName: 'status',
-          dataType:'text'
-        });
+        var newGridModel = [{ fieldName: '_status_' }];
         for(var i = 0 ; i < gridModel.length ; i++) {
           var model = gridModel[i];
           if(this.excludeFieldNames.includes(model.fieldName)) continue;
@@ -169,27 +163,36 @@
        * @return {Array} gridColumns
        */
       _handleGridColumns: function(gridColumns) {
-        var newGridColumns = [];
-        gridColumns.unshift({
-          name: 'Status',
+        var newGridColumns = [{
+          fieldName: '_status_',
+          name: '_status_',
           width: 30,
           imageList: 'images',
           header: { text: ' ' },
           renderer: { type: 'icon' },
-          styles: {
+          styles: { 
+            iconIndex: 'iconDetail.png',
+            iconLocation: 'center' 
           },
           styleCallback: function (index, styles) {
             var status = index.getValue();
-            if(status=="error"){
-              styles.setIconIndex(iconMap['error_error.png']);
-            }else if("warning"){
-              styles.setIconIndex(iconMap['error_warning.png']);
-            }else {
-              styles.setIconIndex(iconMap['error_info.png']);
+
+            // 1. 기본 상태 
+            if(!status || status == '') {
+              styles.setIconIndex('');
+            // 2. 에러 상태 
+            } else if(status == 'F') {
+              styles.setIconIndex('error_error.png');
+            // 3. 준비 상태
+            } else if(status == 'R') {
+              styles.setIconIndex('error_warning.png');
+            // 4. Import OK
+            } else if(status == 'S') {
+              styles.setIconIndex('error_info.png');
             }
-            
           }
-        });
+        }];
+
         for(var i = 0 ; i < gridColumns.length ; i++) {
           var gridColumn = gridColumns[i];
           if(this.excludeFieldNames.includes(gridColumn.fieldName)) continue;

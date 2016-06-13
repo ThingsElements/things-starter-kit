@@ -42,6 +42,7 @@
 			buttons="[[buttons]]"
 			data="[[items]]"
 			fixed-column-count="2"
+			grid-image-items="[[gridImageItems]]"
 			buttons="[[buttons]]">
 		</things-resource-grid>
 	</template>
@@ -94,17 +95,24 @@
 					}
 				},
 
-				/**
-				 * icon cells
-				 */
-				statusCellConfig :{
-					type: Array,
-					value : function(){
-						return [
-						]
-
-					}
-				},
+        /**
+         * Grid에서 사용할 이미지 리스트 
+         */
+        gridImageItems: {
+          type: Array,
+          value: function() {
+            return [
+              'iconDetail.png',
+              'ellipsis_hover.png',
+              'indicator_insert.png',
+              'menu_button.png',
+              'menu_button_hover.png',
+              'error_error.png',
+              'error_warning.png',
+              'error_info.png'
+            ];
+          }
+        },				
 
 				/**
 				* 버튼 
@@ -196,9 +204,6 @@
 			_extractRefColumns: function() {
 				var refColumns = [];
 
-				if(gridColumns.length > 0) {
-					this.grid.setColumns(gridColumns);
-				}
 				for(var i = 0 ; i < this.gridColumns.length ; i++) {
 					var column = this.gridColumns[i];
 					if(column.valueCallback && column.type == 'calced') {
@@ -255,6 +260,7 @@
 			_handleSaveSuccess: function(event) {
 				var successItem = event.detail;
 				successItem._result_ = 'OK';
+				successItem._status_ = 'S';
 				this.tempItems[this.createIndex] = successItem;
 				this.createIndex += 1;
 				this._createData();
@@ -268,6 +274,7 @@
 			_handleSaveFailure: function(event) {
 				var failureItem = this.items[this.createIndex];
 				failureItem._result_ = 'Failure';
+				failureItem._status_ = 'F';
 				failureItem._message_ = event.detail.request.xhr.response.msg;
 				this.tempItems[this.createIndex] = failureItem;
 				this.createIndex += 1;
@@ -280,7 +287,9 @@
 			 * @param {Object} event
 			 */
 			_handleCheckImportSuccess: function(event) {
-				this.items = event.detail;
+				var items = event.detail;
+				items.forEach(function(item) { item._status_ = 'R'; });
+				this.items = items;
 			},
 
 			/**
