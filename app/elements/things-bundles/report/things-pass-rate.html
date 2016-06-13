@@ -64,21 +64,22 @@
 			},
 
 			_lastResponseChanged: function(data) {
-				this.finalItems = data.items;
+				var finalItems = data.items;
 				var inputQty;
 				var repairQty;
 				var reworkQty;
 				var retryTotal;
 
 				for(var i = 0; i < data.items.length; i++) {
-					inputQty = this.finalItems[i].input_qty;
-					repairQty = this.finalItems[i].repair_qty;
-					reworkQty = this.finalItems[i].rework_qty;
+					inputQty = finalItems[i].input_qty;
+					repairQty = finalItems[i].repair_qty;
+					reworkQty = finalItems[i].rework_qty;
 					retryTotal = repairQty + reworkQty;
-					this.finalItems[i].retry_total = retryTotal;
-					this.finalItems[i].pass_rate = 1000+(inputQty - retryTotal)/inputQty;
+					finalItems[i].retry_total = retryTotal;
+					finalItems[i].pass_rate = ((inputQty - retryTotal)/inputQty) * 100;
+					finalItems[i].rest_rate = 100 - finalItems[i].pass_rate;
 				}
-				console.log(this.finalItems);
+				this.finalItems = finalItems;
 			}
 		})
 	</script>
