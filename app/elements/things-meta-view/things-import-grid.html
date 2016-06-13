@@ -95,6 +95,18 @@
 				},
 
 				/**
+				 * icon cells
+				 */
+				statusCellConfig :{
+					type: Array,
+					value : function(){
+						return [
+						]
+
+					}
+				},
+
+				/**
 				* 버튼 
 				*/
 				buttons: {
@@ -128,8 +140,8 @@
 				'grid.things-grid-handle-save' : '_handleSave',
 				'create-ajax.things-ajax-response' : '_handleSaveSuccess',
 				'create-ajax.things-ajax-error' : '_handleSaveFailure',
-				'check-import-ajax:things-ajax-response' : '_handleCheckImportSuccess',
-				'check-import-ajax:things-ajax-error' : '_handleCheckImportFailure'
+				'check-import-ajax.things-ajax-response' : '_handleCheckImportSuccess',
+				'check-import-ajax.things-ajax-error' : '_handleCheckImportFailure'
 			},
 
 			/**
@@ -184,6 +196,9 @@
 			_extractRefColumns: function() {
 				var refColumns = [];
 
+				if(gridColumns.length > 0) {
+					this.grid.setColumns(gridColumns);
+				}
 				for(var i = 0 ; i < this.gridColumns.length ; i++) {
 					var column = this.gridColumns[i];
 					if(column.valueCallback && column.type == 'calced') {

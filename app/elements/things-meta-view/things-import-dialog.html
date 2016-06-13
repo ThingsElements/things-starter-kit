@@ -132,6 +132,8 @@
         this.importView.gridConfig = gridConfig;
         this.importView.gridModel = this._handleGridModel(gridModel);
         this.importView.gridColumns = this._handleGridColumns(gridColumns);
+        console.log(gridColumns);
+        console.log(gridModel);
         this.importView.menuInfo = menuInfo;
         scrollable.appendChild(this.importView);
         this.$.dialog.open();
@@ -145,7 +147,10 @@
        */
       _handleGridModel: function(gridModel) {
         var newGridModel = [];
-
+        gridModel.unshift({
+          fieldName: 'status',
+          dataType:'text'
+        });
         for(var i = 0 ; i < gridModel.length ; i++) {
           var model = gridModel[i];
           if(this.excludeFieldNames.includes(model.fieldName)) continue;
@@ -165,7 +170,26 @@
        */
       _handleGridColumns: function(gridColumns) {
         var newGridColumns = [];
-
+        gridColumns.unshift({
+          name: 'Status',
+          width: 30,
+          imageList: 'images',
+          header: { text: ' ' },
+          renderer: { type: 'icon' },
+          styles: {
+          },
+          styleCallback: function (index, styles) {
+            var status = index.getValue();
+            if(status=="error"){
+              styles.setIconIndex(iconMap['error_error.png']);
+            }else if("warning"){
+              styles.setIconIndex(iconMap['error_warning.png']);
+            }else {
+              styles.setIconIndex(iconMap['error_info.png']);
+            }
+            
+          }
+        });
         for(var i = 0 ; i < gridColumns.length ; i++) {
           var gridColumn = gridColumns[i];
           if(this.excludeFieldNames.includes(gridColumn.fieldName)) continue;
