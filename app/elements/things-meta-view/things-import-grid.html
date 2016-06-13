@@ -23,7 +23,6 @@
 
 		<things-ajax 
 			id="create-ajax"
-			sync
 			resource-action="create"
 			resource-url="[[menuInfo.resource_url]]">
 		</things-ajax>
@@ -68,6 +67,34 @@
 				},
 
 				/**
+				 * Create Index
+				 */
+				createIndex: {
+					type: Number,
+					value: 0
+				},
+
+				/**
+				 * Items
+				 */
+				items: {
+					type: Array,
+					value: function() {
+						return [];
+					}
+				},
+
+				/**
+				 * 임시 Items
+				 */
+				tempItems: {
+					type: Array,
+					value: function() {
+						return [];
+					}
+				},
+
+				/**
 				* 버튼 
 				*/
 				buttons: {
@@ -95,9 +122,10 @@
 			},
 
 			listeners : {
-				'grid.things-grid-import-finished' : '_importFinished',
-				'grid.things-grid-handle-save' : '_handleSave',
 				'check-btn-tap' : '_checkForImport',
+				'grid.things-grid-import-finished' : '_importFinished',
+				'grid.things-grid-handle-build-writedata' : '_handleSetupGridWriteData',
+				'grid.things-grid-handle-save' : '_handleSave',
 				'create-ajax.things-ajax-response' : '_handleSaveSuccess',
 				'create-ajax.things-ajax-error' : '_handleSaveFailure',
 				'check-import-ajax:things-ajax-response' : '_handleCheckImportSuccess',
@@ -112,35 +140,31 @@
 			},
 
 			/**
-			* things-resource-grid를 리턴한다.
-			*/
+			 * things-resource-grid를 리턴한다.
+			 */
 			getGrid: function() {
 				return this.$.grid;
 			},
 
 			/**
-			 * 참조 컬럼들을 추출한다.
+			 * Import 전에 데이터 체크 
+			 *
+			 * @param {Object} event
 			 */
-			_extractRefColumns: function() {
-				var refColumns = [];
+			_checkForImport: function(event) {
+				if(!this.items || this.items.length == 0) return;
 
-        for(var i = 0 ; i < this.gridColumns.length ; i++) {
-          var column = this.gridColumns[i];
-          if(column.valueCallback && column.type == 'calced') {
-            refColumns.push(column);
-          }
-        }
-
-        return refColumns;
-			},
+				var checkImportAjax = this.$['check-import-ajax'];
+				checkImportAjax.body = this.items;
+				checkImportAjax.generateRequest();
+			},			
 
 			/**
-			 * import 완료
+			 * Import 완료된 이후 
 			 *
 			 * @param {Object} event
 			 */
 			_importFinished: function(event) {
-				console.log(event.detail);
 				var items = event.detail;
 				var refColumns = this._extractRefColumns();
 
@@ -151,55 +175,88 @@
 					}
 				});
 
-				console.log(items);
 				this.items = items;
 			},
 
 			/**
-			 * check
+			 * 참조 컬럼들을 추출한다.
+			 */
+			_extractRefColumns: function() {
+				var refColumns = [];
+
+				for(var i = 0 ; i < this.gridColumns.length ; i++) {
+					var column = this.gridColumns[i];
+					if(column.valueCallback && column.type == 'calced') {
+						refColumns.push(column);
+					}
+				}
+
+				return refColumns;
+			},
+
+			/**
+			 * 저장을 위해 그리드 데이터 셋업
 			 *
 			 * @param {Object} event
 			 */
-			_checkForImport: function(event) {
-				if(!this.items || this.items.length == 0) return;
-
-				var checkImportAjax = this.$['check-import-ajax'];
-				checkImportAjax.body = this.items;
-				checkImportAjax.generateRequest();
+			_handleSetupGridWriteData: function(event) {
+				event.preventDefault();
 			},
 
 			/**
-			* 저장 액션을 커스터마이징
-			*
-			* @param {Object} event
-			*/
+			 * 저장 액션을 커스터마이징
+			 *
+			 * @param {Object} event
+			 */
 			_handleSave: function(event) {
 				event.preventDefault();
-
-				var grid = event.target;
-				console.log(grid.writeData);
-
-				// TODO handle writeData & request save ...
+				this.createIndex = 0;
+				this._createData();
 			},
 
 			/**
-			* 저장 성공시 액션
-			*
-			* @param {Object} event
-			*/
+			 * Create Import Data
+			 */
+			_createData: function() {
+				if(this.items.length > this.createIndex) {
+					var row = this.items[this.createIndex];
+					row.cud_flag_ = 'c';
+					var ajax = this.$['create-ajax'];
+					ajax.body = row;
+					ajax.generateRequest();
+
+				} else {
+					this.items = this.tempItems;
+					this.tempItems = [];
+					this.createIndex = 0;
+				}
+			},
+
+			/**
+			 * 저장 성공시 액션
+			 *
+			 * @param {Object} event
+			 */
 			_handleSaveSuccess: function(event) {
-				// 그리드의 해당 Row에 'OK' 표시
-				console.log(event);
+				var successItem = event.detail;
+				successItem._result_ = 'OK';
+				this.tempItems[this.createIndex] = successItem;
+				this.createIndex += 1;
+				this._createData();
 			},
 
 			/**
-			* 저장 실패시 액션
-			*
-			* @param {Object} event
-			*/
+			 * 저장 실패시 액션
+			 *
+			 * @param {Object} event
+			 */
 			_handleSaveFailure: function(event) {
-				// 그리드의 해당 Row에 빨간색으로 'Failure' 표시 & 간단한 메시지 
-				console.log(event);
+				var failureItem = this.items[this.createIndex];
+				failureItem._result_ = 'Failure';
+				failureItem._message_ = event.detail.request.xhr.response.msg;
+				this.tempItems[this.createIndex] = failureItem;
+				this.createIndex += 1;
+				this._createData();
 			},
 
 			/**
@@ -208,7 +265,6 @@
 			 * @param {Object} event
 			 */
 			_handleCheckImportSuccess: function(event) {
-				console.log(event);
 				this.items = event.detail;
 			},
 
