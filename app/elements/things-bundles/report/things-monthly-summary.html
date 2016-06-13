@@ -1,3 +1,7 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../things-content/things-resource-menu-content-behavior.html">
+
 <dom-module is="things-monthly-summary">
 	<template>
 		<style>
@@ -39,28 +43,17 @@
 			</things-diy-based-grid>
 		</things-layout-gaia>
 	</template>
+	
 	<script>
 		Polymer({
 			is: 'things-monthly-summary',
 
 			properties: {
-				buttons: {
-					type: Array,
-					value: function() {
-						return [{
-							id: 'save-btn',
-							text: 'save'
-						}, {
-							id: 'add-btn',
-							text: 'add'
-						}, {
-							id: 'delete-btn',
-							text: 'delete'
-						}]
-					}
-				}
-			}
+			},
 
+			behaviors: [
+				Things.ResourceMenuContentBehavior
+			]
 		});
 	</script>
 </dom-module>
