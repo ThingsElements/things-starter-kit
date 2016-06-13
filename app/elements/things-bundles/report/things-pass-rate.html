@@ -32,7 +32,7 @@
 		<things-layout-gaia>
 			<things-diy-based-grid
 				content
-				items="[[items]]"
+				items="[[finalItems]]"
 				buttons="[[buttons]]"
 				class="flex"
 				diy-grid-name="Pass-Rate">
@@ -49,27 +49,27 @@
 					observer: '_lastResponseChanged'
 				},
 
-				items: {
+				finalItems: {
 					type: Object
 				}
 			},
 
 			_lastResponseChanged: function(data) {
-				this.items = data.items;
+				this.finalItems = data.items;
 				var inputQty;
 				var repairQty;
 				var reworkQty;
 				var retryTotal;
 
 				for(var i = 0; i < data.items.length; i++) {
-					inputQty = this.items[i].input_qty;
-					repairQty = this.items[i].repair_qty;
-					reworkQty = this.items[i].rework_qty;
+					inputQty = this.finalItems[i].input_qty;
+					repairQty = this.finalItems[i].repair_qty;
+					reworkQty = this.finalItems[i].rework_qty;
 					retryTotal = repairQty + reworkQty;
-					this.items[i].retry_total = retryTotal;
-					this.items[i].pass_rate = (inputQty - retryTotal)/inputQty;
+					this.finalItems[i].retry_total = retryTotal;
+					this.finalItems[i].pass_rate = 1000+(inputQty - retryTotal)/inputQty;
 				}
-				console.log(this.items);
+				console.log(this.finalItems);
 			}
 		})
 	</script>
