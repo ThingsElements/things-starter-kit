@@ -2,7 +2,7 @@
 
 <link rel="import" href="../../things-content/things-resource-menu-content-behavior.html">
 
-<dom-module id="things-production-summary">
+<dom-module is="things-monthly-production-status">
 	<template>
 		<style>
 			:host {
@@ -21,13 +21,13 @@
       method="GET"
       resource-url="[[menuMetaUrl]]"
       last-response="{{metaData}}">
-    </things-ajax>
+    </things-ajax>		
 
     <things-search-form 
       id="search-form"
       title="[[menuInfo.title]]"
       form-fields="[[searchFormFields]]" 
-      action-url="[[menuInfo.resource_url]]" 
+      action-url="[[menuInfo.resource_url]]"
       page="{{page}}"
       per-page="[[perPage]]"
       last-response="{{lastResponse}}">
@@ -39,14 +39,14 @@
 				items="[[lastResponse.items]]"
 				buttons="[[buttons]]"
 				class="flex"
-				diy-grid-name="Production-Summary">
+				diy-grid-name="Monthly-Summary">
 			</things-diy-based-grid>
 		</things-layout-gaia>
 	</template>
-
+	
 	<script>
 		Polymer({
-			is: 'things-production-summary',
+			is: 'things-monthly-production-status',
 
 			properties: {
 			},
