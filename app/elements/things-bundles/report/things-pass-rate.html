@@ -36,7 +36,7 @@
 		<things-layout-gaia>
 			<things-diy-based-grid
 				content
-				items="[[finalItems]]"
+				items="[[lastResponse]]"
 				buttons="[[buttons]]"
 				class="flex"
 				diy-grid-name="Pass-Rate">
@@ -55,44 +55,11 @@
 			properties: {
 
 				/**
-				 * 통과율을 계산하기 이전의 데이터 object
+				 * ajax response
 				 */
 				lastResponse: {
-					type: Object,
-					observer: '_lastResponseChanged'
-				},
-
-				/**
-				 * 통과율을 계산하고 그리드에 넘겨줄 object
-				 */
-				finalItems: {
 					type: Object
 				}
-			},
-
-			/**
-			 * 통과율을 계산하기 위한 함수
-			 */
-			_lastResponseChanged: function(data) {
-				var finalItems = data.items;
-				var inputQty;
-				var repairQty;
-				var reworkQty;
-				var retryTotal;
-
-				for(var i = 0; i < data.items.length; i++) {
-					inputQty = finalItems[i].input_qty;
-					repairQty = finalItems[i].repair_qty;
-					reworkQty = finalItems[i].rework_qty;
-					retryTotal = repairQty + reworkQty;
-					finalItems[i].retry_total = retryTotal;
-
-					//통과율
-					finalItems[i].pass_rate = (((inputQty - retryTotal)/inputQty) * 100).toFixed(1);
-					//100%중 통과율이 아닌 나머지 퍼센트
-					finalItems[i].rest_rate = (100 - finalItems[i].pass_rate).toFixed(1);
-				}
-				this.finalItems = finalItems;
 			}
 		})
 	</script>
