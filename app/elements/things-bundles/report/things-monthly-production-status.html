@@ -36,10 +36,11 @@
 		<things-layout-gaia>
 			<things-diy-based-grid
 				content
-				items="[[lastResponse.items]]"
+				items="[[lastResponse]]"
 				buttons="[[buttons]]"
 				class="flex"
-				diy-grid-name="Monthly-Summary">
+				diy-grid-name="Monthly-Summary"
+				fixed-column-count="[[menuInfo.fixed_columns]]">
 			</things-diy-based-grid>
 		</things-layout-gaia>
 	</template>
