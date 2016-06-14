@@ -23,8 +23,8 @@
 
 		<things-ajax 
 			id="create-ajax"
-			resource-action="create"
-			resource-url="[[menuInfo.resource_url]]">
+			resource-action="update_multiple"
+			resource-url="[[updateMultipleUrl]]">
 		</things-ajax>
 
 		<things-ajax 
@@ -32,7 +32,7 @@
 			method="POST"
 			content-type="application/json"
 			resource-url="[[checkImportUrl]]">
-		</things-ajax> 		
+		</things-ajax>
 
 		<things-resource-grid 
 			id="grid"
@@ -58,6 +58,13 @@
 				menuInfo : {
 					type: Object,
 					observer: '_menuInfoChanged'
+				},
+
+				/**
+				 * Update Multiple URL
+				 */
+				updateMultipleUrl: {
+					type: String
 				},
 
 				/**
@@ -95,26 +102,26 @@
 					}
 				},
 
-		        /**
-		         * Grid에서 사용할 이미지 리스트 
-		         */
-		        gridImageItems: {
-		          type: Array,
-		          value: function() {
-		            return [
-						'iconDetail.png',
-						'ellipsis_hover.png',
-						'indicator_insert.png',
-						'menu_button.png',
-						'menu_button_hover.png',
-						'error_info.png',
-						'error_error.png',
-						'error_warning.png',
-						'indicator_edit.png',
-						'menu_check.png'
-		            ];
-		          }
-		        },				
+				/**
+				* Grid에서 사용할 이미지 리스트 
+				*/
+				gridImageItems: {
+					type: Array,
+					value: function() {
+						return [
+							'iconDetail.png',
+							'ellipsis_hover.png',
+							'indicator_insert.png',
+							'menu_button.png',
+							'menu_button_hover.png',
+							'error_info.png',
+							'error_error.png',
+							'error_warning.png',
+							'indicator_edit.png',
+							'menu_check.png'
+						];
+					}
+				},
 
 				/**
 				* 버튼 
@@ -158,6 +165,7 @@
 			 * Menu 정보가 변경되었을 때 
 			 */
 			_menuInfoChanged: function(menuInfo) {
+				this.updateMultipleUrl = menuInfo.resource_url + '/update_multiple';
 				this.checkImportUrl = menuInfo.resource_url + '/check_import';
 			},
 
@@ -179,7 +187,7 @@
 				var checkImportAjax = this.$['check-import-ajax'];
 				checkImportAjax.body = this.items;
 				checkImportAjax.generateRequest();
-			},			
+			},
 
 			/**
 			 * Import 완료된 이후 
@@ -244,7 +252,7 @@
 					var row = this.items[this.createIndex];
 					row.cud_flag_ = 'c';
 					var ajax = this.$['create-ajax'];
-					ajax.body = row;
+					ajax.body = [row];
 					ajax.generateRequest();
 
 				} else {
@@ -260,7 +268,7 @@
 			 * @param {Object} event
 			 */
 			_handleSaveSuccess: function(event) {
-				var successItem = event.detail;
+				var successItem = this.items[this.createIndex];
 				successItem._result_ = 'OK';
 				successItem._status_ = 'S';
 				this.tempItems[this.createIndex] = successItem;
