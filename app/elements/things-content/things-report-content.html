@@ -1,8 +1,9 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
 
-<link rel="import" href="../../things-content/things-resource-menu-content-behavior.html">
+<link rel="import" href="../things-meta-view/things-diy-based-grid.html">
+<link rel="import" href="./things-resource-menu-content-behavior.html">
 
-<dom-module is="things-monthly-production-status">
+<dom-module id="things-report-content">
 	<template>
 		<style>
 			:host {
@@ -21,33 +22,31 @@
       method="GET"
       resource-url="[[menuMetaUrl]]"
       last-response="{{metaData}}">
-    </things-ajax>		
+    </things-ajax>
 
     <things-search-form 
       id="search-form"
       title="[[menuInfo.title]]"
       form-fields="[[searchFormFields]]" 
-      action-url="[[menuInfo.resource_url]]"
+      action-url="[[menuInfo.resource_url]]" 
       page="{{page}}"
       per-page="[[perPage]]"
       last-response="{{lastResponse}}">
     </things-search-form>
 
-		<things-layout-gaia>
-			<things-diy-based-grid
-				content
-				items="[[lastResponse]]"
-				buttons="[[buttons]]"
-				class="flex"
-				diy-grid-name="Monthly-Summary"
-				fixed-column-count="[[menuInfo.fixed_columns]]">
-			</things-diy-based-grid>
-		</things-layout-gaia>
+		<things-diy-based-grid
+			content
+			items="[[lastResponse]]"
+			buttons="[[buttons]]"
+			class="flex"
+			diy-grid-name="[[menuInfo.resource_name]]"
+			fixed-column-count="[[menuInfo.fixed_columns]]">
+		</things-diy-based-grid>
 	</template>
-	
+
 	<script>
 		Polymer({
-			is: 'things-monthly-production-status',
+			is: 'things-report-content',
 
 			properties: {
 			},
