@@ -89,8 +89,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 @apply(--layout-vertical);
             }
         </style>
-        <things-validators id="validators">
-        </things-validators>
+        <!-- form validators -->
+        <things-validators id="validators"></things-validators>
+        <!-- date picker dialog -->
+        <things-date-picker-dialog id="date-picker-dialog"></things-date-picker-dialog>
         <iron-localstorage id="localStorage" name="{$ appName $}" value="{{storage}}" on-iron-localstorage-load-empty="initializeDefaultStorage">
         </iron-localstorage>
         <!-- OI Layout -->
