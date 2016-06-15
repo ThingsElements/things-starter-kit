@@ -8,7 +8,6 @@
 <link rel="import" href="../../../../bower_components/things-grid/things-basic-grid.html">
 <link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
 <link rel="import" href="../../../../bower_components/things-meta/things-menu-meta-behavior.html">
-<link rel="import" href="../../../../bower_components/things-resource-selector/things-resource-selector-behavior.html">
 <link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
 
 <link rel="import" href="./things-base-menu-detail.html">
@@ -123,7 +122,6 @@
 			is: 'things-base-common-code',
 
 			behaviors: [ 
-				Things.ResourceSelectorBehavior,
 				Things.MenuMetaBehavior
 			],
 			
@@ -294,8 +292,7 @@
 				'grid.things-grid-configured' : '_reloadMainMenus',
 				'sub-grid.things-grid-detail-tap': '_showMenuDetail',
 				'sub-grid.things-grid-save-success': '_reloadSubMenus',
-				'sub-grid.things-grid-handle-save' : '_beforeSubMenuSave',
-				'things-grid-resource-column-edit' : '_openResourceSelector'
+				'sub-grid.things-grid-handle-save' : '_beforeSubMenuSave'
 			},
 
 			/**

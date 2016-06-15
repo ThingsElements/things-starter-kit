@@ -536,10 +536,9 @@
        * @param {Object} things-grid-resource-column-edit 이벤트 
        */
       _onGridColumnRefEdit: function(e) {
+        e.preventDefault();
         var index = e.detail.index;
         var grid = index._grid;
-        grid.commit();
-
         var dataSet = this.$.grid.getGridDataSet();
         var row = dataSet.getRowObject(index.rowIndex);
         if(!row.ref_type) return;

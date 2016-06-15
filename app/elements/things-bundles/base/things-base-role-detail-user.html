@@ -234,10 +234,10 @@
        * @param {Object} event
        */
       _openResourceSelector: function(event) {
+        event.preventDefault();
         var index = event.detail.index;
         var grid = index._grid;
         var rowObj = grid.focusedRow().getRowObject();
-
         if(!rowObj.id) {
           this.openResourceSelectorByGrid(index._grid, index.rowIndex, event.detail.userObj, true);  
         }

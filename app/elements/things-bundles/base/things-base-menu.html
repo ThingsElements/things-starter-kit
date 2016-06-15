@@ -9,7 +9,6 @@
 <link rel="import" href="../../../../bower_components/things-grid/things-resource-grid.html">
 <link rel="import" href="../../../../bower_components/things-i18n-msg/things-i18n-msg.html">
 <link rel="import" href="../../../../bower_components/things-meta/things-menu-meta-behavior.html">
-<link rel="import" href="../../../../bower_components/things-resource-selector/things-resource-selector-behavior.html">
 <link rel="import" href="../../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
 
 <link rel="import" href="./things-base-menu-setup.html">
@@ -126,7 +125,6 @@
 			is: 'things-base-menu',
 
 			behaviors: [ 
-				Things.ResourceSelectorBehavior,
 				Things.MenuMetaBehavior
 			],
 			
@@ -262,7 +260,6 @@
 				'sub-grid.things-grid-detail-tap': '_showSetupMenu',
 				'sub-grid.things-grid-save-success': '_reloadSubMenus',
 				'sub-grid.things-grid-handle-save' : '_beforeSubMenuSave',
-				'things-grid-resource-column-edit' : '_openResourceSelector',
 				'detail-btn-tap' : '_showSetupDetail',
 				'detail-layout-btn-tap':'_showSetupDetailLayout'
 			},
@@ -449,16 +446,6 @@
 				});
 
 				return event;
-			},
-
-			/**
-			 * Open Resource Selector Dialog
-			 *
-			 * @param {Object} event
-			 */
-			_openResourceSelector: function(event) {
-				var index = event.detail.index;
-				this.openResourceSelectorByGrid(index._grid, index.rowIndex, event.detail.userObj, true);
 			}
 
 		});

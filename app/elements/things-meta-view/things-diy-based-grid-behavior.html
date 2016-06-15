@@ -3,7 +3,6 @@
 <link rel="import" href="../../../bower_components/things-global-behavior/things-global-behavior.html">
 <link rel="import" href="../../../bower_components/things-meta/things-menu-meta-behavior.html">
 <link rel="import" href="../../../bower_components/things-msg-box-behavior/things-msg-box-behavior.html">
-<link rel="import" href="../../../bower_components/things-resource-selector/things-resource-selector-behavior.html">
 <link rel="import" href="../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
 
 <link rel="import" href="./things-diy-based-grid-meta-behavior.html">
@@ -61,10 +60,6 @@ Things.DiyBasedGridBehaviorImpl = {
 		}
 	},
 
-	listeners : {
-		'grid.things-grid-resource-column-edit' : 'openResourceSelector',
-	},
-
 	/**
 	 * Resource Grid를 리턴한다.
 	 */
@@ -95,26 +90,12 @@ Things.DiyBasedGridBehaviorImpl = {
 		if(diyGrid) {
 			this.diyGridId = diyGrid.id;
 		}
-	},
-
-	/**
-	 * Open Resource Selector Dialog
-	 *
-	 * @param {Object} event
-	 */
-	openResourceSelector: function(event) {
-		var index = event.detail.index;
-		var grid = index._grid;
-		grid.commit();
-		this.openResourceSelectorByGrid(index._grid, index.rowIndex, event.detail.userObj, true);
 	}
-
 };
 
 Things.DiyBasedGridBehavior = [
 	Things.DiyBasedGridBehaviorImpl,
 	Things.DiyBasedGridMetaBehavior,
-	Things.ResourceSelectorBehavior,
 	Things.ViewOpenBehavior,
 	Things.MsgBoxBehavior,
 	Things.GlobalBehavior
