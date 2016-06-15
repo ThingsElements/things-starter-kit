@@ -8,207 +8,221 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <link rel="import" href="things-oi-import.html">
-<dom-module id="things-oi-app">
-    <template>
-        <style include="shared-styles">
-            @import "theme.css";
-        </style>
 
-        <style is="custom-style">
-            
-            app-drawer {
-                --app-drawer-content-container: {
-                    background-color: #B0BEC5;
-                    @apply(--layout-vertical);
-                };
-                --app-drawer-width : 170px;
-            }
-            
-            .user-menu{
-                background-color:var(--things-secondary-background-color);
-                padding:5px;
-            }
-            app-header-layout {
-                @apply(--layout-fullbleed);
-                @apply(--layout-vertical);
-            }
-            app-header-layout::shadow #contentContainer {
-                @apply(--layout-vertical);
-                @apply(--layout-flex);
-            }
-            
-            #scrollingRegion {
-                overflow-y: auto;
-                /* fixes scroll track's z-index bug in safari*/
-                -webkit-transform: translateZ(0);
-                @apply(--layout-flex);
-                @apply(--layout-vertical);
-            }
-            #header-form {
-                @apply(--layout-horizontal);
-            }
-            things-sidebar {
-                @apply(--layout-flex);
-                --things-sidebar-panel: {
-                    @apply(--layout-flex);
-                }
-            }
-            iron-pages {
-                @apply(--layout-vertical);
-                @apply(--layout-flex);
-            }
-            things-logout::shadow paper-icon-button{
-                @apply(--things-small-icon);
-                float:right;
-                top:1px;left:37px;
-            }
-            app-toolbar{
-                @apply(--things-oi-header)
-            }
-            paper-toolbar{
-                background-color:var(--things-primary-background-color);
-                height:45px;
-            }
-            paper-toolbar::shadow #topBar{
-                height:45px;
-            }
-            paper-toolbar .title{
-                margin-left:32px !important;
-                line-height:initial !important;
-            }
-            things-code-combo::shadow label,things-resource-selector::shadow label{
-                @apply(--things-header-label)
-            }
-            things-code-combo::shadow iron-icon.things-combo{
-                background-position:54% -43px;
-            }
-            things-resource-selector::shadow iron-icon.things-resource-selector{
-                background-position:54% 6px;
-            }
-            #vertical-div{
-                @apply(--layout-vertical);
-            }
-        </style>
-        <!-- form validators -->
-        <things-validators id="validators"></things-validators>
-        <!-- date picker dialog -->
-        <things-date-picker-dialog id="date-picker-dialog"></things-date-picker-dialog>
-        <iron-localstorage id="localStorage" name="{$ appName $}" value="{{storage}}" on-iron-localstorage-load-empty="initializeDefaultStorage">
-        </iron-localstorage>
-        <!-- OI Layout -->
-        <app-drawer-layout responsive-width="{$ responsiveWidth $}">
-            <app-drawer swipe-open>
-              <things-sidebar
-                id ="sidebar"
-                menu-category ="TERMINAL"
-                drawer-id='paperDrawerPanel' 
-                page-content-id='content'
-                class="layout vertical" 
-                title="Elidom" 
-                screens="{{screens}}" 
-                resource-screens="{{resourceScreens}}"
-                diy-screens="{{diyScreens}}"
-                selected-menu ="{{selectedMenu}}"
-                resource-url="menus.json?mode=auth"
-                resource-action="index">
-                  <div class="user-menu header">
-                    <!-- sidebar header toolbar menu start-->
-                    <things-profile></things-profile>
-                    <!-- oi entrance -->
-                    <things-oi-entrance></things-oi-entrance>
-                    <!-- setting -->
-                    <things-setting></things-setting>            
-                    <!-- logout -->
-                    <things-logout id="logout" action="logout" icon="icons:power-settings-new"></things-logout>
-                    <!-- sidebar header toolbar menu end -->
-                  </div>
-              </things-sidebar>
-            </app-drawer>
-            <app-header-layout id="contentArea">
-                <app-header>
-                    <app-toolbar>
-                        <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-                        <form is="iron-form" id="header-form" method="post" action="/form/handler">
-                            <things-date-picker
-                              id="date-picker"
-                              label="Date"
-                              value="{{date}}">     
-                            </things-date-picker>
-                            <things-code-combo
-                              id="line-selector" 
-                              label="Line" 
-                              code-name="LINE"
-                              value="{{globals.line}}"
-                              label-path="description" 
-                              value-path="name">
-                            </things-code-combo>
-                            <things-resource-selector 
-                              id="resource-selector" 
-                              label="Operation" 
-                              name="operation"
-                              obj-value="{{globals.operation}}"
-                              resource-type="Entity"
-                              resource-name="Operation"
-                              resource-title-field="name">
-                            </things-resource-selector>
-                            <things-resource-selector 
-                              id="resource-selector" 
-                              label="Order" 
-                              name="order"
-                              obj-value="{{globals.wip.order}}"
-                              resource-type="Menu"
-                              resource-name="WorkOrder"
-                              resource-title-field="name">
-                            </things-resource-selector>
-                        </form>
-                        <div title>
-                            
-                        </div>
-                        <button id="fullscreen-btn" on-tap="_fullScreenTap">
-                        </button>
-                        <paper-tooltip for="fullscreen-btn" offset="0">
-                            <things-i18n-msg msgid="button.fullscreen">Full Screen</things-i18n-msg>
-                        </paper-tooltip>
-                        <paper-icon-button id="infoBtn" icon="info" onclick="document.getElementById('informationContainer').toggle()"></paper-icon-button>
-                    </app-toolbar>
-                </app-header>
-                <div id="scrollingRegion">
-                    <iron-collapse id ="informationContainer" opened class="layout horizontal">
-                        <div id="vertical-div" class ="flex-1">
-                            <span>order informatin</span>
-                            <things-wip-order-info order="[[globals.wip.order]]"></things-wip-order-info>
-                        </div>
-                        <div class ="flex-4">
-                            <span>routing information</span>
-                            <!-- {{globals.order.product_model.routing_id}}" -->
-                            <things-wip-routing-detail
-                                    search-url ="routings/:id/routing_details"
-                                    resource-id ="1"
-                                    class="layout vertical flex"
-                                    show-info="true"
-                            ></things-wip-routing-detail>
-                        </div>
-                    </iron-collapse>
-                    <paper-toolbar>
-                      <span class="title">[[selectedMenu.pageName]]</span>
-                    </paper-toolbar>        
-                    <iron-pages attr-for-selected="data-route" selected="{{route}}" id="content">
-                        <div class ="layout flex"></div>
-                    </iron-pages>
-                </div>
-            </app-header-layout>
-            <app-drawer id="endDrawer" align="end" swipe-open>
-                <h2>order status</h2>
-            </app-drawer>
-        </app-drawer-layout>
-        <!-- full dialog -->
-        <things-full-dialog id='common-full-dialog'></things-full-dialog>
-        <!-- resource dialog -->
-        <things-resource-dialog id='resource-dialog'></things-resource-dialog>
-        <paper-toast id="confirmToast" class="Toast" duration="10000">
-            <span class="Toast-button" role="button" tabindex="0" on-tap="onConfirmToastTap">OK</span>
-        </paper-toast>
-        <paper-toast id="infoToast" class="Toast" duration="8000"></paper-toast>
-    </template>
-    <script src="things-oi-app.js"></script>
+<dom-module id="things-oi-app">
+  <template>
+    <style include="shared-styles">
+      @import "theme.css";
+    </style>
+
+    <style is="custom-style">
+      app-drawer {
+        --app-drawer-content-container: {
+        background-color: #B0BEC5;
+        @apply(--layout-vertical);
+        };
+        --app-drawer-width : 170px;
+      }
+      .user-menu {
+        background-color:var(--things-secondary-background-color);
+        padding:5px;
+      }
+      app-header-layout {
+        @apply(--layout-fullbleed);
+        @apply(--layout-vertical);
+      }
+      app-header-layout::shadow #contentContainer {
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+      }
+      #scrollingRegion {
+        overflow-y: auto;
+        /* fixes scroll track's z-index bug in safari*/
+        -webkit-transform: translateZ(0);
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+      }
+      #header-form {
+        @apply(--layout-horizontal);
+      }
+      things-sidebar {
+        @apply(--layout-flex);
+        --things-sidebar-panel: {
+          @apply(--layout-flex);
+        }
+      }
+      iron-pages {
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+      }
+      things-logout::shadow paper-icon-button {
+        @apply(--things-small-icon);
+        float:right;
+        top:1px;left:37px;
+      }
+      app-toolbar {
+        @apply(--things-oi-header)
+      }
+      paper-toolbar {
+        background-color:var(--things-primary-background-color);
+        height:45px;
+      }
+      paper-toolbar::shadow #topBar {
+        height:45px;
+      }
+      paper-toolbar .title {
+        margin-left:32px !important;
+        line-height:initial !important;
+      }
+      things-code-combo::shadow label,things-resource-selector::shadow label {
+        @apply(--things-header-label)
+      }
+      things-code-combo::shadow iron-icon.things-combo {
+        background-position:54% -43px;
+      }
+      things-resource-selector::shadow iron-icon.things-resource-selector {
+        background-position:54% 6px;
+      }
+      #vertical-div {
+        @apply(--layout-vertical);
+      }
+    </style>
+
+    <!-- form validators -->
+    <things-validators id="validators"></things-validators>
+    <!-- date picker dialog -->
+    <things-date-picker-dialog id="date-picker-dialog"></things-date-picker-dialog>
+    <!-- local storage -->
+    <iron-localstorage 
+      id="localStorage" 
+      name="{$ appName $}" 
+      value="{{storage}}" 
+      on-iron-localstorage-load-empty="initializeDefaultStorage">
+    </iron-localstorage>
+        
+    <!-- OI Layout -->
+    <app-drawer-layout responsive-width="{$ responsiveWidth $}">
+      <app-drawer swipe-open>
+        <things-sidebar
+          id ="sidebar"
+          menu-category ="TERMINAL"
+          drawer-id='paperDrawerPanel' 
+          page-content-id='content'
+          class="layout vertical" 
+          title="Elidom" 
+          screens="{{screens}}" 
+          resource-screens="{{resourceScreens}}"
+          diy-screens="{{diyScreens}}"
+          selected-menu ="{{selectedMenu}}"
+          resource-url="menus.json?mode=auth"
+          resource-action="index">
+          <div class="user-menu header">
+            <!-- sidebar header toolbar menu start-->
+            <things-profile></things-profile>
+            <!-- oi entrance -->
+            <things-oi-entrance></things-oi-entrance>
+            <!-- setting -->
+            <things-setting></things-setting>
+            <!-- logout -->
+            <things-logout id="logout" action="logout" icon="icons:power-settings-new"></things-logout>
+            <!-- sidebar header toolbar menu end -->
+          </div>
+        </things-sidebar>
+      </app-drawer>
+
+      <app-header-layout id="contentArea">
+        <app-header>
+          <app-toolbar>
+            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+            <form is="iron-form" id="header-form" method="post" action="/form/handler">
+              <things-date-picker
+                id="date-picker"
+                label="Date"
+                value="{{date}}">
+              </things-date-picker>
+
+              <things-code-combo
+                id="line-selector" 
+                label="Line" 
+                code-name="LINE"
+                value="{{globals.line}}"
+                label-path="description" 
+                value-path="name">
+              </things-code-combo>
+
+              <things-resource-selector 
+                id="resource-selector" 
+                label="Operation" 
+                name="operation"
+                obj-value="{{globals.operation}}"
+                resource-type="Entity"
+                resource-name="Operation"
+                resource-title-field="name">
+              </things-resource-selector>
+
+              <things-resource-selector 
+                id="resource-selector" 
+                label="Order" 
+                name="order"
+                obj-value="{{globals.wip.order}}"
+                resource-type="Menu"
+                resource-name="WorkOrder"
+                resource-title-field="name">
+              </things-resource-selector>
+            </form>
+
+            <div title></div>
+            <button id="fullscreen-btn" on-tap="_fullScreenTap"></button>
+            <paper-tooltip for="fullscreen-btn" offset="0">
+              <things-i18n-msg msgid="button.fullscreen">Full Screen</things-i18n-msg>
+            </paper-tooltip>
+            <paper-icon-button id="infoBtn" icon="info" onclick="document.getElementById('informationContainer').toggle()"></paper-icon-button>
+          </app-toolbar>
+        </app-header>
+
+        <div id="scrollingRegion">
+          <iron-collapse id ="informationContainer" opened class="layout horizontal">
+            <div id="vertical-div" class ="flex-1">
+              <span>order informatin</span>
+              <things-wip-order-info order="[[globals.wip.order]]"></things-wip-order-info>
+            </div>
+
+            <div class ="flex-4">
+              <span>routing information</span>
+              <!-- {{globals.order.product_model.routing_id}}" -->
+              <things-wip-routing-detail
+                search-url ="routings/:id/routing_details"
+                resource-id ="4"
+                class="layout vertical flex"
+                show-info="true">
+              </things-wip-routing-detail>
+            </div>
+          </iron-collapse>
+          <paper-toolbar>
+            <span class="title">[[selectedMenu.pageName]]</span>
+          </paper-toolbar>        
+          <iron-pages attr-for-selected="data-route" selected="{{route}}" id="content">
+            <div class ="layout flex"></div>
+          </iron-pages>
+        </div>        
+      </app-header-layout>
+      
+      <app-drawer id="endDrawer" align="end" swipe-open>
+          <h2>order status</h2>
+      </app-drawer>
+    </app-drawer-layout>
+    
+    <!-- full dialog -->
+    <things-full-dialog id='common-full-dialog'></things-full-dialog>
+    <!-- resource dialog -->
+    <things-resource-dialog id='resource-dialog'></things-resource-dialog>
+    <!-- confirm toast -->
+    <paper-toast id="confirmToast" class="Toast" duration="10000">
+      <span class="Toast-button" role="button" tabindex="0" on-tap="onConfirmToastTap">OK</span>
+    </paper-toast>
+    <!-- info toast -->
+    <paper-toast id="infoToast" class="Toast" duration="8000"></paper-toast>
+  </template>
+    
+  <script src="things-oi-app.js"></script>
 </dom-module>

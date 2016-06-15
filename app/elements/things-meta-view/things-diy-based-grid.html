@@ -42,6 +42,7 @@
 
 		<things-resource-grid 
 			id="grid"
+			paginatable="[[paginatable]]"
 			enable-detail-column="[[diyGrid.use_detail]]"
 			grid-height="[[gridHeight]]"
 			model="[[gridModel]]" 
@@ -79,6 +80,14 @@
 				getDiyGridUrl: {
 					type: String,
 					computed: '_computeGetDiyGridUrl(diyGridName)'
+				},
+
+				/**
+				 * Pagination 여부 
+				 */
+				paginatable: {
+					type: Boolean,
+					value: false
 				},
 
 				/**
