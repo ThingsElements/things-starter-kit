@@ -1,0 +1,106 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../../../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../../../bower_components/iron-pages/iron-pages.html">
+
+<link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../../bower_components/things-code-editor/things-code-editor.html">
+<link rel="import" href="../../../../bower_components/things-detail/things-resource-detail-tab-view-behavior.html">
+<link rel="import" href="../../../../bower_components/things-form/things-resource-form.html">
+
+<!--
+  Diy Grid 상세 View
+-->
+
+<dom-module id="things-wip-lot-trx-detail">
+  <template>
+    <style>
+      :host {
+        display: block;
+        height: 100%;
+        width: 100%;
+        @apply(--layout-vertical);
+        --paper-header-panel-standard-container: {
+            @apply(--layout-vertical);
+        };
+      }
+      paper-header-panel {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+      }
+      .iron-pages {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+      }
+      .detail-flex {
+        @apply(--layout-flex);
+      }
+    </style>
+
+    <paper-header-panel mode="standard" class="green">
+      <paper-tabs id="tabGroup" class="paper-header" selected="{{currentTabIdx}}" noink scrollable>
+        <template is="dom-repeat" items="{{_panels}}">
+          <paper-tab id="{{item.elementId}}">{{item.title}}</paper-tab>
+        </template>
+      </paper-tabs>
+
+      <things-ajax 
+        auto
+        id="get-resource"
+        resource-url="[[resourceUrl]]"
+        resource-id="[[resourceId]]"
+        resource-action="find"
+        last-response="{{resource}}">
+      </things-ajax>
+
+      <iron-pages id="tabPages" selected="{{currentTabIdx}}" class="iron-pages">
+        <things-resource-form
+          id="resource-form" 
+          resource-url="[[resourceUrl]]"
+          resource-id="[[resourceId]]"
+          form-fields="[[formFields]]"
+          remove-fields-on-save="[[removeFieldsOnSave]]">
+        </things-resource-form>
+
+        <things-code-editor 
+          id="logic"
+          class="detail-flex"
+          theme="ace/theme/monokai"
+          mode="ace/mode/groovy"
+          resource="{{resource}}"
+          code-field="logic"
+          save-url="[[resourceUrl]]"
+          buttons="[[buttons]]">
+        </things-code-editor>
+      </iron-pages>
+    </paper-header-panel>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'things-wip-lot-trx-detail',
+
+      behaviors: [ 
+        Things.ResourceDetailTabViewBahavior
+      ],
+
+      properties: {
+      },
+
+      listeners: {
+      },
+
+      ready: function() {
+        this._panels = [ {
+          title: Things.DataGlobal.t('title.basic_info'),
+          elementId: 'things-resource-form'
+        }, {
+          title: Things.DataGlobal.t('title.logic'),
+          elementId: 'things-code-editor'
+        } ];
+      }
+
+    });
+  </script>
+</dom-module>

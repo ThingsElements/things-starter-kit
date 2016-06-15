@@ -14,30 +14,36 @@ OI Screen - Order List
 				@apply(--layout-vertical);
 				@apply(--layout-flex);
 			}
-			things-layout-ares {
-				@apply(--layout-flex);
-			}
 		</style>
 
-		<things-layout-ares>
-			<things-diy-based-grid
-				top-left
-				class="flex"
-				diy-grid-name="OI-WorkOrders">
-			</things-diy-based-grid>
+		<things-ajax
+			auto
+			id="get-order"
+			resource-action="find"
+			resource-url="work_orders/:id"
+			resource-id="[[orderId]]"
+			last-response="{{order}}">
+		</things-ajax>
 
-			<things-diy-based-grid
-				top-right
-				class="flex"
-				diy-grid-name="OI-Test-Defects">
-			</things-diy-based-grid>
+		<things-ajax
+			id="create-lot"
+			resource-action="create"
+			resource-url="lot_trxs/CREATE/transaction">
+		</things-ajax>		
 
-			<things-diy-based-form
-				bottom
-				class="flex"
-				diy-form-name="OI-StartLot">
-			</things-diy-based-form>
-		</things-layout-ares>
+		<things-diy-based-form
+			bottom
+			id="form"
+			class="flex"
+			resource="[[order]]"
+			resource-id="[[orderId]]"
+			diy-form-name="OI-StartLot">
+		</things-diy-based-form>
+
+    <paper-toolbar justify="end">
+      <things-button-bar id="button-bar" buttons="[[buttons]]">
+      </things-button-bar>
+    </paper-toolbar>
 	</template>
 
 	<script>
@@ -57,8 +63,101 @@ OI Screen - Order List
 				 * 라우팅 정보
 				 */
 				dataRoute: {
+					type: String,
+					observer: 'dataRouteChanged'
+				},
+
+				/**
+				 * 오더 아이디
+				 */
+				orderId: {
 					type: String
+				},
+
+				/**
+				 * 오더
+				 */
+				order: {
+					type: Object,
+					notify: true
+				},
+
+				/**
+				 * 생성된 Lot
+				 */
+				lot: {
+					type: Object
+				},
+
+				/**
+				* Buttons 리스트 설정
+				*/
+				buttons: {
+					type: Array,
+					value: [ {
+						id: 'create-btn',
+						text: 'create'
+					}, {
+						id: 'reset-btn',
+						text: 'reset'
+					} ]
 				}
+			},
+
+			listeners: {
+				'create-btn-tap' : 'createLot',
+				'reset-btn-tap' : 'resetForm',
+				'create-lot.things-ajax-response' : '_transactionResponsed',
+			},			
+
+			/**
+			 * dataRoute가 변경되었을 경우 
+			 *
+			 * @param {String} dataRoute
+			 */
+			dataRouteChanged: function(dataRoute) {
+				if(dataRoute == this.menuInfo.routing) {
+					this.orderId = '4';
+				}
+			},
+
+			/**
+			 * Create Lot 
+			 *
+			 * @param {Object} event
+			 */
+			createLot: function(event) {
+				var data = this.$['form'].getForm().serializeMyForm();
+				var createAjax = this.$['create-lot'];
+				createAjax.body = {
+					input : {
+						work_order_id : this.orderId,
+						comments : data.comments,
+						operation_id : 40
+					}
+				};
+
+				createAjax.generateRequest();
+			},
+
+			/**
+			 * Reset Form 
+			 *
+			 * @param {Object} event
+			 */
+			resetForm: function(event) {
+				this.$['form'].getForm().resetMyForm();
+				this.$['get-order'].generateRequest();
+			},
+
+			/**
+			 * 트랜잭션 성공시 
+			 *
+			 * @param {Object} event
+			 */
+			_transactionResponsed: function(event) {
+				this.resetForm();
+				this.lot = event.detail;
 			}
 		});
 	</script>
