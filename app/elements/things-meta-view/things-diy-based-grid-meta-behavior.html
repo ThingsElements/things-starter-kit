@@ -67,12 +67,12 @@ Things.DiyBasedGridMetaBehaviorImpl = {
 		// 2. 메타 데이터가 Text로 넘어올 경우
 		} else {
 			var metaAll = JSONfn.parse(metaData.text);
-			this.gridConfig = metaAll.config;
 			this.gridModel = metaAll.model;
 			metaAll.columns.forEach(function(column) {
 				if(column.header && column.header.text) { column.header.text = Things.DataGlobal.t(column.header.text); }
 			});
 			this.gridColumns = metaAll.columns;
+			this.gridConfig = metaAll.config;
 		}
 	}	
 
