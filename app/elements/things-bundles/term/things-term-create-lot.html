@@ -14,7 +14,7 @@ OI Screen - Order List
 				@apply(--layout-vertical);
 				@apply(--layout-flex);
 			}
-      things-layout-hera {
+      things-layout-hermes {
         @apply(--layout-flex);
       }			
 		</style>
@@ -42,9 +42,9 @@ OI Screen - Order List
 			last-response="{{latestLots}}">
 		</things-ajax>
 
-    <things-layout-hera left-content-title="Lot Information" right-content-title="Latest Created Lot List">
+    <things-layout-hermes left-content-title="Lot Information" right-content-title="Latest Created Lot List">
       <things-diy-based-form
-      	left
+      	left-top
       	id="form"
       	class="flex"
       	resource="[[order]]"
@@ -53,13 +53,20 @@ OI Screen - Order List
       	buttons="[[buttons]]">
       </things-diy-based-form>
 
+	    <things-input-field
+	    	left-bottom
+	    	id="comments-form"
+	    	label="Comments"
+	    	value="{{comments}}">
+    	</things-input-field>
+
       <things-diy-based-grid
       	right
       	class="flex"
       	diy-grid-name="OI-LatestLotList"
       	items="[[latestLots.items]]">
       </things-diy-based-grid>
-    </things-layout-hera>
+    </things-layout-hermes>
 	</template>
 
 	<script>
@@ -84,18 +91,22 @@ OI Screen - Order List
 				},
 
 				/**
+				 * 오더
+				 */
+				order: {
+					type: Object,
+					notify: true
+				},
+				
+				/**
 				 * 오더 아이디
 				 */
 				orderId: {
 					type: String
 				},
 
-				/**
-				 * 오더
-				 */
-				order: {
-					type: Object,
-					notify: true
+				operationId: {
+					type: String
 				},
 
 				/**
@@ -107,6 +118,10 @@ OI Screen - Order List
 
 				latestLots: {
 					type: Object
+				},
+
+				comments: {
+					type: String
 				},
 
 				/**
@@ -130,6 +145,29 @@ OI Screen - Order List
 				'create-lot.things-ajax-response' : '_transactionResponsed',
 			},
 
+			behaviors: [
+				Things.GlobalBehavior
+			],
+
+			observers: [
+				'orderChanged(globals.order)',
+				'operationChanged(globals.operation)'
+			],
+
+			orderChanged: function(order) {
+				this.order = order;
+				this.orderId = order.id;
+
+				if(this.orderId) {
+					this.getLatestLots();
+				}
+			},
+
+			operationChanged: function(operation) {
+				this.operation = operation;
+				this.operationId = operation.id;
+			},
+
 			/**
 			 * dataRoute가 변경되었을 경우 
 			 *
@@ -137,28 +175,53 @@ OI Screen - Order List
 			 */
 			dataRouteChanged: function(dataRoute) {
 				if(dataRoute == this.menuInfo.routing) {
-					this.orderId = Things.DataGlobal.order.id;
-					this.$['latest-lots'].generateRequest();
-					console.log(this.latestLots);
+					if(this.globals) {
+						var dataGlobal = this.globals;
+						this.operationId = (dataGlobal.operation.id) ? dataGlobal.operation.id : ''; 
+						this.orderId = (dataGlobal.order.id) ? dataGlobal.order.id : '';
+					}					
 				}
-			},
+			},			
 
 			/**
 			 * Create Lot 
-			 *
-			 * @param {Object} event
 			 */
-			createLot: function(event) {
-				var data = this.$['form'].getForm().serializeMyForm();
+			createLot: function() {
 				var createAjax = this.$['create-lot'];
-				createAjax.body = {
-					work_order_id : this.orderId,
-					comments : data.comments,
-					operation_id : 40
-				};
+				var orderId = this.orderId;
+				var operationId = this.operationId;
+				var comments = this.$['comments-form'].value;
 
-				createAjax.generateRequest();
+				if(orderId && orderId != '' && operationId && operationId != '') {
+					createAjax.body = {
+						work_order_id : orderId,
+						comments : comments,
+						operation_id : operationId
+					};
+
+					createAjax.generateRequest();
+					this.getLatestLots();
+				} else {
+					console.error('Cannot create Lot!');
+				}
 			},
+
+			getLatestLots: function() {
+				this.$['latest-lots'].queryFields = [{
+					name: 'work_order_id',
+					value: this.orderId
+				}, {
+					name: 'state',
+					value: 'CREATED'
+				}];
+
+				this.$['latest-lots'].sortFields = [{
+					field: 'updated_at',
+					ascending: false
+				}];
+
+				this.$['latest-lots'].generateRequest();
+			},			
 
 			/**
 			 * Reset Form 
@@ -166,9 +229,8 @@ OI Screen - Order List
 			 * @param {Object} event
 			 */
 			resetForm: function(event) {
-				this.$['form'].getForm().resetMyForm();
+				this.$['comments-form'].value = '';
 				this.$['get-order'].generateRequest();
-				this.$['latest-lots'].generateRequest();
 			},
 
 			/**
