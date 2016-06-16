@@ -42,7 +42,7 @@ OI Screen - Order List
 			last-response="{{latestLots}}">
 		</things-ajax>
 
-    <things-layout-hermes left-content-title="Lot Information" right-content-title="Latest Created Lot List">
+    <things-layout-hermes top-left-content-title="Lot Information" bottom-left-content-title="Comments" right-content-title="Latest Created Lot List">
       <things-diy-based-form
       	left-top
       	id="form"
@@ -63,6 +63,7 @@ OI Screen - Order List
       <things-diy-based-grid
       	right
       	class="flex"
+      	fixed-column-count="1"
       	diy-grid-name="OI-LatestLotList"
       	items="[[latestLots.items]]">
       </things-diy-based-grid>
@@ -105,10 +106,6 @@ OI Screen - Order List
 					type: String
 				},
 
-				operationId: {
-					type: String
-				},
-
 				/**
 				 * 생성된 Lot
 				 */
@@ -117,7 +114,7 @@ OI Screen - Order List
 				},
 
 				latestLots: {
-					type: Object
+					type: Array
 				},
 
 				comments: {
@@ -151,7 +148,6 @@ OI Screen - Order List
 
 			observers: [
 				'orderChanged(globals.order)',
-				'operationChanged(globals.operation)'
 			],
 
 			orderChanged: function(order) {
@@ -163,11 +159,6 @@ OI Screen - Order List
 				}
 			},
 
-			operationChanged: function(operation) {
-				this.operation = operation;
-				this.operationId = operation.id;
-			},
-
 			/**
 			 * dataRoute가 변경되었을 경우 
 			 *
@@ -177,7 +168,6 @@ OI Screen - Order List
 				if(dataRoute == this.menuInfo.routing) {
 					if(this.globals) {
 						var dataGlobal = this.globals;
-						this.operationId = (dataGlobal.operation.id) ? dataGlobal.operation.id : ''; 
 						this.orderId = (dataGlobal.order.id) ? dataGlobal.order.id : '';
 					}					
 				}
@@ -187,23 +177,18 @@ OI Screen - Order List
 			 * Create Lot 
 			 */
 			createLot: function() {
+				if(!this.orderId) return;
+
 				var createAjax = this.$['create-lot'];
 				var orderId = this.orderId;
-				var operationId = this.operationId;
 				var comments = this.$['comments-form'].value;
 
-				if(orderId && orderId != '' && operationId && operationId != '') {
-					createAjax.body = {
-						work_order_id : orderId,
-						comments : comments,
-						operation_id : operationId
-					};
+				createAjax.body = {
+					work_order_id : orderId,
+					comments : comments
+				};
 
-					createAjax.generateRequest();
-					this.getLatestLots();
-				} else {
-					console.error('Cannot create Lot!');
-				}
+				createAjax.generateRequest();
 			},
 
 			getLatestLots: function() {
@@ -211,8 +196,8 @@ OI Screen - Order List
 					name: 'work_order_id',
 					value: this.orderId
 				}, {
-					name: 'state',
-					value: 'CREATED'
+					name: 'transaction',
+					value: 'CREATE'
 				}];
 
 				this.$['latest-lots'].sortFields = [{
@@ -239,6 +224,7 @@ OI Screen - Order List
 			 * @param {Object} event
 			 */
 			_transactionResponsed: function(event) {
+				this.getLatestLots();
 				this.resetForm();
 				this.lot = event.detail;
 			}
