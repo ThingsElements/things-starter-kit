@@ -26,12 +26,10 @@
                     return this.reportConfig();
                 }
             },
-
+            //
             reportData: {
                 type: Array,
-                value: function() {
-                    return this.getReportData();
-                }
+                value: []
             },
 
             printOptions: {
@@ -40,18 +38,20 @@
                     var options = {
                         //하드 코딩하여 previewer 찾아 줌
                         previewUrl:'previewer.html',
-                        htmlDpi : 96//number,
-                        // imageLoadTime : '',
-                        // paperHeight,
-                        // paperMarginBottom
-                        // paperMarginLeft
-                        // paperMarginRight
-                        // paperMarginTop
-                        // paperOrientation
-                        // paperWidth
-                        // previewHeight
-                        // previewTitle
-                        // previewWidth
+                        htmlDpi : 96,//number,
+                        imageLoadTime : 1000,
+                        paperHeight : '297mm',
+                        paperWidth  : '210mm',
+                        paperMarginBottom : '15mm',
+                        paperMarginTop :'15mm',
+                        paperMarginLeft :'12mm',
+                        paperMarginRight : '12mm',
+                        //PORTRAIT    "portrait"  가로 출력.
+                        //LANDSCAPE "landscape" 세로 출력.
+                        paperOrientation : 'PORTRAIT', 
+                        previewHeight : 1000, 
+                        previewWidth : 1000,
+                        previewTitle : 'Print Previewer'
                     };
                     return options;
                 }
@@ -151,25 +151,9 @@
         },
 
         getReportData: function() {
-            var reportData = [{
-                'name': 'test',
-                'description': 'description test'
-            }, {
-                'name': 'test',
-                'description': 'description test'
-            }, {
-                'name': 'test',
-                'description': 'description test'
-            }, {
-                'name': 'test',
-                'description': 'description test'
-            }, {
-                'name': 'test',
-                'description': 'description test'
-            }, {
-                'name': 'test',
-                'description': 'description test'
-            }]
+            var reportData = [
+
+            ]
 
             return reportData;
         },
