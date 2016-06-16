@@ -14,6 +14,9 @@ OI Screen - Order List
 				@apply(--layout-vertical);
 				@apply(--layout-flex);
 			}
+      things-layout-hera {
+        @apply(--layout-flex);
+      }			
 		</style>
 
 		<things-ajax
@@ -31,14 +34,31 @@ OI Screen - Order List
 			resource-url="lot_trxs/CREATE/transaction">
 		</things-ajax>
 
-		<things-diy-based-form
-			bottom
-			id="form"
-			class="flex"
-			resource="[[order]]"
-			resource-id="[[orderId]]"
-			diy-form-name="OI-StartLot">
-		</things-diy-based-form>
+		<things-ajax
+			id="latest-lots"
+			resource-action="index"
+			resource-url="lots"
+			limit="10"
+			last-response="{{latestLots}}">
+		</things-ajax>
+
+    <things-layout-hera left-content-title="[[leftContentTitle]]" right-content-title="[[rightContentTitle]]">
+      <things-diy-based-form
+      	left
+      	id="form"
+      	class="flex"
+      	resource="[[order]]"
+      	resource-id="[[orderId]]"
+      	diy-form-name="OI-StartLot">
+      </things-diy-based-form>
+
+      <things-diy-based-grid
+      	right
+      	class="flex"
+      	diy-grid-name="OI-LatestLotList"
+      	items="[[latestLots.items]]">
+      </things-diy-based-grid>
+    </things-layout-hera>
 
     <paper-toolbar justify="end">
       <things-button-bar id="button-bar" buttons="[[buttons]]">
@@ -89,6 +109,10 @@ OI Screen - Order List
 					type: Object
 				},
 
+				latestLots: {
+					type: Object
+				},
+
 				/**
 				* Buttons 리스트 설정
 				*/
@@ -117,7 +141,9 @@ OI Screen - Order List
 			 */
 			dataRouteChanged: function(dataRoute) {
 				if(dataRoute == this.menuInfo.routing) {
-					this.orderId = '4';
+					this.orderId = Things.DataGlobal.order.id;
+					this.$['latest-lots'].generateRequest();
+					console.log(this.latestLots);
 				}
 			},
 
@@ -146,6 +172,7 @@ OI Screen - Order List
 			resetForm: function(event) {
 				this.$['form'].getForm().resetMyForm();
 				this.$['get-order'].generateRequest();
+				this.$['latest-lots'].generateRequest();
 			},
 
 			/**
