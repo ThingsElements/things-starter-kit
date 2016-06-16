@@ -130,11 +130,9 @@ OI Screen - Order List
 				var data = this.$['form'].getForm().serializeMyForm();
 				var createAjax = this.$['create-lot'];
 				createAjax.body = {
-					input : {
-						work_order_id : this.orderId,
-						comments : data.comments,
-						operation_id : 40
-					}
+					work_order_id : this.orderId,
+					comments : data.comments,
+					operation_id : 40
 				};
 
 				createAjax.generateRequest();

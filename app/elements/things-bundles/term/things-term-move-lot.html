@@ -34,8 +34,8 @@
     </things-ajax>
 
     <things-layout-hera left-content-title="[[leftContentTitle]]" right-content-title="[[rightContentTitle]]">
-      <things-diy-based-form left class="flex" diy-form-name="OI-MoveLot" buttons="[[formButtons]]"></things-diy-based-form>
-      <things-diy-based-grid right class="flex" diy-grid-name="OI-LatestLotList"></things-diy-based-grid>
+      <things-diy-based-form id='form' left class="flex" diy-form-name="OI-MoveLot" buttons="[[formButtons]]"></things-diy-based-form>
+      <things-diy-based-grid id='grid' right class="flex" diy-grid-name="OI-LatestLotList"></things-diy-based-grid>
     </things-layout-hera>
   </template>
 
@@ -74,8 +74,12 @@
           value: 'Latest Lot List'
         },
 
+        /**
+         * Lot
+         */
         lot: {
-          type: Object
+          type: Object,
+          observer: '_lotChanged'
         },
 
         /**
@@ -105,10 +109,18 @@
         'move-lot.things-ajax-response' : '_transactionResponsed',
       },
 
-      findLot: function() {
-        
+      /** 
+       * Find Lot 
+       *
+       * @param {Object} event
+       */
+      findLot: function(event) {
+        var data = this.$['form'].getForm().serializeMyForm();
+        var findAjax = this.$['find-lot'];
+        findAjax.resourceUrl = 'lots/show_by_name?name=' + data.name;
+        findAjax.generateRequest();
       },
-      
+
       /** 
        * Move Lot 
        *
@@ -133,6 +145,15 @@
        */
       resetForm: function(event) {
         this.$['form'].getForm().resetMyForm();
+      },
+
+      /**
+       * Lot 조회시
+       *
+       * @param {Object} lot
+       */
+      _lotChanged: function(lot) {
+        this.$['form'].getForm().setFormData(lot);
       },
 
       /**
