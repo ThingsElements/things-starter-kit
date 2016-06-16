@@ -6,7 +6,7 @@
 OI Screen - Order List
 -->
 
-<dom-module id="things-term-start-lot">
+<dom-module id="things-term-create-lot">
 	<template>
 		<style>
 			:host {
@@ -42,14 +42,15 @@ OI Screen - Order List
 			last-response="{{latestLots}}">
 		</things-ajax>
 
-    <things-layout-hera left-content-title="[[leftContentTitle]]" right-content-title="[[rightContentTitle]]">
+    <things-layout-hera left-content-title="Lot Information" right-content-title="Latest Created Lot List">
       <things-diy-based-form
       	left
       	id="form"
       	class="flex"
       	resource="[[order]]"
       	resource-id="[[orderId]]"
-      	diy-form-name="OI-StartLot">
+      	diy-form-name="OI-CreateLot"
+      	buttons="[[buttons]]">
       </things-diy-based-form>
 
       <things-diy-based-grid
@@ -59,17 +60,12 @@ OI Screen - Order List
       	items="[[latestLots.items]]">
       </things-diy-based-grid>
     </things-layout-hera>
-
-    <paper-toolbar justify="end">
-      <things-button-bar id="button-bar" buttons="[[buttons]]">
-      </things-button-bar>
-    </paper-toolbar>
 	</template>
 
 	<script>
 		Polymer({
 			
-			is: 'things-term-start-lot',
+			is: 'things-term-create-lot',
 
 			properties: {
 				/**
