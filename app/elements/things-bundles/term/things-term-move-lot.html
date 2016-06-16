@@ -3,6 +3,7 @@
 
 <link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-form.html">
+<link rel="import" href="../../things-bundles/term/things-term-common-grid.html">
 
 <!--
   OI - MOVE LOT 트랜잭션 
@@ -16,7 +17,7 @@
         @apply(--layout-vertical);
         @apply(--layout-flex);
       }
-      things-layout-hera {
+      things-layout-hermes {
         @apply(--layout-flex);
       }
     </style>
@@ -33,10 +34,27 @@
       resource-url="lot_trxs/MOVE/transaction">
     </things-ajax>
 
-    <things-layout-hera left-content-title="[[leftContentTitle]]" right-content-title="[[rightContentTitle]]">
-      <things-diy-based-form id='form' left class="flex" diy-form-name="OI-MoveLot" buttons="[[formButtons]]"></things-diy-based-form>
-      <things-diy-based-grid id='grid' right class="flex" diy-grid-name="OI-LatestLotList"></things-diy-based-grid>
-    </things-layout-hera>
+    <things-layout-hermes left-content-title="Lot Information" right-content-title="Latest Created Lot List">
+      <things-diy-based-form 
+        id="form"
+        left-top
+        class="flex"
+        diy-form-name="OI-MoveLot"
+        buttons="[[formButtons]]">
+      </things-diy-based-form>
+      
+      <things-input-field
+        left-bottom
+        label="Comments"
+        value="{{comments}}">
+      </things-input-field>
+
+      <things-term-common-grid
+        right
+        class="flex"
+        id="common-grid">
+      </things-term-common-grid>
+    </things-layout-hermes>
   </template>
 
   <script>
@@ -82,6 +100,10 @@
           observer: '_lotChanged'
         },
 
+        lastResponse: {
+          type: Array
+        },
+
         /**
          * Form 버튼 
          */
@@ -107,6 +129,18 @@
         'process-btn-tap' : 'moveLot',
         'reset-btn-tap' : 'resetForm',
         'move-lot.things-ajax-response' : '_transactionResponsed',
+      },
+
+      behaviors: [
+        Things.GlobalBehavior
+      ],
+
+      observers: [
+        'orderChanged(globals.order)'
+      ],
+
+      orderChanged: function(order) {
+        this.$['common-grid'].generateRequest();
       },
 
       /** 
