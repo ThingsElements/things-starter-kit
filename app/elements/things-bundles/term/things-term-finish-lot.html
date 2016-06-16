@@ -1,6 +1,8 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../../bower_components/things-global-behavior/things-global-behavior.html">
 
+<link rel="import" href="../../things-layout-view/things-layout-hermes.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-form.html">
 
@@ -23,12 +25,13 @@
 
     <things-ajax
       id="find-lot"
-      resource-action="find"
+      resource-action="create"
+      resource-url="lot_trxs/VALIDATE_LOT/transaction"
       last-response="{{lot}}">
     </things-ajax>
 
     <things-ajax
-      id="move-lot"
+      id="finish-lot"
       resource-action="create"
       resource-url="lot_trxs/FINISH/transaction">
     </things-ajax>
@@ -75,6 +78,21 @@
         },
 
         /**
+         * 오더
+         */
+        order: {
+          type: Object,
+          notify: true
+        },
+        
+        /**
+         * 오더 아이디
+         */
+        orderId: {
+          type: String
+        },
+
+        /**
          * Lot
          */
         lot: {
@@ -102,12 +120,28 @@
         }
       },
 
+      behaviors: [
+        Things.GlobalBehavior
+      ],
+
+      observers: [
+        'orderChanged(globals.order)',
+      ],      
+
       listeners: {
         'search-btn-tap' : 'findLot',
         'process-btn-tap' : 'moveLot',
         'reset-btn-tap' : 'resetForm',
-        'move-lot.things-ajax-response' : '_transactionResponsed',
+        'finish-lot.things-ajax-response' : '_transactionResponsed',
       },
+
+      /**
+       * Order 변경시 
+       */
+      orderChanged: function(order) {
+        this.order = order;
+        this.orderId = order.id;
+      },      
 
       /** 
        * Find Lot 
@@ -116,9 +150,13 @@
        */
       findLot: function(event) {
         var data = this.$['form'].getForm().serializeMyForm();
-        var findAjax = this.$['find-lot'];
-        findAjax.resourceUrl = 'lots/show_by_name?name=' + data.name;
-        findAjax.generateRequest();
+        var validateAjax = this.$['find-lot'];
+        validateAjax.body = {
+          lot_name : data.name,
+          work_order_id : this.orderId,
+          transaction : 'FINISH'
+        };
+        validateAjax.generateRequest();
       },
 
       /** 
@@ -128,7 +166,7 @@
        */
       moveLot: function(event) {
         var data = this.$['form'].getForm().serializeMyForm();
-        var moveAjax = this.$['move-lot'];
+        var moveAjax = this.$['finish-lot'];
         moveAjax.body = {
           lot_id : data.id,
           comments : data.comments,

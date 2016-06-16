@@ -180,12 +180,9 @@ OI Screen - Order List
 				if(!this.orderId) return;
 
 				var createAjax = this.$['create-lot'];
-				var orderId = this.orderId;
-				var comments = this.$['comments-form'].value;
-
 				createAjax.body = {
-					work_order_id : orderId,
-					comments : comments
+					work_order_id : this.orderId,
+					comments : this.$['comments-form'].value
 				};
 
 				createAjax.generateRequest();
@@ -215,7 +212,6 @@ OI Screen - Order List
 			 */
 			resetForm: function(event) {
 				this.$['comments-form'].value = '';
-				this.$['get-order'].generateRequest();
 			},
 
 			/**

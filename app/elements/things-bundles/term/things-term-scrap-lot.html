@@ -1,6 +1,8 @@
-<link rel="import" href="../../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../../bower_components/things-global-behavior/things-global-behavior.html">
 
+<link rel="import" href="../../things-layout-view/things-layout-hermes.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-form.html">
 
@@ -33,9 +35,9 @@
       resource-url="lot_trxs/SCRAP/transaction">
     </things-ajax>
 
-    <things-layout-hermes top-left-content-title="Lot Information" bottom-left-content-title="Lock Code" right-content-title="Latest Processed Lot List">
+    <things-layout-hermes top-left-content-title="Lot Information" bottom-left-content-title="Scrap Information" right-content-title="Latest Processed Lot List">
       <things-diy-based-form id='lot-form' left-top class="flex" diy-form-name="OI-LotInfo" buttons="[[lotFormButtons]]"></things-diy-based-form>
-      <things-diy-based-form id='lock-form' left-bottom class="flex" diy-form-name="OI-LockCode" buttons="[[lockFormButtons]]"></things-diy-based-form>
+      <things-diy-based-form id='scrap-form' left-bottom class="flex" diy-form-name="OI-Scrap" buttons="[[scrapFormButtons]]"></things-diy-based-form>
       <things-diy-based-grid id='grid' right class="flex" diy-grid-name="OI-LatestLotList"></things-diy-based-grid>
     </things-layout-hermes>
   </template>
@@ -43,6 +45,10 @@
   <script>
     Polymer({
       is: 'things-term-scrap-lot',
+
+      behaviors: [
+        Things.GlobalBehavior
+      ],
 
       properties: {
         /**
@@ -84,9 +90,9 @@
         },
 
         /**
-         * Lock Form 버튼 
+         * Scrap Form 버튼 
          */
-        lockFormButtons: {
+        scrapFormButtons: {
           type: Array,
           value: function() {
             return [ {
@@ -99,9 +105,21 @@
 
       listeners: {
         'search-btn-tap' : 'findLot',
-        'process-btn-tap' : 'lockLot',
+        'process-btn-tap' : 'scrapLot',
         'reset-btn-tap' : 'resetForm',
         'scrap-lot.things-ajax-response' : '_transactionResponsed',
+      },
+
+      observers: [
+        'orderChanged(globals.order)',
+      ],
+
+      /**
+       * Order 변경시 
+       */
+      orderChanged: function(order) {
+        this.order = order;
+        this.orderId = order.id;
       },
 
       /** 
@@ -121,18 +139,21 @@
        *
        * @param {Object} event
        */
-      lockLot: function(event) {
+      scrapLot: function(event) {
         var lotData = this.$['lot-form'].getForm().serializeMyForm();
-        var lockData = this.$['lock-form'].getForm().serializeMyForm();
+        var scrapData = this.$['scrap-form'].getForm().serializeMyForm();
 
-        var lotAjax = this.$['scrap-lot'];
-        lotAjax.body = {
+        var scrapAjax = this.$['scrap-lot'];
+        scrapAjax.body = {
           lot_id : lotData.id,
-          comments : lockData.comments,
-          lock_code : lockData.lock_code
+          comments : scrapData.comments,
+          scrap_code : scrapData.scrap_code,
+          scrap_qty : scrapData.scrap_qty,
+          seed_routing_id : scrapData.seed_routing_id,
+          seed_operation_id : scrapData.seed_operation_id
         };
 
-        lotAjax.generateRequest();
+        scrapAjax.generateRequest();
       },
 
       /**
@@ -142,7 +163,7 @@
        */
       resetForm: function(event) {
         this.$['lot-form'].getForm().resetMyForm();
-        this.$['lock-form'].getForm().resetMyForm();
+        this.$['scrap-form'].getForm().resetMyForm();
       },
 
       /**
