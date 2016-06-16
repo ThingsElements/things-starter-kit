@@ -1,0 +1,148 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+
+<link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
+<link rel="import" href="../../things-meta-view/things-diy-based-form.html">
+
+<!--
+  OI - MOVE LOT 트랜잭션 
+-->
+
+<dom-module id="things-term-move-lot">
+  <template>
+    <style>
+      :host {
+        display: block;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+      }
+      things-layout-hera {
+        @apply(--layout-flex);
+      }
+    </style>
+
+    <things-ajax
+      id="find-lot"
+      resource-action="find"
+      last-response="{{lot}}">
+    </things-ajax>
+
+    <things-ajax
+      id="move-lot"
+      resource-action="create"
+      resource-url="lot_trxs/MOVE/transaction">
+    </things-ajax>
+
+    <things-layout-hera left-content-title="[[leftContentTitle]]" right-content-title="[[rightContentTitle]]">
+      <things-diy-based-form left class="flex" diy-form-name="OI-MoveLot" buttons="[[formButtons]]"></things-diy-based-form>
+      <things-diy-based-grid right class="flex" diy-grid-name="OI-LatestLotList"></things-diy-based-grid>
+    </things-layout-hera>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'things-term-move-lot',
+
+      properties: {
+        /**
+         * 메뉴 정보
+         */
+        menuInfo: {
+          type: Object
+        },
+
+        /**
+         * 라우팅 정보
+         */
+        dataRoute: {
+          type: String
+        },
+
+        /**
+         * Title Of Left Content
+         */
+        leftContentTitle: {
+          type: String,
+          value: 'Move Lot'
+        },
+
+        /**
+         * Title Of Right Content
+         */
+        rightContentTitle: {
+          type: String,
+          value: 'Latest Lot List'
+        },
+
+        lot: {
+          type: Object
+        },
+
+        /**
+         * Form 버튼 
+         */
+        formButtons: {
+          type: Array,
+          value: function() {
+            return [ {
+              id: 'search-btn',
+              text: 'search'
+            }, {
+              id: 'process-btn',
+              text: 'process'
+            }, {
+              id: 'reset-btn',
+              text: 'reset'
+            } ];
+          }
+        }
+      },
+
+      listeners: {
+        'search-btn-tap' : 'findLot',
+        'process-btn-tap' : 'moveLot',
+        'reset-btn-tap' : 'resetForm',
+        'move-lot.things-ajax-response' : '_transactionResponsed',
+      },
+
+      findLot: function() {
+        
+      },
+      
+      /** 
+       * Move Lot 
+       *
+       * @param {Object} event
+       */
+      moveLot: function(event) {
+        var data = this.$['form'].getForm().serializeMyForm();
+        var moveAjax = this.$['move-lot'];
+        moveAjax.body = {
+          id : data.id,
+          comments : data.comments,
+          operation_id : data.operation_id
+        };
+
+        moveAjax.generateRequest();
+      },
+
+      /**
+       * Reset Form 
+       *
+       * @param {Object} event
+       */
+      resetForm: function(event) {
+        this.$['form'].getForm().resetMyForm();
+      },
+
+      /**
+       * 트랜잭션 성공시 
+       *
+       * @param {Object} event
+       */
+      _transactionResponsed: function(event) {
+        this.resetForm();
+      }
+    });
+  </script>
+</dom-module>
