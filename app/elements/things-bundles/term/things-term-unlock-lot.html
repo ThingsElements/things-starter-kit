@@ -1,0 +1,169 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+
+<link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
+<link rel="import" href="../../things-meta-view/things-diy-based-form.html">
+
+<!--
+  OI - Unlock LOT 트랜잭션 
+-->
+
+<dom-module id="things-term-unlock-lot">
+  <template>
+    <style>
+      :host {
+        display: block;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+      }
+      things-layout-hermes {
+        @apply(--layout-flex);
+      }
+    </style>
+
+    <things-ajax
+      id="find-lot"
+      resource-action="find"
+      last-response="{{lot}}">
+    </things-ajax>
+
+    <things-ajax
+      id="unlock-lot"
+      resource-action="create"
+      resource-url="lot_trxs/UNLOCK/transaction">
+    </things-ajax>
+
+    <things-layout-hermes top-left-content-title="Lot Information" bottom-left-content-title="Lock Code" right-content-title="Latest Processed Lot List">
+      <things-diy-based-form id='lot-form' left-top class="flex" diy-form-name="OI-MoveLot" buttons="[[lotFormButtons]]"></things-diy-based-form>
+      <things-diy-based-form id='unlock-form' left-bottom class="flex" diy-form-name="OI-UnlockCode" buttons="[[lockFormButtons]]"></things-diy-based-form>
+      <things-diy-based-grid id='grid' right class="flex" diy-grid-name="OI-LatestLotList"></things-diy-based-grid>
+    </things-layout-hermes>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'things-term-unlock-lot',
+
+      properties: {
+        /**
+         * 메뉴 정보
+         */
+        menuInfo: {
+          type: Object
+        },
+
+        /**
+         * 라우팅 정보
+         */
+        dataRoute: {
+          type: String
+        },
+
+        /**
+         * Lot
+         */
+        lot: {
+          type: Object,
+          observer: '_lotChanged'
+        },
+
+        /**
+         * Lot Form 버튼 
+         */
+        lotFormButtons: {
+          type: Array,
+          value: function() {
+            return [ {
+              id: 'search-btn',
+              text: 'search'
+            }, {
+              id: 'reset-btn',
+              text: 'reset'
+            } ];
+          }
+        },
+
+        /**
+         * Lock Form 버튼 
+         */
+        lockFormButtons: {
+          type: Array,
+          value: function() {
+            return [ {
+              id: 'process-btn',
+              text: 'process'
+            } ];
+          }
+        }
+      },
+
+      listeners: {
+        'search-btn-tap' : 'findLot',
+        'process-btn-tap' : 'lockLot',
+        'reset-btn-tap' : 'resetForm',
+        'unlock-lot.things-ajax-response' : '_transactionResponsed',
+      },
+
+      /** 
+       * Find Lot 
+       *
+       * @param {Object} event
+       */
+      findLot: function(event) {
+        var data = this.$['lot-form'].getForm().serializeMyForm();
+        var findAjax = this.$['find-lot'];
+        findAjax.resourceUrl = 'lots/show_by_name?name=' + data.name;
+        findAjax.generateRequest();
+      },
+
+      /** 
+       * Move Lot 
+       *
+       * @param {Object} event
+       */
+      lockLot: function(event) {
+        var lotData = this.$['lot-form'].getForm().serializeMyForm();
+        var lockData = this.$['unlock-form'].getForm().serializeMyForm();
+
+        var lotAjax = this.$['unlock-lot'];
+        lotAjax.body = {
+          lot_id : lotData.id,
+          comments : lockData.comments,
+          unlock_code : lockData.unlock_code
+        };
+
+        console.log(lotAjax.body);
+
+        lotAjax.generateRequest();
+      },
+
+      /**
+       * Reset Form 
+       *
+       * @param {Object} event
+       */
+      resetForm: function(event) {
+        this.$['lot-form'].getForm().resetMyForm();
+        this.$['unlock-form'].getForm().resetMyForm();
+      },
+
+      /**
+       * Lot 조회시
+       *
+       * @param {Object} lot
+       */
+      _lotChanged: function(lot) {
+        this.$['lot-form'].getForm().setFormData(lot);
+      },
+
+      /**
+       * 트랜잭션 성공시 
+       *
+       * @param {Object} event
+       */
+      _transactionResponsed: function(event) {
+        this.resetForm();
+      }
+    });
+  </script>
+</dom-module>
