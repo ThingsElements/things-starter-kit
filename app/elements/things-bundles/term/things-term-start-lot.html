@@ -5,10 +5,10 @@
 <link rel="import" href="../../things-meta-view/things-diy-based-form.html">
 
 <!--
-  OI - MOVE LOT 트랜잭션 
+  OI - START LOT 트랜잭션 
 -->
 
-<dom-module id="things-term-move-lot">
+<dom-module id="things-term-start-lot">
   <template>
     <style>
       :host {
@@ -28,9 +28,9 @@
     </things-ajax>
 
     <things-ajax
-      id="move-lot"
+      id="start-lot"
       resource-action="create"
-      resource-url="lot_trxs/MOVE/transaction">
+      resource-url="lot_trxs/START/transaction">
     </things-ajax>
 
     <things-layout-hera left-content-title="[[leftContentTitle]]" right-content-title="[[rightContentTitle]]">
@@ -41,7 +41,7 @@
 
   <script>
     Polymer({
-      is: 'things-term-move-lot',
+      is: 'things-term-start-lot',
 
       properties: {
         /**
@@ -106,7 +106,7 @@
         'search-btn-tap' : 'findLot',
         'process-btn-tap' : 'moveLot',
         'reset-btn-tap' : 'resetForm',
-        'move-lot.things-ajax-response' : '_transactionResponsed',
+        'start-lot.things-ajax-response' : '_transactionResponsed',
       },
 
       /** 
@@ -128,7 +128,7 @@
        */
       moveLot: function(event) {
         var data = this.$['form'].getForm().serializeMyForm();
-        var moveAjax = this.$['move-lot'];
+        var moveAjax = this.$['start-lot'];
         moveAjax.body = {
           lot_id : data.id,
           comments : data.comments,
