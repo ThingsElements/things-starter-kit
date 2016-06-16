@@ -1,0 +1,82 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
+
+<dom-module id="things-term-common-grid">
+	<template>
+    <style>
+      :host {
+        display: block;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+      }
+      things-diy-based-grid {
+        @apply(--layout-flex);
+      }
+    </style>
+
+		<things-ajax
+			id="search-data"
+			resource-action="[[action]]"
+			resource-url="[[resourceUrl]]"
+			query-fields="[[queryFields]]"
+			sort-fields="[[sortFields]]"
+			limit="[[limit]]"
+			last-response="{{lastResponse}}">
+		</things-ajax>
+
+    <things-diy-based-grid
+    	fixed-column-count=1
+    	diy-grid-name="OI-LatestLotList"
+    	items="{{gridData}}">
+    </things-diy-based-grid>
+	</template>
+	
+	<script>
+		Polymer({
+			is: 'things-term-common-grid',
+
+			properties: {
+
+				action: {
+					type: String,
+					value: 'index'
+				},
+
+				resourceUrl: {
+					type: String,
+					value: 'lots'
+				},
+
+				queryFields: {
+					type: Object
+				},
+
+				sortFields: {
+					type: Object
+				},
+
+				limit: {
+					type: Number,
+					value: 10
+				},
+
+				lastResponse: {
+					type: Object,
+					observer: '_responseChanged'
+				},
+
+				gridData: {
+					type: Array
+				}
+			},
+
+			generateRequest: function() {
+				this.$['search-data'].generateRequest();
+			},
+			
+			_responseChanged: function(response) {
+				this.gridData = response.items;
+			}
+		})
+	</script>
+</dom-module>
