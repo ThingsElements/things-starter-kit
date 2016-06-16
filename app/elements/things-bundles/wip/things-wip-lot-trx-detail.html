@@ -72,6 +72,33 @@
           save-url="[[resourceUrl]]"
           buttons="[[buttons]]">
         </things-code-editor>
+
+        <div id="test">
+          <div class="buttons">
+            <paper-button raised on-tap="invoke">invoke</paper-button>
+            <paper-button raised on-tap="resetForm">reset</paper-button>
+          </div>
+
+          <things-ajax 
+            id="tran-ajax"
+            resource-action="create"
+            resource-url="[[invokeUrl]]"
+            last-response="{{invokeResult}}">
+          </things-ajax>
+          
+          <form is="iron-form" 
+            id="form" 
+            action="[[action]]"
+            headers="[[headers]]"
+            with-credentials
+            content-type="application/json"
+            method="POST"
+            last-response="{{lastResponse}}">
+            <things-input-field required id="invoke-url" name="invokeUrl" label="Invoke URL" value="[[invokeUrl]]" disabled></things-input-field>
+            <things-textarea id="params" label="Parameters" rows=4></things-textarea>
+            <things-textarea id="result" label="Result" rows=4></things-textarea>
+          </form>
+        </div>
       </iron-pages>
     </paper-header-panel>
   </template>
@@ -86,9 +113,22 @@
       ],
 
       properties: {
+        invokeUrl: {
+          type: String
+        },
+
+        invokeResult: {
+          type: Object,
+          observer: '_invokeResultChanged'
+        }
       },
 
+      observers: [
+        '_resourceChanged(resource)',
+      ],
+
       listeners: {
+        'tran-ajax.things-ajax-error' : '_transactionFailed'
       },
 
       ready: function() {
@@ -98,9 +138,39 @@
         }, {
           title: Things.DataGlobal.t('title.logic'),
           elementId: 'things-code-editor'
+        }, {
+          title: Things.DataGlobal.t('title.test'),
+          elementId: 'test'
         } ];
-      }
+      },
 
+      invoke: function() {
+        var tranAjax = this.$['tran-ajax'];
+        try {
+          tranAjax.body = JSON.parse(this.$.params.value);
+          tranAjax.generateRequest();
+        } catch(e) {
+          this.$.result.value = '';
+          this.$.result.value = '[Client Side Parameter JSON Parsing Error] : ' + e;
+        }
+      },
+
+      resetForm: function() {
+        this.$.result.value = '';
+        this.$.params.value = '';
+      },
+
+      _resourceChanged: function(resource) {
+        this.invokeUrl = 'lot_trxs/' + resource.name + '/transaction';
+      },
+
+      _invokeResultChanged: function(invokeResult) {
+        this.$.result.value = JSON.stringify(invokeResult, null, 2);
+      },
+
+      _transactionFailed: function(event) {
+        this.$.result.value = JSON.stringify(event.detail, null, 2);
+      }
     });
   </script>
 </dom-module>
