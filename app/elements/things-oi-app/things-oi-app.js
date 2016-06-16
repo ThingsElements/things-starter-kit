@@ -34,6 +34,15 @@ Polymer({
     showToast : function(msg){
         this.$.infoToast.text = msg;
         this.$.infoToast.show();
+    },
+
+    showToastInfo : function(e, msg){
+        this.$.infoToast.text = msg;
+        this.$.infoToast.show();
+    }, 
+    showToastConfim : function(e, msg){
+        this.$.confirmToast.text = msg;
+        this.$.confirmToast.show();
     }
 
 });

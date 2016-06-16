@@ -140,6 +140,9 @@
 
             return reportConfig;
         },
+        ready: function () {
+            this.setReportData(); 
+        },
 
         print: function() {
             // grid, report, reportData, options, isprint
@@ -150,9 +153,9 @@
             DLReport.preview(this.grdMain, this.report, null, this.printOptions, false);
         },
 
-        getReportData: function() {
+        setReportData: function() {
             var reportData = [
-
+                id =""
             ]
 
             return reportData;

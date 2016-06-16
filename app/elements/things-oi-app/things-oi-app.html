@@ -92,6 +92,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <things-validators id="validators"></things-validators>
     <!-- date picker dialog -->
     <things-date-picker-dialog id="date-picker-dialog"></things-date-picker-dialog>
+    <!-- things event mananger -->
+    <things-event-manager 
+      events = '[{"name": "success","function":"showToastInfo"},
+                {"name": "failure","function" : "showToastConfim"}]'>
+    </things-event-manager>
     <!-- local storage -->
     <iron-localstorage 
       id="localStorage" 
