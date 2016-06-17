@@ -25,7 +25,8 @@
 
     <things-ajax
       id="validate-lot"
-      resource-action="find"
+      resource-action="create"
+      resource-url="lot_trxs/VALIDATE/transaction"
       last-response="{{lot}}">
     </things-ajax>
 
@@ -82,6 +83,13 @@
         'process-btn-tap' : 'lotTransaction',
         'transaction.things-ajax-response' : 'transactionResponsed',
         'things-grid-configured' : 'latestLotGridConfigured'
+      },
+
+      /**
+       * Life Cycle - Ready
+       */
+      ready: function() {
+        this.transaction = 'MOVE';
       },
 
       /**
