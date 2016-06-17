@@ -242,6 +242,7 @@ OI Screen - Order List
 				this.getLatestLots();
 				this.resetForm();
 				this.lot = event.detail;
+				this.fire('iron-signal', {name : 'refresh-wip'});
 			}
 		});
 	</script>

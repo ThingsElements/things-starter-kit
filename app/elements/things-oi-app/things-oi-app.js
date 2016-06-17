@@ -40,9 +40,14 @@ Polymer({
         this.$.infoToast.text = e.detail;
         this.$.infoToast.show();
     },
+
     showToastConfim : function(e){
         this.$.confirmToast.text = e.detail;
         this.$.confirmToast.show();
+    },
+    
+    refreshWip: function(e) {
+        this.$.wip.refresh();
     }
 
 });

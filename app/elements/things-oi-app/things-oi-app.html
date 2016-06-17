@@ -95,7 +95,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!-- things event mananger -->
     <things-event-manager 
       events = '[{"name": "success","function":"showToastInfo"},
-                {"name": "failure","function" : "showToastConfim"}]'>
+                {"name": "failure","function" : "showToastConfim"},
+                {"name": "refresh-wip","function" : "refreshWip"}]'>
     </things-event-manager>
     <!-- local storage -->
     <iron-localstorage 
@@ -207,6 +208,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <span>routing information</span>
               
               <things-wip-routing-detail
+                id="wip"
                 search-url ="work_orders/:id/wip"
                 resource-id ="{{globals.order.id}}"
                 class="layout vertical flex"

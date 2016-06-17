@@ -8,7 +8,7 @@
             overflow-x: hidden;
         }
         </style>
-        <things-ajax auto id="label-search" method="GET" resource-url="[[searchUrl]]" resource-id="[[resourceId]]" last-response="{{lastResponse}}">
+        <things-ajax auto id="wip-search" method="GET" resource-url="[[searchUrl]]" resource-id="[[resourceId]]" last-response="{{lastResponse}}">
         </things-ajax>
         <div class="container">
             <paper-icon-button icon="arrow-back" on-tap="moveLeft"></paper-icon-button>
@@ -79,6 +79,10 @@
          */
         moveRight: function() {
             this.$.scrollable.moveRight();
+        },
+
+        refresh: function() {
+            this.$['wip-search'].generateRequest();
         }
     });
     </script>
