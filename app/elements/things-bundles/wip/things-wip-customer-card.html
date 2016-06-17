@@ -196,7 +196,6 @@
 
       <paper-toolbar>
         <div class="bottom">
-          <button on-tap="saveButtonTapped">save</button>
           <things-button-bar id="button-bar" buttons="[[buttons]]"></things-button-bar>
         </div>
       </paper-toolbar>
@@ -350,7 +349,7 @@
       /**
        * save 버튼이 클릭 되었을때 변경사항을 저장하기 위한 ajax 호출
        */
-      saveButtonTapped: function() {
+      _saveButtonTapped: function() {
         this.$['save-request'].body = this.singleItem;
         this.$['save-request'].generateRequest();
         this.closeDialog();
