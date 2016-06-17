@@ -4,6 +4,7 @@
 <link rel="import" href="../../../bower_components/things-i18n-msg/things-i18n-msg.html">
 <link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
 <link rel="import" href="../../../bower_components/things-card-image/things-card-image-list.html">
+<link rel="import" href="../../things-content/things-resource-menu-content-behavior.html">
 
 <dom-module id="things-label-card">
 	<template>
@@ -60,14 +61,22 @@
 	    }
 		</style>
 
-    <paper-toolbar>
+    <!--paper-toolbar>
       <span class="title">[[menuInfo.title]]</span>
       <button id="fullscreen-btn" on-tap="toggleFullscreen">
       </button>
       <paper-tooltip for="fullscreen-btn" offset="0">
         <things-i18n-msg msgid="button.fullscreen">Full Screen</things-i18n-msg>
       </paper-tooltip>
-    </paper-toolbar>
+    </paper-toolbar-->
+
+    <things-ajax 
+      auto
+      id="resource-meta"
+      method="GET"
+      resource-url="[[menuMetaUrl]]"
+      last-response="{{metaData}}">
+    </things-ajax>
 
 		<things-ajax
 			auto
@@ -79,6 +88,16 @@
       limit="[[limit]]"
       last-response="{{lastResponse}}">
 		</things-ajax>
+
+    <things-search-form 
+      id="search-form"
+      title="[[menuInfo.title]]"
+      form-fields="[[searchFormFields]]" 
+      action-url="[[menuInfo.resource_url]]" 
+      page="{{page}}"
+      per-page="[[perPage]]"
+      last-response="{{lastResponse}}">
+    </things-search-form> 		
 		
 		<div id="card-list" class="container">
 			<things-card-image-list
@@ -133,6 +152,7 @@
 			is: 'things-label-card',
 
 			behaviors: [
+				Things.ResourceMenuContentBehavior,
 				Things.ViewOpenBehavior
 			],
 

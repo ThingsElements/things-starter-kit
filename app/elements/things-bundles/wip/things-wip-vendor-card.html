@@ -157,10 +157,16 @@
     <div id="card-list" class="container">
       <things-card-image-list
         items="[[lastResponse.items]]"
-        detail-fields="name,phone,email,homepage"
+        detail-fields="name,description,phone,email,homepage"
         is-selector>
       </things-card-image-list>
     </div>
+
+    <paper-toolbar>
+      <div class="bottom">
+        <things-button-bar id="button-bar" buttons="[[buttons]]"></things-button-bar>
+      </div>
+    </paper-toolbar>
 
     <paper-dialog
       id="dialog"
@@ -188,15 +194,15 @@
           <things-input-field label="Address" value="{{singleItem.addr}}"></things-input-field>
           <things-input-field label="Detail Address" value="{{singleItem.detail_addr}}"></things-input-field>
           <things-input-field label="ZIP Code" value="{{singleItem.zip_code}}"></things-input-field>
-          <things-input-field label="Image Name" value="{{singleItem.attachment.name}}"></things-input-field>
-          <things-input-field label="Updator" value="{{singleItem.updater.name}}"></things-input-field>
-          <things-input-field label="Updated At" value="{{singleItem.updated_at}}"></things-input-field>
+          <!--things-input-field label="Image Name" value="{{singleItem.attachment.name}}"></things-input-field-->
+          <things-input-field label="Updator" value="{{singleItem.updater.name}}" disabled></things-input-field>
+          <things-input-field label="Updated At" value="{{singleItem.updated_at}}" disabled></things-input-field>
         </div>
       </div>
 
       <paper-toolbar>
         <div class="bottom">
-          <things-button-bar id="button-bar" buttons="[[buttons]]"></things-button-bar>
+          <things-button-bar id="detail-button-bar" buttons="[[detailButtons]]"></things-button-bar>
         </div>
       </paper-toolbar>
     </paper-dialog>
@@ -283,13 +289,13 @@
          */
         perPage: {
           type: Number,
-          value: 30
+          value: 100
         },        
 
         /**
-         * 버튼 종류
+         * 상세 화면 버튼 종류
          */
-        buttons: {
+        detailButtons: {
           type: Array,
           value: function() {
             return [ {
