@@ -205,10 +205,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <div class ="flex-4">
               <span>routing information</span>
-              <!-- {{globals.order.product_model.routing_id}}" -->
+              
               <things-wip-routing-detail
-                search-url ="routings/:id/routing_details"
-                resource-id ="4"
+                search-url ="work_orders/:id/wip"
+                resource-id ="{{globals.order.id}}"
                 class="layout vertical flex"
                 show-info="true">
               </things-wip-routing-detail>

@@ -63,9 +63,9 @@
         }
         </style>
         <div id="scrollable-element" class="container">
-            <template id="operRepeat" is="dom-repeat" items="[[finalItem]]" class="layout vertical">
-                <div id="information" class$="[[item.operation.type]]">
-                    <strong hidden="[[item.arrow]]">[[item.operation.name]]</strong> [[item.totalPlans]] / <span>[[item.completedPlans]]</span>
+            <template id="operRepeat" is="dom-repeat" items="[[items]]" class="layout vertical">
+                <div id="information" class$="[[item.operation.oper_type]]">
+                    <strong hidden="[[item.arrow]]">[[item.operation.name]]</strong> [[item.plan_qty]] / <span>[[item.actual_qty]]</span>
                     <div class="icon-arrow"></div>
                 </div>
             </template>
@@ -90,14 +90,6 @@
              * things-wip-routing-detail에서 items를 받는다.
              */
             items: {
-                type: Object,
-                observer: '_itemsChanged'
-            },
-
-            /**
-             * _itemsChanged() 를 통해 산출되는 최종 item 리스트
-             */
-            finalItem: {
                 type: Object
             },
 
@@ -124,11 +116,13 @@
                 type: Boolean,
                 value: false
             },
+
             scrollToIndex: {
             	type: Number,
             	value: 4
             },
-            x :{
+            
+            x: {
             	type: Number
             }
         },
@@ -143,6 +137,7 @@
             }.bind(this));
             // this.async(this.notifyResize, 1);
         },
+        
         /**
          * Runs on every scroll event. Consumer of this behavior may override this method.
          */
@@ -155,26 +150,6 @@
          */
         _scrollHandler: function() {
             this._setXScrollLeft(this._scrollLeft);
-        },
-
-        /**
-         * image data를 받아 이미지 사이에 화살표 이미지를 추가 합니다.
-         */
-        _itemsChanged: function(items) {
-            var itemsLength = items.length;
-            this.finalItem = [];
-            var operType = ['ASSY', 'INV', 'PACK', 'SMT', 'STD', 'TEST']
-            for (var i = 0; i < itemsLength; i++) {
-                //데이터 하드코딩
-                items[i].completedPlans = 40;
-                items[i].totalPlans = 120;
-                var typeIndex = i % operType.length;
-
-                items[i].operation.type = operType[typeIndex];
-
-                this.push('finalItem', items[i]);
-
-            }
         },
 
         /**
@@ -220,7 +195,7 @@
 	    },
 
 	    _onIronResize: function() {
-	    	if(this.finalItem && this.finalItem.length>0){
+	    	if(this.items && this.items.length > 0) {
 		      this.x = Math.floor(this.parent.offsetWidth);
 		      this.y = 0;
 		      this.translate3d(this.x + 'px', this.y + 'px', 0);
