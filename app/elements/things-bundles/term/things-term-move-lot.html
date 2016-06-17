@@ -1,9 +1,10 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
 
 <link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-form.html">
-<link rel="import" href="../../things-bundles/term/things-term-common-grid.html">
+
+<link rel="import" href="things-term-common-grid.html">
+<link rel="import" href="things-lot-based-transaction-behavior.html">
 
 <!--
   OI - MOVE LOT 트랜잭션 
@@ -23,36 +24,41 @@
     </style>
 
     <things-ajax
-      id="find-lot"
+      id="validate-lot"
       resource-action="find"
       last-response="{{lot}}">
     </things-ajax>
 
     <things-ajax
-      id="move-lot"
+      id="transaction"
       resource-action="create"
-      resource-url="lot_trxs/MOVE/transaction">
+      resource-url="[[transactionUrl]]">
     </things-ajax>
 
-    <things-layout-hermes left-content-title="Lot Information" right-content-title="Latest Created Lot List">
+    <things-layout-hermes 
+      top-left-content-title="Lot Information" 
+      bottom-left-content-title="Comment" 
+      right-content-title="Latest Lot List">
       <things-diy-based-form 
-        id="form"
         left-top
+        id="lot-info-form"
         class="flex"
-        diy-form-name="OI-MoveLot"
-        buttons="[[formButtons]]">
+        diy-form-name="OI-LotInfo"
+        buttons="[[buttons]]">
       </things-diy-based-form>
       
-      <things-input-field
+      <things-diy-based-form 
         left-bottom
-        label="Comments"
-        value="{{comments}}">
-      </things-input-field>
+        id="move-form"
+        class="flex"
+        diy-form-name="OI-Move">
+      </things-diy-based-form>
 
       <things-term-common-grid
         right
+        id="latest-lot-grid"
         class="flex"
-        id="common-grid">
+        query-fields="[[latestLotQueryFields]]">
       </things-term-common-grid>
     </things-layout-hermes>
   </template>
@@ -60,134 +66,93 @@
   <script>
     Polymer({
       is: 'things-term-move-lot',
+      
+      behaviors: [
+        Things.LotBasedTransactionBehavior
+      ],
 
       properties: {
-        /**
-         * 메뉴 정보
-         */
-        menuInfo: {
-          type: Object
-        },
-
-        /**
-         * 라우팅 정보
-         */
-        dataRoute: {
-          type: String
-        },
-
-        /**
-         * Title Of Left Content
-         */
-        leftContentTitle: {
-          type: String,
-          value: 'Lot Information'
-        },
-
-        /**
-         * Title Of Right Content
-         */
-        rightContentTitle: {
-          type: String,
-          value: 'Latest Lot List'
-        },
-
-        /**
-         * Lot
-         */
-        lot: {
-          type: Object,
-          observer: '_lotChanged'
-        },
-
-        lastResponse: {
-          type: Array
-        },
-
-        /**
-         * Form 버튼 
-         */
-        formButtons: {
-          type: Array,
-          value: function() {
-            return [ {
-              id: 'search-btn',
-              text: 'search'
-            }, {
-              id: 'process-btn',
-              text: 'process'
-            }, {
-              id: 'reset-btn',
-              text: 'reset'
-            } ];
-          }
-        }
       },
-
-      listeners: {
-        'search-btn-tap' : 'findLot',
-        'process-btn-tap' : 'moveLot',
-        'reset-btn-tap' : 'resetForm',
-        'move-lot.things-ajax-response' : '_transactionResponsed',
-      },
-
-      behaviors: [
-        Things.GlobalBehavior
-      ],
 
       observers: [
-        'orderChanged(globals.order)'
+        'lotListConditionsChanged(orderId,operationId)'
       ],
 
-      orderChanged: function(order) {
-        this.$['common-grid'].generateRequest();
+      listeners: {
+        'process-btn-tap' : 'lotTransaction',
+        'transaction.things-ajax-response' : 'transactionResponsed',
+        'things-grid-configured' : 'latestLotGridConfigured'
       },
 
-      /** 
-       * Find Lot 
+      /**
+       * Latest Lot List 검색 조건 변경시 
        *
-       * @param {Object} event
+       * @param {String} orderId
+       * @param {String} operationId
        */
-      findLot: function(event) {
-        var data = this.$['form'].getForm().serializeMyForm();
-        var findAjax = this.$['find-lot'];
-        findAjax.resourceUrl = 'lots/show_by_name?name=' + data.name;
-        findAjax.generateRequest();
+      lotListConditionsChanged: function(orderId, operationId) {
+        this.latestLotQueryFields = [ {
+          name: 'work_order_id',
+          value: orderId
+        }, {
+          name: 'operation_id',
+          value: operationId
+        }, {
+          name: 'state',
+          value: 'FINISH_PROCESS'
+        } ];
       },
 
-      /** 
-       * Move Lot 
-       *
-       * @param {Object} event
+      /**
+       * Latest Lot Grid 변경시
        */
-      moveLot: function(event) {
-        var data = this.$['form'].getForm().serializeMyForm();
-        var moveAjax = this.$['move-lot'];
-        moveAjax.body = {
-          lot_id : data.id,
-          comments : data.comments,
-          operation_id : data.operation_id
+      latestLotGridConfigured: function(event) {
+        this.getLatestLotGrid().refreshData();
+      },
+
+      /**
+       * Lot Information Form
+       */
+      getLotInfoForm: function() {
+        return this.$['lot-info-form'];
+      },
+
+      /**
+       * Latest Lot List Grid
+       */
+      getLatestLotGrid: function() {
+        return this.$['latest-lot-grid'];
+      },
+
+      /**
+       * Validation Lot Service
+       */
+      getValidateLotService: function() {
+        return this.$['validate-lot'];
+      },
+
+      /**
+       * Transaction Lot Service
+       */
+      getTransactionLotService: function() {
+        return this.$['transaction'];
+      },
+
+      /**
+       * Lot Transaction
+       */
+      lotTransaction: function() {
+        var moveData = this.$['move-form'].getForm().serializeMyForm();
+        var lotData = getLotInfoForm.getForm().serializeMyForm();
+        var tranAjax = this.getTransactionLotService();
+
+        tranAjax.body = {
+          lot_id : lotData.id,
+          comments : moveData.comments,
+          operation_id : movetData.next_operation_id
         };
 
         moveAjax.generateRequest();
-      },
-
-      /**
-       * Reset Form 
-       *
-       * @param {Object} event
-       */
-      resetForm: function(event) {
-        this.$['form'].getForm().resetMyForm();
-      },
-
-      /**
-       * Lot 조회시
-       *
-       * @param {Object} lot
-       */
-      _lotChanged: function(lot) {
-        this.$['form'].getForm().setFormData(lot);
       },
 
       /**
@@ -196,8 +161,11 @@
        * @param {Object} event
        */
       _transactionResponsed: function(event) {
+        this.refreshLatestLots();
         this.resetForm();
+        this.$['move-form'].getForm().resetMyForm();
       }
+
     });
   </script>
 </dom-module>
