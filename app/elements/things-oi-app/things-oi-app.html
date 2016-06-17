@@ -148,26 +148,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </paper-tooltip>
             <paper-icon-button id="infoBtn" icon="info" onclick="document.getElementById('informationContainer').toggle()"></paper-icon-button>
           </app-toolbar>
-        </app-header>
-
-        <div id="scrollingRegion">
-          <iron-collapse id ="informationContainer" opened class="layout horizontal">
-            <div id="vertical-div" class ="flex-1">
-              <span>order informatin</span>
-              <things-wip-order-info order="[[globals.wip.order]]"></things-wip-order-info>
-            </div>
-
-            <div class ="flex-4">
-              <span>routing information</span>
-              <!-- {{globals.order.product_model.routing_id}}" -->
-              <things-wip-routing-detail
-                search-url ="routings/:id/routing_details"
-                resource-id ="4"
-                class="layout vertical flex"
-                show-info="true">
-              </things-wip-routing-detail>
-            </div>
-          </iron-collapse>
           <paper-toolbar>
             <form is="iron-form" id="header-form" method="post" action="/form/handler">
               <things-date-picker
@@ -214,6 +194,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </iron-localstorage>
             </form>
           </paper-toolbar>
+        </app-header>
+
+        <div id="scrollingRegion">
+          <iron-collapse id ="informationContainer" opened class="layout horizontal">
+            <div id="vertical-div" class ="flex-1">
+              <span>order informatin</span>
+              <things-wip-order-info order="[[globals.wip.order]]"></things-wip-order-info>
+            </div>
+
+            <div class ="flex-4">
+              <span>routing information</span>
+              <!-- {{globals.order.product_model.routing_id}}" -->
+              <things-wip-routing-detail
+                search-url ="routings/:id/routing_details"
+                resource-id ="4"
+                class="layout vertical flex"
+                show-info="true">
+              </things-wip-routing-detail>
+            </div>
+          </iron-collapse>
 
           <iron-pages attr-for-selected="data-route" selected="{{route}}" id="content">
             <div class ="layout flex"></div>
