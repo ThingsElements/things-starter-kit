@@ -181,11 +181,15 @@
         </div>
       </paper-toolbar>
 	  	<div class="detail-card">
-	  		<iron-image src="[[singleItem.thumbnail]]" width="450" height="450" sizing="contain"></iron-image>
-	  		<div class="detail-content">
-		  		<things-input-field label="Status" value="[[singleItem.status]]" readonly></things-input-field>
-		  		<things-input-field label="Version" value="[[singleItem.version]]" readonly></things-input-field>
-		  		<things-input-field label="Description" value="[[singleItem.description]]" readonly></things-input-field>
+	  		<div class="detial-content">
+	  			<iron-image src="[[singleItem.thumbnail]]"></iron-image>
+	  			<div class="topinfo">
+			  		<things-input-field label="Status" value="[[singleItem.status]]" readonly></things-input-field>
+			  		<things-input-field label="Version" value="[[singleItem.version]]" readonly></things-input-field>
+			  		<things-input-field label="Description" value="[[singleItem.description]]" readonly></things-input-field>
+		  		</div>
+	  		</div>
+	  		<div class="detial-content">
 		  		<things-input-field label="Tags" value="[[singleItem.tags]]" readonly></things-input-field>
 		  		<things-input-field label="Width" value="[[singleItem.width]]" readonly></things-input-field>
 		  		<things-input-field label="Height" value="[[singleItem.height]]" readonly></things-input-field>
