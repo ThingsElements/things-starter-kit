@@ -170,25 +170,6 @@
         this.$['input-form'].getForm().resetMyForm();
       },
 
-      /** 
-       * Lock Lot 
-       *
-       * @param {Object} event
-       */
-      lotTransaction: function(event) {
-        var inputData = this.$['input-form'].getForm().serializeMyForm();
-        var lotData = this.getLotInfoForm().getForm().serializeMyForm();
-        var tranAjax = this.getTransactionLotService();
-
-        tranAjax.body = {
-          lot_id : lotData.id,
-          comments : inputData.comments,
-          lock_code : inputData.lock_code
-        };
-
-        tranAjax.generateRequest();
-      },
-
       /**
        * 트랜잭션 성공시 
        *
