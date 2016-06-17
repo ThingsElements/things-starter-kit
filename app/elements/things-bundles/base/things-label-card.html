@@ -8,19 +8,20 @@
 
 <dom-module id="things-label-card">
 	<template>
-		<style>
-			:host{
-				display: block;
-				background-color:var(--things-whitegrey-background-color);
-			}
+    <style>
+      :host {
+        display: block;
+        background-color:var(--things-whitegrey-background-color);
+      }
       paper-toolbar{
         background-color:var(--things-primary-background-color);
-	      height:45px;
-	      margin-top:0px !important;
-	      @apply(--things-padding-clear)
+        height:45px;
+        margin-top:0px !important;
+        @apply(--things-padding-clear)
       }
       paper-toolbar::shadow #topBar{
         height:45px;
+        padding:0;
       }
       paper-toolbar::shadow #bottomBar {
         height: 45px;
@@ -32,34 +33,103 @@
         margin-left:32px !important;
         line-height:initial !important;
       }
-      form{
-        @apply(--things-default-padding);
-        padding-bottom:5px;
-        border-bottom:1px solid rgba(0,0,0,.1);
-      }
-      paper-fab{
-        @apply(--things-search-fab);
-      }
-      #fullscreen-btn{
-        @apply(--things-header-button);
-        background:url(/images/icon-fullscreen.png) 100% 50% no-repeat;
-      }
       .detail-card {
-      	@apply(--layout-horizontal);
+        @apply(--layout-vertical);
+        min-width:350px;
+        max-width:500px;
       }
       .detail-content {
-      	@apply(--layout-vertical);
+        @apply(--layout-vertical);
       }
-	    .close-btn{
-	      @apply(--things-header-button);
-	      background:url(/images/icon-close.png) 100% 50% no-repeat;
-	      margin-right:10px;
-	    }
-	    .container{
-	    	height: 90vh;
-	    	overflow-y: auto;
-	    }
-		</style>
+      .detail-content:first-child {
+        @apply(--layout-horizontal);
+      }
+      .detail-content:last-child::shadow input{
+        width:68%;
+      }
+      .close-btn{
+        @apply(--things-header-button);
+        background:url(/images/icon-close.png) 100% 50% no-repeat;
+        margin-right:10px;
+      }
+      .container{
+        height: 90vh;
+        overflow: auto;
+      }
+      #card-list::shadow paper-card{
+        padding:6px 4px;
+        min-height:85px
+      }
+      #card-list::shadow iron-image{
+        width:65px;
+        height:50px;
+      }
+      #card-list::shadow iron-image::shadow img{
+        height:initial !important;
+      }
+      #card-list::shadow .title-text,#card-list::shadow .card-info{
+        display:none;
+      }
+      #card-list::shadow .header{
+        float:left;
+        margin-right:7px;
+      }
+      #card-list::shadow #card-detail span{
+        display:block;
+        overflow-x:hidden;
+        font-size:12px;
+        color:var(--things-primary-text-color);
+        white-space:nowrap;
+      }
+      #card-list::shadow #card-detail span.name{
+        padding:2px 0;
+        font-size:13px;
+        font-weight:bold;
+        color:var(--things-focus-background-color);
+      }
+      #card-list::shadow #card-detail span.homepage{
+        margin-top:4px;
+        padding:1px 0 0 2px;
+        border-top:1px dotted #ddd;
+      }
+      #card-list::shadow #card-detail span:before{
+        content:"";
+        display:inline-block;
+        position:relative;
+        top:2px;
+        width:12px;height:13px;
+        margin-right:3px;
+        background-image:url(/images/icon-tiny.png);
+      }
+      #card-list::shadow #card-detail span.name:before{
+        display:none;
+      }
+      #card-list::shadow #card-detail span.phone:before{
+        background-position:50% 0;
+      }
+      #card-list::shadow #card-detail span.email:before{
+        background-position:50% -47px;
+      }
+      #card-list::shadow #card-detail span.homepage:before{
+        background-position:50% -99px;
+      }
+      .detail-card iron-image{
+        float:left;
+        min-width:150px;
+        min-height:50px;
+        max-width:200px;
+        max-height:100px;
+      }
+      .detail-card iron-image::shadow img{
+        margin:auto;
+        max-width:100%
+      }
+      .topinfo{float:right;}
+      paper-dialog paper-toolbar:last-child{
+        background-color:transparent;
+        margin-bottom:5px;
+      }
+    </style>
 
     <things-ajax 
       auto
@@ -78,7 +148,7 @@
       page="[[page]]"
       limit="[[limit]]"
       last-response="{{lastResponse}}">
-		</things-ajax>
+		</things-ajax>    
 
     <things-search-form 
       id="search-form"
@@ -94,7 +164,8 @@
 			<things-card-image-list
 				items="[[items]]"
 				image-field="thumbnail"
-				detail-fields="tags">
+				detail-fields="name,description,tags"
+				is-selector>
 			</things-card-image-list>
 		</div>
 
