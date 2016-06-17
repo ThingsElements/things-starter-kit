@@ -117,26 +117,14 @@ OI Screen - Order List
 				 * common-grid에 넘겨줄 query fields property
 				 */
 				queryFields: {
-					type: Array,
-					value: function() {
-						return [{
-							name: 'work_order_id',
-							value: 'this.orderId'
-						}, {
-							name: 'transaction',
-							value: 'CREATE'
-						}];
-					}
+					type: Array
 				},
 
 				/**
 				 * common-grid에 넘겨줄 sort fields property
 				 */
 				sortFields: {
-					type: Array,
-					value: function() {
-
-					}
+					type: Array
 				},
 
 				/**
@@ -222,12 +210,6 @@ OI Screen - Order List
 					name: 'transaction',
 					value: 'CREATE'			
 				}];
-
-				this.sortFields = [{
-					field: 'updated_at',
-					ascending: false
-				}];
-
 				this.$['common-grid'].generateRequest();
 			},
 
