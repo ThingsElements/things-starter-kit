@@ -180,13 +180,11 @@
         /**
          * 버튼 클릭당 이동할 픽셀 수를 계산
          */
-        calcMoveLength: function(index) {
+        calcMoveLength: function() {
+        	
+        	this.domList= Polymer.dom(this.$['scrollable-element']).querySelectorAll('#information');
 
-        	var opers = Polymer.dom(this.$['scrollable-element']).querySelectorAll('#information');
-
-        	if(index<0||index>opers.length) return;
-
-        	var targetElement = opers[index];
+        	var targetElement = this.domList[this.scrollToIndex];
             this.movePosition = targetElement.offsetLeft-targetElement.clientWidth/2;
         },
 
@@ -194,7 +192,10 @@
          * 왼쪽으로 이동
          */
         moveLeft: function() {
-        	this.scrollToIndex ++;
+        	if(this.scrollToIndex<=this.domList.length && this.movePosition<=this.x)
+        	{
+        		this.scrollToIndex++;
+        	};
         	this.calcMoveLength(this.scrollToIndex);
             this.scroll(this.movePosition, 0);
         },
@@ -203,8 +204,10 @@
          * 오른쪽으로 이동
          */
         moveRight: function() {
-        	
-        	this.scrollToIndex --;
+        	if(this.scrollToIndex>0)
+        	{
+        		this.scrollToIndex--;
+        	};
         	this.calcMoveLength(this.scrollToIndex);
             this.scroll(this.movePosition, 0);
         },
@@ -218,9 +221,9 @@
 
 	    _onIronResize: function() {
 	    	if(this.finalItem && this.finalItem.length>0){
-		      var x = Math.floor(this.parent.offsetWidth);
-		      var y = 0;
-		      this.translate3d(x + 'px', y + 'px', 0);
+		      this.x = Math.floor(this.parent.offsetWidth);
+		      this.y = 0;
+		      this.translate3d(this.x + 'px', this.y + 'px', 0);
 		      this.calcMoveLength(this.scrollToIndex);
 		      this.scroll(this.movePosition, 0);
 	    	}
