@@ -47,6 +47,7 @@ OI Screen - Order List
       </things-diy-based-form>
 
 	    <things-input-field
+	    	on-keypress="handleKeyPress"
 	    	left-bottom
 	    	id="comments-form"
 	    	label="Comments"
@@ -182,6 +183,16 @@ OI Screen - Order List
 					}					
 				}
 			},			
+
+			/**
+			 * key event - form submits when enter key is monitored
+			 */
+			handleKeyPress: function(event) {
+				var code = event.keyCode;
+				if(code == 13) {
+					this.createLot();
+				}
+			},
 
 			/**
 			 * Create Lot 
