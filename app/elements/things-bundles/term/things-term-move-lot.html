@@ -50,7 +50,7 @@
       
       <things-diy-based-form 
         left-bottom
-        id="move-form"
+        id="input-form"
         class="flex"
         diy-form-name="OI-Move">
       </things-diy-based-form>
@@ -109,6 +109,8 @@
           name: 'state',
           value: 'FINISH_PROCESS'
         } ];
+
+        this.getLatestLotGrid().refreshData();
       },
 
       /**
@@ -150,17 +152,17 @@
        * Lot Transaction
        */
       lotTransaction: function() {
-        var moveData = this.$['move-form'].getForm().serializeMyForm();
-        var lotData = getLotInfoForm.getForm().serializeMyForm();
+        var inputData = this.$['input-form'].getForm().serializeMyForm();
+        var lotData = this.getLotInfoForm().getForm().serializeMyForm();
         var tranAjax = this.getTransactionLotService();
 
         tranAjax.body = {
           lot_id : lotData.id,
-          comments : moveData.comments,
-          operation_id : movetData.next_operation_id
+          comments : inputData.comments,
+          operation_id : inputData.next_operation_id
         };
 
-        moveAjax.generateRequest();
+        tranAjax.generateRequest();
       },
 
       /**
@@ -168,10 +170,10 @@
        *
        * @param {Object} event
        */
-      _transactionResponsed: function(event) {
+      transactionResponsed: function(event) {
         this.refreshLatestLots();
         this.resetForm();
-        this.$['move-form'].getForm().resetMyForm();
+        this.$['input-form'].getForm().resetMyForm();
       }
 
     });

@@ -122,7 +122,7 @@
 			 * lastResonse를 gridData에 초기화
 			 */
 			_responseChanged: function(response) {
-				this.gridData = response.items;
+				this.gridData = response.items ? response.items : [];
 			}
 		})
 	</script>
