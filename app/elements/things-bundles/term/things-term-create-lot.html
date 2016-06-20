@@ -1,4 +1,5 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/things-tristate-radio/things-tristate-radio.html">
 
 <link rel="import" href="../../things-meta-view/things-diy-based-form.html">
 <link rel="import" href="../../things-label-print/things-print-agent.html">
@@ -55,13 +56,19 @@ OI Screen - Order List
       	buttons="[[buttons]]">
       </things-diy-based-form>
 
-	    <things-input-field
-	    	on-keypress="handleKeyPress"
-	    	left-bottom
-	    	id="comments-form"
-	    	label="Comments"
-	    	value="{{comments}}">
-    	</things-input-field>
+	    <div left-bottom class="flex">
+		    <things-input-field
+		    	on-keypress="handleKeyPress"
+		    	id="comments-form"
+		    	label="Comments"
+		    	value="{{comments}}">
+	    	</things-input-field>
+
+	    	<things-tristate-radio
+	    		id="print"
+	    		label="Print">
+	    	</things-tristate-radio>	    	
+    	</div>
 
       <things-term-common-grid
       	right
@@ -253,9 +260,12 @@ OI Screen - Order List
 				this.resetForm();
 				this.fire('iron-signal', {name : 'refresh-wip'});
 				this.lot = event.detail;
-				// Get Label Model
-				this.$['label-model'].resourceId = this.lot.id;
-				this.$['label-model'].generateRequest();
+				
+				if(this.$['print'].value == true) {
+					// Get Label Model
+					this.$['label-model'].resourceId = this.lot.id;
+					this.$['label-model'].generateRequest();
+				}
 			},
 
 			_labelModelResponsed: function(event) {
