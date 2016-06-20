@@ -65,7 +65,8 @@
         <div id="scrollable-element" class="container">
             <template id="operRepeat" is="dom-repeat" items="[[items]]" class="layout vertical">
                 <div id="information" class$="[[item.operation.oper_type]]">
-                    <strong hidden="[[item.arrow]]">[[item.operation.name]]</strong> [[item.plan_qty]] / <span>[[item.actual_qty]]</span>
+                    <!--strong hidden="[[item.arrow]]">[[item.operation.name]]</strong> [[item.plan_qty]] / <span>[[item.actual_qty]]</span-->
+                    <strong hidden="[[item.arrow]]">[[item.operation.name]]</strong> <span>[[item.actual_qty]]</span>
                     <div class="icon-arrow"></div>
                 </div>
             </template>

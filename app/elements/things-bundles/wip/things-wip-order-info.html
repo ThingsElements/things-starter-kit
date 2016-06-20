@@ -1,20 +1,21 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
 <dom-module id="things-wip-order-info">
 	<template>
-
 		<things-ajax
-      id="order-search"
-      resource-action="find"
-      resource-url="[[resourceUrl]]"
-      resource-id="[[orderId]]"
-      last-response="{{lastResponse}}">
+			id="order-search"
+			resource-action="find"
+			resource-url="[[resourceUrl]]"
+			resource-id="[[orderId]]"
+			last-response="{{lastResponse}}">
 		</things-ajax>
 
 		<p>제품: [[lastResponse.name]]</p>
 		<p>계획: [[lastResponse.plan_qty]]</p>
 		<p>실적: [[lastResponse.actual_qty]]</p>
 		<p>스크랩: [[lastResponse.scrap_qty]]</p>
-
 	</template>
+
 	<script>
 		Polymer({
 			is: 'things-wip-order-info',
@@ -25,8 +26,7 @@
 				 * resource url
 				 */
 				resourceUrl: {
-					type: String,
-					computed: '_computeResourceUrl(order)'
+					type: String
 				},
 
 				/**
@@ -46,19 +46,11 @@
 			},
 
 			/**
-			 * order information refresh event listener
+			 * order object의 변화를 갑지하여 ajax를 호출 합니다.
 			 */
-	    attached: function () {
-	      document.addEventListener('things-oi-refresh-order', function() {
-	      	this.$['order-search'].generateRequest();
-	      }.bind(this));
-	    },			
-
-	    /**
-	     * order object의 변화를 갑지하여 ajax를 호출 합니다.
-	     */
 			_orderChanged: function(order) {
 				this.orderId = order.id;
+				this.resourceUrl = 'work_orders/' + this.orderId;
 				if(this.orderId) {
 					this.$['order-search'].generateRequest();
 				}
@@ -71,6 +63,12 @@
 				return 'work_orders/' + order.id;
 			},
 
+			/**
+			 * Order 실적을 리프레쉬 
+			 */
+			refresh: function() {
+				this.$['order-search'].generateRequest();
+			}
 
 		});
 	</script>

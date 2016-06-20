@@ -200,12 +200,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div id="scrollingRegion">
           <iron-collapse id ="informationContainer" opened class="layout horizontal">
             <div id="vertical-div" class ="flex-1">
-              <span>order informatin</span>
-              <things-wip-order-info order="[[globals.wip.order]]"></things-wip-order-info>
+              <span>Actual Status of Order</span>
+              <things-wip-order-info id="order-actual" order="[[globals.order]]"></things-wip-order-info>
             </div>
 
             <div class ="flex-4">
-              <span>routing information</span>
+              <span>Work In Process</span>
               
               <things-wip-routing-detail
                 id="wip"

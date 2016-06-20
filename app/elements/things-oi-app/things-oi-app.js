@@ -48,6 +48,7 @@ Polymer({
     
     refreshWip: function(e) {
         this.$.wip.refresh();
+        this.$['order-actual'].refresh();
     }
 
 });
