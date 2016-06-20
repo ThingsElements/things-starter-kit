@@ -37,7 +37,7 @@
     </things-ajax>
 
     <things-layout-hermes 
-      top-left-content-title="Lot Information" 
+      top-left-content-title="Lot Search" 
       bottom-left-content-title="Packing List" 
       right-content-title="Latest Lot List">
       
@@ -87,6 +87,14 @@
       		value: []
       	},
 
+        orderId: {
+          type: Number
+        },
+
+        operationId: {
+          type: Number
+        },
+
       	/**
       	 * 현재 packing list에 포함된 items 수
       	 */
@@ -120,6 +128,8 @@
        * @param {String} operationId
        */
       lotListConditionsChanged: function(orderId, operationId) {
+        this.orderId = orderId;
+        this.operationId = operationId;
         this.latestLotQueryFields = [ {
           name: 'work_order_id',
           value: orderId
@@ -174,9 +184,15 @@
        */
       lotTransaction: function() {
         var tranAjax = this.getTransactionLotService();
+        var inputData = this.$['lot-info-form'].getForm().serializeMyForm();
 
         var lotIds = this.items.map(function(item) {return item.id});
-        tranAjax.body = { items: lotIds };
+        tranAjax.body = {
+          lotIds: lotIds,
+          workOrderId: this.orderId,
+          operationId: this.operationId,
+          comments: inputData.comments
+        };
         tranAjax.generateRequest();
       },
 
@@ -196,10 +212,10 @@
        * Enter event 발생시 data search
        */
       handleKeyPress: function(event) {
-      	event.preventDefault();
         var code = event.keyCode;
 
         if(code == 13) {
+      	  event.preventDefault();
           this.validateLot();
         }
       },
