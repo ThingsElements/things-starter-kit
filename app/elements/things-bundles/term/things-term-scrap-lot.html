@@ -105,6 +105,9 @@
         }, {
           name: 'operation_id',
           value: operationId
+        }, {
+          name: 'state',
+          value: 'REPAIRING'
         }]
 
         this.getLatestLotGrid().refreshData();
@@ -159,7 +162,7 @@
           seed_operation_id : inputData.seed_operation_id,
           scrap_code : inputData.scrap_code,
           scrap_qty : inputData.scrap_qty,
-          comments : inputData.next_comments
+          comments : inputData.comments
         };
 
         tranAjax.generateRequest();
