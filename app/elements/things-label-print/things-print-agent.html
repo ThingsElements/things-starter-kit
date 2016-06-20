@@ -1,0 +1,86 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../bower_components/things-ws/things-ws.html">
+
+<dom-module id="things-print-agent">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <things-ws id="websocket" url="ws://192.168.35.72:9010/print/label"></things-ws>
+
+    <things-ajax id="history"
+                 resource-url="label_histories"
+                 method="POST"
+                 content-type="application/json"
+                 body="{{request}}">
+    </things-ajax>
+  </template>
+
+  <script src="../../bower_components/things-zpl/things-zpl.js"></script>
+
+  <script>
+    Polymer({
+      is: 'things-print-agent',
+
+      properties: {
+        agentUrl: {
+          notify: true
+        },
+
+        message: {
+          type: String,
+          observer: 'onMessageChanged'
+        },
+
+        label: {
+          type: Object
+        },
+
+        convertData: {
+          type: Object
+        }
+      },
+
+      ready: function() {
+      },
+
+      attached: function() {
+        this.$.websocket.fire('open')
+      },
+
+      detached: function() {
+        this.$.websocket.fire('close')
+      },
+
+      onMessageChanged: function(data) {
+        this.makeHistory();
+        this.$.websocket.fire('send', data)
+      },
+
+      makeHistory: function() {
+        this.request = this.label;
+        this.$.history.generateRequest();
+      },
+
+      printLabel: function(e) {
+        // 클라이언트에서 직접 Agent로 zpl을 보내는 경우.
+        console.log(this.label.model.components);
+        // 1. Component 추출 
+        var components = JSON.parse(JSON.stringify(this.label.model.components));
+        // 2. TODO convertData --> variables 데이터 변환 
+        // 3. Component --> command로 추출 
+        var command = zpl.revert(components);
+
+        this.message = {
+          'print_name' : 'BIXOLON_SLP_DX420',
+          'command' : command
+        }
+      }
+    });
+  </script>
+</dom-module>
