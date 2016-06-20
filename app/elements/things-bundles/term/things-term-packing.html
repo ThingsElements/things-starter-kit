@@ -138,7 +138,7 @@
           value: operationId
         }, {
           name: 'state',
-          value: 'PACKING'
+          value: 'WAIT_INPUT'
         } ];
 
         this.getLatestLotGrid().refreshData();
@@ -188,9 +188,9 @@
 
         var lotIds = this.items.map(function(item) {return item.id});
         tranAjax.body = {
-          lotIds: lotIds,
-          workOrderId: this.orderId,
-          operationId: this.operationId,
+          lot_ids: lotIds,
+          work_order_id: this.orderId,
+          operation_id: this.operationId,
           comments: inputData.comments
         };
         tranAjax.generateRequest();
@@ -227,7 +227,7 @@
        * server로 넘겨줄 items를 가공
        */
 			lotChanged: function(lot) {
-        var packQty = 3; //TODO 최대수량 서버에서 받아 오기 
+        var packQty = 1; //TODO 최대수량 서버에서 받아 오기 
         var newItems = JSON.parse(JSON.stringify(this.items));
 
         if(this.items.length < packQty) {
