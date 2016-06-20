@@ -42,6 +42,7 @@
       right-content-title="Latest Lot List">
       <things-diy-based-form 
         left-top
+        on-keypress="handleKeyPress"
         id="lot-info-form"
         class="flex"
         diy-form-name="OI-LotInfo"
@@ -174,7 +175,18 @@
         this.resetForm();
         this.$['input-form'].getForm().resetMyForm();
         this.fire('iron-signal', {name : 'refresh-wip'});
-      }
+      },
+
+      /**
+       * Enter event 발생시 data search
+       */
+      handleKeyPress: function(event) {
+        var code = event.keyCode;
+
+        if(code == 13) {
+          this.validateLot();
+        }
+      }      
 
     });
   </script>
