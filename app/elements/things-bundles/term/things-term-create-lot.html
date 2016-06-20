@@ -1,6 +1,7 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 
 <link rel="import" href="../../things-meta-view/things-diy-based-form.html">
+<link rel="import" href="../../things-label-print/things-print-agent.html">
 <link rel="import" href="things-term-common-grid.html">
 
 <!--
@@ -34,6 +35,14 @@ OI Screen - Order List
 			resource-action="create"
 			resource-url="lot_trxs/CREATE/transaction">
 		</things-ajax>
+
+		<things-ajax
+			id="label-model"
+			resource-action="find"
+			resource-url="lots/:id/label">
+		</things-ajax>
+
+		<things-print-agent id="print-agent"></things-print-agent>
 
     <things-layout-hermes top-left-content-title="Lot Information" bottom-left-content-title="Comments" right-content-title="Latest Created Lot List">
       <things-diy-based-form
@@ -147,6 +156,7 @@ OI Screen - Order List
 				'create-btn-tap' : 'createLot',
 				'reset-btn-tap' : 'resetForm',
 				'create-lot.things-ajax-response' : '_transactionResponsed',
+				'label-model.things-ajax-response' : '_labelModelResponsed'
 			},
 
 			behaviors: [
@@ -241,8 +251,30 @@ OI Screen - Order List
 			_transactionResponsed: function(event) {
 				this.getLatestLots();
 				this.resetForm();
-				this.lot = event.detail;
 				this.fire('iron-signal', {name : 'refresh-wip'});
+				this.lot = event.detail;
+				// Get Label Model
+				this.$['label-model'].resourceId = this.lot.id;
+				this.$['label-model'].generateRequest();
+			},
+
+			_labelModelResponsed: function(event) {
+				var label = event.detail;
+				var variableData = {
+					'#{company_name}' : 'Hatio Lab.',
+					'#{order_name}' : this.order.name,
+					'#{product_model_name}' : this.order.product_model.name,
+					'#{material_name}' : this.order.material.name,
+					'#{material_desc}' : 'Material Desc',
+					'#{work_date}' : this.lot.work_date,
+					'#{lot_size}' : '' + this.lot.good_qty,
+					'#{lot_name}' : this.lot.name
+				};
+
+				var agent = this.$['print-agent'];
+				agent.label = label;
+				agent.convertData = variableData;
+				agent.printLabel();
 			}
 		});
 	</script>

@@ -67,15 +67,23 @@
         this.$.history.generateRequest();
       },
 
-      printLabel: function(e) {
-        // 클라이언트에서 직접 Agent로 zpl을 보내는 경우.
-        console.log(this.label.model.components);
+      printLabel: function() {
         // 1. Component 추출 
-        var components = JSON.parse(JSON.stringify(this.label.model.components));
-        // 2. TODO convertData --> variables 데이터 변환 
-        // 3. Component --> command로 추출 
-        var command = zpl.revert(components);
+        var model = JSON.parse(this.label.model);
+        var variables = this.convertData;
 
+        // 2. convertData --> variables 데이터 변환 
+        if(model.components) {
+          model.components.forEach(function(component) {
+            var value = variables[component.text];
+            if(value) {
+              component.text = value;
+            }
+          });
+        }
+
+        // 3. Component --> command로 추출 
+        var command = zpl.revert(model.components);
         this.message = {
           'print_name' : 'BIXOLON_SLP_DX420',
           'command' : command
