@@ -24,7 +24,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         --app-drawer-width : 170px;
       }
       .user-menu {
-        background-color:var(--things-secondary-background-color);
+        background-color:rgba(0,0,0,.3);
         padding:5px;
       }
       app-header-layout {
@@ -41,9 +41,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         -webkit-transform: translateZ(0);
         @apply(--layout-flex);
         @apply(--layout-vertical);
-      }
-      #header-form {
-        @apply(--layout-horizontal);
+        padding:15px;
       }
       things-sidebar {
         @apply(--layout-flex);
@@ -61,21 +59,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         top:1px;left:37px;
       }
       app-toolbar {
-        @apply(--things-oi-header)
+        @apply(--things-oi-header);
       }
-      paper-toolbar {
-        background-color:var(--things-primary-background-color);
-        height:45px;
+      app-toolbar #fullscreen-btn,app-toolbar #infoBtn{
+        @apply(--things-header-button);
+        color:#41d0ff;
       }
-      paper-toolbar::shadow #topBar {
-        height:45px;
+      app-toolbar #fullscreen-btn{
+        background:url(/images/icon-fullscreen.png) 50% 50% no-repeat;
+      }
+      app-toolbar #fullscreen-btn:focus,app-toolbar #infoBtn:focus{
+        outline:none
+      }
+      paper-toolbar{
+        @apply(--things-oi-search-form);
+        height:initial;
+      }
+      paper-toolbar::shadow #topBar{
+        padding:0;
+        height:initial;
       }
       paper-toolbar .title {
         margin-left:32px !important;
         line-height:initial !important;
       }
-      things-code-combo::shadow label,things-resource-selector::shadow label {
-        @apply(--things-header-label)
+      things-date-picker::shadow paper-icon-button.things-date-picker{
+        background-position:55% -94px;
       }
       things-code-combo::shadow iron-icon.things-combo {
         background-position:54% -43px;
@@ -86,6 +95,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       #vertical-div {
         @apply(--layout-vertical);
       }
+      things-sidebar::shadow .brand{
+        background:url(/images/icon-brand.png) no-repeat #1D4667;
+      }
+      things-profile{
+        background-color:transparent;
+      }
+      paper-toolbar things-date-picker,paper-toolbar things-code-combo,paper-toolbar things-resource-selector{
+        width:47%;
+        float:left;
+      }
+      .orderinfo{
+        width:20%;
+      }
+      .routinginfo{
+        width:80%;
+      }
+      span.subtitle{
+        @apply(--things-subtitle);
+      }
+      span.subtitle:before{
+        @apply(--things-subtitle-icon);
+      }
+      things-wip-routing-detail::shadow things-wip-routing-detail-scrollable{
+        width:100%;
+      }
     </style>
 
     <!-- form validators -->
@@ -95,8 +129,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!-- things event mananger -->
     <things-event-manager 
       events = '[{"name": "success","function":"showToastInfo"},
-                {"name": "failure","function" : "showToastConfim"},
-                {"name": "refresh-wip","function" : "refreshWip"}]'>
+                {"name": "failure","function" : "showToastConfim"}]'>
     </things-event-manager>
     <!-- local storage -->
     <iron-localstorage 
@@ -147,7 +180,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <paper-tooltip for="fullscreen-btn" offset="0">
               <things-i18n-msg msgid="button.fullscreen">Full Screen</things-i18n-msg>
             </paper-tooltip>
-            <paper-icon-button id="infoBtn" icon="info" onclick="document.getElementById('informationContainer').toggle()"></paper-icon-button>
+            <paper-icon-button id="infoBtn" icon="icons:error-outline" onclick="document.getElementById('informationContainer').toggle()"></paper-icon-button>
           </app-toolbar>
           <paper-toolbar>
             <form is="iron-form" id="header-form" method="post" action="/form/handler">
@@ -199,18 +232,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <div id="scrollingRegion">
           <iron-collapse id ="informationContainer" opened class="layout horizontal">
-            <div id="vertical-div" class ="flex-1">
-              <span>Actual Status of Order</span>
-              <things-wip-order-info id="order-actual" order="[[globals.order]]"></things-wip-order-info>
+            <div class="orderinfo">
+              <span class="subtitle">order informatin</span>
+              <things-wip-order-info order="[[globals.wip.order]]"></things-wip-order-info>
             </div>
 
-            <div class ="flex-4">
-              <span>Work In Process</span>
-              
+            <div class="routinginfo">
+              <span class="subtitle">routing information</span>
+              <!-- {{globals.order.product_model.routing_id}}" -->
               <things-wip-routing-detail
-                id="wip"
-                search-url ="work_orders/:id/wip"
-                resource-id ="{{globals.order.id}}"
+                search-url ="routings/:id/routing_details"
+                resource-id ="4"
                 class="layout vertical flex"
                 show-info="true">
               </things-wip-routing-detail>

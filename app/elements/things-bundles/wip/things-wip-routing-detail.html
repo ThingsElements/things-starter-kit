@@ -3,19 +3,18 @@
 <dom-module id="things-wip-routing-detail">
     <template>
         <style>
-        .container {
-            @apply(--layout-horizontal);
-            overflow-x: hidden;
+        #scrollable-element{
+          overflow-x:hidden
         }
         </style>
-        <things-ajax auto id="wip-search" method="GET" resource-url="[[searchUrl]]" resource-id="[[resourceId]]" last-response="{{lastResponse}}">
+        <things-ajax auto id="label-search" method="GET" resource-url="[[searchUrl]]" resource-id="[[resourceId]]" last-response="{{lastResponse}}">
         </things-ajax>
         <div class="container">
-            <paper-icon-button icon="arrow-back" on-tap="moveLeft"></paper-icon-button>
+            <!-- <paper-icon-button icon="arrow-back" on-tap="moveLeft"></paper-icon-button> -->
             <div id="scrollable-element" class="container">
                 <things-wip-routing-detail-scrollable id="scrollable" scroll-target="scrollable-element" show-info="[[showInfo]]"></things-wip-routing-detail-scrollable>
             </div>
-            <paper-icon-button icon="icons:arrow-forward" on-tap="moveRight"></paper-icon-button>
+            <!-- <paper-icon-button icon="icons:arrow-forward" on-tap="moveRight"></paper-icon-button> -->
         </div>
     </template>
     <script>
