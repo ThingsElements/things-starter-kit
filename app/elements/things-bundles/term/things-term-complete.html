@@ -7,10 +7,10 @@
 <link rel="import" href="things-lot-based-transaction-behavior.html">
 
 <!--
-  OI - Instock 트랜잭션 (입고)
+  OI - Complete Transaction
 -->
 
-<dom-module id="things-term-instock">
+<dom-module id="things-term-complete">
   <template>
     <style>
       :host {
@@ -52,7 +52,7 @@
         left-bottom
         id="input-form"
         class="flex"
-        diy-form-name="OI-Instock">
+        diy-form-name="OI-Comment">
       </things-diy-based-form>
 
       <things-term-common-grid
@@ -66,7 +66,7 @@
 
   <script>
     Polymer({
-      is: 'things-term-instock',
+      is: 'things-term-complete',
       
       behaviors: [
         Things.LotBasedTransactionBehavior
@@ -89,7 +89,7 @@
        * Life Cycle - Ready
        */
       ready: function() {
-        this.transaction = 'INSTOCK';
+        this.transaction = 'COMPLETE';
       },
 
       /**
@@ -107,7 +107,7 @@
           value: operationId
         }, {
           name: 'state',
-          value: 'WAIT_STORE'
+          value: 'FINISH_PROCESS'
         } ];
 
         this.getLatestLotGrid().refreshData();
