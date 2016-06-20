@@ -1,50 +1,239 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 
+<link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
+<link rel="import" href="../../things-meta-view/things-diy-based-form.html">
+
+<link rel="import" href="things-term-common-grid.html">
+<link rel="import" href="things-lot-based-transaction-behavior.html">
+
 <!--
-포장화면
+  OI - MOVE LOT 트랜잭션 
 -->
 
 <dom-module id="things-term-packing">
-	<template>
-		<style>
-			:host {
-				display: block;
-				@apply(--layout-vertical);
-				@apply(--layout-flex);
-			}
-			things-layout-hermes {
-				@apply(--layout-flex);
-			}
-		</style>
-		
-		<things-layout-hermes>
-			<things-diy-based-grid
-				left-top
-				class="flex"
-				diy-grid-name="OI-Test-Defects">
-			</things-diy-based-grid>
+  <template>
+    <style>
+      :host {
+        display: block;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+      }
+      things-layout-hermes {
+        @apply(--layout-flex);
+      }
+    </style>
 
-			<things-diy-based-grid
-				left-bottom
-				class="flex"
-				diy-grid-name="OI-WorkOrders">
-			</things-diy-based-grid>
+    <things-ajax
+      id="validate-lot"
+      resource-action="create"
+      resource-url="lot_trxs/VALIDATE/transaction"
+      last-response="{{lot}}">
+    </things-ajax>
 
-			<things-diy-based-form
-				right
-				class="flex"
-				diy-form-name="OI-LotAssy">
-			</things-diy-based-form>
-		</things-layout-hermes>
+    <things-ajax
+      id="transaction"
+      resource-action="create"
+      resource-url="[[transactionUrl]]">
+    </things-ajax>
 
-	</template>
-	<script>
-		(function() {
-			'use strict';
+    <things-layout-hermes 
+      top-left-content-title="Lot Information" 
+      bottom-left-content-title="Packing List" 
+      right-content-title="Latest Lot List">
+      
+      <things-diy-based-form
+        left-top
+        on-keypress="handleKeyPress"
+        id="lot-info-form"
+        class="flex"
+        diy-form-name="OI-NameField"
+        buttons="[[buttons]]">
+      </things-diy-based-form>
+      
+      <things-diy-based-grid 
+        left-bottom
+        id="packing-list-grid"
+        class="flex"
+        items="[[items]]"
+        diy-grid-name="OI-PackingList">
+      </things-diy-based-grid>
 
-			Polymer({
-				is: 'things-term-packing'
-			});
-		})();
-	</script>
+      <things-term-common-grid
+        right
+        id="latest-lot-grid"
+        class="flex"
+        query-fields="[[latestLotQueryFields]]">
+      </things-term-common-grid>
+    </things-layout-hermes>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'things-term-packing',
+      
+      behaviors: [
+        Things.LotBasedTransactionBehavior
+      ],
+
+      properties: {
+      	
+      	/**
+      	 * packing list items
+      	 *
+      	 * grid에 표시될 items array
+      	 */
+      	items: {
+      		type: Array,
+      		value: []
+      	},
+
+      	/**
+      	 * 현재 packing list에 포함된 items 수
+      	 */
+      	itemsCount: {
+      		type: Number,
+      		value: 0
+      	}
+      },
+
+      observers: [
+        'lotListConditionsChanged(orderId,operationId)'
+      ],
+
+      listeners: {
+        'process-btn-tap' : 'lotTransaction',
+        'transaction.things-ajax-response' : 'transactionResponsed',
+        'things-grid-configured' : 'latestLotGridConfigured'
+      },
+
+      /**
+       * Life Cycle - Ready
+       */
+      ready: function() {
+        this.transaction = 'PACKING';
+      },
+
+      /**
+       * Latest Lot List 검색 조건 변경시 
+       *
+       * @param {String} orderId
+       * @param {String} operationId
+       */
+      lotListConditionsChanged: function(orderId, operationId) {
+        this.latestLotQueryFields = [ {
+          name: 'work_order_id',
+          value: orderId
+        }, {
+          name: 'operation_id',
+          value: operationId
+        }, {
+          name: 'state',
+          value: 'PACKING'
+        } ];
+
+        this.getLatestLotGrid().refreshData();
+      },
+
+      /**
+       * Latest Lot Grid 변경시
+       */
+      latestLotGridConfigured: function(event) {
+        this.getLatestLotGrid().refreshData();
+      },
+
+      /**
+       * Lot Information Form
+       */
+      getLotInfoForm: function() {
+        return this.$['lot-info-form'];
+      },
+
+      /**
+       * Latest Lot List Grid
+       */
+      getLatestLotGrid: function() {
+        return this.$['latest-lot-grid'];
+      },
+
+      /**
+       * Validation Lot Service
+       */
+      getValidateLotService: function() {
+        return this.$['validate-lot'];
+      },
+
+      /**
+       * Transaction Lot Service
+       */
+      getTransactionLotService: function() {
+        return this.$['transaction'];
+      },
+
+      /**
+       * Lot Transaction
+       */
+      lotTransaction: function() {
+        var tranAjax = this.getTransactionLotService();
+
+        var lotIds = this.items.map(function(item) {return item.id});
+        tranAjax.body = { items: lotIds };
+        tranAjax.generateRequest();
+      },
+
+      /**
+       * 트랜잭션 성공시 
+       *
+       * @param {Object} event
+       */
+      transactionResponsed: function(event) {
+        this.refreshLatestLots();
+        this.resetForm();
+        this.fire('iron-signal', {name : 'refresh-wip'});
+        this.items = [];
+      },
+
+      /**
+       * Enter event 발생시 data search
+       */
+      handleKeyPress: function(event) {
+      	event.preventDefault();
+        var code = event.keyCode;
+
+        if(code == 13) {
+          this.validateLot();
+        }
+      },
+
+      /**
+       * things-lot-based-transaction-behavior override
+       *
+       * lot id 검색 후 중복되지 않은 lot정보를 grid에 입력합니다.
+       * server로 넘겨줄 items를 가공
+       */
+			lotChanged: function(lot) {
+        var packQty = 3; //TODO 최대수량 서버에서 받아 오기 
+        var newItems = JSON.parse(JSON.stringify(this.items));
+
+        if(this.items.length < packQty) {
+
+        	/**
+        	 * id 중복 체크 후 중복이면 return
+        	 */
+        	for(var i = 0; i < this.items.length; i++) {
+        		if(this.items[i].id == lot.id) {
+        			return;
+        		}
+        	}
+
+        	newItems.push(lot);
+        	this.items = newItems;
+      	}
+
+      	if(this.items.length >= packQty) {
+      		this.lotTransaction();
+      	}
+      }
+
+    });
+  </script>
 </dom-module>
