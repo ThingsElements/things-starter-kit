@@ -106,9 +106,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         float:left;
       }
       .orderinfo{
+        flex-1;
         width:20%;
       }
       .routinginfo{
+        flex-4;
         width:80%;
       }
       span.subtitle{
@@ -241,8 +243,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <span class="subtitle">routing information</span>
               <!-- {{globals.order.product_model.routing_id}}" -->
               <things-wip-routing-detail
-                search-url ="routings/:id/routing_details"
-                resource-id ="4"
+                id="wip"
+                search-url ="work_orders/:id/wip"
+                resource-id ="{{globals.order.id}}"
                 class="layout vertical flex"
                 show-info="true">
               </things-wip-routing-detail>

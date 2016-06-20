@@ -59,9 +59,9 @@
         }
         </style>
         <div id="scrollable-element" class="container">
-            <template id="operRepeat" is="dom-repeat" items="[[finalItem]]" class="layout vertical">
-                <div id="information" class$="[[item.operation.type]]">
-                    <strong hidden="[[item.arrow]]">[[item.operation.name]]</strong> [[item.totalPlans]] / <span>[[item.completedPlans]]</span>
+            <template id="operRepeat" is="dom-repeat" items="[[items]]" class="layout vertical">
+                <div id="information" class$="[[item.operation.oper_type]]">
+                    <strong hidden="[[item.arrow]]">[[item.operation.name]]</strong> [[item.plan_qty]] / <span>[[item.actual_qty]]</span>
                     <div class="icon-arrow"></div>
                 </div>
             </template>
@@ -123,9 +123,9 @@
             }
         },
 	    
-	    listeners: {
-	      'iron-resize': '_onIronResize'
-	    },
+	    // listeners: {
+	    //   'iron-resize': '_onIronResize'
+	    // },
 
         ready: function(){
             this.$.operRepeat.addEventListener("dom-change", function(event){
@@ -183,22 +183,22 @@
             this.scroll(this.movePosition, 0);
         },
 
-	    get parent() {
-	      if (this.parentNode.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
-	        return this.parentNode.host;
-	      }
-	      return this.parentNode;
-	    },
+	   // parent : function() {
+	   //    if (this.parentNode.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+	   //      return this.parentNode.host;
+	   //    }
+	   //    return this.parentNode;
+	   //  },
 
-	    _onIronResize: function() {
-	    	if(this.items && this.items.length > 0) {
-		      this.x = Math.floor(this.parent.offsetWidth);
-		      this.y = 0;
-		      this.translate3d(this.x + 'px', this.y + 'px', 0);
-		      this.calcMoveLength(this.scrollToIndex);
-		      this.scroll(this.movePosition, 0);
-	    	}
-	    }
+	    // _onIronResize: function() {
+	    // 	if(this.items && this.items.length > 0) {
+		   //    this.x = Math.floor(this.parent.offsetWidth);
+		   //    this.y = 0;
+		   //    this.translate3d(this.x + 'px', this.y + 'px', 0);
+		   //    this.calcMoveLength(this.scrollToIndex);
+		   //    this.scroll(this.movePosition, 0);
+	    // 	}
+	    // }
     });
     </script>
 </dom-module>
