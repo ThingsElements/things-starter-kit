@@ -82,6 +82,7 @@
 
       listeners: {
         'process-btn-tap' : 'lotTransaction',
+        'validate-lot.things-ajax-error' : 'validationError',
         'transaction.things-ajax-response' : 'transactionResponsed',
         'things-grid-configured' : 'latestLotGridConfigured'
       },
@@ -186,16 +187,25 @@
       },
 
       /**
+       * 트랜잭션 에러시 
+       *
+       * @param {Object} event
+       */
+      validationError: function(event) {
+        event.cancelBubble = true;
+        var response = event.detail.request.xhr.response;
+        this.openInfoMsg({ title : 'Validation Error!', text : response.msg, type : 'info', timer : 5000 });
+      },      
+
+      /**
        * Enter event 발생시 data search
        */
       handleKeyPress: function(event) {
         var code = event.keyCode;
-
         if(code == 13) {
           this.validateLot();
         }
-      }      
-
+      }
     });
   </script>
 </dom-module>
