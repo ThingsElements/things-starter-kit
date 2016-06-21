@@ -319,14 +319,14 @@
 
         for (var i = 0; i < examItems.length; i++) {
           var examItem = examItems[i];
+          examItem.exam_item_id = examItem.id;
+          delete examItem['id'];
+          delete examItem['failure'];
+          delete examItem['exam_type'];
+          delete examItem['description'];
+
           if(examItem.failure == 'true') {
-            //server에 전달할 success parameter를 생성
             examItem.success = false;
-            examItem.exam_item_id = examItem.id;
-            delete examItem['id'];
-            delete examItem['failure'];
-            delete examItem['exam_type'];
-            delete examItem['description'];
 
             var tempArry = this.examItemDefectMap[examItem.exam_item_id];
             tempArry.forEach(function(temp) { examItemDefect.push(temp);});
