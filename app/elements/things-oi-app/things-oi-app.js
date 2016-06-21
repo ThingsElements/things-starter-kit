@@ -9,6 +9,14 @@ Polymer({
     properties:{
         selectedMenu : {
             type: Object
+        },
+        isFullscreen:{
+            type: Boolean,
+            value: false
+        },
+        hideStep:{
+            type: Number,
+            value: 1
         }
     },
     behaviors:[
@@ -26,11 +34,11 @@ Polymer({
         }.bind(this));
     },
     _fullScreenTap: function () {
-        this.$.informationContainer.opened = !this.$.informationContainer.opened;
+        this.isFullscreen  = !this.isFullscreen;
+        this.$.informationContainer.opened = !this.isFullscreen;
         this.target = this.$.contentArea;
         this.toggleFullscreen();
     },
-
     showToast : function(msg){
         this.$.infoToast.text = msg;
         this.$.infoToast.show();
@@ -49,7 +57,23 @@ Polymer({
     refreshWip: function(e) {
         this.$.wip.refresh();
         this.$['order-actual'].refresh();
-    }
+    },
+    _hideInfoContent : function (e) {
+        var informationContainer = document.getElementById('informationContainer');
+        var searchBar =  document.getElementById('searchToolbar');
+
+        if(this.hideStep==1){
+            informationContainer.opened = false;
+            this.hideStep =2;
+        }else if(this.hideStep==2){
+            searchBar.opened = false;
+            this.hideStep =3;
+        }else if(this.hideStep==3){
+            informationContainer.opened = true;
+            searchBar.opened = true;
+            this.hideStep=1;
+        }
+    },
 
 });
 
