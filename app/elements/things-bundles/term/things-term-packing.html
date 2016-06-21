@@ -36,6 +36,13 @@
       resource-url="[[transactionUrl]]">
     </things-ajax>
 
+    <things-ajax
+      id="packing-model"
+      resource-action="index"
+      resource-url="[[packingModelUrl]]"
+      last-response="{{packingModelInfo}}">
+    </things-ajax>        
+
     <things-layout-hermes 
       top-left-content-title="Lot Search" 
       bottom-left-content-title="Packing List" 
@@ -87,21 +94,41 @@
       		value: []
       	},
 
+        /**
+         * work order id
+         */
         orderId: {
           type: Number
         },
 
+        /**
+         * operation id
+         */
         operationId: {
           type: Number
         },
 
-      	/**
-      	 * 현재 packing list에 포함된 items 수
-      	 */
-      	itemsCount: {
-      		type: Number,
-      		value: 0
-      	}
+        /**
+         * packingModel 호출 url
+         */
+        packingModelUrl: {
+          type: String,
+          computed: '_computePackingQtyUrl(orderId,operationId)'
+        },
+
+        /**
+         * packing-model ajax 호출 return 값
+         */
+        packingModelInfo: {
+          type: Object
+        },
+
+        /**
+         * packingModelInfo에서 찾아 오는 packing 수량
+         */
+        packQty: {
+          type: Number
+        }
       },
 
       observers: [
@@ -121,6 +148,10 @@
         this.transaction = 'PACKING';
       },
 
+      _computePackingQtyUrl: function(orderId, operationId) {
+        return 'packing_models/find/' + orderId + '/' + operationId;
+      },
+
       /**
        * Latest Lot List 검색 조건 변경시 
        *
@@ -128,6 +159,10 @@
        * @param {String} operationId
        */
       lotListConditionsChanged: function(orderId, operationId) {
+        this.$['packing-model'].generateRequest();
+        if(this.packingModelInfo && this.packingModelInfo != '') {
+          this.packQty = this.packingModelInfo.pack_qty;
+        }
         this.orderId = orderId;
         this.operationId = operationId;
         this.latestLotQueryFields = [ {
@@ -227,11 +262,9 @@
        * server로 넘겨줄 items를 가공
        */
 			lotChanged: function(lot) {
-        var packQty = 1; //TODO 최대수량 서버에서 받아 오기 
         var newItems = JSON.parse(JSON.stringify(this.items));
 
-        if(this.items.length < packQty) {
-
+        if(this.items.length < this.packQty) {
         	/**
         	 * id 중복 체크 후 중복이면 return
         	 */
@@ -240,12 +273,11 @@
         			return;
         		}
         	}
-
         	newItems.push(lot);
         	this.items = newItems;
       	}
 
-      	if(this.items.length >= packQty) {
+      	if(this.items.length >= this.packQty) {
       		this.lotTransaction();
       	}
       }
