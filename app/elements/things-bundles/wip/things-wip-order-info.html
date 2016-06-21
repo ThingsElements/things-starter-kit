@@ -2,6 +2,22 @@
 
 <dom-module id="things-wip-order-info">
 	<template>
+		<style>
+			div{
+				margin-top:7px;
+				color:var(--things-primary-text-color);
+			}
+			div label{
+				display:block;
+				margin-bottom:3px;
+				font-size:11px;
+				color:var(--things-primary-text-color);
+				opacity:.7
+			}
+			div strong{
+				color:var(--things-focus-background-color);
+			}
+    </style>
 		<things-ajax
 			id="order-search"
 			resource-action="find"
@@ -10,10 +26,14 @@
 			last-response="{{lastResponse}}">
 		</things-ajax>
 
-		<p>제품: [[lastResponse.material.name]]</p>
-		<p>계획: [[lastResponse.plan_qty]]</p>
-		<p>실적: [[lastResponse.actual_qty]]</p>
-		<p>스크랩: [[lastResponse.scrap_qty]]</p>
+		<div>
+			<label>제품</label>
+			[[lastResponse.material.name]]
+		</div>
+		<div>
+			<label>계획 / 실적 / 스크랩</label>
+			[[lastResponse.plan_qty]] / <strong>[[lastResponse.actual_qty]]</strong> / [[lastResponse.scrap_qty]]
+		</div>
 	</template>
 
 	<script>
