@@ -122,17 +122,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       things-wip-routing-detail::shadow things-wip-routing-detail-scrollable{
         width:100%;
       }
+      #contentArea:-webkit-full-screen  { width: 100% }
+      #contentArea:-moz-full-screen   { width: 100% }
+      #contentArea:-ms-full-screen    { width: 100% }
+      #contentArea:-o-full-screen   { width: 100% }
+      #contentArea:full-screen      { width: 100% }
     </style>
-
-    <!-- form validators -->
-    <things-validators id="validators"></things-validators>
-    <!-- date picker dialog -->
-    <things-date-picker-dialog id="date-picker-dialog"></things-date-picker-dialog>
-    <!-- things event mananger -->
-    <things-event-manager 
-      events = '[{"name": "success","function":"showToastInfo"},
-                {"name": "failure","function" : "showToastConfim"}]'>
-    </things-event-manager>
     <!-- local storage -->
     <iron-localstorage 
       id="localStorage" 
@@ -140,7 +135,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       value="{{storage}}" 
       on-iron-localstorage-load-empty="initializeDefaultStorage">
     </iron-localstorage>
-        
     <!-- OI Layout -->
     <app-drawer-layout responsive-width="{$ responsiveWidth $}">
       <app-drawer swipe-open>
@@ -182,54 +176,56 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <paper-tooltip for="fullscreen-btn" offset="0">
               <things-i18n-msg msgid="button.fullscreen">Full Screen</things-i18n-msg>
             </paper-tooltip>
-            <paper-icon-button id="infoBtn" icon="icons:error-outline" onclick="document.getElementById('informationContainer').toggle()"></paper-icon-button>
+            <paper-icon-button id="infoBtn" icon="icons:error-outline" on-tap="_hideInfoContent"></paper-icon-button>
           </app-toolbar>
-          <paper-toolbar>
-            <form is="iron-form" id="header-form" method="post" action="/form/handler">
-              <things-date-picker
-                id="date-picker"
-                label="Date"
-                value="{{globals.date}}">
-              </things-date-picker>
-              <iron-localstorage name="OI.date" value="{{globals.date}}">
-              </iron-localstorage>
+          <iron-collapse id="searchToolbar" opened>
+            <paper-toolbar>
+              <form is="iron-form" id="header-form" method="post" action="/form/handler">
+                <things-date-picker
+                  id="date-picker"
+                  label="Date"
+                  value="{{globals.date}}">
+                </things-date-picker>
+                <iron-localstorage name="OI.date" value="{{globals.date}}">
+                </iron-localstorage>
 
-              <things-code-combo
-                id="line-selector" 
-                label="Line" 
-                code-name="LINE"
-                value="{{globals.line}}"
-                label-path="description" 
-                value-path="name">
-              </things-code-combo>
-              <iron-localstorage name="OI.line" value="{{globals.line}}">
-              </iron-localstorage>
+                <things-code-combo
+                  id="line-selector" 
+                  label="Line" 
+                  code-name="LINE"
+                  value="{{globals.line}}"
+                  label-path="description" 
+                  value-path="name">
+                </things-code-combo>
+                <iron-localstorage name="OI.line" value="{{globals.line}}">
+                </iron-localstorage>
 
-              <things-resource-selector 
-                id="resource-selector" 
-                label="Operation" 
-                name="operation"
-                obj-value="{{globals.operation}}"
-                resource-type="Entity"
-                resource-name="Operation"
-                resource-title-field="name">
-              </things-resource-selector>
-              <iron-localstorage name="OI.operation" value="{{globals.operation}}">
-              </iron-localstorage>
+                <things-resource-selector 
+                  id="resource-selector" 
+                  label="Operation" 
+                  name="operation"
+                  obj-value="{{globals.operation}}"
+                  resource-type="Entity"
+                  resource-name="Operation"
+                  resource-title-field="name">
+                </things-resource-selector>
+                <iron-localstorage name="OI.operation" value="{{globals.operation}}">
+                </iron-localstorage>
 
-              <things-resource-selector 
-                id="resource-selector" 
-                label="Order" 
-                name="order"
-                obj-value="{{globals.order}}"
-                resource-type="Menu"
-                resource-name="WorkOrder"
-                resource-title-field="name">
-              </things-resource-selector>
-              <iron-localstorage name="OI.order" value="{{globals.order}}">
-              </iron-localstorage>
-            </form>
-          </paper-toolbar>
+                <things-resource-selector 
+                  id="resource-selector" 
+                  label="Order" 
+                  name="order"
+                  obj-value="{{globals.order}}"
+                  resource-type="Menu"
+                  resource-name="WorkOrder"
+                  resource-title-field="name">
+                </things-resource-selector>
+                <iron-localstorage name="OI.order" value="{{globals.order}}">
+                </iron-localstorage>
+              </form>
+            </paper-toolbar>
+          </iron-collapse>
         </app-header>
 
         <div id="scrollingRegion">
@@ -254,21 +250,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <iron-pages attr-for-selected="data-route" selected="{{route}}" id="content">
             <div class ="layout flex"></div>
           </iron-pages>
-        </div>        
+        </div>
+        <!-- form validators -->
+        <things-validators id="validators"></things-validators>
+        <!-- date picker dialog -->
+        <things-date-picker-dialog id="date-picker-dialog"></things-date-picker-dialog>
+        <!-- things event mananger -->
+        <things-event-manager 
+          events = '[{"name": "success","function":"showToastInfo"},
+                    {"name": "failure","function" : "showToastConfim"}]'>
+        </things-event-manager>
+        <!-- full dialog -->
+        <things-full-dialog id='common-full-dialog'></things-full-dialog>
+        <!-- resource dialog -->
+        <things-resource-dialog id='resource-dialog'></things-resource-dialog>
+        <!-- confirm toast -->
+        <paper-toast id="confirmToast" class="Toast" duration="8000">
+          <span class="Toast-button" role="button" tabindex="0" on-tap="onConfirmToastTap">OK</span>
+        </paper-toast>
+        <!-- info toast -->
+        <paper-toast id="infoToast" class="Toast" duration="1000"></paper-toast>      
       </app-header-layout>
     
     </app-drawer-layout>
-    
-    <!-- full dialog -->
-    <things-full-dialog id='common-full-dialog'></things-full-dialog>
-    <!-- resource dialog -->
-    <things-resource-dialog id='resource-dialog'></things-resource-dialog>
-    <!-- confirm toast -->
-    <paper-toast id="confirmToast" class="Toast" duration="8000">
-      <span class="Toast-button" role="button" tabindex="0" on-tap="onConfirmToastTap">OK</span>
-    </paper-toast>
-    <!-- info toast -->
-    <paper-toast id="infoToast" class="Toast" duration="1000"></paper-toast>
   </template>
     
   <script src="things-oi-app.js"></script>
