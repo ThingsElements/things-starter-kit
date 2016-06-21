@@ -280,12 +280,10 @@
         var dataSet = grid.dataSource();
         var rowCount = dataSet.rowCount();
         dataSet.insertRow(0, {
-          exam_item_id: this.prevExamItemId,  
+          exam_result_id: this.prevExamItemId,  
           rank : rowCount + 1,
           defect_type : '', 
           defect_code: '', 
-          operation_id: '', 
-          routing_id: '', 
           defect_comment: ''
         });
       },
