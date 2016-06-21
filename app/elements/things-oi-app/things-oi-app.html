@@ -122,11 +122,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       things-wip-routing-detail::shadow things-wip-routing-detail-scrollable{
         width:100%;
       }
-      #contentArea:-webkit-full-screen  { width: 100% }
-      #contentArea:-moz-full-screen   { width: 100% }
-      #contentArea:-ms-full-screen    { width: 100% }
-      #contentArea:-o-full-screen   { width: 100% }
-      #contentArea:full-screen      { width: 100% }
+      #drawerArea:-webkit-full-screen  { width: 100% }
+      #drawerArea:-moz-full-screen   { width: 100% }
+      #drawerArea:-ms-full-screen    { width: 100% }
+      #drawerArea:-o-full-screen   { width: 100% }
+      #drawerArea:full-screen      { width: 100% }
     </style>
     <!-- local storage -->
     <iron-localstorage 
@@ -136,8 +136,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       on-iron-localstorage-load-empty="initializeDefaultStorage">
     </iron-localstorage>
     <!-- OI Layout -->
-    <app-drawer-layout responsive-width="{$ responsiveWidth $}">
-      <app-drawer swipe-open>
+    <app-drawer-layout id="drawerArea" esponsive-width="{$ responsiveWidth $}">
+      <app-drawer id="appDrawer" swipe-open>
         <things-sidebar
           id ="sidebar"
           menu-category ="TERMINAL"
@@ -250,7 +250,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <iron-pages attr-for-selected="data-route" selected="{{route}}" id="content">
             <div class ="layout flex"></div>
           </iron-pages>
-        </div>
+        </div>   
+        </app-header-layout>
         <!-- form validators -->
         <things-validators id="validators"></things-validators>
         <!-- date picker dialog -->
@@ -258,7 +259,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <!-- things event mananger -->
         <things-event-manager 
           events = '[{"name": "success","function":"showToastInfo"},
-                    {"name": "failure","function" : "showToastConfim"}]'>
+                    {"name": "failure","function" : "showToastConfim"},
+                    {"name": "refresh-wip","function":"refreshWip"}]'>
         </things-event-manager>
         <!-- full dialog -->
         <things-full-dialog id='common-full-dialog'></things-full-dialog>
@@ -269,9 +271,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <span class="Toast-button" role="button" tabindex="0" on-tap="onConfirmToastTap">OK</span>
         </paper-toast>
         <!-- info toast -->
-        <paper-toast id="infoToast" class="Toast" duration="1000"></paper-toast>      
-      </app-header-layout>
-    
+        <paper-toast id="infoToast" class="Toast" duration="1000"></paper-toast>   
     </app-drawer-layout>
   </template>
     
