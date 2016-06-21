@@ -84,6 +84,20 @@
       properties: {
 
         /**
+         * operation id
+         */
+        operationId: {
+          type: Number
+        },
+        
+        /**
+         * order id
+         */
+        orderId: {
+          type: Number
+        },
+
+        /**
          * 검사 항목 list
          */
         examItems: {
@@ -150,8 +164,11 @@
         }
       },
 
+      observers: [
+        'lotListConditionsChanged(orderId,operationId)'
+      ],      
+
       listeners: {
-        'search-btn-tap' : 'getLotInfoForm',
         'process-btn-tap' : 'lotTransaction',
         'search-exam-items.things-ajax-response': '_examItemsResponse',
         'transaction.things-ajax-response' : 'transactionResponsed',
@@ -167,12 +184,30 @@
       },
 
       /**
+       * Latest Lot List 검색 조건 변경시 
+       *
+       * @param {String} orderId
+       * @param {String} operationId
+       */
+      lotListConditionsChanged: function(orderId, operationId) {
+        this.orderId = orderId;
+        this.operationId = operationId;
+      },      
+
+      /**
        * Lot Information Form
        */
       getLotInfoForm: function() {
         this.$['search-exam-items'].generateRequest();
         return this.$['lot-info-form'];
-      },    
+      },
+
+      /**
+       * Validation Lot Service
+       */
+      getValidateLotService: function() {
+        return this.$['validate-lot'];
+      },      
 
       /**
        * Transaction Lot Service
@@ -297,7 +332,9 @@
         tranAjax.body = {
           lot_id : lotData.id,
           exam_items: examItems,
-          exam_item_defects: examItemDefect
+          exam_item_defects: examItemDefect,
+          operation_id: this.operationId,
+          work_order_id: this.orderId
         };
 
         tranAjax.generateRequest();
@@ -310,7 +347,7 @@
         var code = event.keyCode;
 
         if(code == 13) {
-          this.getLotInfoForm();
+          this.validateLot();
         }
       }      
 
