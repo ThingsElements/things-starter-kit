@@ -331,8 +331,8 @@
 
         tranAjax.body = {
           lot_id : lotData.id,
-          exam_items: examItems,
-          exam_item_defects: examItemDefect,
+          exam_items: JSON.stringify(examItems),
+          exam_item_defects: JSON.stringify(examItemDefect),
           operation_id: this.operationId,
           work_order_id: this.orderId
         };
