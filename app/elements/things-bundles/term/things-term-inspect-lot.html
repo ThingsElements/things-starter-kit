@@ -3,7 +3,6 @@
 <link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-form.html">
 
-<link rel="import" href="things-term-common-grid.html">
 <link rel="import" href="things-lot-based-transaction-behavior.html">
 
 <!--
@@ -36,111 +35,144 @@
       resource-url="[[transactionUrl]]">
     </things-ajax>
 
+    <things-ajax
+      id="search-exam-items"
+      resource-action="index"
+      resource-url="[[examItemsUrl]]">
+    </things-ajax>
+
     <things-layout-athena 
       left-content-title="Lot Information" 
-      top-right-content-title="Check List" 
-      bottom-right-title="Defect List">
+      right-top-content-title="Check List" 
+      right-bottom-content-title="Defect List">
       <things-diy-based-form 
         left
         on-keypress="handleKeyPress"
         id="lot-info-form"
         class="flex"
-        diy-form-name="OI-LotInfo"
-        buttons="[[buttons]]">
+        buttons="[[formButtons]]"
+        diy-form-name="OI-LotInfo">
       </things-diy-based-form>
       
-      <things-diy-based-form 
+      <things-diy-based-grid 
         right-top
-        id="input-form"
+        id="exam-items-grid"
         class="flex"
-        diy-form-name="OI-Move">
-      </things-diy-based-form>
+        items="[[examItems]]"
+        diy-grid-name="OI-InspectLots">
+      </things-diy-based-grid>
 
-      <things-term-common-grid
+      <things-diy-based-grid
         right-bottom
-        id="latest-lot-grid"
+        id="defect-list-grid"
         class="flex"
-        query-fields="[[latestLotQueryFields]]">
-      </things-term-common-grid>
+        diy-grid-name="OI-InspectDefectList"
+        items="[[defectItems]]"
+        buttons="[[gridButtons]]">
+      </things-diy-based-grid>
     </things-layout-athena>
   </template>
 
   <script>
     Polymer({
       is: 'things-term-inspect-lot',
-      
+
       behaviors: [
         Things.LotBasedTransactionBehavior
-      ],
-
+      ],      
+      
       properties: {
-      },
 
-      observers: [
-        'lotListConditionsChanged(orderId,operationId)'
-      ],
+        /**
+         * 검사 항목 list
+         */
+        examItems: {
+          type: Array
+        },
+
+        /**
+         * 검사 항목을 transactino 발생 전 까지 담아 놓는 object
+         * 
+         */
+        examItemDefectMap: {
+          type: Object,
+          value: function() {
+            return {};
+          }
+        },
+
+        /**
+         * orderId와 operationId로 ajax url 생성
+         */
+        examItemsUrl: {
+          type: String,
+          computed: '_computeExamItemUrl(orderId,operationId)'
+        },
+
+        /**
+         * defect 정보가 담기는 array
+         */
+        defectItems: {
+          type: Array
+        },
+
+        /**
+         * 이전에 선택했던 examItem의 id
+         */
+        prevExamItemId: {
+          type: String
+        },
+
+        formButtons: {
+          type: Array,
+          value: function() {
+            return [{
+              id: 'search-btn',
+              text: 'search'
+            }]
+          }
+        },
+
+        /**
+         * button setting
+         */
+        gridButtons: {
+          type: Array,
+          value: function() {
+            return [{
+              id: 'add-btn',
+              text: 'add'
+            }, {
+              id: 'process-btn',
+              text: 'process'
+            }]
+          }
+        }
+      },
 
       listeners: {
+        'search-btn-tap' : 'getLotInfoForm',
         'process-btn-tap' : 'lotTransaction',
+        'search-exam-items.things-ajax-response': '_examItemsResponse',
         'transaction.things-ajax-response' : 'transactionResponsed',
-        'things-grid-configured' : 'latestLotGridConfigured'
-      },
+        'exam-items-grid.things-grid-row-data-select' : 'rowSelected',
+        'things-grid-handle-addrow' : 'addDefectRow'
+      },      
 
       /**
        * Life Cycle - Ready
        */
       ready: function() {
-        this.transaction = 'MOVE';
-      },
-
-      /**
-       * Latest Lot List 검색 조건 변경시 
-       *
-       * @param {String} orderId
-       * @param {String} operationId
-       */
-      lotListConditionsChanged: function(orderId, operationId) {
-        this.latestLotQueryFields = [ {
-          name: 'work_order_id',
-          value: orderId
-        }, {
-          name: 'operation_id',
-          value: operationId
-        }, {
-          name: 'state',
-          value: 'FINISH_PROCESS'
-        } ];
-
-        this.getLatestLotGrid().refreshData();
-      },
-
-      /**
-       * Latest Lot Grid 변경시
-       */
-      latestLotGridConfigured: function(event) {
-        this.getLatestLotGrid().refreshData();
+        this.transaction = 'INSPECT';
       },
 
       /**
        * Lot Information Form
        */
       getLotInfoForm: function() {
+        this.$['search-exam-items'].generateRequest();
         return this.$['lot-info-form'];
-      },
-
-      /**
-       * Latest Lot List Grid
-       */
-      getLatestLotGrid: function() {
-        return this.$['latest-lot-grid'];
-      },
-
-      /**
-       * Validation Lot Service
-       */
-      getValidateLotService: function() {
-        return this.$['validate-lot'];
-      },
+      },    
 
       /**
        * Transaction Lot Service
@@ -150,32 +182,125 @@
       },
 
       /**
-       * Lot Transaction
+       * examItems에서 id를 추출하고 id를 key로 examItemDefectMap을 초기화
        */
-      lotTransaction: function() {
-        var inputData = this.$['input-form'].getForm().serializeMyForm();
-        var lotData = this.getLotInfoForm().getForm().serializeMyForm();
-        var tranAjax = this.getTransactionLotService();
+      _examItemsResponse: function(event) {
+        var examItems = event.detail;
 
-        tranAjax.body = {
-          lot_id : lotData.id,
-          comments : inputData.comments,
-          operation_id : inputData.next_operation_id
-        };
-
-        tranAjax.generateRequest();
+        for(var i = 0 ; i < examItems.length ; i++) {
+          var examItem = examItems[i];
+          this.examItemDefectMap[examItem.id] = [];
+        }
+        this.examItems = examItems;
       },
 
       /**
-       * 트랜잭션 성공시 
-       *
-       * @param {Object} event
+       * orderId와 operationId로 exam_items 기준 정보를 찾는 url 계산
        */
-      transactionResponsed: function(event) {
-        this.refreshLatestLots();
-        this.resetForm();
-        this.$['input-form'].getForm().resetMyForm();
-        this.fire('iron-signal', {name : 'refresh-wip'});
+      _computeExamItemUrl: function(orderId, operationId) {
+        return 'exam_items/find/' + orderId + '/' + operationId;
+      },
+
+      /**
+       * defect-list-grid의 row 클릭시 발생하는 event
+       * 선택한 row의 아이디를 통해 개별 data를 defectItems에 초기화 합니다.
+       */
+      rowSelected: function(event) {
+        var rowId = event.detail.id;
+
+        // 이전에 선택한 row와 현재 선택한 row가 같다면 return
+        if(rowId == this.prevExamItemId) {
+          return;
+        }
+
+        //prevExamItemId가 없으면 현재 선택한 row의 id로 초기화 (row를 처음 클릭했을 시)
+        if(!this.prevExamItemId) {
+          this.prevExamItemId = rowId;
+          return;
+        }
+
+        var grid = this.$['defect-list-grid'].getGrid().getGridObject();
+        grid.commit();
+
+        var dataSet = grid.dataSource();
+        var rowCount = dataSet.rowCount();
+        var items = rowCount == 0 ? [] : dataSet.getRowObjects(0, rowCount);
+        this.examItemDefectMap[this.prevExamItemId] = items;
+        this.defectItems = this.examItemDefectMap[rowId];
+        this.prevExamItemId = rowId;
+      },
+
+      /**
+       * row add event 발생시 실행
+       * row를 추가하면서 exam_items_id와 rank를 초기화 합니다.
+       */
+      addDefectRow: function(event) {
+        event.preventDefault();
+        
+        if(!this.prevExamItemId) {
+          return;
+        }
+        
+        var grid = this.$['defect-list-grid'].getGrid().getGridObject();
+        var dataSet = grid.dataSource();
+        var rowCount = dataSet.rowCount();
+        dataSet.insertRow(0, {
+          exam_item_id: this.prevExamItemId,  
+          rank : rowCount + 1,
+          defect_type : '', 
+          defect_code: '', 
+          operation_id: '', 
+          routing_id: '', 
+          defect_comment: ''
+        });
+      },
+
+      /**
+       * Lot Transaction
+       */
+      lotTransaction: function() {
+        if(!this.prevExamItemId) {
+          return;
+        }
+
+        //현재 선택된 그리드의 데이터를 커밋
+        var grid = this.$['defect-list-grid'].getGrid().getGridObject();
+        try {
+          grid.commit();
+        } catch (e) {
+          console.error(e);
+          return;
+        }
+
+        var dataSet = grid.dataSource();
+        var rowCount = dataSet.rowCount();
+        var items = rowCount == 0 ? [] : dataSet.getRowObjects(0, rowCount);
+        this.examItemDefectMap[this.prevExamItemId] = items;
+        this.defectItems = this.examItemDefectMap[this.prevExamItemId];
+
+        var lotData = this.getLotInfoForm().getForm().serializeMyForm();
+        var tranAjax = this.getTransactionLotService();
+        var examItemsDs = this.$['exam-items-grid'].getGrid().getGridObject().dataSource();
+        var examItems = examItemsDs.getRowObjects(0, examItemsDs.rowCount());
+        var examItemDefect = [];
+
+        for (var i = 0; i < examItems.length; i++) {
+          var examItem = examItems[i];
+          if(examItem.failure == 'true') {
+            //server에 전달할 success parameter를 생성
+            examItem.success = false;
+            var tempArry = this.examItemDefectMap[examItem.id];
+            tempArry.forEach(function(temp) { examItemDefect.push(temp);});
+          }
+        }
+
+        tranAjax.body = {
+          lot_id : lotData.id,
+          exam_items: examItems,
+          exam_item_defects: examItemDefect
+        };
+
+        tranAjax.generateRequest();
       },
 
       /**
@@ -185,10 +310,14 @@
         var code = event.keyCode;
 
         if(code == 13) {
-          this.validateLot();
+          this.getLotInfoForm();
         }
-      }
+      }      
 
     });
   </script>
 </dom-module>
+
+
+
+
