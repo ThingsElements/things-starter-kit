@@ -122,6 +122,7 @@ Things.LotBasedTransactionBehaviorImpl = {
 	],
 
 	listeners: {
+		'validate-lot.things-ajax-error' : 'validationError',
 		'search-btn-tap' : 'validateLot',
 		'reset-btn-tap' : 'resetForm'
 	},
@@ -210,8 +211,18 @@ Things.LotBasedTransactionBehaviorImpl = {
 	 */
 	lotChanged: function(lot) {
 		this.getLotInfoForm().getForm().setFormData(lot);
-	}
+	},
 
+	/**
+	* 트랜잭션 에러시 
+	*
+	* @param {Object} event
+	*/
+	validationError: function(event) {
+		event.cancelBubble = true;
+		var response = event.detail.request.xhr.response;
+		this.openInfoMsg({ title : 'Validation Error!', text : response.msg, type : 'info', timer : 5000 });
+	}
 };
 
 Things.LotBasedTransactionBehavior = [
