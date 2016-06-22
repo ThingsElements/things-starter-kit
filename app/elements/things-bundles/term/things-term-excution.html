@@ -160,10 +160,10 @@
         
         tranAjax.body = {
           lot_id : lotData.id,
-          operation_id: lotData.operation_id,
           work_order_id: lotData.work_order_id,
-          comments : inputData.comments,
-          next_operation: inputData.next_operation
+          operation_id: lotData.operation_id,
+          next_operation_id: inputData.next_operation ? inputData.next_operation.id : '',
+          comments : inputData.comments
         };
 
         tranAjax.generateRequest();
