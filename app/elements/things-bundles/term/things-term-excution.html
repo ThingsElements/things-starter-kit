@@ -36,7 +36,32 @@
       resource-url="[[transactionUrl]]">
     </things-ajax>
 
-    <things-layout-hermes top-left-content-title="Lot Information" bottom-left-content-title="Lock Code" right-content-title="Latest Processed Lot List">
+    <things-layout-hermes 
+      top-left-content-title="Lot Information" 
+      bottom-left-content-title="Input" 
+      right-content-title="Latest Processed Lot List">
+      <things-diy-based-form 
+        left-top
+        on-keypress="handleKeyPress"
+        id="lot-info-form"
+        class="flex"
+        diy-form-name="OI-LotInfo"
+        buttons="[[buttons]]">
+      </things-diy-based-form>
+
+      <things-diy-based-form 
+        left-bottom
+        id="input-form"
+        class="flex"
+        diy-form-name="OI-Excution">
+      </things-diy-based-form>      
+
+      <things-term-common-grid
+        right
+        id="latest-lot-grid"
+        class="flex"
+        query-fields="[[latestLotQueryFields]]">
+      </things-term-common-grid>
     </things-layout-hermes>
   </template>
 
@@ -171,12 +196,10 @@
        */
       handleKeyPress: function(event) {
         var code = event.keyCode;
-
         if(code == 13) {
           this.validateLot();
         }
-      }      
-
+      }
     });
   </script>
 </dom-module>
