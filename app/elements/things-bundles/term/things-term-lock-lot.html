@@ -103,6 +103,10 @@
         }, {
           name: 'operation_id',
           value: operationId
+        }, {
+          name: 'state',
+          operator: 'notin',
+          value: 'SCRAPED,LOCKED'
         }];
 
         this.getLatestLotGrid().refreshData();
