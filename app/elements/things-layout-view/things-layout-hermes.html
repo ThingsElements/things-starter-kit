@@ -13,16 +13,19 @@
       :host {
         display: inline-block;
         @apply(--layout-horizontal);
+        margin-top:20px;
       }
 
       #left {
         @apply(--layout-flex);
         @apply(--layout-vertical);
+        margin-right:15px;
       }
 
       #leftTop {
         @apply(--layout-flex);
-        @apply(--layout-vertical); 
+        @apply(--layout-vertical);
+        margin-bottom:15px;
       }
 
       #leftBottom {
@@ -54,7 +57,7 @@
     <!-- left -->
     <div id="left">
       <!-- top left -->
-      <paper-card id="leftTop">
+      <paper-card id="leftTop" elevation="0">
         <span class="subtitle">[[topLeftContentTitle]]</span>
         <div id="topLeftContent" class="layout-content">
           <content select="[left-top]"></content>
@@ -62,7 +65,7 @@
       </paper-card>
 
       <!-- bottom left -->
-      <paper-card id="leftBottom">
+      <paper-card id="leftBottom" elevation="0">
         <span class="subtitle">[[bottomLeftContentTitle]]</span>
         <div id="bottomLeftContent" class="layout-content">
           <content select="[left-bottom]"></content>
