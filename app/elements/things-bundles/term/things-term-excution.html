@@ -1,0 +1,182 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
+<link rel="import" href="../../things-meta-view/things-diy-based-form.html">
+
+<link rel="import" href="things-term-common-grid.html">
+<link rel="import" href="things-lot-based-transaction-behavior.html">
+
+<!--
+  OI - CREATE START FINISH MOVE transaction
+-->
+
+<dom-module id="things-term-excution">
+  <template>
+    <style>
+      :host {
+        display: block;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+      }
+      things-layout-hermes {
+        @apply(--layout-flex);
+      }
+    </style>
+
+    <things-ajax
+      id="validate-lot"
+      resource-action="create"
+      resource-url="lot_trxs/VALIDATE/transaction"
+      last-response="{{lot}}">
+    </things-ajax>
+
+    <things-ajax
+      id="transaction"
+      resource-action="create"
+      resource-url="[[transactionUrl]]">
+    </things-ajax>
+
+    <things-layout-hermes top-left-content-title="Lot Information" bottom-left-content-title="Lock Code" right-content-title="Latest Processed Lot List">
+    </things-layout-hermes>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'things-term-excution',
+      
+      behaviors: [
+        Things.LotBasedTransactionBehavior
+      ],
+
+      properties: {
+      },
+
+      observers: [
+        'lotListConditionsChanged(orderId,operationId)'
+      ],
+
+      listeners: {
+        'process-btn-tap' : 'lotTransaction',
+        'transaction.things-ajax-response' : 'transactionResponsed',
+        'things-grid-configured' : 'latestLotGridConfigured'
+      },
+
+      /**
+       * Life Cycle - Ready
+       */
+      ready: function() {
+        this.transaction = 'EXCUTION';
+      },
+
+      /**
+       * Latest Lot List 검색 조건 변경시 
+       *
+       * @param {String} orderId
+       * @param {String} operationId
+       */
+      lotListConditionsChanged: function(orderId, operationId) {
+        this.latestLotQueryFields = [ {
+          name: 'work_order_id',
+          value: orderId
+        }, {
+          name: 'operation_id',
+          value: operationId
+        }, {
+          name: 'state',
+          operator: 'notin',
+          value: 'SCRAPED,LOCKED'
+        }];
+
+        this.getLatestLotGrid().refreshData();
+      },
+
+      /**
+       * Latest Lot Grid 변경시
+       */
+      latestLotGridConfigured: function(event) {
+        this.getLatestLotGrid().refreshData();
+      },
+
+      /**
+       * Lot Information Form
+       */
+      getLotInfoForm: function() {
+        return this.$['lot-info-form'];
+      },
+
+      /**
+       * Latest Lot List Grid
+       */
+      getLatestLotGrid: function() {
+        return this.$['latest-lot-grid'];
+      },
+
+      /**
+       * Validation Lot Service
+       */
+      getValidateLotService: function() {
+        return this.$['validate-lot'];
+      },
+
+      /**
+       * Transaction Lot Service
+       */
+      getTransactionLotService: function() {
+        return this.$['transaction'];
+      },
+
+      /**
+       * Lot Transaction
+       */
+      lotTransaction: function() {
+        var inputData = this.$['input-form'].getForm().serializeMyForm();
+        var lotData = this.getLotInfoForm().getForm().serializeMyForm();
+        var tranAjax = this.getTransactionLotService();
+        
+        tranAjax.body = {
+          lot_id : lotData.id,
+          operation_id: lotData.operation_id,
+          work_order_id: lotData.work_order_id,
+          comments : inputData.comments,
+          next_operation: inputData.next_operation
+        };
+
+        tranAjax.generateRequest();
+      },
+
+      /**
+       * 트랜잭션 성공시 
+       *
+       * @param {Object} event
+       */
+      transactionResponsed: function(event) {
+        this.refreshLatestLots();
+        this.resetForm();
+        this.$['input-form'].getForm().resetMyForm();
+      },
+
+      /**
+       * 트랜잭션 성공시 
+       *
+       * @param {Object} event
+       */
+      transactionResponsed: function(event) {
+        this.refreshLatestLots();
+        this.resetForm();
+        this.$['input-form'].getForm().resetMyForm();
+      },
+
+      /**
+       * Enter event 발생시 data search
+       */
+      handleKeyPress: function(event) {
+        var code = event.keyCode;
+
+        if(code == 13) {
+          this.validateLot();
+        }
+      }      
+
+    });
+  </script>
+</dom-module>
