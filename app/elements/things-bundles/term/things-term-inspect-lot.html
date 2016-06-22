@@ -320,10 +320,7 @@
         for (var i = 0; i < examItems.length; i++) {
           var examItem = examItems[i];
           examItem.exam_item_id = examItem.id;
-          delete examItem['id'];
-          delete examItem['failure'];
-          delete examItem['exam_type'];
-          delete examItem['description'];
+          examItem.success = true;
 
           if(examItem.failure == 'true') {
             examItem.success = false;
@@ -331,6 +328,10 @@
             var tempArry = this.examItemDefectMap[examItem.exam_item_id];
             tempArry.forEach(function(temp) { examItemDefect.push(temp);});
           }
+            delete examItem['id'];
+            delete examItem['exam_type'];
+            delete examItem['description'];
+            delete examItem['failure'];
         }
 
         tranAjax.body = {
