@@ -10,7 +10,7 @@
   OI - CREATE START FINISH MOVE transaction
 -->
 
-<dom-module id="things-term-excution">
+<dom-module id="things-term-execute-lot">
   <template>
     <style>
       :host {
@@ -67,7 +67,7 @@
 
   <script>
     Polymer({
-      is: 'things-term-excution',
+      is: 'things-term-execute-lot',
       
       behaviors: [
         Things.LotBasedTransactionBehavior
@@ -90,7 +90,7 @@
        * Life Cycle - Ready
        */
       ready: function() {
-        this.transaction = 'EXCUTION';
+        this.transaction = 'EXECUTE';
       },
 
       /**
@@ -160,24 +160,13 @@
         
         tranAjax.body = {
           lot_id : lotData.id,
-          work_order_id: lotData.work_order_id,
-          operation_id: lotData.operation_id,
-          next_operation_id: inputData.next_operation ? inputData.next_operation.id : '',
+          work_order_id: this.orderId,
+          current_operation_id: this.operationId,
+          next_operation_id: inputData.next_operation,
           comments : inputData.comments
         };
 
         tranAjax.generateRequest();
-      },
-
-      /**
-       * 트랜잭션 성공시 
-       *
-       * @param {Object} event
-       */
-      transactionResponsed: function(event) {
-        this.refreshLatestLots();
-        this.resetForm();
-        this.$['input-form'].getForm().resetMyForm();
       },
 
       /**

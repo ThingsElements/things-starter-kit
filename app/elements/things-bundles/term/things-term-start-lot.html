@@ -159,8 +159,11 @@
 
         tranAjax.body = {
           lot_id : lotData.id,
+          work_order_id : this.orderId,
+          current_operation_id : this.operationId,
+          next_operation_id : inputData.next_operation_id,
           comments : inputData.comments
-        };
+        };        
 
         tranAjax.generateRequest();
       },
