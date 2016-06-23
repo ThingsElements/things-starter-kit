@@ -200,6 +200,7 @@
        */
       packingResponsed: function(event) {
         var packing = event.detail.packing;
+        if(packing.status != 'PACKED') return; 
         this.$['input-form'].getForm().setFormData(packing);
         this.readyToStoreInList = event.detail.items;
       },
