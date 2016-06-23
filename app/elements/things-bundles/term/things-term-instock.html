@@ -118,10 +118,7 @@
         }, {
           name: 'operation_id',
           value: operationId
-        }, {
-          name: 'state',
-          value: 'WAIT_INPUT'
-        } ];
+        }];
 
         this.getLatestLotGrid().refreshData();
       },
@@ -189,7 +186,6 @@
        */
       transactionResponsed: function(event) {
         this.refreshLatestLots();
-        this.resetForm();
         this.$['input-form'].getForm().resetMyForm();
         this.fire('iron-signal', {name : 'refresh-wip'});
       },
