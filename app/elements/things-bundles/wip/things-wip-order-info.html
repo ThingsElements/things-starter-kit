@@ -1,4 +1,5 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/things-i18n-msg/things-i18n-msg.html">
 
 <dom-module id="things-wip-order-info">
 	<template>
@@ -28,12 +29,12 @@
 		</things-ajax>
 
 		<div>
-			<label>제품</label>
+			<label><things-i18n-msg msgid="label.material" auto>Material</things-i18n-msg></label>
 			[[lastResponse.material.name]]
 		</div>
 		<div>
-			<label>계획 / 실적 / 스크랩</label>
-			[[lastResponse.plan_qty]] / <strong>[[lastResponse.actual_qty]]</strong> / [[lastResponse.scrap_qty]]
+			<label><things-i18n-msg msgid="label.plan" auto>Plan</things-i18n-msg> / <things-i18n-msg msgid="label.input" auto>Input</things-i18n-msg> / <things-i18n-msg msgid="label.good" auto>Good</things-i18n-msg> / <things-i18n-msg msgid="label.scrap" auto>Scrap</things-i18n-msg></label>
+			[[lastResponse.plan_qty]] / <strong>[[lastResponse.input_qty]]</strong> / <strong>[[lastResponse.actual_qty]]</strong> / [[lastResponse.scrap_qty]]
 		</div>
 	</template>
 
@@ -42,7 +43,6 @@
 			is: 'things-wip-order-info',
 
 			properties: {
-
 				/**
 				 * resource url
 				 */

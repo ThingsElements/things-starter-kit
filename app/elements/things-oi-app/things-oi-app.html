@@ -174,7 +174,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <!-- <div title></div> -->
             <button id="fullscreen-btn" on-tap="_fullScreenTap"></button>
             <paper-tooltip for="fullscreen-btn" offset="0">
-              <things-i18n-msg msgid="button.fullscreen">Full Screen</things-i18n-msg>
+              <things-i18n-msg msgid="button.fullscreen" auto>Full Screen</things-i18n-msg>
             </paper-tooltip>
             <paper-icon-button id="infoBtn" icon="icons:error-outline" on-tap="_hideInfoContent"></paper-icon-button>
           </app-toolbar>
@@ -231,12 +231,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div id="scrollingRegion">
           <iron-collapse id ="informationContainer" opened class="layout horizontal">
             <div class="orderinfo">
-              <span class="subtitle">Actual Status</span>
+              <span class="subtitle"><things-i18n-msg msgid="title.OrderStatus" auto>Order Status</things-i18n-msg></span>
               <things-wip-order-info id="order-actual" order="[[globals.order]]"></things-wip-order-info>
             </div>
 
             <div class="routinginfo">
-              <span class="subtitle">Work In Process</span>
+              <span class="subtitle"><things-i18n-msg msgid="title.WIP">Work In Process</things-i18n-msg></span>
               <things-wip-routing-detail
                 id="wip"
                 search-url ="work_orders/:id/wip"
