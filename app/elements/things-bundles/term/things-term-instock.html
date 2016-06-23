@@ -36,25 +36,32 @@
       resource-url="[[transactionUrl]]">
     </things-ajax>
 
+    <things-ajax
+      id="search-lots-to-instock"
+      resource-action="index">
+    </things-ajax>    
+
     <things-layout-hermes 
-      top-left-content-title="Lot Information" 
-      bottom-left-content-title="Comment" 
+      top-left-content-title="Packing Information" 
+      bottom-left-content-title="Store In List" 
       right-content-title="Latest Lot List">
-      <things-diy-based-form 
+      <things-diy-based-form
         left-top
         on-keypress="handleKeyPress"
-        id="lot-info-form"
+        id="input-form"
         class="flex"
-        diy-form-name="OI-LotInfo"
+        diy-form-name="OI-Store"
         buttons="[[buttons]]">
       </things-diy-based-form>
       
-      <things-diy-based-form 
+      <things-diy-based-grid 
         left-bottom
-        id="input-form"
+        id="lots-grid"
         class="flex"
-        diy-form-name="OI-Instock">
-      </things-diy-based-form>
+        items="[[readyToStoreInList]]"
+        fixed-column-count="0"
+        diy-grid-name="OI-StoreLots">
+      </things-diy-based-grid>
 
       <things-term-common-grid
         right
@@ -74,6 +81,10 @@
       ],
 
       properties: {
+
+        readyToStoreInList: {
+          type: Object
+        }
       },
 
       observers: [
@@ -82,6 +93,7 @@
 
       listeners: {
         'process-btn-tap' : 'lotTransaction',
+        'search-lots-to-instock.things-ajax-response' : 'packingResponsed',
         'transaction.things-ajax-response' : 'transactionResponsed',
         'things-grid-configured' : 'latestLotGridConfigured'
       },
@@ -90,7 +102,7 @@
        * Life Cycle - Ready
        */
       ready: function() {
-        this.transaction = 'INSTOCK';
+        this.transaction = 'STORE';
       },
 
       /**
@@ -108,7 +120,7 @@
           value: operationId
         }, {
           name: 'state',
-          value: 'WAIT_STORE'
+          value: 'WAIT_INPUT'
         } ];
 
         this.getLatestLotGrid().refreshData();
@@ -154,12 +166,17 @@
        */
       lotTransaction: function() {
         var inputData = this.$['input-form'].getForm().serializeMyForm();
-        var lotData = this.getLotInfoForm().getForm().serializeMyForm();
+        var lotInfo = this.readyToStoreInList;
         var tranAjax = this.getTransactionLotService();
 
         tranAjax.body = {
-          lot_id : lotData.id,
-          comments : inputData.comments
+          work_order_id : this.orderId,
+          packing_id: lotInfo[0].packing_id,
+          current_operation_id: this.operationId,
+          store_code: inputData.store_code,
+          store_id: inputData.store_id,
+          store_location_id: inputData.store_location_id,
+          comments: inputData.comments
         };
 
         tranAjax.generateRequest();
@@ -178,12 +195,33 @@
       },
 
       /**
+       * ajax call listener
+       * input-form과 grid에 response를 맵핑
+       */
+      packingResponsed: function(event) {
+        var packing = event.detail.packing;
+        this.$['input-form'].getForm().setFormData(packing);
+        this.readyToStoreInList = event.detail.items;
+      },
+
+      /**
+       * packingName으로 resourceUrl 계산 및 ajax 호출
+       */
+      validateLot: function() {
+        var packingName = (this.$['input-form'].getForm().serializeMyForm()).name;
+        var lotSearchAjax = this.$['search-lots-to-instock'];
+        lotSearchAjax.resourceUrl = 'packings/' + packingName + '/lots_by_name';
+        lotSearchAjax.generateRequest();
+      },
+
+      /**
        * Enter event 발생시 data search
        */
       handleKeyPress: function(event) {
         var code = event.keyCode;
 
         if(code == 13) {
+          event.preventDefault();
           this.validateLot();
         }
       }      
