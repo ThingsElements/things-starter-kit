@@ -75,6 +75,16 @@
           save-url="[[resourceUrl]]">
         </things-template-editor>
 
+        <things-code-editor 
+          id="code-editor"
+          class="detail-flex"
+          theme="ace/theme/monokai"
+          mode="ace/mode/html"
+          code-field="logic"
+          resource="{{resource}}"
+          save-url="[[resourceUrl]]">
+        </things-code-editor>
+
         <things-attached-file 
           id="attachments"
           class="detail-flex"
@@ -119,6 +129,9 @@
         }, {
           title: Things.DataGlobal.t('title.template'),
           elementId: 'things-template-editor'
+        }, {
+          title: Things.DataGlobal.t('title.logic'),
+          elementId: 'things-code-editor'
         }, {
           title: Things.DataGlobal.t('title.attachments'),
           elementId: 'things-attached-file'
