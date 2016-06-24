@@ -178,6 +178,7 @@
         this.refreshLatestLots();
         this.resetForm();
         this.$['input-form'].getForm().resetMyForm();
+        this.fire('iron-signal', {name : 'refresh-wip'});
       },
 
       /**
