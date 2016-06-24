@@ -1,0 +1,127 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../bower_components/things-form/things-search-form.html">
+<link rel="import" href="../../../bower_components/things-grid/things-resource-grid.html">
+
+<link rel="import" href="../../things-content/things-resource-menu-content-behavior.html">
+<link rel="import" href="../../things-layout-view/things-layout-demeter.html">
+
+<!--
+	Order Status
+-->
+
+<dom-module id="things-wip-production-overview">
+	<template>
+		<style>
+			:host {
+				display: block;
+				@apply(--layout-vertical);
+				@apply(--layout-flex);
+			}
+			
+			things-layout-demeter {
+				@apply(--layout-flex);
+			}
+		</style>
+
+		<things-ajax 
+			auto
+			id="resource-meta"
+			method="GET"
+			resource-url="[[menuMetaUrl]]"
+			last-response="{{metaData}}">
+		</things-ajax>
+
+		<things-search-form 
+			id="search-form"
+			title="[[menuInfo.title]]"
+			form-fields="[[searchFormFields]]" 
+			action-url="[[menuInfo.resource_url]]" 
+			page="{{page}}"
+			per-page="[[perPage]]"
+			last-response="{{lastResponse}}">
+		</things-search-form>
+
+    <things-layout-demeter 
+      top-left-title="Work Orders" 
+      bottom-left-title="Lot List" 
+      top-right-title="Summary By Operations"
+      bottom-right-title="Lot Histories">
+			<things-resource-grid 
+				top-left
+				id="grid"
+				class="flex"
+				config="[[gridConfig]]"
+				model="[[gridModel]]" 
+				columns="[[gridColumns]]"
+				data="[[items]]"
+				total-count="[[itemCount]]"
+				current-page="{{page}}"
+				per-page="[[perPage]]"
+				grid-save-action="[[menuInfo.grid_save_url]]"
+				fixed-column-count="0"
+				export-file-name="[[menuInfo.title]]"
+				export-sheet-name="[[menuInfo.title]]">
+			</things-resource-grid>
+
+			<things-resource-grid 
+				bottom-left
+				id="lots-grid"
+				class="flex"
+				config="[[gridConfig]]"
+				model="[[gridModel]]" 
+				columns="[[gridColumns]]"
+				data="[[items]]"
+				total-count="[[itemCount]]"
+				current-page="{{page}}"
+				per-page="[[perPage]]"
+				grid-save-action="[[menuInfo.grid_save_url]]"
+				fixed-column-count="0"
+				export-file-name="[[menuInfo.title]]"
+				export-sheet-name="[[menuInfo.title]]">
+			</things-resource-grid>
+
+      <things-diy-based-grid
+        top-right
+        id="summary-grid"
+        class="flex"
+        diy-grid-name="SummaryByOperation"
+        items="[[summaryItems]]">
+      </things-diy-based-grid>
+
+			<things-resource-grid 
+				bottom-right
+				id="trace-grid"
+				class="flex"
+				config="[[gridConfig]]"
+				model="[[gridModel]]" 
+				columns="[[gridColumns]]"
+				data="[[items]]"
+				total-count="[[itemCount]]"
+				current-page="{{page}}"
+				per-page="[[perPage]]"
+				grid-save-action="[[menuInfo.grid_save_url]]"
+				fixed-column-count="0"
+				export-file-name="[[menuInfo.title]]"
+				export-sheet-name="[[menuInfo.title]]">
+			</things-resource-grid>
+    </things-layout-demeter>
+	</template>
+
+	<script>
+		Polymer({
+			is: 'things-wip-production-overview',
+
+			behaviors: [
+				Things.ResourceMenuContentBehavior
+			],
+			
+			properties: {
+			},
+
+			listeners : {
+			}
+		});
+	</script>
+</dom-module>

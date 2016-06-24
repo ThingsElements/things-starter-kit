@@ -66,7 +66,7 @@
   	<div id="top">
   		<!-- top left -->
   		<paper-card id="topLeft" elevatio="1">
-				<span class="subtitle">[[topLeftContentTitle]]</span>
+				<span class="subtitle">[[topLeftTitle]]</span>
 				<div id="topLeftContent" class="layout-content">
 					<content select="[top-left]"></content>
 				</div>
@@ -74,7 +74,7 @@
 
 			<!-- top right -->
 			<paper-card id="topRight" elevation="1">
-				<span class="subtitle">[[topRightContentTitle]]</span>
+				<span class="subtitle">[[topRightTitle]]</span>
 				<div id="topRightContent" class="layout-content">
 					<content select="[top-right]"></content>
 				</div>
@@ -85,17 +85,17 @@
 		<div id="bottom">
 			<!-- bottom left -->
 			<paper-card id="bottomLeft" elevation="1">
-				<span class="subtitle">[[bottomLeftContentTitle]]</span>
+				<span class="subtitle">[[bottomLeftTitle]]</span>
 				<div id="bottomLeftContent" class="layout-content">
-					<content select="[buttom-left]"></content>
+					<content select="[bottom-left]"></content>
 				</div>
 			</paper-card>
 
 			<!-- bottom right -->
 			<paper-card id="bottomRight" elevation="1">
-				<span class="subtitle">[[bottomRightContentTitle]]</span>
+				<span class="subtitle">[[bottomRightTitle]]</span>
 				<div id="bottomRightContent" class="layout-content">
-					<content select="[buttom-right]"></content>
+					<content select="[bottom-right]"></content>
 				</div>
 			</paper-card>
 		</div>
@@ -108,24 +108,24 @@
 
 			properties: {
 				
-				topLeftContentTitle: {
+				topLeftTitle: {
 					type: String,
-					value: 'topLeftContent'
+					value: 'top-left'
 				},
 
-				topRightContentTitle: {
+				topRightTitle: {
 					type: String,
-					value: 'topRightContent'
+					value: 'top-right'
 				},
 
-				bottomLeftContentTitle: {
+				bottomLeftTitle: {
 					type: String,
-					value: 'bottomLeftContent'
+					value: 'bottom-left'
 				},
 
-				bottomRightContentTitle: {
+				bottomRightTitle: {
 					type: String,
-					value: 'bottomRightContent'
+					value: 'bottom-right'
 				},
 			},
 
