@@ -364,13 +364,14 @@
 				if(!rows || rows.length == 0) return;
 
 				var ds = this.$['sub-grid'].getGridDataSet();
-				var menu = ds.getRowObject(rows[0]._index);
+				var menu = ds.getRowObject(rows[0].dataIndex());
 
 				var viewElement = document.createElement('things-layout-athena');
 				viewElement.id = 'detail-view';
 				viewElement.title = menu.name;
 				viewElement.resourceId = menu.id;
 				viewElement.resource = menu;
+
 				var childElememts = [ {
 					viewSection: 'leftContent',
 					title : Things.DataGlobal.t('title.detail'), 
