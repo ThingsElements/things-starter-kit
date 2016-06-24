@@ -159,12 +159,13 @@
         var tranAjax = this.getTransactionLotService();
         var scrapQty = inputData.scrap_qty;
 
-        //scrapQty가 good_qty 보다 클 경우 return
+        //scrapQty가 good_qty 보다 클 경우 return TODO 경고창
         if(scrapQty > lotData.good_qty) return;
-        
 
         tranAjax.body = {
           lot_id : lotData.id,
+          work_order_id : this.orderId,
+          current_operation_id : this.operationId,
           seed_routing_id : inputData.seed_routing_id,
           seed_operation_id : inputData.seed_operation_id,
           scrap_code : inputData.scrap_code,
@@ -195,7 +196,7 @@
         event.cancelBubble = true;
         var response = event.detail.request.xhr.response;
         this.openInfoMsg({ title : 'Validation Error!', text : response.msg, type : 'info', timer : 5000 });
-      },      
+      },
 
       /**
        * Enter event 발생시 data search

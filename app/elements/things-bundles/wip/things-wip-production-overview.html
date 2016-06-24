@@ -8,7 +8,7 @@
 <link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
 
 <!--
-	Production overview
+	Production Overview
 -->
 
 <dom-module id="things-wip-production-overview">
@@ -92,7 +92,7 @@
       	id="routing-info-grid"
       	class="flex"
       	items="[[routingInfoItems]]"
-      	diy-grid-name="RoutingInfo">
+      	diy-grid-name="OperationSummary">
     	</things-diy-based-grid>
 
     	<!-- lot 정보 grid -->
@@ -126,7 +126,6 @@
 			],
 			
 			properties: {
-
 				/**
 				 * routing info를 추출하기 위한 workOrderId
 				 */
@@ -188,14 +187,13 @@
 			workOrderSelected: function(event) {
 				this.workOrderId = event.detail.id;
 				var routingInfo = this.$['routing-info'];
-
 				routingInfo.selectFields = 'rank,operation,plan_qty,input_qty,actual_qty,scrap_qty,work_order_id';
 
 				routingInfo.queryFields = [{
 					name: 'work_order_id',
 					value: this.workOrderId
 				}];
-
+				
 				routingInfo.sortFields = [{
 					field : 'rank',
 				  ascending : true
@@ -230,14 +228,7 @@
 			lotSelected: function(event) {
 				this.lotId = event.detail.id;
 				var lotHistory = this.$['lot-history'];
-
 				lotHistory.selectFields = 'seq,transaction,status,state,first_qty,good_qty,scrap_qty,ship_qty,comments,created_at';
-
-				lotHistory.sortFields = [{
-					field: 'seq',
-					ascending : true
-				}];
-
 				lotHistory.generateRequest();
 			},
 
