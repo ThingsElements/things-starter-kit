@@ -36,7 +36,10 @@
       resource-url="[[transactionUrl]]">
     </things-ajax>
 
-    <things-layout-hermes top-left-content-title="Lot Information" bottom-left-content-title="Lock Code" right-content-title="Latest Processed Lot List">
+    <things-layout-hermes 
+      top-left-content-title="[[lotInfoTitle]]" 
+      bottom-left-content-title="[[inputTitle]]" 
+      right-content-title="[[lotListTitle]]">
       <things-diy-based-form 
         left-top
         on-keypress="handleKeyPress"
@@ -71,6 +74,35 @@
       ],
 
       properties: {
+        /**
+         * Title Of Lot Information
+         */
+        lotInfoTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('title.LotInformation')
+          }
+        },
+
+        /**
+         * Title Of Input
+         */
+        inputTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('title.Input')
+          }
+        },
+
+        /**
+         * Title Of Lot List
+         */
+        lotListTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('title.LotList')
+          }
+        }        
       },
 
       observers: [

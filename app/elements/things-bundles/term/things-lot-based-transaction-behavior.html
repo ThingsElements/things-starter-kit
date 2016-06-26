@@ -91,7 +91,10 @@ Things.LotBasedTransactionBehaviorImpl = {
 		 * Latest Lot List를 조회하기 위한 소팅 조건
 		 */
 		lastestLotSortFields: {
-			type: Array
+			type: Array,
+			value: function() {
+				return [ { field : 'updated_at', ascending: true } ];
+			}
 		},
 
 		/**
@@ -170,6 +173,18 @@ Things.LotBasedTransactionBehaviorImpl = {
 	 */
 	_computeTransactionUrl: function(transaction) {
 		return 'lot_trxs/' + transaction + '/transaction';
+	},
+
+	/**
+	* Enter event 발생시 data search
+	*
+	* @param {Object} event
+	*/
+	handleKeyPress: function(event) {
+		var code = event.keyCode;
+		if(code == 13) {
+			this.validateLot();
+		}
 	},
 
 	/** 

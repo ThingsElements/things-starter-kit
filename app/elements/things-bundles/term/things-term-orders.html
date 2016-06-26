@@ -1,4 +1,5 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/things-global-behavior/things-global-behavior.html">
 <link rel="import" href="../../../bower_components/things-msg-box-behavior/things-msg-box-behavior.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
 
@@ -69,6 +70,7 @@ OI Screen - Order List
 			is: 'things-term-orders',
 
       behaviors: [
+      	Things.GlobalBehavior,
         Things.MsgBoxBehavior
       ],
 
@@ -86,6 +88,20 @@ OI Screen - Order List
 				dataRoute: {
 					type: String,
 					observer: 'dataRouteChanged'
+				},
+
+				/**
+				 * 날짜 
+				 */
+				workDate: {
+					type: String
+				},
+
+				/**
+				 * Line 
+				 */
+				line: {
+					type: String
 				},
 
 				/**
@@ -154,6 +170,10 @@ OI Screen - Order List
 				}
 			},
 
+			observers: [
+				'orderConditionsChanged(globals.date,globals.line)'
+			],			
+
 			listeners: {
 				'things-grid-configured' : '_gridConfigured',
 				'things-grid-column-dblclicked' : '_gridDoubleClicked',
@@ -189,16 +209,16 @@ OI Screen - Order List
 					var title = null, trxUrl = null;
 
 					if(status == 'WAITING') {
-						title = 'Start Order';
+						title = Things.DataGlobal.t('label.start');
 						trxUrl = 'start';
 					} else if(status == 'RUNNING') {
-						title = 'Hold Order';
-						trxUrl = 'hold';
-					} else if(status == 'HOLDED') {
-						title = 'Release Order';
-						trxUrl = 'release';
+						title = Things.DataGlobal.t('label.lock');
+						trxUrl = 'lock';
+					} else if(status == 'LOCKED') {
+						title = Things.DataGlobal.t('label.unlock');
+						trxUrl = 'unlock';
 					} else if(status == 'FINISHED') {
-						title = 'Close Order';
+						title = Things.DataGlobal.t('label.close');
 						trxUrl = 'close';
 					} else {
 						return;
@@ -208,7 +228,7 @@ OI Screen - Order List
 					this.openConfirmMsg({
 						type : 'info',
 						title : title,
-						text : 'Do you want to ' + title + '?',
+						text : Things.DataGlobal.t('text.Sure to X', {x : title}),
 						showCancelButton : true
 					}, function() {
 						trxAjax.resourceUrl = 'work_orders/' + data.id + '/' + trxUrl;
@@ -229,10 +249,32 @@ OI Screen - Order List
 			},
 
 			/**
+			 * Order List 조건이 변경되었을 경우 
+			 *
+			 * @param {String} date
+			 */
+			orderConditionsChanged: function(date, line) {
+				this.workDate = date;
+				this.line = line;
+				this.searchOrderList();
+			},
+
+			/**
 			 * dataRoute가 변경되었을 경우 
 			 */
 			searchOrderList: function(event) {
-				this.$['order-list'].generateRequest();
+				var ordersAjax = this.$['order-list'];
+				ordersAjax.queryFields = [{
+					name : 'order_date', value : this.workDate 
+				}, {
+					name : 'line', value : this.line 
+				}];
+				ordersAjax.sortFields = [{
+					field : 'order_date', ascending: true 
+				}, {
+					field : 'shift', ascending: true 
+				}];
+				ordersAjax.generateRequest();
 			},
 
 			/**

@@ -37,9 +37,9 @@
     </things-ajax>
 
     <things-layout-athena 
-      left-content-title="SPC List"
-      right-top-content-title="SPC Detail" 
-      right-bottom-content-title="SPC Result">
+      left-content-title="[[spcItemsTitle]]"
+      right-top-content-title="[[spcItemsTitle]]" 
+      right-bottom-content-title="[[spcValueTitle]]">
       <things-term-common-grid
         left
         id="latest-lot-grid"
@@ -75,6 +75,35 @@
       ],
 
       properties: {
+        /**
+         * Title Of Lot Information
+         */
+        spcItemsTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('label.spc_item')
+          }
+        },
+
+        /**
+         * Title Of SPC Item
+         */
+        spcItemTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('label.spc_item')
+          }
+        },
+
+        /**
+         * Title Of SPC Data
+         */
+        spcValueTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('label.spc_value')
+          }
+        },
 
         /**
          * 선택한 spc item의 세부 정보를 담아 놓는 object

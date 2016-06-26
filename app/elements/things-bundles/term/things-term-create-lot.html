@@ -17,9 +17,9 @@ OI Screen - Order List
 				@apply(--layout-vertical);
 				@apply(--layout-flex);
 			}
-      things-layout-hermes {
-        @apply(--layout-flex);
-      }			
+			things-layout-hermes {
+				@apply(--layout-flex);
+			}
 		</style>
 
 		<things-ajax
@@ -45,39 +45,39 @@ OI Screen - Order List
 
 		<things-print-agent id="print-agent"></things-print-agent>
 
-    <things-layout-hermes top-left-content-title="Lot Information" bottom-left-content-title="Comments" right-content-title="Latest Created Lot List">
-      <things-diy-based-form
-      	left-top
-      	id="form"
-      	class="flex"
-      	resource="[[order]]"
-      	resource-id="[[orderId]]"
-      	diy-form-name="OI-CreateLot"
-      	buttons="[[buttons]]">
-      </things-diy-based-form>
+		<things-layout-hermes 
+			top-left-content-title="[[orderInfoTitle]]" 
+			bottom-left-content-title="[[inputTitle]]" 
+			right-content-title="[[lotListTitle]]">
+			<things-diy-based-form
+				left-top
+				id="form"
+				class="flex"
+				resource="[[order]]"
+				resource-id="[[orderId]]"
+				diy-form-name="OI-CreateLot"
+				buttons="[[buttons]]">
+			</things-diy-based-form>
 
-	    <div left-bottom class="flex">
-		    <things-input-field
-		    	on-keypress="handleKeyPress"
-		    	id="comments-form"
-		    	label="Comments"
-		    	value="{{comments}}">
-	    	</things-input-field>
+			<div left-bottom class="flex">
+				<things-input-field
+					on-keypress="handleKeyPress"
+					id="comments"
+					label="Comments">
+				</things-input-field>
 
-	    	<things-tristate-radio
-	    		id="print"
-	    		label="Print">
-	    	</things-tristate-radio>	    	
-    	</div>
+				<things-tristate-radio
+					id="print"
+					label="Print">
+				</things-tristate-radio>
+			</div>
 
-      <things-term-common-grid
-      	right
-      	id="common-grid"
-      	class="flex"
-      	query-fields="[[queryFields]]"
-      	sort-fields="[[sortFields]]">
-      </things-term-common-grid>
-    </things-layout-hermes>
+			<things-term-common-grid
+				right
+				id="common-grid"
+				class="flex">
+			</things-term-common-grid>
+		</things-layout-hermes>
 	</template>
 
 	<script>
@@ -124,27 +124,6 @@ OI Screen - Order List
 				},
 
 				/**
-				 * create lot 시에 입력 받은 comment
-				 */
-				comments: {
-					type: String
-				},
-
-				/**
-				 * common-grid에 넘겨줄 query fields property
-				 */
-				queryFields: {
-					type: Array
-				},
-
-				/**
-				 * common-grid에 넘겨줄 sort fields property
-				 */
-				sortFields: {
-					type: Array
-				},
-
-				/**
 				* Buttons 리스트 설정
 				*/
 				buttons: {
@@ -156,6 +135,36 @@ OI Screen - Order List
 						id: 'reset-btn',
 						text: 'reset'
 					} ]
+				},
+
+				/**
+				 * Title Of Order Information
+				 */
+				orderInfoTitle: {
+					type: String,
+					value: function() {
+						return Things.DataGlobal.t('title.OrderInformation')
+					}
+				},
+
+				/**
+				 * Title Of Input
+				 */
+				inputTitle: {
+					type: String,
+					value: function() {
+						return Things.DataGlobal.t('title.Input')
+					}
+				},
+
+				/**
+				 * Title Of Lot List
+				 */
+				lotListTitle: {
+					type: String,
+					value: function() {
+						return Things.DataGlobal.t('title.LotList')
+					}
 				}
 			},
 
@@ -175,8 +184,9 @@ OI Screen - Order List
 			],
 
 			/**
-			 * order가 변화하면 order와 orderId를 초기화 하고
-			 * common-grid의 ajax를 호출 한다.
+			 * order가 변화하면 order와 orderId를 초기화 하고 common-grid의 ajax를 호출 한다.
+			 * 
+			 * @param {Object} order
 			 */
 			orderChanged: function(order) {
 				this.order = order;
@@ -197,12 +207,14 @@ OI Screen - Order List
 					if(this.globals) {
 						var dataGlobal = this.globals;
 						this.orderId = (dataGlobal.order.id) ? dataGlobal.order.id : '';
-					}					
+					}
 				}
-			},			
+			},
 
 			/**
 			 * key event - form submits when enter key is monitored
+			 *
+			 * @param {Object} event
 			 */
 			handleKeyPress: function(event) {
 				var code = event.keyCode;
@@ -220,25 +232,25 @@ OI Screen - Order List
 				var createAjax = this.$['create-lot'];
 				createAjax.body = {
 					work_order_id : this.orderId,
-					comments : this.$['comments-form'].value
+					comments : this.$['comments'].value
 				};
 
 				createAjax.generateRequest();
 			},
 
 			/**
-			 * queryFields와 sortFields를 초기화하고 
-			 * 해당 property를 바탕으로 common-grid의 ajax 호출
+			 * queryFields를 초기화하고 해당 property를 바탕으로 common-grid의 ajax 호출
 			 */
 			getLatestLots: function() {
-				this.queryFields = [{
+				var lotsAjax = this.$['common-grid'];
+				lotsAjax.queryFields = [{
 					name: 'work_order_id',
-					value: this.orderId					
+					value: this.orderId
 				}, {
 					name: 'transaction',
-					value: 'CREATE'			
+					value: 'CREATE'
 				}];
-				this.$['common-grid'].refreshData();
+				lotsAjax.refreshData();
 			},
 
 			/**
@@ -247,7 +259,7 @@ OI Screen - Order List
 			 * @param {Object} event
 			 */
 			resetForm: function(event) {
-				this.$['comments-form'].value = '';
+				this.$['comments'].value = '';
 			},
 
 			/**
@@ -261,13 +273,18 @@ OI Screen - Order List
 				this.fire('iron-signal', {name : 'refresh-wip'});
 				this.lot = event.detail;
 				
+				// Get Label Model
 				if(this.$['print'].value == true) {
-					// Get Label Model
 					this.$['label-model'].resourceId = this.lot.id;
 					this.$['label-model'].generateRequest();
 				}
 			},
 
+			/**
+			 * labelModel 조회 후
+			 *
+			 * @param {Object} event
+			 */
 			_labelModelResponsed: function(event) {
 				var label = event.detail;
 				var variableData = {
@@ -275,7 +292,7 @@ OI Screen - Order List
 					'#{order_name}' : this.order.name,
 					'#{product_model_name}' : this.order.product_model.name,
 					'#{material_name}' : this.order.material.name,
-					'#{material_desc}' : 'Material Desc',
+					'#{material_desc}' : this.order.material.description,
 					'#{work_date}' : this.lot.work_date,
 					'#{lot_size}' : '' + this.lot.good_qty,
 					'#{lot_name}' : this.lot.name

@@ -10,7 +10,7 @@
   OI - Instock 트랜잭션 (입고)
 -->
 
-<dom-module id="things-term-instock">
+<dom-module id="things-term-store">
   <template>
     <style>
       :host {
@@ -42,9 +42,9 @@
     </things-ajax>    
 
     <things-layout-hermes 
-      top-left-content-title="Packing Information" 
-      bottom-left-content-title="Store In List" 
-      right-content-title="Latest Lot List">
+      top-left-content-title="[[packingInfoTitle]]" 
+      bottom-left-content-title="[[packingLotListTitle]]" 
+      right-content-title="[[lotListTitle]]">
       <things-diy-based-form
         left-top
         on-keypress="handleKeyPress"
@@ -74,14 +74,46 @@
 
   <script>
     Polymer({
-      is: 'things-term-instock',
+      is: 'things-term-store',
       
       behaviors: [
         Things.LotBasedTransactionBehavior
       ],
 
       properties: {
+        /**
+         * Title Of Packing Information
+         */
+        packingInfoTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('label.packing')
+          }
+        },
 
+        /**
+         * Title Of Packing Lot List
+         */
+        packingLotListTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('label.packing_lots')
+          }
+        },
+
+        /**
+         * Title Of Lot List
+         */
+        lotListTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('title.LotList')
+          }
+        },
+
+        /**
+         * Wating Store Lot List
+         */
         readyToStoreInList: {
           type: Object
         }

@@ -42,9 +42,9 @@
     </things-ajax>
 
     <things-layout-athena 
-      left-content-title="Lot Information" 
-      right-top-content-title="Check List" 
-      right-bottom-content-title="Defect List">
+      left-content-title="[[lotInfoTitle]]" 
+      right-top-content-title="[[examItemsTitle]]" 
+      right-bottom-content-title="[[defectListTitle]]">
       <things-diy-based-form 
         left
         on-keypress="handleKeyPress"
@@ -59,14 +59,14 @@
         id="exam-items-grid"
         class="flex"
         items="[[examItems]]"
-        diy-grid-name="OI-InspectLots">
+        diy-grid-name="OI-ExamItems">
       </things-diy-based-grid>
 
       <things-diy-based-grid
         right-bottom
         id="defect-list-grid"
         class="flex"
-        diy-grid-name="OI-InspectDefectList"
+        diy-grid-name="OI-ExamDefectList"
         items="[[defectItems]]"
         buttons="[[gridButtons]]">
       </things-diy-based-grid>
@@ -82,6 +82,35 @@
       ],      
       
       properties: {
+        /**
+         * Title Of Lot Information
+         */
+        lotInfoTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('title.LotInformation')
+          }
+        },
+
+        /**
+         * Title Of Exam Input
+         */
+        examItemsTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('label.exam_item')
+          }
+        },
+
+        /**
+         * Title Of Defect List
+         */
+        defectListTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('label.defect_code')
+          }
+        },
 
         /**
          * operation id
@@ -131,12 +160,15 @@
         },
 
         /**
-         * 이전에 선택했던 examItem의 id
+         * 이전에 선택했던 examItem의 ID
          */
         prevExamItemId: {
           type: String
         },
 
+        /**
+         * Form Buttons
+         */
         formButtons: {
           type: Array,
           value: function() {

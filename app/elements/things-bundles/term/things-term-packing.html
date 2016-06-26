@@ -44,9 +44,9 @@
     </things-ajax>        
 
     <things-layout-hermes 
-      top-left-content-title="Lot Search" 
-      bottom-left-content-title="Packing List" 
-      right-content-title="Latest Lot List">
+      top-left-content-title="[[packingLotTitle]]" 
+      bottom-left-content-title="[[packingLotListTitle]]" 
+      right-content-title="[[lotListTitle]]">
       
       <things-diy-based-form
         left-top
@@ -83,7 +83,36 @@
       ],
 
       properties: {
-      	
+        /**
+         * Title Of Packing Lot
+         */
+        packingLotTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('label.packing_no')
+          }
+        },
+
+        /**
+         * Title Of Packing List
+         */
+        packingLotListTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('label.packing_lots')
+          }
+        },
+
+        /**
+         * Title Of Lot List
+         */
+        lotListTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('title.LotList')
+          }
+        },
+
       	/**
       	 * packing list items
       	 *
