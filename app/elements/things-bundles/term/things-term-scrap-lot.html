@@ -1,5 +1,8 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 
+<link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
+
+<link rel="import" href="../../things-layout-view/things-layout-hermes.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-form.html">
 
@@ -196,16 +199,6 @@
         event.cancelBubble = true;
         var response = event.detail.request.xhr.response;
         this.openInfoMsg({ title : 'Validation Error!', text : response.msg, type : 'info', timer : 5000 });
-      },
-
-      /**
-       * Enter event 발생시 data search
-       */
-      handleKeyPress: function(event) {
-        var code = event.keyCode;
-        if(code == 13) {
-          this.validateLot();
-        }
       }
     });
   </script>

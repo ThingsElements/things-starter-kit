@@ -1,5 +1,8 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 
+<link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
+
+<link rel="import" href="../../things-layout-view/things-layout-hermes.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-form.html">
 
@@ -113,15 +116,15 @@
           }
         },
 
-      	/**
-      	 * packing list items
-      	 *
-      	 * grid에 표시될 items array
-      	 */
-      	items: {
-      		type: Array,
-      		value: []
-      	},
+        /**
+         * packing list items
+         *
+         * grid에 표시될 items array
+         */
+        items: {
+          type: Array,
+          value: []
+        },
 
         /**
          * work order id
@@ -192,6 +195,7 @@
         if(this.packingModelInfo && this.packingModelInfo != '') {
           this.packQty = this.packingModelInfo.pack_qty;
         }
+
         this.orderId = orderId;
         this.operationId = operationId;
         this.latestLotQueryFields = [ {
@@ -202,7 +206,7 @@
           value: operationId
         }, {
           name: 'state',
-          value: 'WAIT_INPUT'
+          value: 'WAIT_PACK'
         } ];
 
         this.getLatestLotGrid().refreshData();
@@ -254,7 +258,7 @@
         tranAjax.body = {
           lot_ids: lotIds,
           work_order_id: this.orderId,
-          operation_id: this.operationId,
+          current_operation_id: this.operationId,
           comments: inputData.comments
         };
         tranAjax.generateRequest();
@@ -273,44 +277,27 @@
       },
 
       /**
-       * Enter event 발생시 data search
-       */
-      handleKeyPress: function(event) {
-        var code = event.keyCode;
-
-        if(code == 13) {
-      	  event.preventDefault();
-          this.validateLot();
-        }
-      },
-
-      /**
-       * things-lot-based-transaction-behavior override
-       *
-       * lot id 검색 후 중복되지 않은 lot정보를 grid에 입력합니다.
-       * server로 넘겨줄 items를 가공
-       */
-			lotChanged: function(lot) {
+      * things-lot-based-transaction-behavior override
+      *
+      * lot id 검색 후 중복되지 않은 lot정보를 grid에 입력합니다.
+      * server로 넘겨줄 items를 가공
+      */
+      lotChanged: function(lot) {
         var newItems = JSON.parse(JSON.stringify(this.items));
-
         if(this.items.length < this.packQty) {
-        	/**
-        	 * id 중복 체크 후 중복이면 return
-        	 */
-        	for(var i = 0; i < this.items.length; i++) {
-        		if(this.items[i].id == lot.id) {
-        			return;
-        		}
-        	}
-        	newItems.push(lot);
-        	this.items = newItems;
-      	}
+          // id 중복 체크 후 중복이면 return
+          for(var i = 0; i < this.items.length; i++) {
+            if(this.items[i].id == lot.id) return;
+          }
 
-      	if(this.items.length >= this.packQty) {
-      		this.lotTransaction();
-      	}
+          newItems.push(lot);
+          this.items = newItems;
+        }
+
+        if(this.items.length >= this.packQty) {
+          this.lotTransaction();
+        }
       }
-
     });
   </script>
 </dom-module>

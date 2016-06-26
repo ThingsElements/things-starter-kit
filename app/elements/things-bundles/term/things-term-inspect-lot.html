@@ -1,8 +1,12 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 
+<link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
+
+<link rel="import" href="../../things-layout-view/things-layout-athena.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-form.html">
 
+<link rel="import" href="things-term-common-grid.html">
 <link rel="import" href="things-lot-based-transaction-behavior.html">
 
 <!--
@@ -271,6 +275,8 @@
       /**
        * defect-list-grid의 row 클릭시 발생하는 event
        * 선택한 row의 아이디를 통해 개별 data를 defectItems에 초기화 합니다.
+       *
+       * @param {Object} event
        */
       rowSelected: function(event) {
         var rowId = event.detail.id;
@@ -298,8 +304,9 @@
       },
 
       /**
-       * row add event 발생시 실행
-       * row를 추가하면서 exam_items_id와 rank를 초기화 합니다.
+       * row add event 발생시 실행 row를 추가하면서 exam_items_id와 rank를 초기화 합니다.
+       *
+       * @param {Object} event
        */
       addDefectRow: function(event) {
         event.preventDefault();
@@ -311,6 +318,7 @@
         var grid = this.$['defect-list-grid'].getGrid().getGridObject();
         var dataSet = grid.dataSource();
         var rowCount = dataSet.rowCount();
+
         dataSet.insertRow(0, {
           exam_result_id: this.prevExamItemId,  
           rank : rowCount + 1,
@@ -356,14 +364,14 @@
 
           if(examItem.failure == 'true') {
             examItem.success = false;
-
             var tempArry = this.examItemDefectMap[examItem.exam_item_id];
             tempArry.forEach(function(temp) { examItemDefect.push(temp);});
           }
-            delete examItem['id'];
-            delete examItem['exam_type'];
-            delete examItem['description'];
-            delete examItem['failure'];
+
+          delete examItem['id'];
+          delete examItem['exam_type'];
+          delete examItem['description'];
+          delete examItem['failure'];
         }
 
         tranAjax.body = {
@@ -375,23 +383,7 @@
         };
 
         tranAjax.generateRequest();
-      },
-
-      /**
-       * Enter event 발생시 data search
-       */
-      handleKeyPress: function(event) {
-        var code = event.keyCode;
-
-        if(code == 13) {
-          this.validateLot();
-        }
-      }      
-
+      }
     });
   </script>
 </dom-module>
-
-
-
-
