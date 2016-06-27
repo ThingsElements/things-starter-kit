@@ -1,8 +1,5 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 
-<link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
-
-<link rel="import" href="../../things-layout-view/things-layout-hera.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-form.html">
 
@@ -10,10 +7,10 @@
 <link rel="import" href="things-lot-based-transaction-behavior.html">
 
 <!--
-  OI - Rework Lot 트랜잭션 
+  OI - Repair Lot 트랜잭션 
 -->
 
-<dom-module id="things-term-rework-lot">
+<dom-module id="things-term-repair-lot">
   <template>
     <style>
       :host {
@@ -21,7 +18,7 @@
         @apply(--layout-vertical);
         @apply(--layout-flex);
       }
-      things-layout-hera {
+      things-layout-hermes {
         @apply(--layout-flex);
       }
     </style>
@@ -39,60 +36,45 @@
       resource-url="[[transactionUrl]]">
     </things-ajax>
 
-    <things-layout-hera
-      left-content-title="[[lotInfoTitle]]"
-      right-content-title="[[inputTitle]]">
-      <things-diy-based-form 
-        left
-        on-keypress="handleKeyPress"
+    <things-layout-hermes 
+      top-left-content-title="Lot Information" 
+      bottom-left-content-title="Comment" 
+      right-content-title="Latest Lot List">
+      
+      <things-diy-based-form
+        left-top
         id="lot-info-form"
         class="flex"
         diy-form-name="OI-LotInfo"
         buttons="[[buttons]]">
       </things-diy-based-form>
-      
-      <things-diy-based-form 
+
+      <things-term-common-grid
+        left-bottom
+        id="latest-lot-grid"
+        class="flex"
+        query-fields="[[latestLotQueryFields]]">
+      </things-term-common-grid>
+
+      <things-diy-based-form
         right
         id="input-form"
         class="flex"
-        diy-form-name="OI-Rework">
+        diy-form-name="OI-Repair">
       </things-diy-based-form>
-    </things-layout-hera>
+
+    </things-layout-hermes>
   </template>
 
   <script>
     Polymer({
-      is: 'things-term-rework-lot',
+      is: 'things-term-repair-lot',
       
       behaviors: [
         Things.LotBasedTransactionBehavior
       ],
 
       properties: {
-        /**
-         * Title Of Lot Information
-         */
-        lotInfoTitle: {
-          type: String,
-          value: function() {
-            return Things.DataGlobal.t('title.LotInformation')
-          }
-        },
-
-        /**
-         * Title Of Input
-         */
-        inputTitle: {
-          type: String,
-          value: function() {
-            return Things.DataGlobal.t('title.Input')
-          }
-        },
-
-        lot: {
-          type: Object,
-          observer: '_lotChanged'
-        }
       },
 
       observers: [
@@ -109,7 +91,7 @@
        * Life Cycle - Ready
        */
       ready: function() {
-        this.transaction = 'REWORK';
+        this.transaction = 'MOVE';
       },
 
       /**
@@ -125,7 +107,19 @@
         }, {
           name: 'operation_id',
           value: operationId
-        }];
+        }, {
+          name: 'state',
+          value: 'FINISH_PROCESS'
+        } ];
+
+        this.getLatestLotGrid().refreshData();
+      },
+
+      /**
+       * Latest Lot Grid 변경시
+       */
+      latestLotGridConfigured: function(event) {
+        this.getLatestLotGrid().refreshData();
       },
 
       /**
@@ -133,6 +127,13 @@
        */
       getLotInfoForm: function() {
         return this.$['lot-info-form'];
+      },
+
+      /**
+       * Latest Lot List Grid
+       */
+      getLatestLotGrid: function() {
+        return this.$['latest-lot-grid'];
       },
 
       /**
@@ -174,21 +175,23 @@
        * @param {Object} event
        */
       transactionResponsed: function(event) {
+        this.refreshLatestLots();
         this.resetForm();
         this.$['input-form'].getForm().resetMyForm();
         this.fire('iron-signal', {name : 'refresh-wip'});
       },
 
-      _lotChanged: function(lot) {
-        var tempObj = {};
-        tempObj.return_routing = lot.routing.name;
-        tempObj.return_operation = lot.operation.name;
+      /**
+       * Enter event 발생시 data search
+       */
+      handleKeyPress: function(event) {
+        var code = event.keyCode;
 
-        this.$['input-form'].getForm().setFormData(tempObj);
-        var inputData = this.$['input-form'].getForm().serializeMyForm();
-
-        console.log(inputData);
+        if(code == 13) {
+          this.validateLot();
+        }
       }
+
     });
   </script>
 </dom-module>
