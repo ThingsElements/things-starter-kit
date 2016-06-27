@@ -310,11 +310,13 @@
 	      var bomPartAjax = this.$['bom-parts-search'];
 
 				bomPartAjax.resourceUrl = 'bom_parts';
-				bomPartAjax.queryFields = [
-					// { name: 'operation_id', value: this.operationId },
-					{ name: 'bom_id', value: this.order.bom.id },
-					{ name: 'collectable', operator: 'is_true' }
-				];
+				bomPartAjax.queryFields = [{
+          name: 'operation_id', value: this.operationId
+        }, { 
+          name: 'bom_id', value: this.order.bom.id 
+        }, {
+          name: 'collectable', operator: 'is_true' 
+        }];
 
 				bomPartAjax.generateRequest();      	
       },
