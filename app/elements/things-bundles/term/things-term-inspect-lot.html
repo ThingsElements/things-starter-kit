@@ -141,7 +141,7 @@
          * 검사 항목을 transactino 발생 전 까지 담아 놓는 object
          * 
          */
-        examItemDefectMap: {
+        lotDefectsMap: {
           type: Object,
           value: function() {
             return {};
@@ -253,14 +253,14 @@
       },
 
       /**
-       * examItems에서 id를 추출하고 id를 key로 examItemDefectMap을 초기화
+       * examItems에서 id를 추출하고 id를 key로 lotDefectsMap을 초기화
        */
       _examItemsResponse: function(event) {
         var examItems = event.detail;
 
         for(var i = 0 ; i < examItems.length ; i++) {
           var examItem = examItems[i];
-          this.examItemDefectMap[examItem.id] = [];
+          this.lotDefectsMap[examItem.id] = [];
         }
         this.examItems = examItems;
       },
@@ -298,8 +298,8 @@
         var dataSet = grid.dataSource();
         var rowCount = dataSet.rowCount();
         var items = rowCount == 0 ? [] : dataSet.getRowObjects(0, rowCount);
-        this.examItemDefectMap[this.prevExamItemId] = items;
-        this.defectItems = this.examItemDefectMap[rowId];
+        this.lotDefectsMap[this.prevExamItemId] = items;
+        this.defectItems = this.lotDefectsMap[rowId];
         this.prevExamItemId = rowId;
       },
 
@@ -320,7 +320,7 @@
         var rowCount = dataSet.rowCount();
 
         dataSet.insertRow(0, {
-          exam_result_id: this.prevExamItemId,  
+          exam_item_id: this.prevExamItemId,  
           rank : rowCount + 1,
           defect_type : '', 
           defect_code: '', 
@@ -348,8 +348,8 @@
         var dataSet = grid.dataSource();
         var rowCount = dataSet.rowCount();
         var items = rowCount == 0 ? [] : dataSet.getRowObjects(0, rowCount);
-        this.examItemDefectMap[this.prevExamItemId] = items;
-        this.defectItems = this.examItemDefectMap[this.prevExamItemId];
+        this.lotDefectsMap[this.prevExamItemId] = items;
+        this.defectItems = this.lotDefectsMap[this.prevExamItemId];
 
         var lotData = this.getLotInfoForm().getForm().serializeMyForm();
         var tranAjax = this.getTransactionLotService();
@@ -369,6 +369,7 @@
           }
 
           delete lotInspect['id'];
+          delete lotInspect['name'];
           delete lotInspect['exam_type'];
           delete lotInspect['description'];
           delete lotInspect['failure'];
@@ -378,11 +379,23 @@
           lot_id: lotData.id,
           lot_inspects: JSON.stringify(lotInspects),
           lot_defects: JSON.stringify(lotDefects),
-          operation_id: this.operationId,
+          current_operation_id: this.operationId,
           work_order_id: this.orderId
         };
 
         tranAjax.generateRequest();
+      },
+
+      /**
+       * 트랜잭션 성공시 
+       *
+       * @param {Object} event
+       */
+      transactionResponsed: function(event) {
+        this.resetForm();
+        this.examItems = [];
+        this.defectItems = [];
+        this.fire('iron-signal', {name : 'refresh-wip'});
       }
     });
   </script>
