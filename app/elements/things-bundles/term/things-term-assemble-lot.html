@@ -232,18 +232,22 @@
         var lotData = this.getLotInfoForm().getForm().serializeMyForm();
         var tranAjax = this.getTransactionLotService();
         var bomListData = [];
-        
+
+        // 서버로 넘길 데이터를 추출
         for(var i = 0; i < this.bomListData.length; i++) {
           var tempObj = {};
-          tempObj.id = this.bomListData[i].id;
-          tempObj.rank = this.bomListData[i].rank;
-          tempObj.material_id = this.bomListData[i].material_id;
-          tempObj.std_qty = this.bomListData[i].std_qty;
-          tempObj.assy_mode = this.bomListData[i].assy_mode;
-          tempObj.alt_group = this.bomListData[i].alt_group;
-          tempObj.consume_qty = this.bomListData[i].consume_qty;
-
-          bomListData.push(tempObj);
+          
+          if(this.bomListData[i].consume_qty) {
+            tempObj.id = this.bomListData[i].id;
+            tempObj.rank = this.bomListData[i].rank;
+            tempObj.material_id = this.bomListData[i].material_id;
+            tempObj.std_qty = this.bomListData[i].std_qty;
+            tempObj.assy_mode = this.bomListData[i].assy_mode;
+            tempObj.alt_group = this.bomListData[i].alt_group;
+            tempObj.consume_qty = this.bomListData[i].consume_qty;
+            
+            bomListData.push(tempObj);
+          }
         };
 
         tranAjax.body = {
@@ -267,6 +271,9 @@
         this.fire('iron-signal', {name : 'refresh-wip'});
       },
 
+      /**
+       * lot id를 입력 받은 후 enter event listener
+       */
       lotSearchPress: function(event) {
       	var code = event.keyCode;
 				if(code == 13) {
@@ -274,10 +281,17 @@
 				}
       },
 
+      /**
+       * bomListResponse 변화시 호출
+       * response를 bomListData에 초기화 합니다.
+       */
       _bomListChanged: function(response) {
       	this.bomListData = response.items;
       },
 
+      /**
+       * material_id 입력후 input-form의 enter event listener
+       */
       insertMaterialPress: function(event) {
 				var code = event.keyCode;
         if(code == 13) {
@@ -285,6 +299,10 @@
         }	
       },
 
+      /**
+       * things-lot-based-transaction-behavior override
+       * lot의 변화를 감지하여 bom-parts-search ajax를 호출 합니다.
+       */
       lotChanged: function(lot) {
       	this.getLotInfoForm().getForm().setFormData(lot);
 
@@ -300,6 +318,10 @@
 				bomPartAjax.generateRequest();      	
       },
 
+      /**
+       * input-form에서 입력 받은 데이터를 기반으로
+       * grid의 데이터를 변경 합니다.
+       */
       insertMaterial: function() {
         var inputForm = this.$['input-form'];
       	var inputData = inputForm.getForm().serializeMyForm();
@@ -308,12 +330,16 @@
       	var newMaterial = inputData.material_name;
       	var consumeQty = parseInt(inputData.consume_qty);
 
+        /**
+         * 입력 받은 material_name과 bomListData의 material name을 비교하여 같은 material의 수량을 계산합니다.
+         */
       	for (var i = 0; i < bomListData.length; i++) {
       		if(newMaterial == bomListData[i].material.name) {
       			var currentQty = (bomListData[i].consume_qty) ? bomListData[i].consume_qty : 0;
       			var calcedQty = currentQty + consumeQty;
 
       			if(calcedQty > bomListData[i].std_qty) {
+              // TODO: std_qty를 초과한 calcedQty가 입력 될 시 error 발생
       				return;
       			} else {
       				bomListData[i].consume_qty = calcedQty;
