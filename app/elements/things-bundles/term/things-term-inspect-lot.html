@@ -353,31 +353,31 @@
 
         var lotData = this.getLotInfoForm().getForm().serializeMyForm();
         var tranAjax = this.getTransactionLotService();
-        var examItemsDs = this.$['exam-items-grid'].getGrid().getGridObject().dataSource();
-        var examItems = examItemsDs.getRowObjects(0, examItemsDs.rowCount());
-        var examItemDefect = [];
+        var lotInspectsDs = this.$['exam-items-grid'].getGrid().getGridObject().dataSource();
+        var lotInspects = lotInspectsDs.getRowObjects(0, lotInspectsDs.rowCount());
+        var lotDefects = [];
 
-        for (var i = 0; i < examItems.length; i++) {
-          var examItem = examItems[i];
-          examItem.exam_item_id = examItem.id;
-          examItem.success = true;
+        for (var i = 0; i < lotInspects.length; i++) {
+          var lotInspect = lotInspects[i];
+          lotInspect.exam_item_id = lotInspect.id;
+          lotInspect.success = true;
 
-          if(examItem.failure == 'true') {
-            examItem.success = false;
-            var tempArry = this.examItemDefectMap[examItem.exam_item_id];
-            tempArry.forEach(function(temp) { examItemDefect.push(temp);});
+          if(lotInspect.failure == 'true') {
+            lotInspect.success = false;
+            var tempArry = this.lotDefectsMap[lotInspect.exam_item_id];
+            tempArry.forEach(function(temp) { lotDefects.push(temp);});
           }
 
-          delete examItem['id'];
-          delete examItem['exam_type'];
-          delete examItem['description'];
-          delete examItem['failure'];
+          delete lotInspect['id'];
+          delete lotInspect['exam_type'];
+          delete lotInspect['description'];
+          delete lotInspect['failure'];
         }
 
         tranAjax.body = {
-          lot_id : lotData.id,
-          exam_results: JSON.stringify(examItems),
-          exam_result_defects: JSON.stringify(examItemDefect),
+          lot_id: lotData.id,
+          lot_inspects: JSON.stringify(lotInspects),
+          lot_defects: JSON.stringify(lotDefects),
           operation_id: this.operationId,
           work_order_id: this.orderId
         };
