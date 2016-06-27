@@ -1,6 +1,8 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 
-<link rel="import" href="../../things-layout-view/things-layout-hephaestus.html">
+<link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
+
+<link rel="import" href="../../things-layout-view/things-layout-athena.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-form.html">
 
@@ -8,55 +10,210 @@
 <link rel="import" href="things-lot-based-transaction-behavior.html">
 
 <!--
-OQC 화면
+  OI - MOVE LOT 트랜잭션 
 -->
 
-<dom-module id="things-term-oqc">
-	<template>
-		<style>
-			:host {
-				@apply(--layout-vertical);
-				@apply(--layout-flex);
-			}
-			things-layout-hephaestus {
-				@apply(--layout-flex);
-			}
-		</style>
+<dom-module id="things-term-move-lot">
+  <template>
+    <style>
+      :host {
+        display: block;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+      }
+      things-layout-athena {
+        @apply(--layout-flex);
+      }
+    </style>
 
-		<things-layout-hephaestus>
-			<things-diy-based-grid
-				top
-				class="flex"
-				diy-grid-name="OI-WorkOrders">
-			</things-diy-based-grid>
+    <things-ajax
+      id="validate-lot"
+      resource-action="create"
+      resource-url="lot_trxs/VALIDATE/transaction"
+      last-response="{{lot}}">
+    </things-ajax>
 
-			<things-diy-based-form
-				bottom-left
-				class="flex"
-				diy-form-name="OI-Assy">
-			</things-diy-based-form>
+    <things-ajax
+      id="transaction"
+      resource-action="create"
+      resource-url="[[transactionUrl]]">
+    </things-ajax>
 
-			<things-diy-based-form
-				bottom-center
-				class="flex"
-				diy-form-name="OI-LotAssy">
-			</things-diy-based-form>
+    <things-layout-athena 
+      left-content-title="[[lotListTitle]]"
+      right-top-content-title="[[lotInfoTitle]]" 
+      right-bottom-content-title="[[inputTitle]]">
 
-			<things-diy-based-form
-				bottom-right
-				class="flex"
-				diy-form-name="OI-StartLot">
-			</things-diy-based-form>
-		</things-layout-hephaestus>
-		
-	</template>
-	<script>
-		(function() {
-			'use strict';
+      <things-term-common-grid
+        left
+        id="latest-lot-grid"
+        class="flex"
+        query-fields="[[latestLotQueryFields]]">
+      </things-term-common-grid>
 
-			Polymer({
-				is: 'things-term-oqc'
-			});
-		})();
-	</script>
+      <things-diy-based-form 
+        right-top
+        on-keypress="handleKeyPress"
+        id="lot-info-form"
+        class="flex"
+        diy-form-name="OI-LotInfo"
+        buttons="[[buttons]]">
+      </things-diy-based-form>
+      
+      <things-diy-based-grid 
+        right-bottom
+        id="input-form"
+        class="flex"
+        diy-grid-name="OI-Move">
+      </things-diy-based-grid>
+
+
+    </things-layout-athena>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'things-term-move-lot',
+      
+      behaviors: [
+        Things.LotBasedTransactionBehavior
+      ],
+
+      properties: {
+        /**
+         * Title Of Lot Information
+         */
+        lotInfoTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('title.LotInformation')
+          }
+        },
+
+        /**
+         * Title Of Input
+         */
+        inputTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('title.Input')
+          }
+        },
+
+        /**
+         * Title Of Lot List
+         */
+        lotListTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('title.LotList')
+          }
+        }
+      },
+
+      observers: [
+        'lotListConditionsChanged(orderId,operationId)'
+      ],
+
+      listeners: {
+        'process-btn-tap' : 'lotTransaction',
+        'transaction.things-ajax-response' : 'transactionResponsed',
+        'things-grid-configured' : 'latestLotGridConfigured'
+      },
+
+      /**
+       * Life Cycle - Ready
+       */
+      ready: function() {
+        this.transaction = 'MOVE';
+      },
+
+      /**
+       * Latest Lot List 검색 조건 변경시 
+       *
+       * @param {String} orderId
+       * @param {String} operationId
+       */
+      lotListConditionsChanged: function(orderId, operationId) {
+        this.latestLotQueryFields = [ {
+          name: 'work_order_id',
+          value: orderId
+        }, {
+          name: 'operation_id',
+          value: operationId
+        }, {
+          name: 'state',
+          value: 'FINISH_PROCESS'
+        } ];
+
+        this.getLatestLotGrid().refreshData();
+      },
+
+      /**
+       * Latest Lot Grid 변경시
+       */
+      latestLotGridConfigured: function(event) {
+        this.getLatestLotGrid().refreshData();
+      },
+
+      /**
+       * Lot Information Form
+       */
+      getLotInfoForm: function() {
+        return this.$['lot-info-form'];
+      },
+
+      /**
+       * Latest Lot List Grid
+       */
+      getLatestLotGrid: function() {
+        return this.$['latest-lot-grid'];
+      },
+
+      /**
+       * Validation Lot Service
+       */
+      getValidateLotService: function() {
+        return this.$['validate-lot'];
+      },
+
+      /**
+       * Transaction Lot Service
+       */
+      getTransactionLotService: function() {
+        return this.$['transaction'];
+      },
+
+      /**
+       * Lot Transaction
+       */
+      lotTransaction: function() {
+        var inputData = this.$['input-form'].getForm().serializeMyForm();
+        var lotData = this.getLotInfoForm().getForm().serializeMyForm();
+        var tranAjax = this.getTransactionLotService();
+
+        tranAjax.body = {
+          lot_id : lotData.id,
+          work_order_id : this.orderId,
+          current_operation_id : this.operationId,
+          next_operation_id : inputData.next_operation_id,
+          comments : inputData.comments
+        };
+
+        tranAjax.generateRequest();
+      },
+
+      /**
+       * 트랜잭션 성공시 
+       *
+       * @param {Object} event
+       */
+      transactionResponsed: function(event) {
+        this.refreshLatestLots();
+        this.resetForm();
+        this.$['input-form'].getForm().resetMyForm();
+        this.fire('iron-signal', {name : 'refresh-wip'});
+      }
+    });
+  </script>
 </dom-module>
