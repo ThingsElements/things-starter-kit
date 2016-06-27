@@ -237,7 +237,7 @@
         for(var i = 0; i < this.bomListData.length; i++) {
           var tempObj = {};
           
-          // if(this.bomListData[i].consume_qty) {
+          if(this.bomListData[i].consume_qty) {
             tempObj.id = this.bomListData[i].id;
             tempObj.rank = this.bomListData[i].rank;
             tempObj.material_id = this.bomListData[i].material_id;
@@ -247,7 +247,7 @@
             tempObj.consume_qty = this.bomListData[i].consume_qty;
             
             bomListData.push(tempObj);
-          // }
+          }
         };
 
         tranAjax.body = {
