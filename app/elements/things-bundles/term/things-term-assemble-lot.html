@@ -267,6 +267,7 @@
        */
       transactionResponsed: function(event) {
         this.resetForm();
+        this.bomListData = [];
         this.$['input-form'].getForm().resetMyForm();
         this.fire('iron-signal', {name : 'refresh-wip'});
       },
@@ -330,20 +331,21 @@
       	var newMaterial = inputData.material_name;
       	var consumeQty = parseInt(inputData.consume_qty);
 
-        /**
-         * 입력 받은 material_name과 bomListData의 material name을 비교하여 같은 material의 수량을 계산합니다.
-         */
+        // 입력 받은 material_name과 bomListData의 material name을 비교하여 같은 material의 수량을 계산합니다.
       	for (var i = 0; i < bomListData.length; i++) {
       		if(newMaterial == bomListData[i].material.name) {
-      			var currentQty = (bomListData[i].consume_qty) ? bomListData[i].consume_qty : 0;
-      			var calcedQty = currentQty + consumeQty;
 
-      			if(calcedQty > bomListData[i].std_qty) {
-              // TODO: std_qty를 초과한 calcedQty가 입력 될 시 error 발생
-      				return;
-      			} else {
-      				bomListData[i].consume_qty = calcedQty;
-      			}
+            if(bomListData[i].consume_qty && bomListData[i].consume_qty > 0) {
+              //TODO consume_qty가 이미 입력 되었다면 (조립이 이미 완료된 material이라면) error 발생
+              return;
+            }
+
+            if(consumeQty == bomListData[i].std_qty) {
+              bomListData[i].consume_qty = consumeQty;
+            } else {
+              // TODO: std_qty와 다른 consumeQty가 입력 될 시 error 발생
+              return;
+            }
       		}
       	}
 
