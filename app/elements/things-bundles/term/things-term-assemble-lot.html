@@ -2,7 +2,7 @@
 
 <link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
 
-<link rel="import" href="../../things-layout-view/things-layout-apollon.html">
+<link rel="import" href="../../things-layout-view/things-layout-athena.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-form.html">
 
@@ -10,51 +10,322 @@
 <link rel="import" href="things-lot-based-transaction-behavior.html">
 
 <!--
-OI - ASSEMBLE LOT 트랜잭션 
+  OI - ASSEMBLE LOT 트랜잭션 
 -->
 
 <dom-module id="things-term-assemble-lot">
-	<template>
-		<style>
-			:host {
-				display: block;
-				@apply(--layout-vertical);
-				@apply(--layout-flex);
-			}
-			things-layout-apollon {
-				@apply(--layout-flex);
-			}
-		</style>
-		<things-layout-apollon top-content-title ="" 
-							   bottom-left-content-title=""
-							   bottom-right-content-title="">
-			<things-diy-based-form
-				top
-				class="flex"
-				diy-form-name="OI-LotAssy">
-			</things-diy-based-form>
+  <template>
+    <style>
+      :host {
+        display: block;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+      }
+      things-layout-athena {
+        @apply(--layout-flex);
+      }
+    </style>
 
-			<things-diy-based-grid
-				bottom-left
-				class="flex"
-				diy-grid-name="OI-Test-Defects">
-			</things-diy-based-grid>
+    <things-ajax
+      id="validate-lot"
+      resource-action="create"
+      resource-url="lot_trxs/VALIDATE/transaction"
+      last-response="{{lot}}">
+    </things-ajax>
 
-			<things-diy-based-grid
-				bottom-right
-				class="flex"
-				diy-grid-name="OI-Test-Defects">
-			</things-diy-based-grid>
+    <things-ajax
+      id="transaction"
+      resource-action="create"
+      resource-url="[[transactionUrl]]">
+    </things-ajax>
 
-		</things-layout-apollon>
-	</template>
-	<script>
-		(function() {
-			'use strict';
+    <!-- bom list search ajax -->
+    <things-ajax
+      id="bom-parts-search"
+      resource-action="index"
+      last-response="{{bomListResponse}}">
+    </things-ajax>
 
-			Polymer({
-				is: 'things-term-assemble-lot'
-			});
-		})();
-	</script>
+    <things-layout-athena 
+      left-content-title="[[lotInfoTitle]]" 
+      right-top-content-title="[[inputTitle]]" 
+      right-bottom-content-title="[[lotListTitle]]">
+      
+      <things-diy-based-form
+        left
+      	on-keypress="lotSearchPress"
+        id="lot-info-form"
+        class="flex"
+        diy-form-name="OI-LotInfo"
+        buttons="[[lotSearchButton]]">
+      </things-diy-based-form>
+      
+      <things-diy-based-form 
+        right-top
+      	on-keypress="insertMaterialPress"
+        id="input-form"
+        class="flex"
+        buttons="[[assyInsertButton]]"
+        diy-form-name="OI-Assy">
+      </things-diy-based-form>
+
+      <!-- bom list grid -->
+      <things-diy-based-grid
+        right-bottom
+        id="bom-list-grid"
+        class="flex"
+        fixed-column-count="0"
+        buttons="[[processButton]]"
+        diy-grid-name="OI-AssyList"
+        items="{{bomListData}}">
+      </things-diy-based-grid>      
+
+    </things-layout-athena>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'things-term-assemble-lot',
+      
+      behaviors: [
+        Things.LotBasedTransactionBehavior
+      ],
+
+      properties: {
+
+        /**
+         * Title Of Lot Information
+         */
+        lotInfoTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('title.LotInformation')
+          }
+        },
+
+        /**
+         * Title Of Input
+         */
+        inputTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('title.Input')
+          }
+        },
+
+        /**
+         * Title Of Lot List
+         */
+        lotListTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('title.BomPartList')
+          }
+        },
+
+        /**
+         * lot id에 따른 bom part list
+         */
+        bomListResponse: {
+        	type: Object,
+        	observer: '_bomListChanged'
+        },
+
+        /**
+         * lot search button setting
+         */
+        lotSearchButton: {
+        	type: String,
+        	value: function() {
+        		return [{
+        			id: 'search-btn',
+        			text: 'Search'
+        		}]
+        	}
+        },
+
+        /**
+         * material input buttons setting
+         */
+        assyInsertButton: {
+        	type: Array,
+        	value: function() {
+        		return [{
+        			id: 'insert-btn',
+        			text: 'Insert'
+        		}]
+        	}
+        },
+
+        /**
+         * lot transaction process button setting
+         */
+        processButton: {
+        	type: Array,
+        	value: function() {
+        		return [{
+        			id: 'process-btn',
+        			text: 'Process'
+        		}]
+        	}
+        }
+      },
+
+      observers: [
+        'lotListConditionsChanged(orderId,operationId)'
+      ],
+
+      listeners: {
+      	'insert-btn-tap' : 'insertMaterial',
+        'process-btn-tap' : 'lotTransaction',
+        'transaction.things-ajax-response' : 'transactionResponsed'
+      },
+
+      /**
+       * Life Cycle - Ready
+       */
+      ready: function() {
+        this.transaction = 'ASSEMBLE';
+      },
+
+      /**
+       * Latest Lot List 검색 조건 변경시 
+       *
+       * @param {String} orderId
+       * @param {String} operationId
+       */
+      lotListConditionsChanged: function(orderId, operationId) {
+        this.latestLotQueryFields = [ {
+          name: 'work_order_id',
+          value: orderId
+        }, {
+          name: 'operation_id',
+          value: operationId
+        } ];
+      },
+
+      /**
+       * Lot Information Form
+       */
+      getLotInfoForm: function() {
+        return this.$['lot-info-form'];
+      },
+
+      /**
+       * Validation Lot Service
+       */
+      getValidateLotService: function() {
+        return this.$['validate-lot'];
+      },
+
+      /**
+       * Transaction Lot Service
+       */
+      getTransactionLotService: function() {
+        return this.$['transaction'];
+      },
+
+      /**
+       * Lot Transaction
+       */
+      lotTransaction: function() {
+        var lotData = this.getLotInfoForm().getForm().serializeMyForm();
+        var tranAjax = this.getTransactionLotService();
+        var bomListData = [];
+        
+        for(var i = 0; i < this.bomListData.length; i++) {
+          var tempObj = {};
+          tempObj.id = this.bomListData[i].id;
+          tempObj.rank = this.bomListData[i].rank;
+          tempObj.material_id = this.bomListData[i].material_id;
+          tempObj.std_qty = this.bomListData[i].std_qty;
+          tempObj.assy_mode = this.bomListData[i].assy_mode;
+          tempObj.alt_group = this.bomListData[i].alt_group;
+          tempObj.consume_qty = this.bomListData[i].consume_qty;
+
+          bomListData.push(tempObj);
+        };
+
+        tranAjax.body = {
+          lot_id : lotData.id,
+          work_order_id : this.orderId,
+          operation_id : this.operationId,
+          bom_list_data: bomListData
+        };
+
+        tranAjax.generateRequest();
+      },
+
+      /**
+       * 트랜잭션 성공시 
+       *
+       * @param {Object} event
+       */
+      transactionResponsed: function(event) {
+        this.resetForm();
+        this.$['input-form'].getForm().resetMyForm();
+        this.fire('iron-signal', {name : 'refresh-wip'});
+      },
+
+      lotSearchPress: function(event) {
+      	var code = event.keyCode;
+				if(code == 13) {
+					this.validateLot();
+				}
+      },
+
+      _bomListChanged: function(response) {
+      	this.bomListData = response.items;
+      },
+
+      insertMaterialPress: function(event) {
+				var code = event.keyCode;
+        if(code == 13) {
+          this.insertMaterial();
+        }	
+      },
+
+      lotChanged: function(lot) {
+      	this.getLotInfoForm().getForm().setFormData(lot);
+
+	      var bomPartAjax = this.$['bom-parts-search'];
+
+				bomPartAjax.resourceUrl = 'bom_parts';
+				bomPartAjax.queryFields = [
+					// { name: 'operation_id', value: this.operationId },
+					{ name: 'bom_id', value: this.order.bom.id },
+					{ name: 'collectable', operator: 'is_true' }
+				];
+
+				bomPartAjax.generateRequest();      	
+      },
+
+      insertMaterial: function() {
+        var inputForm = this.$['input-form'];
+      	var inputData = inputForm.getForm().serializeMyForm();
+      	var bomListData = this.bomListResponse.items;
+
+      	var newMaterial = inputData.material_name;
+      	var consumeQty = parseInt(inputData.consume_qty);
+
+      	for (var i = 0; i < bomListData.length; i++) {
+      		if(newMaterial == bomListData[i].material.name) {
+      			var currentQty = (bomListData[i].consume_qty) ? bomListData[i].consume_qty : 0;
+      			var calcedQty = currentQty + consumeQty;
+
+      			if(calcedQty > bomListData[i].std_qty) {
+      				return;
+      			} else {
+      				bomListData[i].consume_qty = calcedQty;
+      			}
+      		}
+      	}
+
+        this.bomListData = [];
+        this.bomListData = bomListData;
+        inputForm.getForm().resetMyForm();
+      }
+
+    });
+  </script>
 </dom-module>
