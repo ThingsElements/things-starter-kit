@@ -1,0 +1,233 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
+
+<link rel="import" href="../../things-layout-view/things-layout-hermes.html">
+<link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
+<link rel="import" href="../../things-meta-view/things-diy-based-form.html">
+
+<link rel="import" href="things-term-common-grid.html">
+<link rel="import" href="things-lot-based-transaction-behavior.html">
+
+<!--
+  OI - 두번째 Packing 트랜잭션 
+-->
+
+<dom-module id="things-term-packing-second">
+  <template>
+    <style>
+      :host {
+        display: block;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+      }
+      things-layout-hermes {
+        @apply(--layout-flex);
+      }
+    </style>
+
+    <things-ajax
+      id="validate-lot"
+      resource-action="create"
+      resource-url="lot_trxs/VALIDATE/transaction"
+      last-response="{{lot}}">
+    </things-ajax>
+
+    <things-ajax
+      id="transaction"
+      resource-action="create"
+      resource-url="[[transactionUrl]]">
+    </things-ajax>
+
+    <things-layout-hermes 
+      top-left-content-title="[[packSearchTitle]]" 
+      bottom-left-content-title="[[packInforTitle]]" 
+      right-content-title="[[packListTitle]]">
+      <things-diy-based-form 
+        left-top
+        on-keypress="handleKeyPress"
+        id="lot-info-form"
+        class="flex"
+        diy-form-name="OI-NameField"
+        buttons="[[buttons]]">
+      </things-diy-based-form>
+      
+      <things-diy-based-grid 
+        left-bottom
+        id="packing-list-grid"
+        class="flex"
+        items="[[packingList]]"
+        fixed-column-count="1"
+        diy-grid-name="OI-PackingList">
+      </things-diy-based-grid>
+
+      <things-term-common-grid
+        right
+        id="latest-lot-grid"
+        class="flex"
+        query-fields="[[latestLotQueryFields]]">
+      </things-term-common-grid>
+    </things-layout-hermes>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'things-term-packing-second',
+      
+      behaviors: [
+        Things.LotBasedTransactionBehavior
+      ],
+
+      properties: {
+        /**
+         * Title Of Lot Information
+         */
+        packSearchTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('title.PackSearch')
+          }
+        },
+
+        /**
+         * Title Of Input
+         */
+        packInforTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('title.PackInfo')
+          }
+        },
+
+        /**
+         * Title Of Lot List
+         */
+        packListTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('title.PackList')
+          }
+        },
+
+        packingList: {
+          type: Array,
+          value: []
+        }
+      },
+
+      observers: [
+        'lotListConditionsChanged(orderId,operationId)'
+      ],
+
+      listeners: {
+        'process-btn-tap' : 'lotTransaction',
+        'transaction.things-ajax-response' : 'transactionResponsed',
+        'things-grid-configured' : 'latestLotGridConfigured'
+      },
+
+      /**
+       * Life Cycle - Ready
+       */
+      ready: function() {
+        this.transaction = 'PACKING2';
+      },
+
+      /**
+       * Latest Lot List 검색 조건 변경시 
+       *
+       * @param {String} orderId
+       * @param {String} operationId
+       */
+      lotListConditionsChanged: function(orderId, operationId) {
+        this.latestLotQueryFields = [ {
+          name: 'work_order_id',
+          value: orderId
+        }, {
+          name: 'operation_id',
+          value: operationId
+        }];
+
+        this.getLatestLotGrid().refreshData();
+      },
+
+      /**
+       * Latest Lot Grid 변경시
+       */
+      latestLotGridConfigured: function(event) {
+        this.getLatestLotGrid().refreshData();
+      },
+
+      /**
+       * Lot Information Form
+       */
+      getLotInfoForm: function() {
+        return this.$['lot-info-form'];
+      },
+
+      /**
+       * Latest Lot List Grid
+       */
+      getLatestLotGrid: function() {
+        return this.$['latest-lot-grid'];
+      },
+
+      /**
+       * Validation Lot Service
+       */
+      getValidateLotService: function() {
+        return this.$['validate-lot'];
+      },
+
+      /**
+       * Transaction Lot Service
+       */
+      getTransactionLotService: function() {
+        return this.$['transaction'];
+      },
+
+      /**
+       * Lot Transaction
+       */
+      lotTransaction: function() {
+        var inputData = this.getLotInfoForm().getForm().serializeMyForm();
+        var tranAjax = this.getTransactionLotService();
+        var lotIds = this.packingList.map(function(item) { return item.id });
+
+        tranAjax.body = {
+          lot_ids : lotIds,
+          work_order_id : this.orderId,
+          current_operation_id : this.operationId,
+          packing_list: this.packingList,
+          comments: inputData.comments
+        };
+
+        tranAjax.generateRequest();
+      },
+
+      /**
+       * 트랜잭션 성공시 
+       *
+       * @param {Object} event
+       */
+      transactionResponsed: function(event) {
+        this.refreshLatestLots();
+        this.resetForm();
+        this.packingList = [];
+        this.fire('iron-signal', {name : 'refresh-wip'});
+      },
+
+      lotChanged: function(lot) {
+        var packingList = this.packingList;
+        
+        for(var i = 0; i < packingList.length; i++) { 
+          if(packingList[i].name == lot.name) {
+            return;
+          }
+        }
+        packingList.push(lot);
+        this.packingList = [];
+        this.packingList = packingList;
+      }
+    });
+  </script>
+</dom-module>
