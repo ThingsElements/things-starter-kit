@@ -209,7 +209,7 @@
 				this.operationId = event.detail.operation.id;
 				var lotList = this.$['lot-list'];
 
-				lotList.selectFields = 'id,name,status,state,transaction,first_qty,good_qty,scrap_qty,ship_qty,comments,updated_at';
+				lotList.selectFields = 'id,name,status,state,transaction,first_qty,good_qty,scrap_qty,comments,updated_at';
 
 				lotList.queryFields = [{
 					name: 'operation_id',
@@ -228,7 +228,7 @@
 			lotSelected: function(event) {
 				this.lotId = event.detail.id;
 				var lotHistory = this.$['lot-history'];
-				lotHistory.selectFields = 'seq,transaction,status,state,first_qty,good_qty,scrap_qty,ship_qty,comments,created_at';
+				lotHistory.selectFields = 'seq,transaction,status,state,first_qty,good_qty,scrap_qty,comments,created_at';
 				lotHistory.generateRequest();
 			},
 
