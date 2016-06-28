@@ -10,10 +10,10 @@
 <link rel="import" href="things-lot-based-transaction-behavior.html">
 
 <!--
-  OI - 두번째 Packing 트랜잭션 
+  OI - 세번째 Packing 트랜잭션 
 -->
 
-<dom-module id="things-term-packing-second">
+<dom-module id="things-term-packing-process">
   <template>
     <style>
       :host {
@@ -72,7 +72,7 @@
 
   <script>
     Polymer({
-      is: 'things-term-packing-second',
+      is: 'things-term-packing-process',
       
       behaviors: [
         Things.LotBasedTransactionBehavior
@@ -129,7 +129,7 @@
        * Life Cycle - Ready
        */
       ready: function() {
-        this.transaction = 'PACKING2';
+        this.transaction = 'PACKING3';
       },
 
       /**

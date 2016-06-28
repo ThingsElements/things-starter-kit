@@ -10,10 +10,10 @@
 <link rel="import" href="things-lot-based-transaction-behavior.html">
 
 <!--
-  OI - 세번째 Packing 트랜잭션 
+  OI - 두번째 Packing 트랜잭션 
 -->
 
-<dom-module id="things-term-packing-third">
+<dom-module id="things-term-packing-enter">
   <template>
     <style>
       :host {
@@ -72,7 +72,7 @@
 
   <script>
     Polymer({
-      is: 'things-term-packing-third',
+      is: 'things-term-packing-enter',
       
       behaviors: [
         Things.LotBasedTransactionBehavior
@@ -109,9 +109,22 @@
           }
         },
 
+        /**
+         * packing 할 packing lot 목록
+         * 그리드에 맵핑할 property
+         */
         packingList: {
           type: Array,
           value: []
+        },
+
+        /**
+         * packing model에서 추출한 packing 단위 
+         * (한 pack에 들어갈 lot 혹은 packing lot 갯수)
+         */
+        packingQty: {
+          type: Number,
+          value: 5
         }
       },
 
@@ -129,7 +142,7 @@
        * Life Cycle - Ready
        */
       ready: function() {
-        this.transaction = 'PACKING3';
+        this.transaction = 'PACKING2';
       },
 
       /**
@@ -139,12 +152,18 @@
        * @param {String} operationId
        */
       lotListConditionsChanged: function(orderId, operationId) {
-        this.latestLotQueryFields = [ {
+        this.latestLotQueryFields = [{
           name: 'work_order_id',
           value: orderId
         }, {
           name: 'operation_id',
           value: operationId
+        }, {
+          name: 'lot_type',
+          value: 'PACK'
+        }, {
+          name: 'state',
+          value: 'PACKED'
         }];
 
         this.getLatestLotGrid().refreshData();
@@ -197,7 +216,6 @@
           lot_ids : lotIds,
           work_order_id : this.orderId,
           current_operation_id : this.operationId,
-          packing_list: this.packingList,
           comments: inputData.comments
         };
 
@@ -216,17 +234,30 @@
         this.fire('iron-signal', {name : 'refresh-wip'});
       },
 
+      /**
+       * things-lot-based-transaction-behavior override
+       *
+       * lot id 검색 후 중복되지 않은 lot정보를 grid에 입력합니다.
+       * packingQty와 비교하여 packingQty를 이상이 되면 자동으로 transaction 실행
+       */
       lotChanged: function(lot) {
-        var packingList = this.packingList;
-        
-        for(var i = 0; i < packingList.length; i++) { 
-          if(packingList[i].name == lot.name) {
-            return;
+        // TODO : packingModel에서 packingQty 받아서 입력 하기
+        if(this.packingList.length < this.packingQty) {
+          var packingList = this.packingList;
+          
+          for(var i = 0; i < packingList.length; i++) { 
+            if(packingList[i].name == lot.name) return;
           }
+          packingList.push(lot);
+          this.packingList = [];
+          this.packingList = packingList;
+
+          this.getLotInfoForm().getForm().resetMyForm();
         }
-        packingList.push(lot);
-        this.packingList = [];
-        this.packingList = packingList;
+
+        if(this.packingList.length >= this.packingQty) {
+          this.lotTransaction();
+        }
       }
     });
   </script>
