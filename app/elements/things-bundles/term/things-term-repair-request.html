@@ -104,7 +104,7 @@
        * Life Cycle - Ready
        */
       ready: function() {
-        this.transaction = 'REPAIR-REQ';
+        this.transaction = 'REQ_REPAIR';
       },
 
       /**
@@ -149,27 +149,28 @@
        */
       lotTransaction: function() {
         var inputData = this.$['input-form'].getForm().serializeMyForm();
-        
-        if(!inputData.defect_type || !inputData.repair_qty) return;
-
         var lotData = this.getLotInfoForm().getForm().serializeMyForm();
         var tranAjax = this.getTransactionLotService();
+        var repairQty = inputData.repair_qty ? inputData.repair_qty : lotData.goodQty;
+        if(repairQty > lotData.goodQty) {
+          repairQty = lotData.goodQty;
+        }
 
         //입력받은 return routing id 와 return operation id가 있는지 확인하고 없을시 lotData에 있는 기존 routingId와 operationId를 서버로 전달 합니다.
         var returnRoutingId = (inputData.return_routing_id) ? inputData.return_routing_id : lotData.routing_id;
         var returnOperationId = (inputData.return_operation_id) ? inputData.return_operation_id : lotData.operation_id;
 
         tranAjax.body = {
-          lot_id : lotData.id,
-          operation_id : this.operationId,
           work_order_id : this.orderId,
+          current_operation_id : this.operationId,
+          lot_id : lotData.id,
           defect_type : inputData.defect_type,
           comments : inputData.comments,
-          repair_qty : parseInt(inputData.repair_qty),
-          seed_routing_id : parseInt(inputData.seed_routing_id),
-          seed_operation_id : parseInt(inputData.seed_operation_id),
-          return_routing_id : parseInt(returnRoutingId),
-          return_operation_id : parseInt(returnOperationId)
+          repair_qty : inputData.repair_qty,
+          seed_routing_id : inputData.seed_routing_id,
+          seed_operation_id : inputData.seed_operation_id,
+          return_routing_id : returnRoutingId,
+          return_operation_id : returnOperationId
         };
 
         tranAjax.generateRequest();
