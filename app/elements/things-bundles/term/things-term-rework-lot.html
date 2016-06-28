@@ -87,11 +87,6 @@
           value: function() {
             return Things.DataGlobal.t('title.Input')
           }
-        },
-
-        lot: {
-          type: Object,
-          observer: '_lotChanged'
         }
       },
 
@@ -157,12 +152,24 @@
         var lotData = this.getLotInfoForm().getForm().serializeMyForm();
         var tranAjax = this.getTransactionLotService();
 
+        //입력받은 return routing id 와 return operation id가 있는지 확인하고 없을시 lotData에 있는 기존 routingId와 operationId를 서버로 전달 합니다.
+        var returnRoutingId = (inputData.return_routing_id) ? parseInt(inputData.return_routing_id) : parseInt(lotData.routing_id);
+        var returnOperationId = (inputData.return_operation_id) ? parseInt(inputData.return_operation_id) : parseInt(lotData.operation_id);
+
         tranAjax.body = {
           lot_id : lotData.id,
+          operation_id : this.operationId,
           work_order_id : this.orderId,
-          current_operation_id : this.operationId,
-          next_operation_id : inputData.next_operation_id,
-          comments : inputData.comments
+          rework_code : inputData.rework_code,
+          comments : inputData.comments,
+          seed_routing_id : parseInt(inputData.seed_routing_id),
+          seed_operation_id : parseInt(inputData.seed_operation_id),
+          rework_qty : parseInt(inputData.rework_qty),
+          rework_routing_id : parseInt(inputData.rework_routing_id),
+          rework_start_operation_id : parseInt(inputData.rework_start_operation_id),
+          rework_end_operation_id : parseInt(inputData.rework_end_operation_id),
+          return_routing_id : returnRoutingId,
+          return_operation_id : returnOperationId
         };
 
         tranAjax.generateRequest();
@@ -177,18 +184,9 @@
         this.resetForm();
         this.$['input-form'].getForm().resetMyForm();
         this.fire('iron-signal', {name : 'refresh-wip'});
-      },
-
-      _lotChanged: function(lot) {
-        var tempObj = {};
-        tempObj.return_routing = lot.routing.name;
-        tempObj.return_operation = lot.operation.name;
-
-        this.$['input-form'].getForm().setFormData(tempObj);
-        var inputData = this.$['input-form'].getForm().serializeMyForm();
-
-        console.log(inputData);
       }
     });
   </script>
 </dom-module>
+
+
