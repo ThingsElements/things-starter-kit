@@ -149,12 +149,16 @@
        */
       lotTransaction: function() {
         var inputData = this.$['input-form'].getForm().serializeMyForm();
+
+        if(!inputData.rework_routing_id || !inputData.rework_start_operation_id || !inputData.rework_end_operation_id || !inputData.rework_code || !inputData.rework_qty)
+          return;
+
         var lotData = this.getLotInfoForm().getForm().serializeMyForm();
         var tranAjax = this.getTransactionLotService();
 
         //입력받은 return routing id 와 return operation id가 있는지 확인하고 없을시 lotData에 있는 기존 routingId와 operationId를 서버로 전달 합니다.
-        var returnRoutingId = (inputData.return_routing_id) ? parseInt(inputData.return_routing_id) : parseInt(lotData.routing_id);
-        var returnOperationId = (inputData.return_operation_id) ? parseInt(inputData.return_operation_id) : parseInt(lotData.operation_id);
+        var returnRoutingId = (inputData.return_routing_id) ? inputData.return_routing_id : lotData.routing_id;
+        var returnOperationId = (inputData.return_operation_id) ? inputData.return_operation_id : lotData.operation_id;
 
         tranAjax.body = {
           lot_id : lotData.id,
@@ -168,8 +172,8 @@
           rework_routing_id : parseInt(inputData.rework_routing_id),
           rework_start_operation_id : parseInt(inputData.rework_start_operation_id),
           rework_end_operation_id : parseInt(inputData.rework_end_operation_id),
-          return_routing_id : returnRoutingId,
-          return_operation_id : returnOperationId
+          return_routing_id : parseInt(returnRoutingId),
+          return_operation_id : parseInt(returnOperationId)
         };
 
         tranAjax.generateRequest();
