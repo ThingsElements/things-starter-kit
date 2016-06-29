@@ -39,31 +39,25 @@
       resource-url="[[transactionUrl]]">
     </things-ajax>
 
-    <things-ajax
-      id="search-repair-info"
-      resource-action="index"
-      last-response="{{repairInfo}}">
-    </things-ajax>
-
     <things-layout-hermes 
       top-left-content-title="[[lotInfoTitle]]" 
       bottom-left-content-title="[[inputTitle]]" 
       right-content-title="[[lotListTitle]]">
       
-      <!-- lot search form -->
+      <!-- lot info form -->
       <things-diy-based-form 
         left-top
         on-keypress="handleKeyPress"
-        id="input-form"
+        id="lot-info-form"
         class="flex"
-        diy-form-name="OI-LotSearch"
+        diy-form-name="OI-LotInfo"
         buttons="[[buttons]]">
       </things-diy-based-form>
       
       <!-- repair info form -->
       <things-diy-based-form 
         left-bottom
-        id="lot-info-form"
+        id="input-form"
         class="flex"
         diy-form-name="OI-RepairReceive">
       </things-diy-based-form>
@@ -121,9 +115,18 @@
           }
         },
 
-        repairInfo: {
-          type: Object,
-          observer: '_repairInfoChanged'
+        /**
+         * Repair 정보 
+         */
+        repair: {
+          type: Object
+        },
+
+        /**
+         * Lot 정보 
+         */
+        lotInfo: {
+          type: Object
         }
       },
 
@@ -132,7 +135,6 @@
       ],
 
       listeners: {
-        'search-btn-tap' : 'repairInfoSearch',
         'process-btn-tap' : 'lotTransaction',
         'transaction.things-ajax-response' : 'transactionResponsed',
         'things-grid-configured' : 'latestLotGridConfigured'
@@ -204,10 +206,14 @@
         var tranAjax = this.getTransactionLotService();
 
         tranAjax.body = {
-          lot_id : lotData.id,
+          lot_repair_id : this.repair.id,
+          lot_id : this.lotInfo.id,
           work_order_id : this.orderId,
           current_operation_id : this.operationId,
-          next_operation_id : inputData.next_operation_id,
+          defect_type : inputData.defect_type,
+          defect_code : inputData.defect_code,
+          seed_routing_id : inputData.seed_routing_id,
+          seed_operation_id : inputData.seed_operation_id,
           comments : inputData.comments
         };
 
@@ -223,24 +229,19 @@
         this.refreshLatestLots();
         this.resetForm();
         this.$['input-form'].getForm().resetMyForm();
-        this.fire('iron-signal', {name : 'refresh-wip'});
+        this.fire('iron-signal', { name : 'refresh-wip' });
       },
 
-      repairInfoSearch: function() {
-        var inputData = this.$['input-form'].getForm().serializeMyForm();
-        var repairInfoAjax = this.$['search-repair-info'];
-
-        repairInfoAjax.resourceUrl = 'lot_repairs';
-        repairInfoAjax.queryFields = [{
-          name: 'lot_name',
-          value: inputData.name
-        }];
-        
-        repairInfoAjax.generateRequest();
-      },
-
-      _repairInfoChanged: function(response) {
-        this.$['lot-info-form'].getForm().setFormData(response);
+      /**
+       * Lot 조회시
+       *
+       * @param {Object} lot
+       */
+      lotChanged: function(data) {
+        this.lotInfo = data.lot;
+        this.repair = data.lot_repair;
+        this.getLotInfoForm().getForm().setFormData(this.lotInfo);
+        this.$['input-form'].getForm().setFormData(this.repair);
       }
     });
   </script>

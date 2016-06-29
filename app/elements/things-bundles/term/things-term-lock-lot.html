@@ -141,7 +141,7 @@
         }, {
           name: 'state',
           operator: 'notin',
-          value: 'SCRAPED,LOCKED'
+          value: 'DELETED,SCRAPED,LOCKED'
         }];
 
         this.getLatestLotGrid().refreshData();
@@ -191,6 +191,8 @@
         var tranAjax = this.getTransactionLotService();
 
         tranAjax.body = {
+          work_order_id : this.orderId,
+          current_operation_id : this.operationId,
           lot_id : lotData.id,
           lock_code: inputData.lock_code,
           comments : inputData.comments

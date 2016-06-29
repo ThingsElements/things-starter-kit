@@ -190,23 +190,14 @@
         var tranAjax = this.getTransactionLotService();
 
         tranAjax.body = {
+          work_order_id : this.orderId,
+          current_operation_id : this.operationId,
           lot_id : lotData.id,
           unlock_code: inputData.unlock_code,
           comments : inputData.comments
         };
 
         tranAjax.generateRequest();
-      },
-
-      /**
-       * 트랜잭션 성공시 
-       *
-       * @param {Object} event
-       */
-      transactionResponsed: function(event) {
-        this.refreshLatestLots();
-        this.resetForm();
-        this.$['input-form'].getForm().resetMyForm();
       },
 
       /**
