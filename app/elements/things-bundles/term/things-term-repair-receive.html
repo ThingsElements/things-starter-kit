@@ -69,9 +69,9 @@
         class="flex"
         fixed-column-count="0"
         resource-url="lot_repairs"
-        diy-grid-name="OI-RepairReqList"
-        query-fields="[[latestLotQueryFields]]"
-        sort-fields="[[lastestLotSortFields]]">
+        diy-grid-name="OI-RepairList"
+        query-fields="[[repairQueryFields]]"
+        sort-fields="[[repairSortFields]]">
       </things-term-common-grid>
     </things-layout-hermes>
   </template>
@@ -116,6 +116,26 @@
         },
 
         /**
+         * Repair Query Fields
+         */
+        repairQueryFields: {
+          type: Array,
+          value: function() {
+            return [ { name: 'status', value: 'REQ' } ];
+          }
+        },
+
+        /**
+         * Repair Sort Fields
+         */
+        repairSortFields: {
+          type: Array,
+          value: function() {
+            return [ { field: 'updated_at', ascending: true } ];
+          }
+        },
+
+        /**
          * Repair 정보 
          */
         repair: {
@@ -154,11 +174,6 @@
        * @param {String} operationId
        */
       lotListConditionsChanged: function(orderId, operationId) {
-        this.latestLotQueryFields = [{
-          name: 'status',
-          value: 'REQ'
-        }];
-
         this.getLatestLotGrid().refreshData();
       },
 

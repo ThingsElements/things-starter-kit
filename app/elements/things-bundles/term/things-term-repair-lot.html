@@ -60,13 +60,16 @@
         diy-form-name="OI-Repair">
       </things-diy-based-form>
 
-      <!-- repair list grid -->
       <things-term-common-grid
         right
         id="latest-lot-grid"
         class="flex"
-        query-fields="[[latestLotQueryFields]]">
-      </things-term-common-grid>      
+        fixed-column-count="0"
+        resource-url="lot_repairs"
+        diy-grid-name="OI-RepairList"
+        query-fields="[[repairQueryFields]]"
+        sort-fields="[[repairSortFields]]">
+      </things-term-common-grid>
 
     </things-layout-hermes>
   </template>
@@ -133,11 +136,8 @@
           type: Array,
           value: function() {
             return [{
-              id: 'scrap-btn',
-              text: 'scrap'
-            }, {
-              id: 'return-btn',
-              text: 'return'
+              id: 'process-btn',
+              text: 'process'
             }]
           }
         },
@@ -154,6 +154,26 @@
          */
         repair: {
           type: Object
+        },
+
+        /**
+         * Repair Query Fields
+         */
+        repairQueryFields: {
+          type: Array,
+          value: function() {
+            return [ { name: 'status', value: 'RCV' } ];
+          }
+        },
+
+        /**
+         * Repair Sort Fields
+         */
+        repairSortFields: {
+          type: Array,
+          value: function() {
+            return [ { field: 'updated_at', ascending: true } ];
+          }
         }
       },
 
@@ -162,8 +182,7 @@
       ],
 
       listeners: {
-        'scrap-btn-tap' : 'lotScrapped',
-        'return-btn-tap' : 'lotReturned',
+        'process-btn-tap' : 'lotTransaction',
         'transaction.things-ajax-response' : 'transactionResponsed',
         'things-grid-configured' : 'latestLotGridConfigured'
       },
@@ -182,20 +201,6 @@
        * @param {String} operationId
        */
       lotListConditionsChanged: function(orderId, operationId) {
-        this.latestLotQueryFields = [{
-          name: 'work_order_id',
-          value: orderId
-        }, {
-          name: 'operation_id',
-          value: operationId
-        }, {
-          name: 'status',
-          value: 'REPAIR'
-        }, {
-          name: 'state',
-          value: 'REPAIRING'
-        }];
-
         this.getLatestLotGrid().refreshData();
       },
 
@@ -242,12 +247,16 @@
         var lotData = this.getLotInfoForm().getForm().serializeMyForm();
         var tranAjax = this.getTransactionLotService();
 
+        if(!inputData.action_code) {
+          return;
+        }
+
         tranAjax.body = {
           lot_repair_id : this.repair.id,
           work_order_id : this.orderId,
           current_operation_id : this.operationId,
           lot_id : this.lotInfo.id,
-          action_code : this.actionCode,
+          action_code : inputData.action_code,
           repair_code : inputData.repair_code,
           comments : inputData.comments
         };
@@ -261,24 +270,12 @@
        * @param {Object} event
        */
       transactionResponsed: function(event) {
-        this.refreshLatestLots();
         this.resetForm();
+        this.refreshLatestLots();
         this.$['input-form'].getForm().resetMyForm();
         this.fire('iron-signal', {name : 'refresh-wip'});
         this.lotInfo = [];
         this.repair = [];
-        this.actionCode = '';
-      },
-
-      /**
-       * Enter event 발생시 data search
-       */
-      handleKeyPress: function(event) {
-        var code = event.keyCode;
-
-        if(code == 13) {
-          this.validateLot();
-        }
       },
 
       /**
@@ -291,24 +288,6 @@
         this.repair = data.lot_repair;
         this.getLotInfoForm().getForm().setFormData(this.lotInfo);
         this.$['input-form'].getForm().setFormData(this.repair);
-      },
-
-      /**
-       * Scrap btn 탭 발생 이벤트
-       * actionCode를 scrap으로 초기화 후 lotTransaction 호출
-       */
-      lotScrapped: function() {
-        this.actionCode = 'SCRAP';
-        this.lotTransaction();
-      },
-
-      /**
-       * return btn 탭 발생 이벤트
-       * actionCode를 COMPLETE로 초기화 후 lotTransaction 호출
-       */
-      lotReturned: function() {
-        this.actionCode = 'COMPLETE'
-        this.lotTransaction();
       }
     });
   </script>
