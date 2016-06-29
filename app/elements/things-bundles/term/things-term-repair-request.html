@@ -2,7 +2,7 @@
 
 <link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
 
-<link rel="import" href="../../things-layout-view/things-layout-hera.html">
+<link rel="import" href="../../things-layout-view/things-layout-hermes.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-form.html">
 
@@ -21,7 +21,7 @@
         @apply(--layout-vertical);
         @apply(--layout-flex);
       }
-      things-layout-hera {
+      things-layout-hermes {
         @apply(--layout-flex);
       }
     </style>
@@ -39,11 +39,14 @@
       resource-url="[[transactionUrl]]">
     </things-ajax>
 
-    <things-layout-hera
-      left-content-title="[[lotInfoTitle]]"
-      right-content-title="[[inputTitle]]">
+    <things-layout-hermes
+      top-left-content-title="[[lotInfoTitle]]"
+      bottom-left-content-title="[[inputTitle]]"
+      right-content-title="[[lotListTitle]]">
+
+      <!-- lot info form -->
       <things-diy-based-form 
-        left
+        left-top
         on-keypress="handleKeyPress"
         id="lot-info-form"
         class="flex"
@@ -51,13 +54,27 @@
         buttons="[[buttons]]">
       </things-diy-based-form>
       
+      <!-- repair info form -->
       <things-diy-based-form 
-        right
+        left-bottom
         id="input-form"
         class="flex"
-        diy-form-name="OI-RepairRequest">
+        diy-form-name="OI-RepairReceive">
       </things-diy-based-form>
-    </things-layout-hera>
+
+      <!-- repair req list grid -->
+      <things-term-common-grid
+        right
+        id="latest-lot-grid"
+        class="flex"
+        fixed-column-count="0"
+        resource-url="lot_repairs"
+        diy-grid-name="OI-RepairReqList"
+        query-fields="[[latestLotQueryFields]]"
+        sort-fields="[[lastestLotSortFields]]">
+      </things-term-common-grid>
+
+    </things-layout-hermes> 
   </template>
 
   <script>
@@ -87,7 +104,17 @@
           value: function() {
             return Things.DataGlobal.t('title.Input')
           }
-        }
+        },
+
+        /**
+         * Title Of Lot List
+         */
+        lotListTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('title.RequestRepairList')
+          }
+        }        
       },
 
       observers: [
@@ -114,13 +141,19 @@
        * @param {String} operationId
        */
       lotListConditionsChanged: function(orderId, operationId) {
-        this.latestLotQueryFields = [ {
-          name: 'work_order_id',
-          value: orderId
-        }, {
-          name: 'operation_id',
-          value: operationId
-        } ];
+        this.latestLotQueryFields = [{
+          name: 'status',
+          value: 'REQ',
+        }];
+
+        this.getLatestLotGrid().refreshData();
+      },
+
+      /**
+       * Latest Lot Grid 변경시
+       */
+      latestLotGridConfigured: function(event) {
+        this.getLatestLotGrid().refreshData();
       },
 
       /**
@@ -128,6 +161,13 @@
        */
       getLotInfoForm: function() {
         return this.$['lot-info-form'];
+      },
+
+      /**
+       * Latest Lot List Grid
+       */
+      getLatestLotGrid: function() {
+        return this.$['latest-lot-grid'];
       },
 
       /**
@@ -182,6 +222,7 @@
        * @param {Object} event
        */
       transactionResponsed: function(event) {
+        this.refreshLatestLots();
         this.resetForm();
         this.$['input-form'].getForm().resetMyForm();
         this.fire('iron-signal', {name : 'refresh-wip'});
