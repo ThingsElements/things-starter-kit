@@ -106,7 +106,7 @@
         repairListTitle: {
           type: String,
           value: function() {
-            return Things.DataGlobal.t('title.RepairList')
+            return Things.DataGlobal.t('title.ReceivedRepairList')
           }
         },        
 
@@ -188,6 +188,12 @@
         }, {
           name: 'operation_id',
           value: operationId
+        }, {
+          name: 'status',
+          value: 'REPAIR'
+        }, {
+          name: 'state',
+          value: 'REPAIRING'
         }];
 
         this.getLatestLotGrid().refreshData();
