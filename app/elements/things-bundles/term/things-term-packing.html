@@ -64,7 +64,8 @@
         left-bottom
         id="packing-list-grid"
         class="flex"
-        items="[[items]]"
+        fixed-column-count="1"
+        items="[[packingList]]"
         diy-grid-name="OI-PackingList">
       </things-diy-based-grid>
 
@@ -121,7 +122,7 @@
          *
          * grid에 표시될 items array
          */
-        items: {
+        packingList: {
           type: Array,
           value: []
         },
@@ -159,7 +160,8 @@
          * packingModelInfo에서 찾아 오는 packing 수량
          */
         packQty: {
-          type: Number
+          type: Number,
+          value: 5 // 서버에서 받아서 초기화 해야 합니다. 현재는 5로 하드 코딩
         }
       },
 
@@ -283,20 +285,25 @@
       * server로 넘겨줄 items를 가공
       */
       lotChanged: function(lot) {
-        var newItems = JSON.parse(JSON.stringify(this.items));
-        if(this.items.length < this.packQty) {
+        var packingList = this.packingList;
+
+        if(packingList.length < this.packQty) {
           // id 중복 체크 후 중복이면 return
-          for(var i = 0; i < this.items.length; i++) {
-            if(this.items[i].id == lot.id) return;
+          // TODO packQty 서버로 부터 받아서 처리하도록 수정
+          for(var i = 0; i < this.packingList.length; i++) {
+            if(this.packingList[i].id == lot.id) return;
           }
 
-          newItems.push(lot);
-          this.items = newItems;
+          packingList.push(lot);
+          this.packingList = [];
+          this.packingList = packingList;
+
+          this.getLotInfoForm().getForm().resetMyForm();
         }
 
-        if(this.items.length >= this.packQty) {
+        if(this.packingList.length >= this.packQty) {
           this.lotTransaction();
-        }
+        }    
       }
     });
   </script>
