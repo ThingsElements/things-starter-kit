@@ -37,31 +37,36 @@
     </things-ajax>
 
     <things-layout-hermes 
-      top-left-content-title="Lot Information" 
-      bottom-left-content-title="Comment" 
-      right-content-title="Latest Lot List">
+      top-left-content-title="[[lotInfoTitle]]" 
+      bottom-left-content-title="[[inputTitle]]" 
+      right-content-title="[[repairListTitle]]">
       
+      <!-- repair search form -->
       <things-diy-based-form
         left-top
+        on-keypress="handleKeyPress"
         id="lot-info-form"
         class="flex"
         diy-form-name="OI-LotInfo"
-        buttons="[[buttons]]">
+        buttons="[[repairSearchButtons]]">
       </things-diy-based-form>
 
-      <things-term-common-grid
+      <!-- repair info form -->
+      <things-diy-based-form
         left-bottom
+        id="input-form"
+        class="flex"
+        buttons="[[repairResultButtons]]"
+        diy-form-name="OI-Repair">
+      </things-diy-based-form>
+
+      <!-- repair list grid -->
+      <things-term-common-grid
+        right
         id="latest-lot-grid"
         class="flex"
         query-fields="[[latestLotQueryFields]]">
-      </things-term-common-grid>
-
-      <things-diy-based-form
-        right
-        id="input-form"
-        class="flex"
-        diy-form-name="OI-Repair">
-      </things-diy-based-form>
+      </things-term-common-grid>      
 
     </things-layout-hermes>
   </template>
@@ -75,6 +80,81 @@
       ],
 
       properties: {
+        /**
+         * Title Of Lot Information
+         */
+        lotInfoTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('title.LotInformation')
+          }
+        },
+
+        /**
+         * Title Of Input
+         */
+        inputTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('title.Input')
+          }
+        },
+
+        /**
+         * Title Of Lot List
+         */
+        repairListTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('title.RepairList')
+          }
+        },        
+
+        /**
+         * lot-info-form 에서 사용하는 button setting
+         */
+        repairSearchButtons: {
+          type: Array,
+          value: function() {
+            return [{
+              id: 'search-btn',
+              text: 'search'
+            }, {
+              id: 'reset-btn',
+              text: 'reset'
+            }];
+          }
+        },
+
+        /**
+         * input-form 에서 사용하는 button setting
+         */
+        repairResultButtons: {
+          type: Array,
+          value: function() {
+            return [{
+              id: 'scrap-btn',
+              text: 'scrap'
+            }, {
+              id: 'return-btn',
+              text: 'return'
+            }]
+          }
+        },
+
+        /**
+         * validate 후 전달 받는 lotInfo
+         */
+        lotInfo : {
+          type: Object
+        },
+
+        /**
+         * validate 후 전달 받는 repair
+         */
+        repair: {
+          type: Object
+        }
       },
 
       observers: [
@@ -82,7 +162,8 @@
       ],
 
       listeners: {
-        'process-btn-tap' : 'lotTransaction',
+        'scrap-btn-tap' : 'lotScrapped',
+        'return-btn-tap' : 'lotReturned',
         'transaction.things-ajax-response' : 'transactionResponsed',
         'things-grid-configured' : 'latestLotGridConfigured'
       },
@@ -91,7 +172,7 @@
        * Life Cycle - Ready
        */
       ready: function() {
-        this.transaction = 'MOVE';
+        this.transaction = 'REPAIR';
       },
 
       /**
@@ -101,16 +182,13 @@
        * @param {String} operationId
        */
       lotListConditionsChanged: function(orderId, operationId) {
-        this.latestLotQueryFields = [ {
+        this.latestLotQueryFields = [{
           name: 'work_order_id',
           value: orderId
         }, {
           name: 'operation_id',
           value: operationId
-        }, {
-          name: 'state',
-          value: 'FINISH_PROCESS'
-        } ];
+        }];
 
         this.getLatestLotGrid().refreshData();
       },
@@ -159,10 +237,12 @@
         var tranAjax = this.getTransactionLotService();
 
         tranAjax.body = {
-          lot_id : lotData.id,
+          lot_repair_id : this.repair.id,
           work_order_id : this.orderId,
           current_operation_id : this.operationId,
-          next_operation_id : inputData.next_operation_id,
+          lot_id : this.lotInfo.id,
+          action_code : this.actionCode,
+          repair_code : inputData.repair_code,
           comments : inputData.comments
         };
 
@@ -190,8 +270,40 @@
         if(code == 13) {
           this.validateLot();
         }
-      }
+      },
 
+      /**
+       * Lot 조회시
+       *
+       * @param {Object} lot
+       */
+      lotChanged: function(data) {
+        this.lotInfo = data.lot;
+        this.repair = data.lot_repair;
+        this.getLotInfoForm().getForm().setFormData(this.lotInfo);
+        this.$['input-form'].getForm().setFormData(this.repair);
+        this.lotInfo = [];
+        this.repair = [];
+        this.actionCode = '';
+      },
+
+      /**
+       * Scrap btn 탭 발생 이벤트
+       * actionCode를 scrap으로 초기화 후 lotTransaction 호출
+       */
+      lotScrapped: function() {
+        this.actionCode = 'SCRAP';
+        this.lotTransaction();
+      },
+
+      /**
+       * return btn 탭 발생 이벤트
+       * actionCode를 COMPLETE로 초기화 후 lotTransaction 호출
+       */
+      lotReturned: function() {
+        this.actionCode = 'COMPLETE'
+        this.lotTransaction();
+      }
     });
   </script>
 </dom-module>
