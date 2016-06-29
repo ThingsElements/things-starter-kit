@@ -120,7 +120,7 @@
         /**
          * packing list items
          *
-         * grid에 표시될 items array
+         * grid에 표시될 packing list
          */
         packingList: {
           type: Array,
@@ -256,7 +256,7 @@
         var tranAjax = this.getTransactionLotService();
         var inputData = this.$['lot-info-form'].getForm().serializeMyForm();
 
-        var lotIds = this.items.map(function(item) {return item.id});
+        var lotIds = this.packingList.map(function(item) {return item.id});
         tranAjax.body = {
           lot_ids: lotIds,
           work_order_id: this.orderId,
@@ -275,14 +275,14 @@
         this.refreshLatestLots();
         this.resetForm();
         this.fire('iron-signal', {name : 'refresh-wip'});
-        this.items = [];
+        this.packingList = [];
       },
 
       /**
       * things-lot-based-transaction-behavior override
       *
       * lot id 검색 후 중복되지 않은 lot정보를 grid에 입력합니다.
-      * server로 넘겨줄 items를 가공
+      * server로 넘겨줄 packingList를 가공
       */
       lotChanged: function(lot) {
         var packingList = this.packingList;
