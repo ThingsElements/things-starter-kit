@@ -259,6 +259,9 @@
         this.resetForm();
         this.$['input-form'].getForm().resetMyForm();
         this.fire('iron-signal', {name : 'refresh-wip'});
+        this.lotInfo = [];
+        this.repair = [];
+        this.actionCode = '';
       },
 
       /**
@@ -282,9 +285,6 @@
         this.repair = data.lot_repair;
         this.getLotInfoForm().getForm().setFormData(this.lotInfo);
         this.$['input-form'].getForm().setFormData(this.repair);
-        this.lotInfo = [];
-        this.repair = [];
-        this.actionCode = '';
       },
 
       /**
