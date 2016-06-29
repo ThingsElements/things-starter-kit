@@ -29,7 +29,8 @@
     <things-diy-based-grid
     	fixed-column-count="[[fixedColumnCount]]"
     	diy-grid-name="[[diyGridName]]"
-    	items="{{gridData}}">
+    	items="{{gridData}}"
+    	buttons="[[buttons]]">
     </things-diy-based-grid>
 	</template>
 	
@@ -110,8 +111,23 @@
 				 */
 				gridData: {
 					type: Array
+				},
+
+				/**
+				 * Buttons
+				 */
+				buttons : {
+					type: Array,
+					value: function() {
+						return [ { id: 'refresh-btn', text: 'refresh' } ];
+					}
 				}
 			},
+
+
+      listeners: {
+        'refresh-btn-tap' : 'refreshData'
+      },
 
 			/**
 			 * ajax 호출
