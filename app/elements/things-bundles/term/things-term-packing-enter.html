@@ -3,6 +3,7 @@
 <link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
 
 <link rel="import" href="../../things-layout-view/things-layout-hermes.html">
+<link rel="import" href="../../things-label-print/things-print-agent.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-form.html">
 
@@ -38,6 +39,8 @@
       resource-action="create"
       resource-url="[[transactionUrl]]">
     </things-ajax>
+
+    <things-ajax id="label-model" resource-action="find"></things-ajax>
 
     <things-layout-hermes 
       top-left-content-title="[[packSearchTitle]]" 
@@ -125,6 +128,13 @@
         packQty: {
           type: Number,
           value: 5 // 서버에서 받아서 초기화 해야 합니다. 현재는 5로 하드 코딩
+        },
+
+        /**
+         * Packing 트랜잭션 후 결과 Packing Lot
+         */
+        packingLot: {
+          type: Object
         }
       },
 
@@ -135,7 +145,8 @@
       listeners: {
         'process-btn-tap' : 'lotTransaction',
         'transaction.things-ajax-response' : 'transactionResponsed',
-        'things-grid-configured' : 'latestLotGridConfigured'
+        'things-grid-configured' : 'latestLotGridConfigured',
+        'label-model.things-ajax-response' : '_labelModelResponsed'
       },
 
       /**
@@ -228,10 +239,17 @@
        * @param {Object} event
        */
       transactionResponsed: function(event) {
-        this.refreshLatestLots();
-        this.resetForm();
+        this.packingLot = event.detail;
         this.packingList = [];
+        this.resetForm();
+        this.refreshLatestLots();
         this.fire('iron-signal', {name : 'refresh-wip'});
+
+        // TODO Check, Get Label Model
+        if(this.$['print'].value == true) {
+          this.$['label-model'].resourceUrl = 'lots/' + this.lot.id + '/packing_label/' + this.operationId;
+          this.$['label-model'].generateRequest();
+        }
       },
 
       /**
@@ -258,6 +276,26 @@
         if(this.packingList.length >= this.packQty) {
           this.lotTransaction();
         }
+      },
+
+      /**
+       * labelModel 조회 후
+       *
+       * @param {Object} event
+       */
+      _labelModelResponsed: function(event) {
+        var label = event.detail;
+        var variableData = {
+          '#box_no' : this.packingLot.name,
+          '#material_name' : this.packingLot.material.name,
+          '#date' : this.packingLot.work_date,
+          '#qty' : '' + this.packingLot.good_qty
+        };
+
+        var agent = this.$['print-agent'];
+        agent.label = label;
+        agent.convertData = variableData;
+        agent.printLabel();
       }
     });
   </script>
