@@ -182,18 +182,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <iron-collapse id="searchToolbar" opened>
             <paper-toolbar>
               <form is="iron-form" id="header-form" method="post" action="/form/handler">
+                <things-i18n-msg msgid="label.date" msg="{{labelDate}}" auto hidden>Date</things-i18n-msg>
                 <things-date-picker
                   id="date-picker"
-                  label="Date"
+                  label="[[labelDate]]"
                   value="{{globals.date}}">
                 </things-date-picker>
 
                 <iron-localstorage name="OI.date" value="{{globals.date}}">
                 </iron-localstorage>
-
+                <things-i18n-msg msgid="label.line" msg="{{labelLine}}" auto hidden>Line</things-i18n-msg>
                 <things-code-combo
                   id="line-selector" 
-                  label="Line" 
+                  label="[[labelLine]]" 
                   code-name="LINE"
                   value="{{globals.line}}"
                   label-path="description" 
@@ -202,10 +203,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 
                 <iron-localstorage name="OI.line" value="{{globals.line}}">
                 </iron-localstorage>
-
+                <things-i18n-msg msgid="label.operation" msg="{{labelOperation}}" auto hidden>Operation</things-i18n-msg>
                 <things-resource-selector 
                   id="resource-selector" 
-                  label="Operation" 
+                  label="[[labelOperation]]" 
                   name="operation"
                   obj-value="{{globals.operation}}"
                   resource-type="Entity"
@@ -215,10 +216,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 
                 <iron-localstorage name="OI.operation" value="{{globals.operation}}">
                 </iron-localstorage>
-
+                <things-i18n-msg msgid="label.order_no" msg="{{labelOrder}}" auto hidden>Order</things-i18n-msg>
                 <things-resource-selector 
                   id="resource-selector" 
-                  label="Order" 
+                  label="[[labelOrder]]" 
                   name="order"
                   obj-value="{{globals.order}}"
                   resource-type="Menu"
