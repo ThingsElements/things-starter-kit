@@ -42,7 +42,8 @@
     <things-ajax
       id="search-exam-items"
       resource-action="index"
-      resource-url="[[examItemsUrl]]">
+      resource-url="[[examItemsUrl]]"
+      last-response="{{examItems}}">
     </things-ajax>
 
     <things-layout-athena 
@@ -234,7 +235,6 @@
        * Lot Information Form
        */
       getLotInfoForm: function() {
-        this.$['search-exam-items'].generateRequest();
         return this.$['lot-info-form'];
       },
 
@@ -403,6 +403,23 @@
         this.examItems = [];
         this.defectItems = [];
         this.fire('iron-signal', {name : 'refresh-wip'});
+      },
+
+      /**
+       * lot 검색시 examItems를 찾아 그리드에 출력
+       */
+      lotChanged: function(lot) {
+        if(lot.error_id) {
+            this.openInfoMsg({ title : lot.error_id, text : lot.msg, type : 'info', timer : 10000 });
+        } else {
+          if(lot.operation && lot.operation.id != this.operationId) {
+            this.openInfoMsg({ title : 'Validation Error!', text : 'Mismatch Current Operation and Lot Operation', type : 'info', timer : 10000 });
+          } else {
+            this.getLotInfoForm().getForm().setFormData(lot);
+          }
+        }
+
+        this.$['search-exam-items'].generateRequest();
       }
     });
   </script>

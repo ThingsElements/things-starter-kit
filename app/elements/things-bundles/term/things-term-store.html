@@ -232,7 +232,7 @@
         }
         
         this.refreshLatestLots();
-        this.$['input-form'].getForm().resetMyForm();
+        this.$['lot-info-form'].getForm().resetMyForm();
         this.fire('iron-signal', {name : 'refresh-wip'});
       },
 
@@ -240,7 +240,16 @@
        * lot 검색시 하위 포장된 lot을 찾아 그리드에 출력합니다.
        */
       lotChanged: function(lot) {
-        this.getLotInfoForm().getForm().setFormData(lot);
+        if(lot.error_id) {
+            this.openInfoMsg({ title : lot.error_id, text : lot.msg, type : 'info', timer : 10000 });
+        } else {
+          if(lot.operation && lot.operation.id != this.operationId) {
+            this.openInfoMsg({ title : 'Validation Error!', text : 'Mismatch Current Operation and Lot Operation', type : 'info', timer : 10000 });
+          } else {
+            this.getLotInfoForm().getForm().setFormData(lot);
+          }
+        }
+        
         this.relationLotId = lot.relation_lot_id;
 
         var relationLotsAjax = this.$['relation-lots-search'];
