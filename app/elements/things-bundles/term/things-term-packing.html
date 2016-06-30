@@ -98,7 +98,7 @@
         packingLotTitle: {
           type: String,
           value: function() {
-            return Things.DataGlobal.t('label.packing_no')
+            return Things.DataGlobal.t('label.lot_no')
           }
         },
 
@@ -151,7 +151,7 @@
          */
         packingModelUrl: {
           type: String,
-          computed: '_computePackingQtyUrl(orderId,operationId)'
+          computed: '_computePackingModelUrl(orderId,operationId)'
         },
 
         /**
@@ -195,7 +195,10 @@
         this.transaction = 'PACKING';
       },
 
-      _computePackingQtyUrl: function(orderId, operationId) {
+      /**
+       * Packing Model 조회 URL
+       */
+      _computePackingModelUrl: function(orderId, operationId) {
         return 'packing_models/find/' + orderId + '/' + operationId;
       },
 

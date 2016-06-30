@@ -14,6 +14,7 @@
         display: inline-block;
         @apply(--things-layout-athena);
         @apply(--layout-horizontal);
+        margin-top:20px;
       }
 
       paper-card {
@@ -51,6 +52,7 @@
         @apply(--layout-flex);
         @apply(--layout-vertical);
         @apply(--things-layout-athena-left);
+        margin-right:15px;
       }
 
       #right {
@@ -83,10 +85,8 @@
 
     <div class ="container">
       <!-- left -->
-      <paper-card id="left" 
-        heading="[[leftContentTitle]]" 
-        elevation="1" 
-        animated-shadow="false">
+      <paper-card id="left" elevation="0" animated-shadow="false">
+        <span class="subtitle">[[leftContentTitle]]</span>
         <div id="leftContent" class="layout-content">
           <content select="[left]"></content>
         </div>
@@ -95,20 +95,16 @@
       <!-- right -->
       <div id="right">
         <!-- top -->
-        <paper-card id="right-top" 
-          heading="[[rightTopContentTitle]]" 
-          elevation="1" 
-          animated-shadow="false">
+        <paper-card id="right-top" elevation="0" animated-shadow="false">
+          <span class="subtitle">[[rightTopContentTitle]]</span>
           <div id="rightTopContent" class="layout-content">
             <content select="[right-top]"></content>
           </div>
         </paper-card>
 
         <!-- bottom -->
-        <paper-card id="right-bottom" 
-          heading="[[rightBottomContentTitle]]" 
-          elevation="1" 
-          animated-shadow="false">
+        <paper-card id="right-bottom" elevation="0" animated-shadow="false">
+          <span class="subtitle">[[rightBottomContentTitle]]</span>
           <div id="rightBottomContent" class="layout-content">
             <content select="[right-bottom]"></content>
           </div>
@@ -149,23 +145,6 @@
         type: String,
         value: 'right-bottom'
       }
-    },
-
-    listeners: {
-      'sections-configured' : 'setupLayoutClass'
-    },
-
-    /**
-     * Section이 모두 추가된 후 Layout Class를 설정한다.
-     *
-     * @param {Object} e sections-configured
-     */
-    setupLayoutClass: function(e) {
-      if(!this.sections || this.sections.length == 0) return;
-
-      this.sections['leftContent'].setAttribute('class', 'flex');
-      //this.sections['rightTopContent'].setAttribute('class', 'flex');
-      //this.sections['rightBottomContent'].setAttribute('class', 'flex');
     }
   });
   </script>

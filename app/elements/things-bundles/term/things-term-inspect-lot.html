@@ -365,7 +365,10 @@
           if(lotInspect.failure == 'true') {
             lotInspect.success = false;
             var tempArry = this.lotDefectsMap[lotInspect.exam_item_id];
-            tempArry.forEach(function(temp) { lotDefects.push(temp);});
+            tempArry.forEach(function(temp) { 
+              delete temp['rank'];
+              lotDefects.push(temp);
+            });
           }
 
           delete lotInspect['id'];

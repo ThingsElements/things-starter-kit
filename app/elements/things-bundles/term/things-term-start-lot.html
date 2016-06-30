@@ -106,6 +106,13 @@
           value: function() {
             return Things.DataGlobal.t('title.LotList')
           }
+        },
+
+        lastestLotSortFields: {
+          type: Array,
+          value: function() {
+            return [{field : 'updatedAt', ascending : false}]
+          }
         }
       },
 
