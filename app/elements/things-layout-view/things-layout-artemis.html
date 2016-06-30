@@ -18,6 +18,7 @@
 			#top {
 				@apply(--layout-flex);
 				@apply(--layout-horizontal);
+				padding:15px 0;
 			}
 
 			#topLeft {
@@ -28,6 +29,7 @@
 			#topCenter {
 				@apply(--layout-vertical);
 				@apply(--layout-flex);
+				margin:0 15px;
 			}
 
 			#topRight {
@@ -64,7 +66,7 @@
     <!-- top -->
   	<div id="top">
   		<!-- top left -->
-  		<paper-card id="topLeft" elevation="1">
+  		<paper-card id="topLeft" elevation="0">
   			<span class="subtitle">[[topLeftContentTitle]]</span>
   			<div id="topLeftContent" class="layout-content">
   				<content select="[top-left]"></content>
@@ -72,7 +74,7 @@
   		</paper-card>
 
   		<!-- top center -->
-  		<paper-card id="topCenter" elevation="1">
+  		<paper-card id="topCenter" elevation="0">
   			<span class="subtitle">[[topCenterContentTitle]]</span>
   			<div id="topCenterContent" class="layout-content">
   				<content select="[top-center]"></content>
@@ -80,7 +82,7 @@
   		</paper-card>
 
   		<!-- top right -->
-  		<paper-card id="topRight" elevation="1">
+  		<paper-card id="topRight" elevation="0">
   			<span class="subtitle">[[topRightContentTitle]]</span>
   			<div id="topRightContent" class="layout-content">
   				<content select="[top-right]"></content>
