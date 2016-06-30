@@ -10,7 +10,7 @@
 <link rel="import" href="things-lot-based-transaction-behavior.html">
 
 <!--
-  OI - MOVE LOT 트랜잭션 
+  OI - SPC LOT 트랜잭션 
 -->
 
 <dom-module id="things-term-spc">
@@ -40,7 +40,7 @@
     </things-ajax>
 
     <things-layout-athena 
-      left-content-title="[[spcItemsTitle]]"
+      left-content-title="[[lotListTitle]]"
       right-top-content-title="[[spcItemsTitle]]" 
       right-bottom-content-title="[[spcValueTitle]]">
       <things-term-common-grid
@@ -81,10 +81,10 @@
         /**
          * Title Of Lot Information
          */
-        spcItemsTitle: {
+        lotListTitle: {
           type: String,
           value: function() {
-            return Things.DataGlobal.t('label.spc_item')
+            return Things.DataGlobal.t('label.SPCLotList')
           }
         },
 
@@ -94,7 +94,7 @@
         spcItemTitle: {
           type: String,
           value: function() {
-            return Things.DataGlobal.t('label.spc_item')
+            return Things.DataGlobal.t('label.SPCItem')
           }
         },
 
@@ -104,7 +104,7 @@
         spcValueTitle: {
           type: String,
           value: function() {
-            return Things.DataGlobal.t('label.spc_value')
+            return Things.DataGlobal.t('label.SPCValue')
           }
         },
 
