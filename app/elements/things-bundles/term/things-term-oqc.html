@@ -336,8 +336,11 @@
        * @param {Object} event
        */
       transactionResponsed: function(event) {
-        this.updateLotList()
+        if(!this.checkTransactionResponse(event)) {
+          return;
+        }
 
+        this.updateLotList()
         this.refreshLatestLots();
         this.resetForm();
         this.$['input-form'].getForm().resetMyForm();

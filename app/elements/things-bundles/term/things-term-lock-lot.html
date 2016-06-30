@@ -207,20 +207,14 @@
        * @param {Object} event
        */
       transactionResponsed: function(event) {
-        this.refreshLatestLots();
-        this.resetForm();
-        this.$['input-form'].getForm().resetMyForm();
-      },
+        if(!this.checkTransactionResponse(event)) {
+          return;
+        }
 
-      /**
-       * 트랜잭션 성공시 
-       *
-       * @param {Object} event
-       */
-      transactionResponsed: function(event) {
         this.refreshLatestLots();
         this.resetForm();
         this.$['input-form'].getForm().resetMyForm();
+        this.fire('iron-signal', {name : 'refresh-wip'});
       }
     });
   </script>

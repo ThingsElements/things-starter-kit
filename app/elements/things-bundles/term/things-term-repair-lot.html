@@ -270,6 +270,10 @@
        * @param {Object} event
        */
       transactionResponsed: function(event) {
+        if(!this.checkTransactionResponse(event)) {
+          return;
+        }
+                
         this.resetForm();
         this.refreshLatestLots();
         this.$['input-form'].getForm().resetMyForm();

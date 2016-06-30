@@ -1,7 +1,6 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 
-<link rel="import" href="../../../bower_components/things-global-behavior/things-global-behavior.html">
-<link rel="import" href="../../../bower_components/things-msg-box-behavior/things-msg-box-behavior.html">
+<link rel="import" href="./things-term-common-behavior.html">
 
 <script>
 
@@ -175,18 +174,6 @@ Things.LotBasedTransactionBehaviorImpl = {
 		return 'lot_trxs/' + transaction + '/transaction';
 	},
 
-	/**
-	* Enter event 발생시 data search
-	*
-	* @param {Object} event
-	*/
-	handleKeyPress: function(event) {
-		var code = event.keyCode;
-		if(code == 13) {
-			this.validateLot();
-		}
-	},
-
 	/** 
 	 * Find && Validate Lot 
 	 *
@@ -227,10 +214,10 @@ Things.LotBasedTransactionBehaviorImpl = {
 	 */
 	lotChanged: function(lot) {
 		if(lot.error_id) {
-				this.openInfoMsg({ title : lot.error_id, text : lot.msg, type : 'info', timer : 5000 });
+				this.openInfoMsg({ title : lot.error_id, text : lot.msg, type : 'info', timer : 10000 });
 		} else {
 			if(lot.operation && lot.operation.id != this.operationId) {
-				this.openInfoMsg({ title : 'Validation Error!', text : 'Mismatch Current Operation and Lot Operation', type : 'info', timer : 5000 });
+				this.openInfoMsg({ title : 'Validation Error!', text : 'Mismatch Current Operation and Lot Operation', type : 'info', timer : 10000 });
 			} else {
 				this.getLotInfoForm().getForm().setFormData(lot);
 			}
@@ -238,21 +225,20 @@ Things.LotBasedTransactionBehaviorImpl = {
 	},
 
 	/**
-	* 트랜잭션 에러시 
-	*
-	* @param {Object} event
-	*/
+ 	 * 트랜잭션 에러시 
+	 *
+	 * @param {Object} event
+	 */
 	validationError: function(event) {
 		event.cancelBubble = true;
 		var response = event.detail.request.xhr.response;
-		this.openInfoMsg({ title : 'Validation Error!', text : response.msg, type : 'info', timer : 5000 });
+		this.openInfoMsg({ title : 'Validation Error!', text : response.msg, type : 'info', timer : 10000 });
 	}
 };
 
 Things.LotBasedTransactionBehavior = [
 	Things.LotBasedTransactionBehaviorImpl,
-	Things.MsgBoxBehavior,
-	Things.GlobalBehavior
+	Things.TermCommonBehavior
 ];
 
 </script>

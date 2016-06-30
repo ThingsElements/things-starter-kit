@@ -185,6 +185,10 @@
        * @param {Object} event
        */
       transactionResponsed: function(event) {
+        if(!this.checkTransactionResponse(event)) {
+          return;
+        }
+                
         this.resetForm();
         this.$['input-form'].getForm().resetMyForm();
         this.fire('iron-signal', {name : 'refresh-wip'});

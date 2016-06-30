@@ -395,6 +395,10 @@
        * @param {Object} event
        */
       transactionResponsed: function(event) {
+        if(!this.checkTransactionResponse(event)) {
+          return;
+        }
+                
         this.resetForm();
         this.examItems = [];
         this.defectItems = [];

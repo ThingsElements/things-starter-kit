@@ -7,6 +7,7 @@
 <link rel="import" href="../../things-label-print/things-print-agent.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-form.html">
 
+<link rel="import" href="things-term-common-behavior.html">
 <link rel="import" href="things-term-common-grid.html">
 
 <!--
@@ -88,6 +89,10 @@ OI Screen - Order List
 		Polymer({
 			
 			is: 'things-term-create-lot',
+
+			behaviors: [
+				Things.TermCommonBehavior
+			],
 
 			properties: {
 				/**
@@ -179,10 +184,6 @@ OI Screen - Order List
 				'label-model.things-ajax-response' : '_labelModelResponsed'
 			},
 
-			behaviors: [
-				Things.GlobalBehavior
-			],
-
 			observers: [
 				'orderChanged(globals.order)',
 			],
@@ -272,11 +273,15 @@ OI Screen - Order List
 			 * @param {Object} event
 			 */
 			_transactionResponsed: function(event) {
+				if(!this.checkTransactionResponse(event)) {
+					return;
+				}
+
 				this.getLatestLots();
 				this.resetForm();
 				this.fire('iron-signal', {name : 'refresh-wip'});
 				this.lot = event.detail;
-				
+
 				// Get Label Model
 				if(this.$['print'].value == true) {
 					this.$['label-model'].resourceId = this.lot.id;

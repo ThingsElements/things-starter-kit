@@ -267,6 +267,10 @@
        * @param {Object} event
        */
       transactionResponsed: function(event) {
+        if(!this.checkTransactionResponse(event)) {
+          return;
+        }
+                
         this.resetForm();
         this.bomListData = [];
         this.$['input-form'].getForm().resetMyForm();

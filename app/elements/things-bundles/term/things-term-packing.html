@@ -289,6 +289,10 @@
        * @param {Object} event
        */
       transactionResponsed: function(event) {
+        if(!this.checkTransactionResponse(event)) {
+          return;
+        }
+                
         this.packingList = [];
         this.packingLot = event.detail;
         this.resetForm();
