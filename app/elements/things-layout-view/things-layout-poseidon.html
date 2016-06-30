@@ -18,8 +18,10 @@
 				@apply(--layout-flex);
 				@apply(--layout-vertical);
 			}
+
 			:root {
 			}
+			
 			iron-pages {
 				@apply(--layout-vertical);
 				@apply(--layout-flex);
@@ -47,48 +49,49 @@
 			}			
 			
 		</style>
-			<paper-card id="top" elevation="1">
-				<span class="subtitle">[[topContentTitle]]</span>
-	    	<div id="topContent" class="layout-content">
-	    		<content select="[top]"></content>
-	    	</div>
-    	</paper-card>
 
-	    <paper-tabs id="tab-group" selected="{{currentTabIdx}}" noink>
-	      <template is="dom-repeat" items="{{sections}}" filter="isTabs">
-	        <paper-tab id="{{item.tabId}}" on-tap="tabChanged">{{item.title}}</paper-tab>
-	      </template>
-	    </paper-tabs>
+		<paper-card id="top" elevation="1">
+			<span class="subtitle">[[topContentTitle]]</span>
+			<div id="topContent" class="layout-content">
+				<content select="[top]"></content>
+			</div>
+		</paper-card>
 
-	    <iron-pages id="tabPages" selected="{{currentTabIdx}}">
-	    	<div class="layout-content">
-	    		<content select="[tab-content-1]"></content>
-	    	</div>
-	    	<div class="layout-content">
-	    		<content select="[tab-content-2]"></content>
-	    	</div>
-	    	<div class="layout-content">
-	    		<content select="[tab-content-3]"></content>
-	    	</div>
-	    	<div class="layout-content">
-	    		<content select="[tab-content-4]"></content>
-	    	</div>
-	    	<div class="layout-content">
-	    		<content select="[tab-content-5]"></content>
-	    	</div>
-	    	<div class="layout-content">
-	    		<content select="[tab-content-6]"></content>
-	    	</div>
-	    	<div class="layout-content">
-	    		<content select="[tab-content-7]"></content>
-	    	</div>
-	    	<div class="layout-content">
-	    		<content select="[tab-content-8]"></content>
-	    	</div>
-	    	<div class="layout-content">
-	    		<content select="[tab-content-9]"></content>
-	    	</div>
-	    </iron-pages>
+		<paper-tabs id="tab-group" selected="{{currentTabIdx}}" noink>
+			<template is="dom-repeat" items="{{sections}}" filter="isTabs">
+				<paper-tab id="{{item.tabId}}" on-tap="tabChanged">{{item.title}}</paper-tab>
+			</template>
+		</paper-tabs>
+
+		<iron-pages id="tabPages" selected="{{currentTabIdx}}">
+			<div class="layout-content">
+				<content select="[tab-content-1]"></content>
+			</div>
+			<div class="layout-content">
+				<content select="[tab-content-2]"></content>
+			</div>
+			<div class="layout-content">
+				<content select="[tab-content-3]"></content>
+			</div>
+				<div class="layout-content">
+			<content select="[tab-content-4]"></content>
+			</div>
+			<div class="layout-content">
+				<content select="[tab-content-5]"></content>
+			</div>
+			<div class="layout-content">
+				<content select="[tab-content-6]"></content>
+			</div>
+			<div class="layout-content">
+				<content select="[tab-content-7]"></content>
+			</div>
+			<div class="layout-content">
+				<content select="[tab-content-8]"></content>
+			</div>
+			<div class="layout-content">
+				<content select="[tab-content-9]"></content>
+			</div>
+		</iron-pages>
 	</template>
 
 	<script>
