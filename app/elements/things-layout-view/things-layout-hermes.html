@@ -54,6 +54,7 @@
         @apply(--things-subtitle);
       }    
     </style>
+
     <!-- left -->
     <div id="left">
       <!-- top left -->
@@ -89,7 +90,7 @@
     behaviors: [
       Things.LayoutBehavior
     ],
-
+    
     properties: {
       
       topLeftContentTitle: {
@@ -106,24 +107,6 @@
         type: String,
         value: 'rightContent'
       }
-    },
-
-    listeners: {
-      'sections-configured' : 'setupLayoutClass'
-    },
-
-    /**
-     * Section이 모두 추가된 후 Layout Class를 설정한다.
-     *
-     * @param {Object} e sections-configured
-     */
-    setupLayoutClass: function(e) {
-      // TODO
-      // if(!this.sections || this.sections.length == 0) return;
-
-      // this.sections['leftContent'].setAttribute('class', 'flex');
-      //this.sections['rightTopContent'].setAttribute('class', 'flex');
-      //this.sections['rightBottomContent'].setAttribute('class', 'flex');
     }
   });
   </script>

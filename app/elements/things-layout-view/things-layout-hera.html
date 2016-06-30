@@ -13,11 +13,13 @@
       :host {
         display: inline-block;
         @apply(--layout-horizontal);
+        margin-top:20px;
       }
 
       #left {
         @apply(--layout-flex);
         @apply(--layout-vertical);
+        margin-right:15px;
       }
 
       #right {
@@ -44,7 +46,7 @@
     </style>
 
     <!-- Left -->
-    <paper-card id="left" elevation="1">
+    <paper-card id="left" elevation="0">
       <span class="subtitle">[[leftContentTitle]]</span>
       <div id="leftContent" class="layout-content">
         <content select="[left]"></content>
@@ -52,7 +54,7 @@
     </paper-card>
 
     <!-- Right -->
-    <paper-card id="right" elevation="1">
+    <paper-card id="right" elevation="0">
       <span class="subtitle">[[rightContentTitle]]</span>
       <div id="rightContent" class="layout-content">
          <content select="[right]"></content>
@@ -63,6 +65,10 @@
   <script>
     Polymer({
       is: 'things-layout-hera',
+
+      behaviors: [
+        Things.LayoutBehavior
+      ],
 
       properties: {
         /**
@@ -80,29 +86,6 @@
           type: String,
           value: 'rightContent'
         }
-      },
-
-      behaviors: [
-        Things.LayoutBehavior
-      ],
-
-      listeners: {
-        'sections-configured' : 'setupLayoutClass'
-      },
-
-      /**
-      * Section이 모두 추가된 후 Layout Class를 설정한다.
-      *
-      * @param {Object} e sections-configured
-      */
-      setupLayoutClass: function(e) {
-        if(!this.sections || this.sections.length == 0) return;
-
-        if(this.sections['leftContent'])
-          this.sections['leftContent'].setAttribute('class', 'flex');
-
-        if(this.sections['rightContent'])
-          this.sections['rightContent'].setAttribute('class', 'flex');
       }
     });
   </script>
