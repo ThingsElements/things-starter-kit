@@ -1,0 +1,527 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../bower_components/things-form/things-search-form.html">
+
+<link rel="import" href="../../things-content/things-resource-menu-content-behavior.html">
+<link rel="import" href="../../things-layout-view/things-layout-poseidon.html">
+<link rel="import" href="../../things-layout-view/things-layout-hera.html">
+<link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
+
+<!--
+	Lot Information Overview
+-->
+
+<dom-module id="things-wip-lot-info-overview">
+	<template>
+		<style>
+			:host {
+				display: block;
+				@apply(--layout-vertical);
+				@apply(--layout-flex);
+			}
+			things-layout-poseidon {
+				@apply(--layout-flex);
+			}
+			things-layout-hera {
+				@apply(--layout-flex);
+			}
+		</style>
+
+		<things-ajax 
+			auto
+			id="resource-meta"
+			method="GET"
+			resource-url="[[menuMetaUrl]]"
+			last-response="{{metaData}}">
+		</things-ajax>
+
+		<!-- Lot List 정보를 추출 -->
+		<things-search-form 
+			id="search-form"
+			title="[[menuInfo.title]]"
+			form-fields="[[searchFormFields]]" 
+			action-url="[[menuInfo.resource_url]]" 
+			page="{{page}}"
+			per-page="[[perPage]]"
+			last-response="{{lastResponse}}">
+		</things-search-form>
+
+		<!-- lot id를 통해 lot history를 추출 -->
+		<things-ajax 
+			id="lot-history-search"
+			resource-action="index"
+			resource-url="lots/:id/lot_traces"
+			resource-id="[[lotId]]"
+			last-response="{{lotHistory}}">
+		</things-ajax>
+
+		<!-- lot assemblies ajax -->
+		<things-ajax 
+			id="assy-history-search"
+			resource-action="index"
+			resource-url="lot_assemblies"
+			last-response="{{assyHistory}}">
+		</things-ajax>
+
+		<!-- lot lock ajax -->
+		<things-ajax 
+			id="lock-history-search"
+			resource-action="index"
+			resource-url="lot_holds"
+			last-response="{{lockHistory}}">
+		</things-ajax>
+
+		<!-- lot rework ajax -->
+		<things-ajax 
+			id="rework-history-search"
+			resource-action="index"
+			resource-url="lot_reworks"
+			last-response="{{reworkHistory}}">
+		</things-ajax>
+
+		<!-- lot repair ajax -->
+		<things-ajax 
+			id="repair-history-search"
+			resource-action="index"
+			resource-url="lot_repairs"
+			last-response="{{repairHistory}}">
+		</things-ajax>
+
+		<!-- lot defect ajax -->
+		<things-ajax 
+			id="defect-history-search"
+			resource-action="index"
+			resource-url="lot_defects"
+			last-response="{{defectHistory}}">
+		</things-ajax>				
+
+		<!-- lot scrap ajax -->
+		<things-ajax 
+			id="scrap-history-search"
+			resource-action="index"
+			resource-url="lot_scraps"
+			last-response="{{scrapHistory}}">
+		</things-ajax>
+
+		<things-layout-poseidon
+			top-content-title="Lot Information Overview"
+			sections="[[sections]]">
+	    
+	    <!-- layout 상단 -->
+	    <things-layout-hera
+	    	top
+	    	left-content-title="Lot List"
+	    	right-content-title="Lot Histories">
+
+	    	<!-- lot 정보 grid -->
+	      <things-diy-based-grid
+	      	left
+	      	fixed-column-count="0"
+	      	id="lot-list-grid"
+	      	class="flex"
+	      	items="[[lotListItems]]"
+	      	diy-grid-name="LotList">
+	    	</things-diy-based-grid>
+
+	    	<!-- 개별 lot의 history 정보 -->
+	      <things-diy-based-grid
+	      	right
+	      	fixed-column-count="0"
+	      	id="lot-history-grid"
+	      	class="flex"
+	      	items="[[lotHistory]]"
+	      	diy-grid-name="LotHistory">
+	    	</things-diy-based-grid>
+
+	    </things-layout-hera>
+
+    	<!-- layout 하단 (tabs) -->
+    	<!-- Assy history (tab) -->
+      <things-diy-based-grid
+      	tab-content-1
+      	fixed-column-count="0"
+      	id="ass-history-grid"
+      	class="flex"
+      	items="[[assyHistoryItems]]"
+      	diy-grid-name="AssyHistory">
+    	</things-diy-based-grid>    
+
+    	<!-- Lock history (tab) -->
+      <things-diy-based-grid
+      	tab-content-2
+      	fixed-column-count="0"
+      	id="lock-history-grid"
+      	class="flex"
+      	items="[[lockHistoryItems]]"
+      	diy-grid-name="LockHistory">
+    	</things-diy-based-grid>
+
+    	<!-- Rework history (tab) -->
+      <things-diy-based-grid
+      	tab-content-3
+      	fixed-column-count="0"
+      	id="rework-history-grid"
+      	class="flex"
+      	items="[[reworkHistoryItems]]"
+      	diy-grid-name="ReworkHistory">
+    	</things-diy-based-grid>
+
+			<!-- Repair history (tab) -->
+      <things-diy-based-grid
+      	tab-content-4
+      	fixed-column-count="0"
+      	id="repair-history-grid"
+      	class="flex"
+      	items="[[repairHistoryItems]]"
+      	diy-grid-name="RepairHistory">
+    	</things-diy-based-grid>
+
+    	<!-- Defect history (tab) -->
+      <things-diy-based-grid
+      	tab-content-5
+      	fixed-column-count="0"
+      	id="defect-history-grid"
+      	class="flex"
+      	items="[[defectHistoryItems]]"
+      	diy-grid-name="DefectHistory">
+    	</things-diy-based-grid>
+
+    	<!-- Scrap history (tab) -->
+      <things-diy-based-grid
+      	tab-content-6
+      	fixed-column-count="0"
+      	id="scrap-history-grid"
+      	class="flex"
+      	items="[[scrapHistoryItems]]"
+      	diy-grid-name="ScrapHistory">
+    	</things-diy-based-grid>    		
+
+    </things-layout-poseidon>
+	</template>
+
+	<script>
+		Polymer({
+			is: 'things-wip-lot-info-overview',
+
+			behaviors: [
+				Things.ResourceMenuContentBehavior
+			],
+			
+			properties: {
+
+				/**
+				 * query에 필요한 lot id
+				 */
+				lotId: {
+					type: String
+				},
+
+				/**
+				 * query에 필요한 lot seq
+				 */
+				lotSeq: {
+					type: Number
+				},
+
+				/**
+				 * ajax response를 담는 property
+				 */
+				assyHistoryItems: {
+					type: Array,
+					value: []
+				},
+
+				/**
+				 * ajax response를 담는 property
+				 */
+				lockHistoryItems: {
+					type: Array,
+					value: []
+				},
+
+				/**
+				 * ajax response를 담는 property
+				 */
+				reworkHistoryItems: {
+					type: Array,
+					value: []
+				},
+
+				/**
+				 * ajax response를 담는 property
+				 */
+				repairHistoryItems: {
+					type: Array,
+					value: []
+				},
+
+				/**
+				 * ajax response를 담는 property
+				 */
+				defectHistoryItems: {
+					type: Array,
+					value: []
+				},
+
+				/**
+				 * ajax response를 담는 property
+				 */
+				scrapHistoryItems: {
+					type: Array,
+					value: []
+				},
+
+				/**
+				 * lot list response
+				 */
+				lastResponse: {
+					type: Object,
+					observer: '_lastResponseChanged'
+				},
+
+				/**
+				 * tab setting
+				 */
+				sections: {
+					type: Array,
+					value: function() {
+						return [{
+							tabId: 'assy-history-tab',
+							title: 'Assy',
+							isTab: true
+						}, {
+							tabId: 'lock-history-tab',
+							title: 'Lock',
+							isTab: true
+						}, {
+							tabId: 'rework-history-tab',
+							title: 'Rework',
+							isTab: true
+						}, {
+							tabId: 'repair-history-tab',
+							title: 'Repair',
+							isTab: true
+						}, {
+							tabId: 'defect-history-tab',
+							title: 'Defect',
+							isTab: true
+						}, {
+							tabId: 'scrap-history-tab',
+							title: 'Scrap',
+							isTab: true
+						}];
+					}
+				}
+			},
+
+			/**
+			 * grid click event listeners
+			 */
+			listeners : {
+				'lot-list-grid.things-grid-row-data-select' : 'lotSelected',
+				'lot-history-grid.things-grid-row-data-select' : 'lotHistorySelected',
+				'things-layout-tab-changed' : '_tabChanged'
+			},
+
+			/**
+			 * lot ajax getter
+			 */
+			getLotAjax: function() {
+				return this.$['lot-history-search'];
+			},
+
+			/**
+			 * assy ajax getter
+			 */
+			getAssyAjax: function() {
+				return this.$['assy-history-search'];
+			},
+
+			/**
+			 * lock ajax getter
+			 */
+			getLockAjax: function() {
+				return this.$['lock-history-search'];
+			},
+
+			/**
+			 * rework ajax getter
+			 */
+			getReworkAjax: function() {
+				return this.$['rework-history-search'];
+			},
+
+			/**
+			 * repair ajax getter
+			 */
+			getRepairAjax: function() {
+				return this.$['repair-history-search'];
+			},
+
+			/**
+			 * defect ajax getter
+			 */
+			getDefectAjax: function() {
+				return this.$['defect-history-search'];
+			},
+
+			/**
+			 * scrap ajax getter
+			 */
+			getScrapAjax: function() {
+				return this.$['scrap-history-search'];
+			},
+
+			/**
+			 * lotListGrid click event listener
+			 */
+			lotSelected: function(event) {
+				this.lotId = event.detail.id;
+				
+				var lotAjax = this.getLotAjax();
+				lotAjax.selectFields = 'seq,transaction,status,state,first_qty,good_qty,scrap_qty,comments,created_at';
+				lotAjax.generateRequest();
+
+				this.ajaxRequest(this.lotId);
+			},
+
+			/**
+			 * lot history grid click event listner
+			 */
+			lotHistorySelected: function(event) {
+				this.lotSeq = parseInt(event.detail.seq);
+				this.ajaxRequestWithSeq(this.lotId, this.lotSeq);
+			},
+
+			/**
+			 * lot list만 클릭 되었을 시 lot seq를 배제한 ajax request
+			 */
+			ajaxRequest: function(lotId) {
+				this.lotSeq = '';
+				var commonQueryFields = [{ name: 'lot_id', value: lotId }];
+				
+				var assyAjax = this.getAssyAjax();
+				assyAjax.queryFields = commonQueryFields;
+				assyAjax.generateRequest();
+				console.log(this.assyHistory);
+
+				var lockAjax = this.getLockAjax();
+				lockAjax.queryFields = commonQueryFields;
+				lockAjax.generateRequest();
+
+				var reworkAjax = this.getReworkAjax();
+				reworkAjax.queryFields = commonQueryFields;
+				reworkAjax.generateRequest();
+
+				var repairAjax = this.getRepairAjax();
+				repairAjax.queryFields = commonQueryFields;
+				repairAjax.generateRequest();
+
+				var defectAjax = this.getDefectAjax();
+				defectAjax.queryFields = commonQueryFields;
+				defectAjax.generateRequest();
+
+				var scrapAjax = this.getScrapAjax();
+				scrapAjax.queryFields = commonQueryFields;
+				scrapAjax.generateRequest();
+
+				this.dataInit();
+			},
+
+			/**
+			 * lot history 클릭 되었을 때 lot seq를 포함한 ajax request
+			 */
+			ajaxRequestWithSeq: function(lotId, lotSeq) {
+				var commonQueryFields = [{ name: 'lot_id', value: lotId }, { name: 'lot_seq', value: lotSeq }];
+
+				var assyAjax = this.getAssyAjax();
+				assyAjax.queryFields = [{ name: 'lot_id', value: lotId }];
+				assyAjax.generateRequest();
+
+				var lockAjax = this.getLockAjax();
+				lockAjax.queryFields = commonQueryFields;
+				lockAjax.generateRequest();
+
+				var reworkAjax = this.getReworkAjax();
+				reworkAjax.queryFields = commonQueryFields;
+				reworkAjax.generateRequest();
+
+				var repairAjax = this.getRepairAjax();
+				repairAjax.queryFields = commonQueryFields;
+				repairAjax.generateRequest();
+
+				var defectAjax = this.getDefectAjax();
+				defectAjax.queryFields = commonQueryFields;
+				defectAjax.generateRequest();
+
+				var scrapAjax = this.getScrapAjax();
+				scrapAjax.queryFields = commonQueryFields;
+				scrapAjax.generateRequest();
+
+				this.dataInit();
+			},
+
+			/**
+			 * response의 total 값을 체크하여 값이 없을 경우 그리드를 clear
+			 */
+			_lastResponseChanged: function(response) {
+				this.lotListItems = (response.total) ? response.items : [];
+			},
+
+			/**
+			 * grid data clear & initialize
+			 */
+			dataInit: function() {
+				this.assyHistoryItems = [];
+				this.lockHistoryItems = [];
+				this.repairHistoryItems = [];
+				this.reworkHistoryItems = [];
+				this.defectHistoryItems = [];
+				this.scrapHistoryItems = [];
+
+				this.assyHistoryItems = (this.assyHistory.items) ? this.assyHistory.items : [];
+				this.lockHistoryItems = (this.lockHistory.items) ? this.lockHistory.items : [];
+				this.repairHistoryItems = (this.repairHistory.items) ? this.repairHistory.items : [];
+				this.reworkHistoryItems = (this.reworkHistory.items) ? this.reworkHistory.items : [];
+				this.defectHistoryItems = (this.defectHistory.items) ? this.defectHistory.items : [];
+				this.scrapHistoryItems = (this.scrapHistory.items) ? this.scrapHistory.items : [];
+			},
+
+			/**
+			 * tab 변경시 data init
+			 */
+			_tabChanged: function(event) {
+				var tabId = event.detail.model.item.tabId;
+
+				if(this.lastResponse && this.lotHistory) {
+					switch (tabId) {
+						case 'assy-history-tab':
+							this.assyHistoryItems = (this.assyHistory.items) ? this.assyHistory.items : [];
+							break;
+
+						case 'lock-history-tab':
+							this.lockHistoryItems = (this.lockHistory.items) ? this.lockHistory.items : [];
+							break;
+
+						case 'repair-history-tab':
+							this.repairHistoryItems = (this.repairHistory.items) ? this.repairHistory.items : [];
+							break;
+
+						case 'rework-history-tab':
+							this.reworkHistoryItems = (this.reworkHistory.items) ? this.reworkHistory.items : [];
+							break;
+
+						case 'defect-history-tab':
+							this.defectHistoryItems = (this.defectHistory.items) ? this.defectHistory.items : [];
+							break;
+
+						case 'scrap-history-tab':
+							this.scrapHistoryItems = (this.scrapHistory.items) ? this.scrapHistory.items : [];
+							break;
+					}
+				}
+			}	
+		});
+	</script>
+</dom-module>
