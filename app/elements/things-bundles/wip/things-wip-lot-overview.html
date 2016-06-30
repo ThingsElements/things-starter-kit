@@ -12,7 +12,7 @@
 	Lot Information Overview
 -->
 
-<dom-module id="things-wip-lot-info-overview">
+<dom-module id="things-wip-lot-overview">
 	<template>
 		<style>
 			:host {
@@ -105,36 +105,37 @@
 		</things-ajax>
 
 		<things-layout-poseidon
-			top-content-title="Lot Information Overview"
+			top-left-content-title="Lot List"
+			top-right-content-title="Lot Histories"
 			sections="[[sections]]">
 	    
-	    <!-- layout 상단 -->
-	    <things-layout-hera
-	    	top
-	    	left-content-title="Lot List"
-	    	right-content-title="Lot Histories">
+		    <!-- layout 상단 -->
+<!-- 		    <things-layout-hera
+		    	top
+		    	left-content-title="Lot List"
+		    	right-content-title="Lot Histories"> -->
 
-	    	<!-- lot 정보 grid -->
-	      <things-diy-based-grid
-	      	left
-	      	fixed-column-count="0"
-	      	id="lot-list-grid"
-	      	class="flex"
-	      	items="[[lotListItems]]"
-	      	diy-grid-name="LotList">
-	    	</things-diy-based-grid>
+		    	<!-- lot 정보 grid -->
+		      <things-diy-based-grid
+		      	top-left
+		      	fixed-column-count="0"
+		      	id="lot-list-grid"
+		      	class="flex"
+		      	items="[[lotListItems]]"
+		      	diy-grid-name="LotList">
+		    	</things-diy-based-grid>
 
-	    	<!-- 개별 lot의 history 정보 -->
-	      <things-diy-based-grid
-	      	right
-	      	fixed-column-count="0"
-	      	id="lot-history-grid"
-	      	class="flex"
-	      	items="[[lotHistory]]"
-	      	diy-grid-name="LotHistory">
-	    	</things-diy-based-grid>
+		    	<!-- 개별 lot의 history 정보 -->
+		      <things-diy-based-grid
+		      	top-right
+		      	fixed-column-count="0"
+		      	id="lot-history-grid"
+		      	class="flex"
+		      	items="[[lotHistory]]"
+		      	diy-grid-name="LotHistory">
+		    	</things-diy-based-grid>
 
-	    </things-layout-hera>
+		    <!-- </things-layout-hera> -->
 
     	<!-- layout 하단 (tabs) -->
     	<!-- Assy history (tab) -->
@@ -195,14 +196,13 @@
       	class="flex"
       	items="[[scrapHistoryItems]]"
       	diy-grid-name="ScrapHistory">
-    	</things-diy-based-grid>    		
-
+    	</things-diy-based-grid>
     </things-layout-poseidon>
 	</template>
 
 	<script>
 		Polymer({
-			is: 'things-wip-lot-info-overview',
+			is: 'things-wip-lot-overview',
 
 			behaviors: [
 				Things.ResourceMenuContentBehavior
@@ -218,58 +218,93 @@
 				},
 
 				/**
-				 * query에 필요한 lot seq
+				 * assy history ajax 조회 결과 
 				 */
-				lotSeq: {
-					type: Number
+				assyHistory: {
+					type: Object,
+					observer: '_assyHistoryChanged'
+				}, 
+				
+				/**
+				 * lock history ajax 조회 결과 
+				 */
+				lockHistory: {
+					type: Object,
+					observer: '_lockHistoryChanged'
+				}, 
+				
+				/**
+				 * rework history ajax 조회 결과 
+				 */
+				reworkHistory: {
+					type: Object,
+					observer: '_reworkHistoryChanged'
+				}, 
+				
+				/**
+				 * repair history ajax 조회 결과 
+				 */
+				repairHistory: {
+					type: Object,
+					observer: '_repairHistoryChanged'
+				}, 
+				
+				/**
+				 * defect history ajax 조회 결과 
+				 */
+				defectHistory: {
+					type: Object,
+					observer: '_defectHistoryChanged'
+				}, 
+				
+				/**
+				 * scrap history ajax 조회 결과 
+				 */
+				scrapHistory: {
+					type: Object,
+					observer: '_scrapHistoryChanged'
 				},
 
 				/**
 				 * ajax response를 담는 property
 				 */
 				assyHistoryItems: {
-					type: Array,
-					value: []
+					type: Array
 				},
 
 				/**
 				 * ajax response를 담는 property
 				 */
 				lockHistoryItems: {
-					type: Array,
-					value: []
+					type: Array
 				},
 
 				/**
 				 * ajax response를 담는 property
 				 */
 				reworkHistoryItems: {
-					type: Array,
-					value: []
+					type: Array
 				},
 
 				/**
 				 * ajax response를 담는 property
 				 */
 				repairHistoryItems: {
-					type: Array,
-					value: []
+					type: Array
 				},
 
 				/**
 				 * ajax response를 담는 property
 				 */
 				defectHistoryItems: {
-					type: Array,
-					value: []
+					type: Array
 				},
 
 				/**
 				 * ajax response를 담는 property
 				 */
 				scrapHistoryItems: {
-					type: Array,
-					value: []
+					type: Array
 				},
 
 				/**
@@ -315,9 +350,6 @@
 				}
 			},
 
-			/**
-			 * grid click event listeners
-			 */
 			listeners : {
 				'lot-list-grid.things-grid-row-data-select' : 'lotSelected',
 				'lot-history-grid.things-grid-row-data-select' : 'lotHistorySelected',
@@ -325,9 +357,9 @@
 			},
 
 			/**
-			 * lot ajax getter
+			 * lot trace ajax getter
 			 */
-			getLotAjax: function() {
+			getLotTraceAjax: function() {
 				return this.$['lot-history-search'];
 			},
 
@@ -379,9 +411,9 @@
 			lotSelected: function(event) {
 				this.lotId = event.detail.id;
 				
-				var lotAjax = this.getLotAjax();
-				lotAjax.selectFields = 'seq,transaction,status,state,first_qty,good_qty,scrap_qty,comments,created_at';
-				lotAjax.generateRequest();
+				var lotTraceAjax = this.getLotTraceAjax();
+				lotTraceAjax.selectFields = 'seq,transaction,status,state,first_qty,good_qty,scrap_qty,comments,created_at';
+				lotTraceAjax.generateRequest();
 
 				this.ajaxRequest(this.lotId);
 			},
@@ -390,15 +422,16 @@
 			 * lot history grid click event listner
 			 */
 			lotHistorySelected: function(event) {
-				this.lotSeq = parseInt(event.detail.seq);
-				this.ajaxRequestWithSeq(this.lotId, this.lotSeq);
+				var lotSeq = parseInt(event.detail.seq);
+				this.ajaxRequestWithSeq(this.lotId, lotSeq);
 			},
 
 			/**
 			 * lot list만 클릭 되었을 시 lot seq를 배제한 ajax request
+			 *
+			 * @param {String} lotId
 			 */
 			ajaxRequest: function(lotId) {
-				this.lotSeq = '';
 				var commonQueryFields = [{ name: 'lot_id', value: lotId }];
 				
 				var assyAjax = this.getAssyAjax();
@@ -425,12 +458,13 @@
 				var scrapAjax = this.getScrapAjax();
 				scrapAjax.queryFields = commonQueryFields;
 				scrapAjax.generateRequest();
-
-				this.dataInit();
 			},
 
 			/**
 			 * lot history 클릭 되었을 때 lot seq를 포함한 ajax request
+			 *
+			 * @param {String} lotId
+			 * @param {Number} lotSeq
 			 */
 			ajaxRequestWithSeq: function(lotId, lotSeq) {
 				var commonQueryFields = [{ name: 'lot_id', value: lotId }, { name: 'lot_seq', value: lotSeq }];
@@ -458,8 +492,6 @@
 				var scrapAjax = this.getScrapAjax();
 				scrapAjax.queryFields = commonQueryFields;
 				scrapAjax.generateRequest();
-
-				this.dataInit();
 			},
 
 			/**
@@ -470,58 +502,58 @@
 			},
 
 			/**
-			 * grid data clear & initialize
+			 * assyHistory 조회 결과 변경시 
+			 *
+			 * @param {Object} assyHistory
 			 */
-			dataInit: function() {
-				this.assyHistoryItems = [];
-				this.lockHistoryItems = [];
-				this.repairHistoryItems = [];
-				this.reworkHistoryItems = [];
-				this.defectHistoryItems = [];
-				this.scrapHistoryItems = [];
-
+			_assyHistoryChanged: function(assyHistory) {
 				this.assyHistoryItems = (this.assyHistory.items) ? this.assyHistory.items : [];
-				this.lockHistoryItems = (this.lockHistory.items) ? this.lockHistory.items : [];
-				this.repairHistoryItems = (this.repairHistory.items) ? this.repairHistory.items : [];
-				this.reworkHistoryItems = (this.reworkHistory.items) ? this.reworkHistory.items : [];
-				this.defectHistoryItems = (this.defectHistory.items) ? this.defectHistory.items : [];
-				this.scrapHistoryItems = (this.scrapHistory.items) ? this.scrapHistory.items : [];
 			},
 
 			/**
-			 * tab 변경시 data init
+			 * lockHistory 조회 결과 변경시 
+			 *
+			 * @param {Object} lockHistory
 			 */
-			_tabChanged: function(event) {
-				var tabId = event.detail.model.item.tabId;
+			_lockHistoryChanged: function(lockHistory) {
+				this.lockHistoryItems = (this.lockHistory.items) ? this.lockHistory.items : [];
+			},
 
-				if(this.lastResponse && this.lotHistory) {
-					switch (tabId) {
-						case 'assy-history-tab':
-							this.assyHistoryItems = (this.assyHistory.items) ? this.assyHistory.items : [];
-							break;
+			/**
+			 * reworkHistory 조회 결과 변경시 
+			 *
+			 * @param {Object} reworkHistory
+			 */
+			_reworkHistoryChanged: function(reworkHistory) {
+				this.repairHistoryItems = (this.repairHistory.items) ? this.repairHistory.items : [];
+			},
 
-						case 'lock-history-tab':
-							this.lockHistoryItems = (this.lockHistory.items) ? this.lockHistory.items : [];
-							break;
+			/**
+			 * repairHistory 조회 결과 변경시 
+			 *
+			 * @param {Object} repairHistory
+			 */
+			_repairHistoryChanged: function(repairHistory) {
+				this.reworkHistoryItems = (this.reworkHistory.items) ? this.reworkHistory.items : [];
+			},
 
-						case 'repair-history-tab':
-							this.repairHistoryItems = (this.repairHistory.items) ? this.repairHistory.items : [];
-							break;
+			/**
+			 * defectHistory 조회 결과 변경시 
+			 *
+			 * @param {Object} defectHistory
+			 */
+			_defectHistoryChanged: function(defectHistory) {
+				this.defectHistoryItems = (this.defectHistory.items) ? this.defectHistory.items : [];
+			},
 
-						case 'rework-history-tab':
-							this.reworkHistoryItems = (this.reworkHistory.items) ? this.reworkHistory.items : [];
-							break;
-
-						case 'defect-history-tab':
-							this.defectHistoryItems = (this.defectHistory.items) ? this.defectHistory.items : [];
-							break;
-
-						case 'scrap-history-tab':
-							this.scrapHistoryItems = (this.scrapHistory.items) ? this.scrapHistory.items : [];
-							break;
-					}
-				}
-			}	
+			/**
+			 * scrapHistory 조회 결과 변경시 
+			 *
+			 * @param {Object} scrapHistory
+			 */
+			_scrapHistoryChanged: function(scrapHistory) {
+				this.scrapHistoryItems = (this.scrapHistory.items) ? this.scrapHistory.items : [];
+			}
 		});
 	</script>
 </dom-module>
