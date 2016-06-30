@@ -29,7 +29,7 @@
 
 			#top {
 				@apply(--layout-flex);
-				@apply(--layout-vertical);
+				@apply(--layout-horizontal);
 			}
 
 			.layout-content {
@@ -51,9 +51,14 @@
 		</style>
 
 		<paper-card id="top" elevation="1">
-			<span class="subtitle">[[topContentTitle]]</span>
-			<div id="topContent" class="layout-content">
-				<content select="[top]"></content>
+			
+			<div id="topLeft" class="layout-content">
+				<span class="subtitle">[[topLeftContentTitle]]</span>
+				<content select="[top-left]"></content>
+			</div>
+			<div id="topRight" class="layout-content">
+				<span class="subtitle">[[topRightContentTitle]]</span>
+				<content select="[top-right]"></content>
 			</div>
 		</paper-card>
 

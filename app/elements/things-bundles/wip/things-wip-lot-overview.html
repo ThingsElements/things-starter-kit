@@ -105,36 +105,37 @@
 		</things-ajax>
 
 		<things-layout-poseidon
-			top-content-title="Lot Overview"
+			top-left-content-title="Lot List"
+			top-right-content-title="Lot Histories"
 			sections="[[sections]]">
 	    
-	    <!-- layout 상단 -->
-	    <things-layout-hera
-	    	top
-	    	left-content-title="Lot List"
-	    	right-content-title="Lot Histories">
+		    <!-- layout 상단 -->
+<!-- 		    <things-layout-hera
+		    	top
+		    	left-content-title="Lot List"
+		    	right-content-title="Lot Histories"> -->
 
-	    	<!-- lot 정보 grid -->
-	      <things-diy-based-grid
-	      	left
-	      	fixed-column-count="0"
-	      	id="lot-list-grid"
-	      	class="flex"
-	      	items="[[lotListItems]]"
-	      	diy-grid-name="LotList">
-	    	</things-diy-based-grid>
+		    	<!-- lot 정보 grid -->
+		      <things-diy-based-grid
+		      	top-left
+		      	fixed-column-count="0"
+		      	id="lot-list-grid"
+		      	class="flex"
+		      	items="[[lotListItems]]"
+		      	diy-grid-name="LotList">
+		    	</things-diy-based-grid>
 
-	    	<!-- 개별 lot의 history 정보 -->
-	      <things-diy-based-grid
-	      	right
-	      	fixed-column-count="0"
-	      	id="lot-history-grid"
-	      	class="flex"
-	      	items="[[lotHistory]]"
-	      	diy-grid-name="LotHistory">
-	    	</things-diy-based-grid>
+		    	<!-- 개별 lot의 history 정보 -->
+		      <things-diy-based-grid
+		      	top-right
+		      	fixed-column-count="0"
+		      	id="lot-history-grid"
+		      	class="flex"
+		      	items="[[lotHistory]]"
+		      	diy-grid-name="LotHistory">
+		    	</things-diy-based-grid>
 
-	    </things-layout-hera>
+		    <!-- </things-layout-hera> -->
 
     	<!-- layout 하단 (tabs) -->
     	<!-- Assy history (tab) -->
