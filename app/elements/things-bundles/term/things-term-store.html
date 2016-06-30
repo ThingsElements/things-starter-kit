@@ -40,9 +40,11 @@
     </things-ajax>
 
     <things-ajax
-      id="search-lots-to-instock"
-      resource-action="index">
+      id="relation-lots-search"
+      resource-action="index"
+      last-response="{{relationLotList}}">
     </things-ajax>    
+
 
     <things-layout-hermes 
       top-left-content-title="[[packingInfoTitle]]" 
@@ -51,9 +53,9 @@
       <things-diy-based-form
         left-top
         on-keypress="handleKeyPress"
-        id="input-form"
+        id="lot-info-form"
         class="flex"
-        diy-form-name="OI-Store"
+        diy-form-name="OI-LotInfo"
         buttons="[[buttons]]">
       </things-diy-based-form>
       
@@ -61,7 +63,7 @@
         left-bottom
         id="lots-grid"
         class="flex"
-        items="[[readyToStoreInList]]"
+        items="[[relationLotList.items]]"
         fixed-column-count="0"
         diy-grid-name="OI-StoreLots">
       </things-diy-based-grid>
@@ -114,10 +116,14 @@
           }
         },
 
+        relationLotId: {
+          type: String
+        },
+
         /**
-         * Wating Store Lot List
+         * relation Lot List
          */
-        readyToStoreInList: {
+        relationLotList: {
           type: Object
         }
       },
@@ -128,7 +134,6 @@
 
       listeners: {
         'process-btn-tap' : 'lotTransaction',
-        'search-lots-to-instock.things-ajax-response' : 'packingResponsed',
         'transaction.things-ajax-response' : 'transactionResponsed',
         'things-grid-configured' : 'latestLotGridConfigured'
       },
@@ -153,6 +158,9 @@
         }, {
           name: 'operation_id',
           value: operationId
+        }, {
+          name: 'lot_type',
+          value: 'PACK'
         }];
 
         this.getLatestLotGrid().refreshData();
@@ -197,18 +205,17 @@
        * Lot Transaction
        */
       lotTransaction: function() {
-        var inputData = this.$['input-form'].getForm().serializeMyForm();
-        var lotInfo = this.readyToStoreInList;
+        var lotInfo = this.getLotInfoForm().getForm().serializeMyForm();
         var tranAjax = this.getTransactionLotService();
 
         tranAjax.body = {
-          work_order_id : this.orderId,
-          packing_id: inputData.id,
+          work_order_id: this.orderId,
+          relation_lot_id: this.relationLotId,
           current_operation_id: this.operationId,
-          store_code: inputData.store_code,
-          store_id: inputData.store_id,
-          store_location_id: inputData.store_location_id,
-          comments: inputData.comments
+          store_id: lotInfo.store_code,
+          store_location_id: lotInfo.store_location_id,
+          store_code: lotInfo.store_code,
+          comments: lotInfo.comments
         };
 
         tranAjax.generateRequest();
@@ -226,24 +233,21 @@
       },
 
       /**
-       * ajax call listener
-       * input-form과 grid에 response를 맵핑
+       * lot 검색시 하위 포장된 lot을 찾아 그리드에 출력합니다.
        */
-      packingResponsed: function(event) {
-        var packing = event.detail.packing;
-        if(packing.status != 'PACKED') return; 
-        this.$['input-form'].getForm().setFormData(packing);
-        this.readyToStoreInList = event.detail.items;
-      },
+      lotChanged: function(lot) {
+        this.getLotInfoForm().getForm().setFormData(lot);
+        this.relationLotId = lot.relation_lot_id;
 
-      /**
-       * packingName으로 resourceUrl 계산 및 ajax 호출
-       */
-      validateLot: function() {
-        var packingName = (this.$['input-form'].getForm().serializeMyForm()).name;
-        var lotSearchAjax = this.$['search-lots-to-instock'];
-        lotSearchAjax.resourceUrl = 'packings/' + packingName + '/lots_by_name';
-        lotSearchAjax.generateRequest();
+        var relationLotsAjax = this.$['relation-lots-search'];
+
+        relationLotsAjax.resourceUrl = 'lots';
+        relationLotsAjax.queryFields = [{
+          name: 'relation_lot_id',
+          value: lot.id
+        }];
+
+        relationLotsAjax.generateRequest();
       }
     });
   </script>
