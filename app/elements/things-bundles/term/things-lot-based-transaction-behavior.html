@@ -225,7 +225,15 @@ Things.LotBasedTransactionBehaviorImpl = {
 	 * @param {Object} lot
 	 */
 	lotChanged: function(lot) {
-		this.getLotInfoForm().getForm().setFormData(lot);
+		if(lot.code) {
+				this.openInfoMsg({ title : lot.code, text : lot.msg, type : 'info', timer : 5000 });
+		} else {
+			if(lot.operation && lot.operation.id != this.operationId) {
+				this.openInfoMsg({ title : 'Validation Error!', text : 'Mismatch Current Operation and Lot Operation', type : 'info', timer : 5000 });
+			} else {
+				this.getLotInfoForm().getForm().setFormData(lot);
+			}
+		}
 	},
 
 	/**
