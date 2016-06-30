@@ -54,39 +54,39 @@
 	    	</div>
     	</paper-card>
 
-	    <paper-tabs id="tabGroup" selected="{{currentTabIdx}}" noink>
+	    <paper-tabs id="tab-group" selected="{{currentTabIdx}}" noink>
 	      <template is="dom-repeat" items="{{sections}}" filter="isTabs">
-	        <paper-tab id="{{item.tabId}}">tabGroup</paper-tab>
+	        <paper-tab id="{{item.tabId}}" on-tap="tabChanged">{{item.title}}</paper-tab>
 	      </template>
 	    </paper-tabs>
 
 	    <iron-pages id="tabPages" selected="{{currentTabIdx}}">
 	    	<div class="layout-content">
-	    		<content select="[tap-content-1]"></content>
+	    		<content select="[tab-content-1]"></content>
 	    	</div>
 	    	<div class="layout-content">
-	    		<content select="[tap-content-2]"></content>
+	    		<content select="[tab-content-2]"></content>
 	    	</div>
 	    	<div class="layout-content">
-	    		<content select="[tap-content-3]"></content>
+	    		<content select="[tab-content-3]"></content>
 	    	</div>
 	    	<div class="layout-content">
-	    		<content select="[tap-content-4]"></content>
+	    		<content select="[tab-content-4]"></content>
 	    	</div>
 	    	<div class="layout-content">
-	    		<content select="[tap-content-5]"></content>
+	    		<content select="[tab-content-5]"></content>
 	    	</div>
 	    	<div class="layout-content">
-	    		<content select="[tap-content-6]"></content>
+	    		<content select="[tab-content-6]"></content>
 	    	</div>
 	    	<div class="layout-content">
-	    		<content select="[tap-content-7]"></content>
+	    		<content select="[tab-content-7]"></content>
 	    	</div>
 	    	<div class="layout-content">
-	    		<content select="[tap-content-8]"></content>
+	    		<content select="[tab-content-8]"></content>
 	    	</div>
 	    	<div class="layout-content">
-	    		<content select="[tap-content-9]"></content>
+	    		<content select="[tab-content-9]"></content>
 	    	</div>
 	    </iron-pages>
 	</template>
@@ -161,7 +161,12 @@
 
 			isTabs : function(item) {
 				return item.isTab || false;
+			},
+
+			tabChanged: function(event) {
+				this.fire('things-layout-tab-changed', event);
 			}
+
 		});
 	</script>
 </dom-module>
