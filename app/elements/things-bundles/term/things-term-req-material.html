@@ -66,6 +66,7 @@
         id="latest-lot-grid"
         class="flex"
         items="{{gridItems}}"
+        diy-grid-name="OI-RequestStockList"
         resource-url="request_stocks"
         query-fields="[[requestStockQueryFields]]"
         sort-fields="[[lastestLotSortFields]]">
@@ -89,7 +90,7 @@
         materialRequestTitle: {
           type: String,
           value: function() {
-            return Things.DataGlobal.t('title.MaterialRequest')
+            return Things.DataGlobal.t('menu.RequestStock')
           }
         },
 
@@ -109,7 +110,7 @@
         requestedMaterialTitle: {
           type: String,
           value: function() {
-            return Things.DataGlobal.t('title.RequestedMaterial')
+            return Things.DataGlobal.t('menu.RequestStock') + Things.DataGlobal.t('label.list')
           }
         },
 

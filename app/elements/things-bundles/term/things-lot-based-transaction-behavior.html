@@ -200,6 +200,7 @@ Things.LotBasedTransactionBehaviorImpl = {
 			work_order_id : this.orderId,
 			transaction : this.transaction
 		};
+
 		validateAjax.generateRequest();
 	},
 
@@ -225,8 +226,8 @@ Things.LotBasedTransactionBehaviorImpl = {
 	 * @param {Object} lot
 	 */
 	lotChanged: function(lot) {
-		if(lot.code) {
-				this.openInfoMsg({ title : lot.code, text : lot.msg, type : 'info', timer : 5000 });
+		if(lot.error_id) {
+				this.openInfoMsg({ title : lot.error_id, text : lot.msg, type : 'info', timer : 5000 });
 		} else {
 			if(lot.operation && lot.operation.id != this.operationId) {
 				this.openInfoMsg({ title : 'Validation Error!', text : 'Mismatch Current Operation and Lot Operation', type : 'info', timer : 5000 });
