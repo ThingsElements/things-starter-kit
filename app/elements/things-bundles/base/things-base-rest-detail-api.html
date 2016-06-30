@@ -42,6 +42,15 @@ Example:
         @apply(--layout-vertical)
         @apply(--layout-flex)
       }
+      paper-tabs{
+        @apply(--things-content-tabs);
+      }
+      paper-tab{
+        @apply(--things-content-tab);
+      }
+      paper-tab[aria-selected="true"]{
+        @apply(--things-content-tab-selected);
+      }
     </style>
 
     <things-ajax 

@@ -14,7 +14,6 @@
         display: inline-block;
         @apply(--things-layout-athena);
         @apply(--layout-horizontal);
-        margin-top:20px;
       }
 
       paper-card {
@@ -26,6 +25,7 @@
           font-size: 14px;
           @apply(--things-detail-header-text);
         };
+        background-color:transparent;
       }
 
       .container {
@@ -52,7 +52,6 @@
         @apply(--layout-flex);
         @apply(--layout-vertical);
         @apply(--things-layout-athena-left);
-        margin-right:15px;
       }
 
       #right {
@@ -71,22 +70,25 @@
         @apply(--things-layout-athena-right-bottom);
       }
 
-      .subtitle:before {
+      paper-card::shadow .title-text:before {
         content: '';
         @apply(--things-subtitle-icon);
       }
 
-      .subtitle {
+      paper-card::shadow .title-text {
         @apply(--things-default-padding);
         padding-bottom:7px;
         @apply(--things-subtitle);
+        padding-left:0 !important;
       }      
     </style>
 
     <div class ="container">
       <!-- left -->
-      <paper-card id="left" elevation="0" animated-shadow="false">
-        <span class="subtitle">[[leftContentTitle]]</span>
+      <paper-card id="left" 
+        heading="[[leftContentTitle]]" 
+        elevation="0" 
+        animated-shadow="false">
         <div id="leftContent" class="layout-content">
           <content select="[left]"></content>
         </div>
@@ -95,16 +97,20 @@
       <!-- right -->
       <div id="right">
         <!-- top -->
-        <paper-card id="right-top" elevation="0" animated-shadow="false">
-          <span class="subtitle">[[rightTopContentTitle]]</span>
+        <paper-card id="right-top" 
+          heading="[[rightTopContentTitle]]" 
+          elevation="0" 
+          animated-shadow="false">
           <div id="rightTopContent" class="layout-content">
             <content select="[right-top]"></content>
           </div>
         </paper-card>
 
         <!-- bottom -->
-        <paper-card id="right-bottom" elevation="0" animated-shadow="false">
-          <span class="subtitle">[[rightBottomContentTitle]]</span>
+        <paper-card id="right-bottom" 
+          heading="[[rightBottomContentTitle]]" 
+          elevation="0" 
+          animated-shadow="false">
           <div id="rightBottomContent" class="layout-content">
             <content select="[right-bottom]"></content>
           </div>
