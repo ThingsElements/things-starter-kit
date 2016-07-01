@@ -144,7 +144,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           id ="sidebar"
           menu-category ="TERMINAL"
           drawer-id='paperDrawerPanel' 
-          page-content-id='content'
+          page-content-id='_content_'
           class="layout vertical" 
           title="Elidom" 
           screens="{{screens}}" 
@@ -216,7 +216,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 
                 <iron-localstorage name="OI.operation" value="{{globals.operation}}">
                 </iron-localstorage>
-                <things-i18n-msg msgid="label.order_no" msg="{{labelOrder}}" auto hidden>Order</things-i18n-msg>
+                <things-i18n-msg msgid="label.work_order" msg="{{labelOrder}}" auto hidden>Order</things-i18n-msg>
                 <things-resource-selector 
                   id="resource-selector" 
                   label="[[labelOrder]]" 
@@ -253,7 +253,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </div>
           </iron-collapse>
 
-          <iron-pages attr-for-selected="data-route" selected="{{route}}" id="content">
+          <iron-pages attr-for-selected="data-route" selected="{{route}}" id="_content_">
             <div class ="layout flex"></div>
           </iron-pages>
         </div>   
