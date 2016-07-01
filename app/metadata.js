@@ -6,9 +6,9 @@ module.exports = {
   charset: 'UTF-8',
   lang: 'en-US',
   // Add to homescreen for Chrome on Android
-  applicationName: 'PSK+',
+  applicationName: 'X-MES',
   // Add to homescreen for Safari on iOS
-  appleMobileWebAppTitle: 'PSK+',
+  appleMobileWebAppTitle: 'X-MES',
   // Google Analytics Tracking ID
   // googleAnalyticsTrackingId: 'UA-XXXXX-Y',
   // App name

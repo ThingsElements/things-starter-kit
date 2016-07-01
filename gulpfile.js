@@ -217,6 +217,8 @@ gulp.task('serve', ['js', 'lint', 'lint-js', 'manifest', 'styles'], function() {
     https: config.browserSync.https,
     notify: config.browserSync.notify,
     port: config.browserSync.port,
+    host: 'xmes.hatiolab.com',
+    open: "external",
     logPrefix: 'PSK+',
     snippetOptions: {
       rule: {

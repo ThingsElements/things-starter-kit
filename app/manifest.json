@@ -34,6 +34,6 @@
         "sizes": "512x512",
         "type": "image/png"
       }],
-  "start_url": "./?utm_source=web_app_manifest",
+  "start_url": "#!/work_orders",
   "display": "standalone"
 }
