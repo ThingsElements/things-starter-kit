@@ -3,7 +3,7 @@
 <link rel="import" href="../../../bower_components/things-tristate-radio/things-tristate-radio.html">
 <link rel="import" href="../../../bower_components/things-input-field/things-input-field.html">
 
-<link rel="import" href="../../things-layout-view/things-layout-hermes.html">
+<link rel="import" href="../../things-layout-view/things-layout-mercury.html">
 <link rel="import" href="../../things-label-print/things-print-agent.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-form.html">
 
@@ -22,7 +22,7 @@ OI Screen - Order List
 				@apply(--layout-vertical);
 				@apply(--layout-flex);
 			}
-			things-layout-hermes {
+			things-layout-mercury {
 				@apply(--layout-flex);
 			}
 			paper-toolbar {
@@ -61,7 +61,7 @@ OI Screen - Order List
 
 		<things-print-agent id="print-agent"></things-print-agent>
 
-		<things-layout-hermes 
+		<things-layout-mercury 
 			left-top-content-title="[[inputTitle]]" 
 			left-bottom-content-title="[[orderInfoTitle]]" 
 			right-content-title="[[lotListTitle]]">
@@ -99,7 +99,7 @@ OI Screen - Order List
 				id="common-grid"
 				class="flex">
 			</things-term-common-grid>
-		</things-layout-hermes>
+		</things-layout-mercury>
 	</template>
 
 	<script>
