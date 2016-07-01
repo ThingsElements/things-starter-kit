@@ -2,7 +2,7 @@
 
 <link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
 
-<link rel="import" href="../../things-layout-view/things-layout-hermes.html">
+<link rel="import" href="../../things-layout-view/things-layout-mercury.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-form.html">
 
@@ -21,7 +21,7 @@
         @apply(--layout-vertical);
         @apply(--layout-flex);
       }
-      things-layout-hermes {
+      things-layout-mercury {
         @apply(--layout-flex);
       }
     </style>
@@ -39,7 +39,7 @@
       resource-url="[[transactionUrl]]">
     </things-ajax>
 
-    <things-layout-hermes
+    <things-layout-mercury
       left-top-content-title="[[inputTitle]]"
       left-bottom-content-title="[[lotInfoTitle]]"
       right-content-title="[[lotListTitle]]">
@@ -47,7 +47,6 @@
       <things-diy-based-form 
         left-top
         id="input-form"
-        class="flex"
         diy-form-name="OI-RepairReceive"
         buttons="[[buttons]]">
       </things-diy-based-form>
@@ -73,7 +72,7 @@
         sort-fields="[[repairSortFields]]">
       </things-term-common-grid>
 
-    </things-layout-hermes> 
+    </things-layout-mercury> 
   </template>
 
   <script>

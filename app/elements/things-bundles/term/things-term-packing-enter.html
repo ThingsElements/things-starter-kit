@@ -2,7 +2,7 @@
 
 <link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
 
-<link rel="import" href="../../things-layout-view/things-layout-hermes.html">
+<link rel="import" href="../../things-layout-view/things-layout-mercury.html">
 <link rel="import" href="../../things-label-print/things-print-agent.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
 <link rel="import" href="../../things-meta-view/things-diy-based-form.html">
@@ -22,7 +22,7 @@
         @apply(--layout-vertical);
         @apply(--layout-flex);
       }
-      things-layout-hermes {
+      things-layout-mercury {
         @apply(--layout-flex);
       }
     </style>
@@ -42,7 +42,7 @@
 
     <things-ajax id="label-model" resource-action="find"></things-ajax>
 
-    <things-layout-hermes 
+    <things-layout-mercury 
       left-top-content-title="[[packSearchTitle]]" 
       left-bottom-content-title="[[packInforTitle]]" 
       right-content-title="[[packListTitle]]">
@@ -50,7 +50,6 @@
         left-top
         on-keypress="handleKeyPress"
         id="lot-info-form"
-        class="flex"
         diy-form-name="OI-NameField"
         buttons="[[buttons]]">
       </things-diy-based-form>
@@ -70,7 +69,7 @@
         class="flex"
         query-fields="[[latestLotQueryFields]]">
       </things-term-common-grid>
-    </things-layout-hermes>
+    </things-layout-mercury>
   </template>
 
   <script>
