@@ -53,7 +53,7 @@
       
       <things-diy-based-form
         left
-      	on-keypress="lotSearchPress"
+      	on-keypress="handleKeyPress"
         id="lot-info-form"
         class="flex"
         diy-form-name="OI-LotInfo"
@@ -132,16 +132,19 @@
         },
 
         /**
-         * lot search button setting
-         */
+        * lot search button setting
+        */
         lotSearchButton: {
-        	type: String,
-        	value: function() {
-        		return [{
-        			id: 'search-btn',
-        			text: 'search'
-        		}]
-        	}
+          type: String,
+            value: function() {
+            return [{
+              id: 'search-btn',
+              text: 'search'
+            }, {
+              id: 'reset-btn',
+              text: 'reset'
+            }]
+          }
         },
 
         /**
@@ -205,10 +208,24 @@
       },
 
       /**
+       * Form List를 리턴 
+       */
+      getForms: function() {
+        return [this.getLotInfoForm(), this.getInputForm()];
+      },
+
+      /**
        * Lot Information Form
        */
       getLotInfoForm: function() {
         return this.$['lot-info-form'];
+      },
+
+      /**
+       * Input Form
+       */
+      getInputForm: function() {
+        return this.$['input-form'];
       },
 
       /**
@@ -226,6 +243,14 @@
       },
 
       /**
+       * Get Lot No.
+       */
+      getLotNo: function() {
+        var inputData = this.getLotInfoForm().getForm().serializeMyForm();
+        return inputData.name;
+      },
+
+      /**
        * Lot Transaction
        */
       lotTransaction: function() {
@@ -235,19 +260,19 @@
 
         // 서버로 넘길 데이터를 추출
         for(var i = 0; i < this.bomListData.length; i++) {
-          var tempObj = {};
-          
-          if(this.bomListData[i].consume_qty) {
-            tempObj.id = this.bomListData[i].id;
-            tempObj.rank = this.bomListData[i].rank;
-            tempObj.material_id = this.bomListData[i].material_id;
-            tempObj.std_qty = this.bomListData[i].std_qty;
-            tempObj.assy_mode = this.bomListData[i].assy_mode;
-            tempObj.alt_group = this.bomListData[i].alt_group;
-            tempObj.consume_qty = this.bomListData[i].consume_qty;
-            tempObj.operation_id = this.bomListData[i].operation_id;
-            
-            bomListData.push(tempObj);
+          var bomData = this.bomListData[i];
+
+          if(bomData.consume_qty && bomData.consume_qty > 0) {
+            bomListData.push({
+              id : bomData.id,
+              rank : bomData.rank,
+              material_id : bomData.material_id,
+              std_qty : bomData.std_qty,
+              assy_mode : bomData.assy_mode,
+              alt_group : bomData.alt_group,
+              consume_qty : bomData.consume_qty,
+              operation_id : bomData.operation_id
+            });
           }
         };
 
@@ -270,21 +295,20 @@
         if(!this.checkTransactionResponse(event)) {
           return;
         }
-                
+        
         this.resetForm();
-        this.bomListData = [];
-        this.$['input-form'].getForm().resetMyForm();
         this.fire('iron-signal', {name : 'refresh-wip'});
       },
 
       /**
-       * lot id를 입력 받은 후 enter event listener
+       * Reset Form 
+       *
+       * @param {Object} event
        */
-      lotSearchPress: function(event) {
-      	var code = event.keyCode;
-				if(code == 13) {
-					this.validateLot();
-				}
+      resetForm: function(event) {
+        this.bomListData = [];
+        var forms = this.getForms();
+        forms.forEach(function(form) { form.getForm().resetMyForm(); }); 
       },
 
       /**
@@ -311,7 +335,6 @@
        */
       lotChanged: function(lot) {
       	this.getLotInfoForm().getForm().setFormData(lot);
-
 	      var bomPartAjax = this.$['bom-parts-search'];
 
 				bomPartAjax.resourceUrl = 'bom_parts';
@@ -323,7 +346,7 @@
           name: 'collectable', operator: 'is_true' 
         }];
 
-				bomPartAjax.generateRequest();      	
+				bomPartAjax.generateRequest();
       },
 
       /**
@@ -331,8 +354,8 @@
        * grid의 데이터를 변경 합니다.
        */
       insertMaterial: function() {
-        var inputForm = this.$['input-form'];
-      	var inputData = inputForm.getForm().serializeMyForm();
+        var inputForm = this.getInputForm().getForm();
+      	var inputData = inputForm.serializeMyForm();
       	var bomListData = this.bomListResponse.items;
 
       	var newMaterial = inputData.material_name;
@@ -358,7 +381,7 @@
 
         this.bomListData = [];
         this.bomListData = bomListData;
-        inputForm.getForm().resetMyForm();
+        inputForm.resetMyForm();
       }
 
     });

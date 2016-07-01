@@ -180,10 +180,11 @@ Things.LotBasedTransactionBehaviorImpl = {
 	 * @param {Object} event
 	 */
 	validateLot: function(event) {
-		var data = this.getLotInfoForm().getForm().serializeMyForm();
+		var lotNo = this.getLotNo();
 		var validateAjax = this.getValidateLotService();
+
 		validateAjax.body = {
-			lot_name : data.name,
+			lot_name : lotNo,
 			work_order_id : this.orderId,
 			transaction : this.transaction
 		};
@@ -204,7 +205,9 @@ Things.LotBasedTransactionBehaviorImpl = {
 	 * @param {Object} event
 	 */
 	resetForm: function(event) {
-		this.getLotInfoForm().getForm().resetMyForm();
+		var forms = this.getForms();
+		if(!forms) return;
+		forms.forEach(function(form) { form.getForm().resetMyForm(); }); 
 	},
 
 	/**

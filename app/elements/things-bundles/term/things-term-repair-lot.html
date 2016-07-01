@@ -44,18 +44,17 @@
       <things-diy-based-form
         left-top
         id="input-form"
-        buttons="[[repairResultButtons]]"
+        on-keypress="handleKeyPress"
+        buttons="[[buttons]]"
         diy-form-name="OI-Repair">
       </things-diy-based-form>
 
       <!-- repair search form -->
       <things-diy-based-form
         left-bottom
-        on-keypress="handleKeyPress"
         id="lot-info-form"
         class="flex"
-        diy-form-name="OI-LotInfo"
-        buttons="[[repairSearchButtons]]">
+        diy-form-name="OI-LotInfo">
       </things-diy-based-form>
 
       <things-term-common-grid
@@ -114,7 +113,7 @@
         /**
          * lot-info-form 에서 사용하는 button setting
          */
-        repairSearchButtons: {
+        /*buttons: {
           type: Array,
           value: function() {
             return [{
@@ -123,22 +122,12 @@
             }, {
               id: 'reset-btn',
               text: 'reset'
+            }, {
+              id: 'reset-btn',
+              text: 'reset'
             }];
           }
-        },
-
-        /**
-         * input-form 에서 사용하는 button setting
-         */
-        repairResultButtons: {
-          type: Array,
-          value: function() {
-            return [{
-              id: 'process-btn',
-              text: 'process'
-            }]
-          }
-        },
+        },*/
 
         /**
          * validate 후 전달 받는 lotInfo
@@ -210,10 +199,24 @@
       },
 
       /**
+       * Form List를 리턴 
+       */
+      getForms: function() {
+        return [this.getLotInfoForm(), this.getInputForm()];
+      },
+
+      /**
        * Lot Information Form
        */
       getLotInfoForm: function() {
         return this.$['lot-info-form'];
+      },
+
+      /**
+       * Input Form
+       */
+      getInputForm: function() {
+        return this.$['input-form'];
       },
 
       /**
@@ -238,10 +241,18 @@
       },
 
       /**
+       * Get Lot No.
+       */
+      getLotNo: function() {
+        var inputData = this.getInputForm().getForm().serializeMyForm();
+        return inputData.name;
+      },
+
+      /**
        * Lot Transaction
        */
       lotTransaction: function() {
-        var inputData = this.$['input-form'].getForm().serializeMyForm();
+        var inputData = this.getInputForm().getForm().serializeMyForm();
         var lotData = this.getLotInfoForm().getForm().serializeMyForm();
         var tranAjax = this.getTransactionLotService();
 
@@ -271,13 +282,12 @@
         if(!this.checkTransactionResponse(event)) {
           return;
         }
-                
-        this.resetForm();
-        this.refreshLatestLots();
-        this.$['input-form'].getForm().resetMyForm();
-        this.fire('iron-signal', {name : 'refresh-wip'});
+        
         this.lotInfo = [];
         this.repair = [];
+        this.resetForm();
+        this.refreshLatestLots();
+        this.fire('iron-signal', {name : 'refresh-wip'});
       },
 
       /**
@@ -289,7 +299,7 @@
         this.lotInfo = data.lot;
         this.repair = data.lot_repair;
         this.getLotInfoForm().getForm().setFormData(this.lotInfo);
-        this.$['input-form'].getForm().setFormData(this.repair);
+        this.getInputForm().getForm().setFormData(this.repair);
       }
     });
   </script>

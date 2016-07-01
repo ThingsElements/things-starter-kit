@@ -180,6 +180,9 @@
             return [{
               id: 'search-btn',
               text: 'search'
+            }, {
+              id: 'reset-btn',
+              text: 'reset'
             }]
           }
         },
@@ -229,7 +232,14 @@
       lotListConditionsChanged: function(orderId, operationId) {
         this.orderId = orderId;
         this.operationId = operationId;
-      },      
+      },
+
+      /**
+       * Form List를 리턴 
+       */
+      getForms: function() {
+        return [this.getLotInfoForm()];
+      },
 
       /**
        * Lot Information Form
@@ -253,6 +263,14 @@
       },
 
       /**
+       * Get Lot No.
+       */
+      getLotNo: function() {
+        var inputData = this.getLotInfoForm().getForm().serializeMyForm();
+        return inputData.name;
+      },
+
+      /**
        * examItems에서 id를 추출하고 id를 key로 lotDefectsMap을 초기화
        */
       _examItemsResponse: function(event) {
@@ -270,6 +288,17 @@
        */
       _computeExamItemUrl: function(orderId, operationId) {
         return 'exam_items/find/' + orderId + '/' + operationId;
+      },
+
+      /**
+       * Reset Form 
+       *
+       * @param {Object} event
+       */
+      resetForm: function(event) {
+        this.getLotInfoForm().getForm().resetMyForm();
+        this.examItems = [];
+        this.defectItems = [];
       },
 
       /**
@@ -400,8 +429,6 @@
         }
                 
         this.resetForm();
-        this.examItems = [];
-        this.defectItems = [];
         this.fire('iron-signal', {name : 'refresh-wip'});
       },
 

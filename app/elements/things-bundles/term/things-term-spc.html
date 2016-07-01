@@ -84,7 +84,7 @@
         lotListTitle: {
           type: String,
           value: function() {
-            return Things.DataGlobal.t('label.SPCLotList')
+            return Things.DataGlobal.t('label.spc_item')
           }
         },
 
@@ -94,7 +94,7 @@
         spcItemsTitle: {
           type: String,
           value: function() {
-            return Things.DataGlobal.t('label.SPCItem')
+            return Things.DataGlobal.t('label.spc_item')
           }
         },
 
@@ -104,7 +104,7 @@
         spcValueTitle: {
           type: String,
           value: function() {
-            return Things.DataGlobal.t('label.SPCValue')
+            return Things.DataGlobal.t('label.spc_value')
           }
         },
 
@@ -173,10 +173,24 @@
       },
 
       /**
+       * Form List를 리턴 
+       */
+      getForms: function() {
+        return [this.getLotInfoForm(), this.getInputForm()];
+      },
+
+      /**
        * Lot Information Form
        */
       getLotInfoForm: function() {
         return this.$['lot-info-form'];
+      },
+
+      /**
+       * Input Form
+       */
+      getInputForm: function() {
+        return this.$['input-form'];
       },
 
       /**
@@ -212,17 +226,17 @@
        */
       rowSelected: function(event) {
         this.spcItemData = event.detail;
-        this.$['lot-info-form'].getForm().setFormData(this.spcItemData);
+        this.getLotInfoForm().getForm().setFormData(this.spcItemData);
       },
 
       /**
        * Lot Transaction
        */
       lotTransaction: function() {
-        var inputData = this.$['input-form'].getForm().serializeMyForm();
+        var inputData = this.getInputForm().getForm().serializeMyForm();
         var lotData = this.getLotInfoForm().getForm().serializeMyForm();
-        var spcData = this.spcItemData;
         var tranAjax = this.getTransactionLotService();
+        var spcData = this.spcItemData;
 
         if(!inputData.value1 || !inputData.value2 || !inputData.value3 || !inputData.value4 || !inputData.value5) return;
 
@@ -250,10 +264,9 @@
         if(!this.checkTransactionResponse(event)) {
           return;
         }
-                
+        
+        this.resetForm();        
         this.refreshLatestLots();
-        this.resetForm();
-        this.$['input-form'].getForm().resetMyForm();
         this.fire('iron-signal', {name : 'refresh-wip'});
       }
     });

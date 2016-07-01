@@ -124,10 +124,24 @@
       },
 
       /**
+       * Form List를 리턴 
+       */
+      getForms: function() {
+        return [this.getLotInfoForm(), this.getInputForm()];
+      },
+
+      /**
        * Lot Information Form
        */
       getLotInfoForm: function() {
         return this.$['lot-info-form'];
+      },
+
+      /**
+       * Input Form
+       */
+      getInputForm: function() {
+        return this.$['input-form'];
       },
 
       /**
@@ -145,10 +159,18 @@
       },
 
       /**
+       * Get Lot No.
+       */
+      getLotNo: function() {
+        var inputData = this.getLotInfoForm().getForm().serializeMyForm();
+        return inputData.name;
+      },
+
+      /**
        * Lot Transaction
        */
       lotTransaction: function() {
-        var inputData = this.$['input-form'].getForm().serializeMyForm();
+        var inputData = this.getInputForm().getForm().serializeMyForm();
 
         if(!inputData.rework_routing_id || !inputData.rework_start_operation_id || !inputData.rework_end_operation_id || !inputData.rework_code || !inputData.rework_qty)
           return;
@@ -190,7 +212,6 @@
         }
                 
         this.resetForm();
-        this.$['input-form'].getForm().resetMyForm();
         this.fire('iron-signal', {name : 'refresh-wip'});
       }
     });

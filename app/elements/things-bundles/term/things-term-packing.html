@@ -236,6 +236,13 @@
       },
 
       /**
+       * Form List를 리턴 
+       */
+      getForms: function() {
+        return [this.getLotInfoForm()];
+      },
+
+      /**
        * Lot Information Form
        */
       getLotInfoForm: function() {
@@ -264,11 +271,19 @@
       },
 
       /**
+       * Get Lot No.
+       */
+      getLotNo: function() {
+        var inputData = this.getLotInfoForm().getForm().serializeMyForm();
+        return inputData.name;
+      },
+
+      /**
        * Lot Transaction
        */
       lotTransaction: function() {
         var tranAjax = this.getTransactionLotService();
-        var inputData = this.$['lot-info-form'].getForm().serializeMyForm();
+        var inputData = this.getLotInfoForm().getForm().serializeMyForm();
 
         var lotIds = this.packingList.map(function(item) {return item.id});
         tranAjax.body = {
@@ -290,8 +305,7 @@
         if(!this.checkTransactionResponse(event)) {
           return;
         }
-                
-        this.packingList = [];
+        
         this.packingLot = event.detail;
         this.resetForm();
         this.refreshLatestLots();
@@ -302,6 +316,17 @@
           this.$['label-model'].resourceUrl = 'lots/' + this.lot.id + '/packing_label/' + this.operationId;
           this.$['label-model'].generateRequest();
         }
+      },
+
+      /**
+       * Reset Form 
+       *
+       * @param {Object} event
+       */
+      resetForm: function(event) {
+        this.packingList = [];
+        var forms = this.getForms();
+        forms.forEach(function(form) { form.getForm().resetMyForm(); }); 
       },
 
       /**

@@ -47,6 +47,7 @@
       <things-diy-based-form 
         left-top
         id="input-form"
+        on-keypress="handleKeyPress"
         diy-form-name="OI-RepairReceive"
         buttons="[[buttons]]">
       </things-diy-based-form>
@@ -54,7 +55,6 @@
       <!-- lot info form -->
       <things-diy-based-form 
         left-bottom
-        on-keypress="handleKeyPress"
         id="lot-info-form"
         class="flex"
         diy-form-name="OI-LotInfo">
@@ -170,10 +170,24 @@
       },
 
       /**
+       * Form List를 리턴 
+       */
+      getForms: function() {
+        return [this.getLotInfoForm(), this.getInputForm()];
+      },
+
+      /**
        * Lot Information Form
        */
       getLotInfoForm: function() {
         return this.$['lot-info-form'];
+      },
+
+      /**
+       * Input Form
+       */
+      getInputForm: function() {
+        return this.$['input-form'];
       },
 
       /**
@@ -198,12 +212,21 @@
       },
 
       /**
+       * Get Lot No.
+       */
+      getLotNo: function() {
+        var inputData = this.getInputForm().getForm().serializeMyForm();
+        return inputData.name;
+      },
+
+      /**
        * Lot Transaction
        */
       lotTransaction: function() {
-        var inputData = this.$['input-form'].getForm().serializeMyForm();
+        var inputData = this.getInputForm().getForm().serializeMyForm();
         var lotData = this.getLotInfoForm().getForm().serializeMyForm();
         var tranAjax = this.getTransactionLotService();
+
         var repairQty = inputData.repair_qty ? inputData.repair_qty : lotData.goodQty;
         if(repairQty > lotData.goodQty) {
           repairQty = lotData.goodQty;
@@ -238,10 +261,9 @@
         if(!this.checkTransactionResponse(event)) {
           return;
         }
-                
-        this.refreshLatestLots();
+        
         this.resetForm();
-        this.$['input-form'].getForm().resetMyForm();
+        this.refreshLatestLots();
         this.fire('iron-signal', {name : 'refresh-wip'});
       }
     });

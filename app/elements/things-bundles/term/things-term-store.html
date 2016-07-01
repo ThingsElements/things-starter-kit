@@ -173,6 +173,13 @@
       },
 
       /**
+       * Form List를 리턴 
+       */
+      getForms: function() {
+        return [this.getLotInfoForm()];
+      },
+
+      /**
        * Lot Information Form
        */
       getLotInfoForm: function() {
@@ -199,6 +206,14 @@
       getTransactionLotService: function() {
         return this.$['transaction'];
       },
+
+      /**
+       * Get Lot No.
+       */
+      getLotNo: function() {
+        var inputData = this.getLotInfoForm().getForm().serializeMyForm();
+        return inputData.name;
+      },      
 
       /**
        * Lot Transaction
@@ -230,8 +245,8 @@
           return;
         }
         
+        this.resetForm();
         this.refreshLatestLots();
-        this.$['lot-info-form'].getForm().resetMyForm();
         this.fire('iron-signal', {name : 'refresh-wip'});
       },
 
@@ -250,7 +265,6 @@
         }
         
         this.relationLotId = lot.relation_lot_id;
-
         var relationLotsAjax = this.$['relation-lots-search'];
 
         relationLotsAjax.resourceUrl = 'lots';
