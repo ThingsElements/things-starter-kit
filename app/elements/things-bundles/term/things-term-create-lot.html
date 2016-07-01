@@ -25,6 +25,17 @@ OI Screen - Order List
 			things-layout-hermes {
 				@apply(--layout-flex);
 			}
+			paper-toolbar {
+				background-color:var(--things-white-background-color);
+				height: 50px;
+				@apply(--things-tight-padding);
+			}
+			paper-toolbar::shadow #bottomBar {
+				height: 50px;
+				@apply(--layout-horizontal);
+				@apply(--layout-end-justified);
+				padding: 0 10px;
+			}			
 		</style>
 
 		<things-ajax
@@ -51,20 +62,11 @@ OI Screen - Order List
 		<things-print-agent id="print-agent"></things-print-agent>
 
 		<things-layout-hermes 
-			top-left-content-title="[[orderInfoTitle]]" 
-			bottom-left-content-title="[[inputTitle]]" 
+			left-top-content-title="[[inputTitle]]" 
+			left-bottom-content-title="[[orderInfoTitle]]" 
 			right-content-title="[[lotListTitle]]">
-			<things-diy-based-form
-				left-top
-				id="form"
-				class="flex"
-				resource="[[order]]"
-				resource-id="[[orderId]]"
-				diy-form-name="OI-CreateLot"
-				buttons="[[buttons]]">
-			</things-diy-based-form>
 
-			<div left-bottom class="flex">
+			<div left-top class="flex">
 				<things-input-field
 					on-keypress="handleKeyPress"
 					id="comments"
@@ -75,7 +77,22 @@ OI Screen - Order List
 					id="print"
 					label="Print">
 				</things-tristate-radio>
+
+				<paper-toolbar id ="toolbar" justify='end'>
+					<div class="bottom">
+						<things-button-bar id="button-group" buttons="[[buttons]]"></things-button-bar>
+					</div>
+				</paper-toolbar>
 			</div>
+
+			<things-diy-based-form
+				left-bottom
+				id="form"
+				class="flex"
+				resource="[[order]]"
+				resource-id="[[orderId]]"
+				diy-form-name="OI-CreateLot">
+			</things-diy-based-form>
 
 			<things-term-common-grid
 				right

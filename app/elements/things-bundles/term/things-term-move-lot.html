@@ -40,23 +40,23 @@
     </things-ajax>
 
     <things-layout-hermes 
-      top-left-content-title="[[lotInfoTitle]]" 
-      bottom-left-content-title="[[inputTitle]]" 
+      left-top-content-title="[[inputTitle]]" 
+      left-bottom-content-title="[[lotInfoTitle]]" 
       right-content-title="[[lotListTitle]]">
       <things-diy-based-form 
         left-top
+        id="input-form"
+        class="flex"
+        diy-form-name="OI-Move"
+        buttons="[[buttons]]">
+      </things-diy-based-form>
+
+      <things-diy-based-form 
+        left-bottom
         on-keypress="handleKeyPress"
         id="lot-info-form"
         class="flex"
-        diy-form-name="OI-LotInfo"
-        buttons="[[buttons]]">
-      </things-diy-based-form>
-      
-      <things-diy-based-form 
-        left-bottom
-        id="input-form"
-        class="flex"
-        diy-form-name="OI-Move">
+        diy-form-name="OI-LotInfo">
       </things-diy-based-form>
 
       <things-term-common-grid

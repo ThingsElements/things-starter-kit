@@ -24,13 +24,13 @@
 			}
 		</style>
 
-	    <things-ajax 
-	      auto
-	      id="diy-form-ajax"
-	      method="GET"
-	      resource-url="[[diyFormUrl]]"
-	      last-response="{{diyForm}}">
-	    </things-ajax> 
+		<things-ajax 
+			auto
+			id="diy-form-ajax"
+			method="GET"
+			resource-url="[[diyFormUrl]]"
+			last-response="{{diyForm}}">
+		</things-ajax> 
 
 		<things-ajax 
 			auto
@@ -92,7 +92,7 @@
 
 			observers: [
 				'_gridColumnsChanged(gridColumns)'
-			],			
+			],
 
 			/**
 			 * DiyForm 명이 변경되면 DiyForm 조회 URL을 리턴 
@@ -115,7 +115,7 @@
 			 */
 			_gridColumnsChanged: function(gridColumns) {
 				this.fire('things-view-columns-grid-meta-changed', gridColumns);
-			}			
+			}
 		});
 	</script>
 </dom-module>

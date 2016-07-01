@@ -40,26 +40,25 @@
     </things-ajax>
 
     <things-layout-hermes 
-      top-left-content-title="[[lotInfoTitle]]" 
-      bottom-left-content-title="[[inputTitle]]" 
+      left-top-content-title="[[lotInfoTitle]]" 
+      left-bottom-content-title="[[inputTitle]]" 
       right-content-title="[[lotListTitle]]">
-      
-      <!-- lot info form -->
+      <!-- repair info form -->
       <things-diy-based-form 
         left-top
+        id="input-form"
+        class="flex"
+        diy-form-name="OI-RepairReceive"
+        buttons="[[buttons]]">
+      </things-diy-based-form>
+
+      <!-- lot info form -->
+      <things-diy-based-form 
+        left-bottom
         on-keypress="handleKeyPress"
         id="lot-info-form"
         class="flex"
-        diy-form-name="OI-LotInfo"
-        buttons="[[buttons]]">
-      </things-diy-based-form>
-      
-      <!-- repair info form -->
-      <things-diy-based-form 
-        left-bottom
-        id="input-form"
-        class="flex"
-        diy-form-name="OI-RepairReceive">
+        diy-form-name="OI-LotInfo">
       </things-diy-based-form>
 
       <!-- repair req list grid -->

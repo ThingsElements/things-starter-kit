@@ -59,7 +59,7 @@
     <div id="left">
       <!-- top left -->
       <paper-card id="leftTop" elevation="0">
-        <span class="subtitle">[[topLeftContentTitle]]</span>
+        <span class="subtitle">[[leftTopContentTitle]]</span>
         <div id="topLeftContent" class="layout-content">
           <content select="[left-top]"></content>
         </div>
@@ -67,7 +67,7 @@
 
       <!-- bottom left -->
       <paper-card id="leftBottom" elevation="0">
-        <span class="subtitle">[[bottomLeftContentTitle]]</span>
+        <span class="subtitle">[[leftBottomContentTitle]]</span>
         <div id="bottomLeftContent" class="layout-content">
           <content select="[left-bottom]"></content>
         </div>
@@ -93,12 +93,12 @@
     
     properties: {
       
-      topLeftContentTitle: {
+      leftTopContentTitle: {
         type: String,
         value: 'topLeftContent'
       },
 
-      bottomLeftContentTitle: {
+      leftBottomContentTitle: {
         type: String,
         value: 'bottomLeftContent'
       },
