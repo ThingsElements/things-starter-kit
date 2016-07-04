@@ -264,17 +264,30 @@ OI Screen - Order List
 			 * dataRoute가 변경되었을 경우 
 			 */
 			searchOrderList: function(event) {
+				if(!this.line) {
+					this.openInfoMsg({ 
+						title : 'Setting Error!', 
+						text : Things.DataGlobal.t('error.SHOULD_NOT_BE_EMPTY', {value : Things.DataGlobal.t('label.line')}), 
+						type : 'info', 
+						timer : 10000 
+					});
+
+					return false;
+				}
+
 				var ordersAjax = this.$['order-list'];
 				ordersAjax.queryFields = [{
 					name : 'order_date', value : this.workDate 
 				}, {
 					name : 'line', value : this.line 
 				}];
+				
 				ordersAjax.sortFields = [{
 					field : 'order_date', ascending: true 
 				}, {
 					field : 'shift', ascending: true 
 				}];
+
 				ordersAjax.generateRequest();
 			},
 

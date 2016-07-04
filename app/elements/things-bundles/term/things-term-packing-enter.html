@@ -176,14 +176,14 @@
           value: 'PACKED'
         }];
 
-        this.getLatestLotGrid().refreshData();
+        this.refreshLatestLots();
       },
 
       /**
        * Latest Lot Grid 변경시
        */
       latestLotGridConfigured: function(event) {
-        this.getLatestLotGrid().refreshData();
+        this.refreshLatestLots();
       },
 
       /**
@@ -296,7 +296,6 @@
           }
 
           packingList.push(lot);
-          
           this.packingList = [];
           this.packingList = packingList;
           this.getLotInfoForm().getForm().resetMyForm();

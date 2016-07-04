@@ -39,7 +39,6 @@ OI Screen - Order List
 		</style>
 
 		<things-ajax
-			auto
 			id="get-order"
 			resource-action="find"
 			resource-url="work_orders/:id"
@@ -212,10 +211,10 @@ OI Screen - Order List
 			 */
 			orderChanged: function(order) {
 				this.order = order;
-				this.orderId = order.id;
-
+				this.orderId = order ? order.id : '';
+				this.getLatestLots();
 				if(this.orderId) {
-					this.getLatestLots();
+					this.$['get-order'].generateRequest();
 				}
 			},
 
@@ -249,7 +248,7 @@ OI Screen - Order List
 			 * Create Lot 
 			 */
 			createLot: function() {
-				if(!this.orderId) return;
+				if(!this.checkOrder()) return;
 
 				var createAjax = this.$['create-lot'];
 				createAjax.body = {
@@ -264,6 +263,8 @@ OI Screen - Order List
 			 * queryFields를 초기화하고 해당 property를 바탕으로 common-grid의 ajax 호출
 			 */
 			getLatestLots: function() {
+				if(!this.checkOrder()) return;
+				
 				var lotsAjax = this.$['common-grid'];
 				lotsAjax.queryFields = [{
 					name: 'work_order_id',
@@ -272,6 +273,7 @@ OI Screen - Order List
 					name: 'transaction',
 					value: 'CREATE'
 				}];
+
 				lotsAjax.refreshData();
 			},
 
@@ -283,6 +285,24 @@ OI Screen - Order List
 			resetForm: function(event) {
 				this.$['comments'].value = '';
 			},
+
+			/**
+			 * Check Order
+			 */
+			checkOrder: function() {
+				if(!this.orderId) {
+					this.openInfoMsg({ 
+						title : 'Setting Error!', 
+						text : Things.DataGlobal.t('error.SHOULD_NOT_BE_EMPTY', {value : Things.DataGlobal.t('label.work_order')}), 
+						type : 'info', 
+						timer : 10000 
+					});
+
+					return false;
+				}
+
+				return true;
+			},			
 
 			/**
 			 * 트랜잭션 성공시 

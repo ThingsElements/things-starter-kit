@@ -162,14 +162,14 @@
           value: order.product_model.id
         }];
 
-        this.getLatestLotGrid().refreshData();
+        this.refreshLatestLots();
       },
 
       /**
        * Latest Lot Grid 변경시
        */
       latestLotGridConfigured: function(event) {
-        this.getLatestLotGrid().refreshData();
+        this.refreshLatestLots();
       },
 
       /**
@@ -198,13 +198,6 @@
        */
       getTransactionLotService: function() {
         return this.$['transaction'];
-      },
-
-      /**
-       * ajax 호출
-       */
-      refreshData: function() {
-        this.$['latest-lot-grid'].generateRequest();
       },
       
       /**

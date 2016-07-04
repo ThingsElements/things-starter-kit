@@ -152,7 +152,7 @@ Things.LotBasedTransactionBehaviorImpl = {
 	 */
 	orderChanged: function(order) {
 		this.order = order;
-		this.orderId = order.id;
+		this.orderId = (order && order.id) ? order.id : '';
 	},
 
 	/**
@@ -162,7 +162,36 @@ Things.LotBasedTransactionBehaviorImpl = {
 	 */
 	operationChanged: function(operation) {
 		this.operation = operation;
-		this.operationId = operation.id;
+		this.operationId = (operation && operation.id) ? operation.id : '';
+	},
+
+	/**
+	 * Check Order & Operation 
+	 */
+	checkOrderOperation: function() {
+    if(!this.orderId) {
+      this.openInfoMsg({ 
+        title : 'Setting Error!', 
+        text : Things.DataGlobal.t('error.SHOULD_NOT_BE_EMPTY', {value : Things.DataGlobal.t('label.work_order')}), 
+        type : 'info', 
+        timer : 10000 
+      });
+
+      return false;
+    }
+
+    if(!this.operationId) {
+      this.openInfoMsg({ 
+        title : 'Setting Error!', 
+        text : Things.DataGlobal.t('error.SHOULD_NOT_BE_EMPTY', {value : Things.DataGlobal.t('label.operation')}), 
+        type : 'info', 
+        timer : 10000 
+      });
+
+      return false;
+    }
+
+    return true;
 	},
 
 	/**
@@ -180,6 +209,8 @@ Things.LotBasedTransactionBehaviorImpl = {
 	 * @param {Object} event
 	 */
 	validateLot: function(event) {
+		if(!this.checkOrderOperation()) return;
+
 		var lotNo = this.getLotNo();
 		var validateAjax = this.getValidateLotService();
 
@@ -196,6 +227,8 @@ Things.LotBasedTransactionBehaviorImpl = {
 	 * Refresh Latest Lot List
 	 */
 	refreshLatestLots: function() {
+		if(!this.checkOrderOperation()) return;
+		
 		this.getLatestLotGrid().refreshData();
 	},
 
@@ -220,7 +253,11 @@ Things.LotBasedTransactionBehaviorImpl = {
 				this.openInfoMsg({ title : lot.error_id, text : lot.msg, type : 'info', timer : 10000 });
 		} else {
 			if(lot.operation && lot.operation.id != this.operationId) {
-				this.openInfoMsg({ title : 'Validation Error!', text : 'Mismatch Current Operation and Lot Operation', type : 'info', timer : 10000 });
+				this.openInfoMsg({ 
+					title : 'Validation Error!', 
+					text : 'Mismatch Current Operation and Lot Operation', 
+					type : 'info', 
+					timer : 10000 });
 			} else {
 				this.getLotInfoForm().getForm().setFormData(lot);
 			}
