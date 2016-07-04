@@ -87,18 +87,20 @@ Polymer({
     _hideInfoContent : function (e) {
         var informationContainer = document.getElementById('informationContainer');
         var searchBar =  document.getElementById('searchToolbar');
-
-        if(this.hideStep==1){
-            informationContainer.opened = false;
-            this.hideStep =2;
-        }else if(this.hideStep==2){
-            informationContainer.opened = false;
-            searchBar.opened = false;
-            this.hideStep =3;
-        }else if(this.hideStep==3){
-            informationContainer.opened = true;
-            searchBar.opened = true;
-            this.hideStep=1;
+        if(informationContainer && searchBar)
+        {
+            if(this.hideStep==1){
+                informationContainer.opened = false;
+                this.hideStep =2;
+            }else if(this.hideStep==2){
+                informationContainer.opened = false;
+                searchBar.opened = false;
+                this.hideStep =3;
+            }else if(this.hideStep==3){
+                informationContainer.opened = true;
+                searchBar.opened = true;
+                this.hideStep=1;
+            }
         }
     }
 });
