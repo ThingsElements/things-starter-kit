@@ -254,7 +254,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </iron-collapse>
 
           <iron-pages attr-for-selected="data-route" selected="{{route}}" id="_content_">
-            <div class ="layout flex"></div>
+            <things-login 
+              data-route="login"
+              route ="{{route}}"
+              title="Things"
+              login-path="login"
+              content-type="application/x-www-form-urlencoded"
+              success-route="/"
+              username-input-label="ID"
+              password-input-label="Password"
+              submit-label = "sign_up"
+              Reset-label = "Reset">
+              <img avatar src="https://maps.gstatic.com/tactile/pane/default_geocode-1x.png"/>
+            </things-login>
           </iron-pages>
         </div>   
       </app-header-layout>
