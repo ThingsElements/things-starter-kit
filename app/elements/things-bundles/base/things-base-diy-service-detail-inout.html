@@ -105,7 +105,53 @@
          */
         gridColumns: {
           type: Array,
-          value: [ { 
+          value: [] 
+        },
+
+        /**
+         * DiySearch In/Out Parameters Search URL
+         */
+        gridSearchUrl: {
+          type: String,
+          computed: '_computeInoutSearchUrl(resourceId,mode)'
+        },
+
+        /**
+         * DiySearch In/Out Parameters Save URL
+         */
+        gridSaveUrl: {
+          type: String,
+          computed: '_computeInoutSaveUrl(resourceId,mode)'
+        },
+
+        /**
+         * 버튼 정보 
+         */
+        buttons: {
+          type: Array,
+          value: [ {
+            id: 'add-btn',
+            text: 'add',
+            icon: 'icons:add'
+          }, {
+            id: 'save-btn',
+            text: 'save',
+            icon: 'icons:save'
+          }, {
+            id: 'delete-btn',
+            text: 'delete',
+            icon: 'icons:delete'
+          } ]
+        }
+      },
+
+      listeners: {
+        'get-params.things-ajax-response': '_onParametersSaved',
+        'grid.things-grid-handle-save' : '_beforeParamsSave',
+        'grid.things-grid-save-success' : 'reloadGrid'
+      },
+      attached:function () {
+         this.gridColumns=[ { 
             fieldName: 'id', name: 'id', width: 0 
           }, { 
             fieldName: 'resource_id', name: 'resource_id', width: 0 
@@ -187,51 +233,7 @@
               falseValues: 'false'
             }
           } ] 
-        },
-
-        /**
-         * DiySearch In/Out Parameters Search URL
-         */
-        gridSearchUrl: {
-          type: String,
-          computed: '_computeInoutSearchUrl(resourceId,mode)'
-        },
-
-        /**
-         * DiySearch In/Out Parameters Save URL
-         */
-        gridSaveUrl: {
-          type: String,
-          computed: '_computeInoutSaveUrl(resourceId,mode)'
-        },
-
-        /**
-         * 버튼 정보 
-         */
-        buttons: {
-          type: Array,
-          value: [ {
-            id: 'add-btn',
-            text: 'add',
-            icon: 'icons:add'
-          }, {
-            id: 'save-btn',
-            text: 'save',
-            icon: 'icons:save'
-          }, {
-            id: 'delete-btn',
-            text: 'delete',
-            icon: 'icons:delete'
-          } ]
-        }
       },
-
-      listeners: {
-        'get-params.things-ajax-response': '_onParametersSaved',
-        'grid.things-grid-handle-save' : '_beforeParamsSave',
-        'grid.things-grid-save-success' : 'reloadGrid'
-      },
-
       /**
        * Resource 변경시
        *

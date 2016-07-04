@@ -101,41 +101,7 @@
          */
         gridColumns: {
           type: Array,
-          value: [ { 
-            fieldName: 'id', name: 'id', width: 0 
-          }, { 
-            fieldName: 'menu_id', name: 'menu_id', width: 0 
-          }, { 
-            fieldName: 'text', name: 'text', width: 200,
-            header: { 
-              text: Things.DataGlobal.t('label.name')
-            },
-          }, { 
-            fieldName: 'term', name: 'term', width: 135,
-            header: { 
-              text: Things.DataGlobal.t('label.term')
-            },
-            valueType: 'text', type: 'calced',
-            valueCallback: function(column, row) {
-              var text = row.getValue('text');
-              return text ? Things.DataGlobal.t('button.' + text) : '';
-            }
-          }, { 
-            fieldName: 'icon', name: 'icon', width: 150,
-            header: { 
-              text: Things.DataGlobal.t('label.icon')
-            }
-          }, { 
-            fieldName: 'style', name: 'style', width: 150,
-            header: { 
-              text: Things.DataGlobal.t('label.style')
-            }
-          }/*, { 
-            fieldName: 'logic', name: 'logic', width: 350,
-            header: {
-              text: Things.DataGlobal.t('label.logic')
-           }
-          }*/ ]
+          value: []
         },
 
         /**
@@ -174,6 +140,43 @@
         'button-ajax.things-ajax-response': '_afterButtonsLoaded'
       },
 
+      attached : function(){
+        this.gridColumns = [{ 
+            fieldName: 'id', name: 'id', width: 0 
+          }, { 
+            fieldName: 'menu_id', name: 'menu_id', width: 0 
+          }, { 
+            fieldName: 'text', name: 'text', width: 200,
+            header: { 
+              text: Things.DataGlobal.t('label.name')
+            },
+          }, { 
+            fieldName: 'term', name: 'term', width: 135,
+            header: { 
+              text: Things.DataGlobal.t('label.term')
+            },
+            valueType: 'text', type: 'calced',
+            valueCallback: function(column, row) {
+              var text = row.getValue('text');
+              return text ? Things.DataGlobal.t('button.' + text) : '';
+            }
+          }, { 
+            fieldName: 'icon', name: 'icon', width: 150,
+            header: { 
+              text: Things.DataGlobal.t('label.icon')
+            }
+          }, { 
+            fieldName: 'style', name: 'style', width: 150,
+            header: { 
+              text: Things.DataGlobal.t('label.style')
+            }
+          }/*, { 
+            fieldName: 'logic', name: 'logic', width: 350,
+            header: {
+              text: Things.DataGlobal.t('label.logic')
+           }
+          }*/ ]
+      },
       /**
        * 상세 탭 선택시 ...
        */

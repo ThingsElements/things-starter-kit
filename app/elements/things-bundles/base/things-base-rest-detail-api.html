@@ -133,7 +133,16 @@ Example:
          */
         _panels: {
           type: Array,
-          value: [ {
+          value: []
+        }
+      },
+
+      listeners: {
+        'tabPages.iron-select': '_onPageSelected'
+      },
+
+      attached: function () {
+         this._panels =[{
             title: Things.DataGlobal.t('title.input_param'),
             elementId: 'things-base-rest-detail-api-inout'
           }, {
@@ -142,14 +151,8 @@ Example:
           }, {
             title: Things.DataGlobal.t('title.test'),
             elementId: 'things-base-rest-detail-api-test'
-          } ]
-        }
+          }] 
       },
-
-      listeners: {
-        'tabPages.iron-select': '_onPageSelected'
-      },
-
       /**
        * Active Tab을 설정한다.
        *

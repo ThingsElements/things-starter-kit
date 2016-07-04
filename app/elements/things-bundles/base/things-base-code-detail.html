@@ -162,25 +162,7 @@
          */
         gridColumns: {
           type: Array,
-          value: [ {
-            fieldName: 'id',
-            width: 0
-          }, {
-            fieldName: 'parent_id',
-            width: 0
-          }, {
-            fieldName: 'name',
-            header: {
-              text: Things.DataGlobal.t('label.name')
-            },            
-            width: 250
-          }, {
-            fieldName: 'description',
-            header: {
-              text: Things.DataGlobal.t('label.description')
-            },            
-            width: 350
-          } ]
+          value: []
         },
 
         /**
@@ -221,7 +203,30 @@
         'grid.things-grid-handle-addrow' : 'addRow',
         'grid.things-grid-save-success' : 'reloadGrid'
       },
-
+      /**
+       * Column 번역을 위하여 Attached로 바꿈
+       */
+      attached: function(){
+        this.gridColumns = [{
+            fieldName: 'id',
+            width: 0
+          }, {
+            fieldName: 'parent_id',
+            width: 0
+          }, {
+            fieldName: 'name',
+            header: {
+              text: Things.DataGlobal.t('label.name')
+            },            
+            width: 250
+          }, {
+            fieldName: 'description',
+            header: {
+              text: Things.DataGlobal.t('label.description')
+            },            
+            width: 350
+          }]
+        },
       /**
        * 코드 정보 변경시 
        */

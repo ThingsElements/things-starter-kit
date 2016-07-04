@@ -185,21 +185,7 @@
 				*/
 				apiGridColumns: {
 					type: Array,
-					value: [ { 
-						fieldName: 'id', name: 'id', width: 0 
-					}, { 
-						fieldName: 'name', name: 'name', width: 120,
-						header: { text : Things.DataGlobal.t('label.name') }
-					}, { 
-						fieldName: 'http_method', name: 'http_method', width: 80,
-						header: { text : Things.DataGlobal.t('label.method') }
-					}, { 
-						fieldName: 'url', name: 'url', width: 235,
-						header : { text : Things.DataGlobal.t('label.url') }
-					}, { 
-						fieldName: 'description', name: 'description', width: 375,
-						header : { text : Things.DataGlobal.t('label.description') }
-					} ] 
+					value: [] 
 				},
 
 				/**
@@ -236,6 +222,23 @@
 				'api-list.things-grid-row-data-select' : '_apiSelectionChanged'
 			},
 
+			attached: function(){
+				this.apiGridColumns =[ { 
+						fieldName: 'id', name: 'id', width: 0 
+					}, { 
+						fieldName: 'name', name: 'name', width: 120,
+						header: { text : Things.DataGlobal.t('label.name') }
+					}, { 
+						fieldName: 'http_method', name: 'http_method', width: 80,
+						header: { text : Things.DataGlobal.t('label.method') }
+					}, { 
+						fieldName: 'url', name: 'url', width: 235,
+						header : { text : Things.DataGlobal.t('label.url') }
+					}, { 
+						fieldName: 'description', name: 'description', width: 375,
+						header : { text : Things.DataGlobal.t('label.description') }
+					} ]
+			},
 			/**
 			 * Override 함수 - 디테일 뷰를 표시한다.
 			 *

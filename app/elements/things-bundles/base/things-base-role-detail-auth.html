@@ -171,7 +171,70 @@
         mainGridColumns: {
           type: Array,
           value: function() {
-            return [ {
+            return [];
+          }
+        },
+
+        /**
+         * 하위 그리드 모델
+         */
+        subGridModel: {
+          type: Array,
+          value: [ {
+            fieldName: 'id'
+          }, {
+            fieldName: 'parent_id'
+          }, {
+            fieldName: 'name'
+          }, {
+            fieldName: 'check_all',
+            dataType: 'boolean'
+          }, {
+            fieldName: 'show',
+            dataType: 'boolean'
+          }, {
+            fieldName: 'create',
+            dataType: 'boolean'
+          }, {
+            fieldName: 'update',
+            dataType: 'boolean'
+          }, {
+            fieldName: 'delete',
+            dataType: 'boolean'
+          } ]
+        },
+        
+        /**
+         * 하위 그리드 컬럼
+         */
+        subGridColumns: {
+          type: Array,
+          value: []
+        },
+
+        /**
+         * 버튼 정보 
+         */
+        buttons: {
+          type: Array,
+          value: [ {
+            id: 'save-btn',
+            text: 'save',
+            icon: 'icons:save'
+          } ]
+        }
+      },
+
+      listeners: {
+        'grid.things-grid-detail-tap': '_showSubMenus',
+        'subgrid.things-grid-configured' : '_onGridConfigured',
+        'subgrid.things-grid-save-success' : 'reloadGrid',
+        'subgrid.things-grid-handle-build-writedata' : '_setupPermissionsToUpdate',
+        'subgrid.things-grid-handle-save' : '_saveGridData'
+      },
+
+      attached: function () {
+          this.mainGridColumns =[ {
               name: 'id',
               fieldName: 'id',
               width: 0
@@ -213,44 +276,8 @@
               width: 100,
               editable: false,
             }];
-          }
-        },
-
-        /**
-         * 하위 그리드 모델
-         */
-        subGridModel: {
-          type: Array,
-          value: [ {
-            fieldName: 'id'
-          }, {
-            fieldName: 'parent_id'
-          }, {
-            fieldName: 'name'
-          }, {
-            fieldName: 'check_all',
-            dataType: 'boolean'
-          }, {
-            fieldName: 'show',
-            dataType: 'boolean'
-          }, {
-            fieldName: 'create',
-            dataType: 'boolean'
-          }, {
-            fieldName: 'update',
-            dataType: 'boolean'
-          }, {
-            fieldName: 'delete',
-            dataType: 'boolean'
-          } ]
-        },
-        
-        /**
-         * 하위 그리드 컬럼
-         */
-        subGridColumns: {
-          type: Array,
-          value: [ {
+            
+        this.subGridColumns=[ {
             fieldName: 'id',
             width: 0
           }, {
@@ -309,30 +336,8 @@
               type:'check', editable: true, editOnClick: true, threeStates: false, 
               trueValues: 'true', falseValues: 'false'
             }
-          } ]
-        },
-
-        /**
-         * 버튼 정보 
-         */
-        buttons: {
-          type: Array,
-          value: [ {
-            id: 'save-btn',
-            text: 'save',
-            icon: 'icons:save'
-          } ]
-        }
+          } ];
       },
-
-      listeners: {
-        'grid.things-grid-detail-tap': '_showSubMenus',
-        'subgrid.things-grid-configured' : '_onGridConfigured',
-        'subgrid.things-grid-save-success' : 'reloadGrid',
-        'subgrid.things-grid-handle-build-writedata' : '_setupPermissionsToUpdate',
-        'subgrid.things-grid-handle-save' : '_saveGridData'
-      },
-
       /**
        * Resource 변경시
        *

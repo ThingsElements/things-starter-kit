@@ -103,7 +103,56 @@
          */
         gridColumns: {
           type: Array,
+          value: []
+        },
+
+        /**
+         * Role detail User searching URL
+         */
+        gridSearchUrl: {
+          type: String,
+          computed: '_computeUserSearchUrl(roleId)',
+        },
+
+        /**
+         * Role detail User Save URL
+         */
+        gridSaveUrl: {
+          type: String,
+          computed: '_computeUserColumnSaveUrl(roleId)'
+        },
+
+        /**
+         * 버튼 정보 
+         */
+        buttons: {
+          type: Array,
           value: [ {
+            id: 'add-btn',
+            text: 'add',
+            icon: 'icons:add'
+          }, {
+            id: 'save-btn',
+            text: 'save',
+            icon: 'icons:save'
+          }, {
+            id: 'delete-btn',
+            text: 'delete',
+            icon: 'icons:delete'
+          } ]
+        }
+      },
+
+      listeners: {
+        'things-resource-selector-selected' : '_onResourceSelectorSelected',
+        'grid.things-grid-save-success' : 'reloadGrid',
+        'grid.things-grid-resource-column-edit' : '_openResourceSelector',
+        'grid.things-grid-handle-addrow' : '_addRow',
+        'grid.things-grid-handle-save' : '_beforeColumnsSave'
+      },
+
+      attached:function () {
+        this.gridColumns =[ {
             fieldName: 'id',
             width: 0
           }, {
@@ -159,54 +208,8 @@
           }, {
             fieldName: 'name',
             width: 0
-          } ]
-        },
-
-        /**
-         * Role detail User searching URL
-         */
-        gridSearchUrl: {
-          type: String,
-          computed: '_computeUserSearchUrl(roleId)',
-        },
-
-        /**
-         * Role detail User Save URL
-         */
-        gridSaveUrl: {
-          type: String,
-          computed: '_computeUserColumnSaveUrl(roleId)'
-        },
-
-        /**
-         * 버튼 정보 
-         */
-        buttons: {
-          type: Array,
-          value: [ {
-            id: 'add-btn',
-            text: 'add',
-            icon: 'icons:add'
-          }, {
-            id: 'save-btn',
-            text: 'save',
-            icon: 'icons:save'
-          }, {
-            id: 'delete-btn',
-            text: 'delete',
-            icon: 'icons:delete'
-          } ]
-        }
+          } ]  
       },
-
-      listeners: {
-        'things-resource-selector-selected' : '_onResourceSelectorSelected',
-        'grid.things-grid-save-success' : 'reloadGrid',
-        'grid.things-grid-resource-column-edit' : '_openResourceSelector',
-        'grid.things-grid-handle-addrow' : '_addRow',
-        'grid.things-grid-handle-save' : '_beforeColumnsSave'
-      },
-
       /**
       * Resource 변경시
       *

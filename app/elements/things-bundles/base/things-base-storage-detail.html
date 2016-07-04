@@ -144,38 +144,7 @@
          */
         gridColumns: {
           type: Array,
-          value: [ { 
-            name: 'id',
-            fieldName: 'id', width: 0 
-          }, { 
-            name: 'name',
-            fieldName: 'name',
-            width: 220,
-            header: { 
-              text: Things.DataGlobal.t('label.name')
-            }
-          }, { 
-            name: 'tag',
-            fieldName: 'tag',
-            width: 150,
-            header: { 
-              text: Things.DataGlobal.t('label.tag')
-            }
-          }, { 
-            name: 'path',
-            fieldName: 'path',
-            width: 450,
-            header: { 
-              text: Things.DataGlobal.t('label.path')
-            }
-          }, { 
-            name: 'created_at',
-            fieldName: 'created_at', 
-            width: 135,
-            header: { 
-              text: Things.DataGlobal.t('label.created_at')
-            }
-          } ]
+          value: []
         },
 
         /**
@@ -215,6 +184,40 @@
         'grid.things-grid-detail-tap': '_downloadFile'
       },
 
+      attached:function () {
+         this.gridColumns = [ { 
+            name: 'id',
+            fieldName: 'id', width: 0 
+          }, { 
+            name: 'name',
+            fieldName: 'name',
+            width: 220,
+            header: { 
+              text: Things.DataGlobal.t('label.name')
+            }
+          }, { 
+            name: 'tag',
+            fieldName: 'tag',
+            width: 150,
+            header: { 
+              text: Things.DataGlobal.t('label.tag')
+            }
+          }, { 
+            name: 'path',
+            fieldName: 'path',
+            width: 450,
+            header: { 
+              text: Things.DataGlobal.t('label.path')
+            }
+          }, { 
+            name: 'created_at',
+            fieldName: 'created_at', 
+            width: 135,
+            header: { 
+              text: Things.DataGlobal.t('label.created_at')
+            }
+          } ] 
+      },
       /**
        * 그리드 셀 선택이 변경되었을 경우 파일 다운로드  
        */
