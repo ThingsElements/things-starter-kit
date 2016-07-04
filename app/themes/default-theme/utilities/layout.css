@@ -10,21 +10,3 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 .u-spacer {
   @apply(--layout-flex);
 }
-.flex-horizontal-with-ratios {
-@apply(--layout-horizontal);
-}
-.flexchild {
-@apply(--layout-flex);
-}
-.flex2child {
-@apply(--layout-flex-2);
-}
-.flex3child {
-@apply(--layout-flex-3);
-}
-.flex4child {
-@apply(--layout-flex-4);
-}
-.flex5child {
-@apply(--layout-flex-5);
-}
