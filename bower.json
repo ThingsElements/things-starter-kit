@@ -15,7 +15,8 @@
     "things-elements": "ThingsElements/things-elements",
     "paper-swatch-picker": "^1.0.1",
     "grid": "dataludi/grid#^1.2.6",
-    "jsonfn": "https://github.com/vkiryukhin/jsonfn.git"
+    "jsonfn": "https://github.com/vkiryukhin/jsonfn.git",
+    "chart-elements": "^3.1.0"
   },
   "devDependencies": {
     "web-component-tester": "4.2.0"
