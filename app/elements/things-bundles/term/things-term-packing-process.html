@@ -184,11 +184,6 @@
        * @param {String} operationId
        */
       lotListConditionsChanged: function(orderId, operationId) {
-        this.$['packing-model'].generateRequest();
-        if(this.packingModelInfo && this.packingModelInfo != '') {
-          this.packQty = this.packingModelInfo.pack_qty;
-        }
-
         this.latestLotQueryFields = [{
           name: 'work_order_id',
           value: orderId
@@ -321,7 +316,16 @@
        * packQty와 비교하여 packQty를 이상이 되면 자동으로 transaction 실행
        */
       lotChanged: function(lot) {
-        if(this.packingList.length < this.packQty) {
+        var packQty;
+        var packingModelAjax = this.$['packing-model'];
+        packingModelAjax.resourceUrl = 'packing_models/find/' + this.orderId + '/' + this.operationId;
+        packingModelAjax.generateRequest();
+
+        if(this.packingModelInfo && this.packingModelInfo != '') {
+          packQty = this.packingModelInfo.pack_qty;
+        }
+
+        if(this.packingList.length < packQty) {
           var packingList = this.packingList;
           
           for(var i = 0; i < packingList.length; i++) { 
@@ -334,7 +338,7 @@
           this.getLotInfoForm().getForm().resetMyForm();
         }
 
-        if(this.packingList.length >= this.packQty) {
+        if(this.packingList.length >= packQty) {
           this.lotTransaction();
         }
       },
