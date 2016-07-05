@@ -40,6 +40,13 @@
       resource-url="[[transactionUrl]]">
     </things-ajax>
 
+    <things-ajax
+      id="packing-model"
+      resource-action="index"
+      resource-url="[[packingModelUrl]]"
+      last-response="{{packingModelInfo}}">
+    </things-ajax>
+
     <things-ajax id="label-model" resource-action="find"></things-ajax>
 
     <things-layout-mercury 
@@ -121,12 +128,19 @@
         },
 
         /**
+         * packingModel 호출 url
+         */
+        packingModelUrl: {
+          type: String,
+          computed: '_computePackingModelUrl(orderId,operationId)'
+        },
+
+        /**
          * packing model에서 추출한 packing 단위 
          * (한 pack에 들어갈 lot 혹은 packing lot 갯수)
          */
         packQty: {
-          type: Number,
-          value: 5 // 서버에서 받아서 초기화 해야 합니다. 현재는 5로 하드 코딩
+          type: Number
         },
 
         /**
@@ -162,6 +176,11 @@
        * @param {String} operationId
        */
       lotListConditionsChanged: function(orderId, operationId) {
+        this.$['packing-model'].generateRequest();
+        if(this.packingModelInfo && this.packingModelInfo != '') {
+          this.packQty = this.packingModelInfo.pack_qty;
+        }
+
         this.latestLotQueryFields = [{
           name: 'work_order_id',
           value: orderId
@@ -281,13 +300,19 @@
       },
 
       /**
+       * Packing Model 조회 URL
+       */
+      _computePackingModelUrl: function(orderId, operationId) {
+        return 'packing_models/find/' + orderId + '/' + operationId;
+      },
+
+      /**
        * things-lot-based-transaction-behavior override
        *
        * lot id 검색 후 중복되지 않은 lot정보를 grid에 입력합니다.
        * packQty와 비교하여 packQty를 이상이 되면 자동으로 transaction 실행
        */
       lotChanged: function(lot) {
-        // TODO : packingModel에서 packQty 받아서 입력 하기
         if(this.packingList.length < this.packQty) {
           var packingList = this.packingList;
           
