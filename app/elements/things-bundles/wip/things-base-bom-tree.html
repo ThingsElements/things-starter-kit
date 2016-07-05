@@ -1,0 +1,271 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/things-grid/things-tree-grid.html">
+<dom-module id="things-base-bom-tree">
+    <template>
+        <style>
+        :host {
+            display: block;
+            @apply(--layout-vertical);
+        }
+        </style>
+        <things-tree-grid class="flex" model="[[model]]" columns="[[columns]]" config="[[config]]" data="[[data]]">
+        </things-tree-grid>
+    </template>
+    <script>
+    (function() {
+        'use strict';
+        Polymer({
+            is: 'things-base-bom-tree',
+            properties: {
+
+            },
+            attached: function() {
+                this.config = {
+                    display: {},
+                    header: {
+                        height: 30
+                    },
+                    tree: {
+                        expanderWithCellStyles: true,
+                        // iconField: 'icon',
+                        /*
+                        // iconCallback을 사용할 수도 있다.
+                        iconCallback: function (row) {
+                            var idx = row.iconIndex();
+                            if (idx === undefined) {
+                                switch (row.getValue('country')) {
+                                    case 'France': 
+                                        idx = 'fr.png';
+                                        break;
+                                    case 'Brazil':
+                                        idx = 'br.png';
+                                        break;
+                                    default:
+                                        idx = 0;
+                                        break;
+                                }
+                                row.setIconIndex(idx);
+                            }
+                            return idx;
+                        },
+                        */
+                        // iconList: "images01",
+                        /*iconWidth: 20, */
+                        checkBoxVisible: true
+                    }
+                };
+                this.model = [{
+                    fieldName: "loan_number"
+                }, {
+                    fieldName: "country"
+                }, {
+                    fieldName: "interest_rate",
+                    dataType: "number"
+                }, {
+                    fieldName: "currency"
+                }, {
+                    fieldName: "project_id"
+                }, {
+                    fieldName: "original_amount",
+                    dataType: "number"
+                }, {
+                    fieldName: "cancelled_amount",
+                    dataType: "number"
+                }, {
+                    fieldName: "disbursed_amount",
+                    dataType: "number"
+                }, {
+                    fieldName: "first_date",
+                    dataType: "datetime",
+                    datetimeFormat: "MM/dd/yyyy"
+                }, {
+                    fieldName: "last_date",
+                    dataType: "datetime",
+                    datetimeFormat: "MM/dd/yyyy"
+                }];
+
+                this.columns = [{
+                    "name": "Country",
+                    "fieldName": "country",
+                    "width": "120",
+                    "styles": {},
+                    "header": {
+                        "text": "Country"
+                    }
+                }, {
+                    "name": "InterestRate",
+                    "fieldName": "interest_rate",
+                    "width": "65",
+                    "styles": {
+                        "textAlignment": "far"
+                    },
+                    "header": {
+                        "text": "InterestRate"
+                    },
+                    "footer": {
+                        "expression": "avg",
+                        "styles": {
+                            "prefix": "Average" + ": ",
+                            "numberFormat": "#,##0.00"
+                        }
+                    }
+                }, {
+                    "name": "Currency",
+                    "fieldName": "currency",
+                    "width": "90",
+                    "styles": {
+                        "textAlignment": "center"
+                    },
+                    "header": {
+                        "text": "Currency"
+                    }
+                }, {
+                    "name": "ProjectID",
+                    "fieldName": "project_id",
+                    "width": "70",
+                    "styles": {
+                        "textAlignment": "center"
+                    },
+                    "header": {
+                        "text": "ProjectID"
+                    },
+                    "footer": {
+                        "text": "Sum",
+                        "styles": {
+                            "textAlignment": "far"
+                        }
+                    }
+                }, {
+                    "name": "OriginalAmount",
+                    "fieldName": "original_amount",
+                    "width": 110,
+                    "styles": {
+                        "textAlignment": "far"
+                    },
+                    "header": {
+                        "text": "OriginalAmount"
+                    },
+                    "footer": {
+                        "expression": "sum",
+                        "styles": {
+                            "prefix": "$",
+                            "numberFormat": "#,##0",
+                            "background": "#777",
+                            "color": "#fff",
+                            "borderTop": "#ddd"
+                        }
+                    }
+                }, {
+                    "name": "CancelledAmount",
+                    "fieldName": "cancelled_amount",
+                    "width": 110,
+                    "styles": {
+                        "textAlignment": "far"
+                    },
+                    "header": {
+                        "text": "CancelledAmount"
+                    },
+                    "footer": {
+                        "expression": "sum",
+                        "styles": {
+                            "prefix": "$",
+                            "numberFormat": "#,##0"
+                        }
+                    }
+                }, {
+                    "name": "DisbursedAmount",
+                    "fieldName": "disbursed_amount",
+                    "width": 110,
+                    "styles": {
+                        "textAlignment": "far"
+                    },
+                    "header": {
+                        "text": "DisbursedAmount"
+                    },
+                    "footer": {
+                        "expression": "varp",
+                        "text": "분산",
+                        "styles": {
+                            "prefix": "분산=>$",
+                            "numberFormat": "#,##0"
+                        }
+                    }
+                }, {
+                    "name": "FirstDate",
+                    "fieldName": "first_date",
+                    "width": "90",
+                    "styles": {
+                        "datetimeFormat": "yyyy-MM-dd",
+                        "textAlignment": "center"
+                    },
+                    "header": {
+                        "text": "FirstDate"
+                    }
+                }, {
+                    "name": "LastDate",
+                    "fieldName": "last_date",
+                    "width": "90",
+                    "styles": {
+                        "datetimeFormat": "yyyy-MM-dd",
+                        "textAlignment": "center"
+                    },
+                    "header": {
+                        "text": "LastDate"
+                    }
+                }];
+
+                // this.data = {};
+                this.data= [
+                    ["1", "IBRD00010", "France", "4.25", "USD", "P037383", "250", "000", "001.00", "11/01/1952", "05/01/1977"],
+                    ["1.1", "IBRD00020", "Netherlands", "4.25", "USD", "P037452", "191", "044", "211.75", "04/01/1952", "10/01/1972"],
+                    ["1.2", "IBRD00021", "Netherlands", "4.25", "USD", "P037452", "3", "955", "788.25", "04/01/1953", "04/01/1954"],
+                    ["1.2.1", "IBRD00030", "Denmark", "4.25", "USD", "P037362", "40", "000", "000.00", "02/01/1953", "08/01/1972"],
+                    ["1.2.2", "IBRD00040", "Luxembourg", "4.25", "USD", "P037451", "12", "000", "000.00", "07/15/1949", "07/15/1972"],
+                    ["1.3", "IBRD00050", "Chile", "4.5", "USD", "P006578", "13", "500", "000.00", "07/01/1953", "07/01/1968"],
+                    ["2", "IBRD00060", "Chile", "3.75", "USD", "P006577", "2", "500", "000.00", "07/01/1950", "01/01/1955"],
+                    ["2.1", "IBRD00070", "Netherlands", "3.56", "USD", "P037453", "2", "000", "000.00", "01/15/1949", "07/15/1958"],
+                    ["2.1.1", "IBRD00071", "Netherlands", "3.56", "USD", "P037453", "2", "000", "000.00", "01/15/1949", "07/15/1958"],
+                    ["2.2", "IBRD00080", "Netherlands", "3.56", "USD", "P037454", "2", "000", "000.00", "01/15/1949", "07/15/1958"],
+                    ["2.3", "IBRD00090", "Netherlands", "3.56", "USD", "P037455", "2", "000", "000.00", "01/15/1949", "07/15/1958"],
+                    ["3", "IBRD00100", "Netherlands", "3.56", "USD", "P037456", "2", "000", "000.00", "01/15/1949", "07/15/1958"],
+                    ["3.1", "IBRD00101", "Netherlands", "3.56", "USD", "P037456", "2", "000", "000.00", "01/15/1949", "07/15/1958"],
+                    ["3.1.1", "IBRD00111", "Brazil", "4.5", "USD", "P006214", "75", "000", "000.00", "07/01/1953", "01/01/1974"],
+                    ["3.1.2", "IBRD00112", "Brazil", "4.25", "USD", "P006214", "15", "000", "000.00", "07/01/1955", "01/01/1976"],
+                    ["3.2", "IBRD00120", "Mexico", "4.5", "USD", "P007497", "24", "100", "000.00", "02/01/1953", "08/01/1973"],
+                    ["3.3", "IBRD00130", "Mexico", "4.5", "USD", "P007498", "10", "000", "000.00", "01/01/1951", "01/01/1951"],
+                    ["3.3.1", "IBRD00140", "Belgium", "4.25", "USD", "P037358", "16", "000", "000.00", "09/01/1953", "03/01/1969"],
+                    ["4", "IBRD00150", "Netherlands", "4", "USD", "P037457", "15", "000", "000.00", "12/01/1952", "06/01/1964"],
+                    ["4.1", "IBRD00160", "Finland", "4", "USD", "P037366", "12", "500", "000.00", "02/01/1953", "08/01/1964"],
+                    ["4.2", "IBRD00170", "India", "4", "USD", "P009588", "34", "000", "000.00", "08/15/1950", "08/15/1964"],
+                    ["5", "IBRD00180", "Colombia", "3.5", "USD", "P006682", "5", "000", "000.00", "05/15/1952", "11/15/1956"],
+                    ["5.1", "IBRD00190", "India", "3.5", "USD", "P009586", "10", "000", "000.00", "06/01/1952", "12/01/1956"],
+                    ["5.1.1", "IBRD00200", "Yugoslavia", "3", "USD", "P009133", "2", "700", "000.00", "06/15/1950", "09/15/1951"],
+                    ["5.2", "IBRD00210", "Finland", "3", "USD", "P037365", "2", "300", "000.00", "06/15/1950", "09/15/1951"],
+                    ["5.3", "IBRD00220", "El Salvador", "4.25", "USD", "P007137", "12", "545", "000.00", "07/15/1954", "01/15/1975"],
+                    ["6", "IBRD00230", "India", "4", "USD", "P009587", "18", "500", "000.00", "04/15/1955", "04/15/1970"],
+                    ["7", "IBRD00240", "Mexico", "4.5", "USD", "P007499", "26", "000", "000.00", "08/01/1953", "02/01/1975"],
+                    ["8", "IBRD00250", "Brazil", "4.25", "USD", "P006215", "15", "000", "000.00", "09/15/1954", "03/15/1975"],
+                    ["8.1", "IBRD00260", "Iraq", "3.75", "USD", "P005231", "12", "800", "000.00", "04/01/1956", "10/01/1965"],
+                    ["8.2", "IBRD00270", "Turkey", "3.88", "USD", "P008872", "3", "900", "000.00", "04/01/1954", "10/01/1968"],
+                    ["9", "IBRD00281", "Turkey", "4.25", "USD", "P008874", "12", "500", "000.00", "04/01/1956", "10/01/1975"],
+                    ["9.1", "IBRD00282", "Turkey", "4.88", "USD", "P008874", "3", "800", "000.00", "04/01/1956", "10/01/1975"],
+                    ["9.2", "IBRD00290", "Australia", "4.25", "USD", "P037342", "100", "000", "000.00", "09/01/1955", "09/01/1975"],
+                    ["9.3", "IBRD00300", "Uruguay", "4.25", "USD", "P008109", "33", "000", "000.00", "02/15/1955", "08/15/1974"],
+                    ["a0", "IBRD00310", "Ethiopia", "4", "USD", "P000659", "5", "000", "000.00", "03/01/1956", "03/01/1971"],
+                    ["a0.1", "IBRD00320", "Ethiopia", "4", "USD", "P000658", "2", "000", "000.00", "03/01/1956", "03/01/1971"],
+                    ["a0.2", "IBRD00330", "Mexico", "3.5", "USD", "P007500", "10", "000", "000.00", "03/15/1952", "09/15/1957"],
+                    ["a1", "IBRD00340", "Turkey", "3.75", "USD", "P008873", "9", "000", "000.00", "03/15/1957", "09/15/1965"],
+                    ["a1.1", "IBRD00320", "Ethiopia", "4", "USD", "P000658", "2", "000", "000.00", "03/01/1956", "03/01/1971"],
+                    ["a1.1.1.", "IBRD00330", "Mexico", "3.5", "USD", "P007500", "10", "000", "000.00", "03/15/1952", "09/15/1957"],
+                    ["a1.1.2.", "IBRD00330", "Mexico", "3.5", "USD", "P007500", "10", "000", "000.00", "03/15/1952", "09/15/1957"],
+                    ["a1.2", "IBRD00320", "Ethiopia", "4", "USD", "P000658", "2", "000", "000.00", "03/01/1956", "03/01/1971"],
+                    ["a1.3", "IBRD00320", "Ethiopia", "4", "USD", "P000658", "2", "000", "000.00", "03/01/1956", "03/01/1971"],
+                    ["a2", "IBRD00310", "Ethiopia", "4", "USD", "P000659", "5", "000", "000.00", "03/01/1956", "03/01/1971"],
+                    ["a2.1", "IBRD00320", "Ethiopia", "4", "USD", "P000658", "2", "000", "000.00", "03/01/1956", "03/01/1971"],
+                    ["a2.2", "IBRD00330", "Mexico", "3.5", "USD", "P007500", "10", "000", "000.00", "03/15/1952", "09/15/1957"]
+                ];
+            }
+        });
+    })();
+    </script>
+</dom-module>
