@@ -313,7 +313,7 @@
 
         // Get Label Model
         if(this.$['print'].value == true) {
-          this.$['label-model'].resourceUrl = 'lots/' + this.lot.id + '/packing_label/' + this.operationId;
+          this.$['label-model'].resourceUrl = 'lots/' + this.lot.id + '/label/' + this.operationId;
           this.$['label-model'].generateRequest();
         }
       },
