@@ -39,6 +39,7 @@
         columns="[[gridColumns]]"
         data="[[items]]"
         grid-save-action="[[gridSaveUrl]]"
+        fixed-column-count="2"
         buttons="[[buttons]]">
       </things-resource-grid>
     </div>
@@ -198,13 +199,14 @@
             fieldName: 'login',
             header: {
               text: Things.DataGlobal.t('label.login')
-            }
+            },
+            width: 300
           }, {
             fieldName: 'email',
             header: {
               text: Things.DataGlobal.t('label.email')
             },
-            width: 160
+            width: 300
           }, {
             fieldName: 'name',
             width: 0

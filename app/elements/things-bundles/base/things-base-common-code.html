@@ -48,21 +48,28 @@
             min-height: 150px;
         }
         </style>
+
         <things-ajax auto id="resource-meta" method="GET" resource-url="[[menuMetaUrl]]" last-response="{{metaData}}">
         </things-ajax>
+        
         <things-search-form id="search-form" title="[[menuInfo.title]]" form-fields="[[searchFormFields]]" select-fields="[[selectFields]]" sort-fields="[[sortFields]]" action-url="[[resourceUrl]]" page="1" per-page="1000" last-response="{{commonCodes}}">
         </things-search-form>
+        
         <span class="subtitle">
 			<things-i18n-msg msgid="label.code_list"></things-i18n-msg>
 		</span>
-        <things-resource-grid id="grid" class="things-resource-grid-main" config="[[gridConfig]]" model="[[gridModel]]" columns="[[gridColumns]]" current-page="1" per-page="1000" data="[[commonCodeList]]" total-count="[[commonCodeTotal]]" grid-save-action="[[gridSaveUrl]]" selected-row-data="{{selectedRow}}" buttons="[[buttons]]" enable-detail-column>
+        
+        <things-resource-grid id="grid" class="things-resource-grid-main" config="[[gridConfig]]" model="[[gridModel]]" columns="[[gridColumns]]" current-page="1" per-page="1000" data="[[commonCodeList]]" total-count="[[commonCodeTotal]]" grid-save-action="[[gridSaveUrl]]" selected-row-data="{{selectedRow}}" buttons="[[buttons]]" fixed-column-count="3" enable-detail-column>
         </things-resource-grid>
+        
         <things-ajax id="subcode-list" resource-url="[[codeDetailUrl]]" resource-action="index" resource-id="{{resourceId}}" last-response="{{subCodeResponse}}">
         </things-ajax>
+        
         <span class="subtitle">
 			<things-i18n-msg msgid="label.sub_codes"></things-i18n-msg>
 		</span>
-        <things-resource-grid id="sub-grid" class="things-resource-grid-sub" config="[[gridConfig]]" model="[[detailModel]]" columns="[[detailColumns]]" current-page="1" per-page="1000" data="[[subCodeItems]]" grid-save-action="[[detailSaveUrl]]" buttons="[[subButtons]]" !enable-detail-column>
+        
+        <things-resource-grid id="sub-grid" class="things-resource-grid-sub" config="[[gridConfig]]" model="[[detailModel]]" columns="[[detailColumns]]" current-page="1" per-page="1000" data="[[subCodeItems]]" grid-save-action="[[detailSaveUrl]]" buttons="[[subButtons]]" fixed-column-count="0" !enable-detail-column>
         </things-resource-grid>
     </template>
     <script>
@@ -203,46 +210,48 @@
                 }]
             }
         },
+
 		/**
 		* Column 번역을 위하여 Attached로 바꿈
 		*/
 		attached: function(){
         	this.detailColumns = [{
-                        name: 'id',
-                        fieldName: 'id',
-                        width: 0
-                    }, {
-                        name: 'rank',
-                        fieldName: 'rank',
-                        width: 80,
-                        header: {
-                            text: Things.DataGlobal.t('label.rank')
-                        },
-                    }, {
-                        name: 'name',
-                        fieldName: 'name',
-                        width: 150,
-                        header: {
-                            text: Things.DataGlobal.t('label.name')
-                        },
-                        validations: [{
-                            expression: 'value is not empty',
-                            'level': 'error',
-                            'message': '(name) should not be empty!'
-                        }, {
-                            expression: 'len value < 64',
-                            'level': 'error',
-                            'message': 'Maximum (name) length is (64)'
-                        }]
-                    }, {
-                        name: 'description',
-                        fieldName: 'description',
-                        width: 450,
-                        header: {
-                            text: Things.DataGlobal.t('label.description')
-                        }
-                    }]
+                name: 'id',
+                fieldName: 'id',
+                width: 0
+            }, {
+                name: 'rank',
+                fieldName: 'rank',
+                width: 80,
+                header: {
+                    text: Things.DataGlobal.t('label.rank')
+                },
+            }, {
+                name: 'name',
+                fieldName: 'name',
+                width: 150,
+                header: {
+                    text: Things.DataGlobal.t('label.name')
+                },
+                validations: [{
+                    expression: 'value is not empty',
+                    'level': 'error',
+                    'message': '(name) should not be empty!'
+                }, {
+                    expression: 'len value < 64',
+                    'level': 'error',
+                    'message': 'Maximum (name) length is (64)'
+                }]
+            }, {
+                name: 'description',
+                fieldName: 'description',
+                width: 450,
+                header: {
+                    text: Things.DataGlobal.t('label.description')
+                }
+            }]
         },
+
         listeners: {
             'grid.things-grid-detail-tap': '_showSubMenus',
             'grid.things-grid-save-success': '_reloadMainMenus',
