@@ -123,13 +123,50 @@
 
         for(var i = 0 ; i < items.length ; i++) {
           var item = items[i];
-          var id = item.parent_id ? (item.parent_id + '.' + item.id) : '' + item.id;
+          var id = this._makeTreeId(items, item);
+          console.log(id);
           var op_name = (item.operation && item.operation.name) ? item.operation.name : '';
           dataList.push([id, item.material.name, op_name, item.unit, item.std_qty, item.backflush, item.collectable, item.assy_mode, item.alt_group]);
         }
 
         this.treeData = dataList;
       },
+
+      /**
+       * Tree Id를 생성 
+       *
+       * @param {Array} items
+       * @param {Object} item
+       */
+      _makeTreeId: function(items, item) {
+        if(item.parent_id && item.parent_id > 0) {
+          var parentItem = this._findBomPartItem(items, item.parent_id);
+          if(parentItem) {
+            var treeId = this._makeTreeId(items, parentItem);
+            return treeId + '.' + item.id;
+          } else {
+            return '' + item.id;
+          }
+        } else {
+          return '' + item.id;
+        }
+      },
+
+      /**
+       * Find item by id
+       * 
+       * @param {Array} items
+       * @param {Number} id
+       */
+      _findBomPartItem: function(items, id) {
+        for(var i = 0 ; i < items.length ; i++) {
+          if(items[i].id == id) {
+            return items[i];
+          }
+        }
+
+        return null;
+      }
     });
   </script>
 </dom-module>
