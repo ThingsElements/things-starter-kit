@@ -1,0 +1,121 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../things-layout-view/things-layout-gaia.html">
+
+<link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../things-meta-view/things-diy-based-form.html">
+
+<!--
+  OI - 자재 입고 transaction
+-->
+
+<dom-module id="things-term-store-material">
+  <template>
+    <style>
+      :host {
+        display: block;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+      }
+      things-layout-gaia {
+        @apply(--layout-flex);
+      }
+    </style>
+
+    <things-ajax
+      id="validate-lot"
+      resource-action="create"
+      resource-url="lot_trxs/VALIDATE/transaction"
+      last-response="{{lot}}">
+    </things-ajax>
+
+    <things-ajax
+      id="transaction"
+      resource-action="create">
+    </things-ajax>
+
+    <things-layout-gaia 
+      content-title="[[contentTitle]]">
+
+      <things-diy-based-form 
+        content
+        id="input-form"
+        class="flex"
+        buttons="[[buttons]]"
+        diy-form-name="OI-StoreMaterial">
+      </things-diy-based-form>  
+
+    </things-layout-gaia>
+  </template>
+
+
+
+  <script>
+    Polymer({
+      is: 'things-term-store-material',
+      
+      properties: {
+
+        /**
+         * content title
+         * 
+         * @type {Object}
+         */
+        contentTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('title.Input')
+          }
+        },
+
+        transaction: {
+          type: String
+        },
+
+        buttons: {
+          type: Array,
+          value: function() {
+            return [{
+              id: 'reset-btn',
+              text: 'reset'
+            }, {
+              id: 'store-in-btn',
+              text: 'store'
+            }]
+          }
+        }
+      },
+
+      listeners: {
+        'reset-btn-tap': 'resetForm',
+        'store-in-btn-tap': 'lotTransaction'
+      },
+
+      /**
+       * Life Cycle - Ready
+       */
+      ready: function() {
+        this.transaction = 'StoreMaterial';
+      },
+
+      /**
+       * Lot Transaction
+       */
+      lotTransaction: function() {
+        var inputData = this.$['input-form'].getForm().serializeMyForm();
+        var tranAjax = this.$['transaction'];
+        tranAjax.resourceUrl = 'lot_trxs/' + this.transaction + '/transaction';
+
+        tranAjax.body = {
+          material_id: inputData.material_id,
+          store: inputData.store_id,
+          location: inputData.store_location_id,
+          store_qty: inputData.store_qty,
+          auto_lot_create: inputData.auto_lot_create
+        };
+
+        tranAjax.generateRequest();
+      }
+    });
+  </script>
+</dom-module>
