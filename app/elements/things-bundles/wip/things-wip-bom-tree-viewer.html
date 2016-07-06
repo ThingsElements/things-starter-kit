@@ -124,7 +124,6 @@
         for(var i = 0 ; i < items.length ; i++) {
           var item = items[i];
           var id = this._makeTreeId(items, item);
-          console.log(id);
           var op_name = (item.operation && item.operation.name) ? item.operation.name : '';
           dataList.push([id, item.material.name, op_name, item.unit, item.std_qty, item.backflush, item.collectable, item.assy_mode, item.alt_group]);
         }
@@ -140,6 +139,11 @@
        */
       _makeTreeId: function(items, item) {
         if(item.parent_id && item.parent_id > 0) {
+          if(item.id == item.parent_id) {
+            // 무한루프 TODO Error
+            return '' + item.id;
+          }
+
           var parentItem = this._findBomPartItem(items, item.parent_id);
           if(parentItem) {
             var treeId = this._makeTreeId(items, parentItem);
