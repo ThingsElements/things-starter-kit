@@ -107,9 +107,9 @@
         tranAjax.resourceUrl = 'lot_trxs/' + this.transaction + '/transaction';
 
         tranAjax.body = {
-          materials: inputData.materials,
-          store: inputData.store_id,
-          locations: inputData.store_locations,
+          material: inputData.material,
+          store: inputData.store,
+          store_location: inputData.store_location,
           store_qty: inputData.store_qty
         };
 
