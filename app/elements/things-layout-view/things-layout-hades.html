@@ -9,7 +9,7 @@
 	상하 분할, 하단 탭 3개 레이아웃
 -->
 
-<dom-module id="things-layout-poseidon">
+<dom-module id="things-layout-hades">
 	<template>
 		<style>
 			:host {
@@ -50,18 +50,6 @@
 			
 		</style>
 
-		<paper-card id="top" elevation="1">
-			
-			<div id="topLeft" class="layout-content">
-				<span class="subtitle">[[topLeftContentTitle]]</span>
-				<content select="[top-left]"></content>
-			</div>
-			<div id="topRight" class="layout-content">
-				<span class="subtitle">[[topRightContentTitle]]</span>
-				<content select="[top-right]"></content>
-			</div>
-		</paper-card>
-
 		<paper-tabs id="tab-group" selected="{{currentTabIdx}}" noink>
 			<template is="dom-repeat" items="{{sections}}" filter="isTabs">
 				<paper-tab id="{{item.tabId}}" on-tap="tabChanged">{{item.title}}</paper-tab>
@@ -101,7 +89,7 @@
 
 	<script>
 		Polymer({
-			is: 'things-layout-poseidon',
+			is: 'things-layout-hades',
 
 			properties: {
 				
@@ -120,6 +108,8 @@
 					type: Array,
 					value: [ {
 						title: 'form1',
+						tabId: 'tabId2',
+						isTab: true, 
 						elementId: 'elementId1',
 						elementName: 'things-resource-form',
 						attributes: [
