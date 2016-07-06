@@ -1,6 +1,10 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/things-i18n-msg/things-i18n-msg.html">
 
+<!--
+  OI - Order 정보 서머리 화면 
+-->
+
 <dom-module id="things-wip-order-info">
 	<template>
 		<style>
@@ -29,11 +33,15 @@
 		</things-ajax>
 
 		<div>
-			<label><things-i18n-msg msgid="label.material" auto>Material</things-i18n-msg></label>
+			<label>
+				<things-i18n-msg msgid="label.material" auto>Material</things-i18n-msg>
+			</label>
 			[[lastResponse.material.name]]
 		</div>
 		<div>
-			<label><things-i18n-msg msgid="label.plan" auto>Plan</things-i18n-msg> / <things-i18n-msg msgid="label.input" auto>Input</things-i18n-msg> / <things-i18n-msg msgid="label.good" auto>Good</things-i18n-msg> / <things-i18n-msg msgid="label.scrap" auto>Scrap</things-i18n-msg></label>
+			<label>
+				<things-i18n-msg msgid="label.plan" auto>Plan</things-i18n-msg> / <things-i18n-msg msgid="label.input" auto>Input</things-i18n-msg> / <things-i18n-msg msgid="label.good" auto>Good</things-i18n-msg> / <things-i18n-msg msgid="label.scrap" auto>Scrap</things-i18n-msg>
+			</label>
 			[[lastResponse.plan_qty]] / <strong>[[lastResponse.input_qty]]</strong> / <strong>[[lastResponse.actual_qty]]</strong> / [[lastResponse.scrap_qty]]
 		</div>
 	</template>

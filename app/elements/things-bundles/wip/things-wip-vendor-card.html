@@ -4,6 +4,10 @@
 <link rel="import" href="../../../bower_components/things-button/things-button-bar.html">
 <link rel="import" href="../../things-content/things-resource-menu-content-behavior.html">
 
+<!--
+  Vendor Card 화면 
+-->
+
 <dom-module id="things-wip-vendor-card">
   <template>
     <style>
@@ -179,6 +183,7 @@
           <button class="close-btn" on-tap="closeDialog"></button>
         </div>
       </paper-toolbar>
+
       <div class="detail-card">
         <div class="detail-content">
           <iron-image src="[[imageSrc]]"></iron-image>
@@ -188,6 +193,7 @@
           <things-input-field label="Phone" value="{{singleItem.phone}}"></things-input-field>
           </div>
         </div>
+
         <div class="detail-content">
           <things-input-field label="E-Mail" value="{{singleItem.email}}"></things-input-field>
           <things-input-field label="Homepage" value="{{singleItem.homepage}}"></things-input-field>
@@ -381,6 +387,7 @@
           this.perPage += this.perPage;
           this.$['search-form'].submitMyForm();
         }
+
         this.$.scroller.clearTriggers();        
       }      
     });
