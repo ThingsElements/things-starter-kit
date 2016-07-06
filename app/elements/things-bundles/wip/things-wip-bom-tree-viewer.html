@@ -1,0 +1,135 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../bower_components/things-grid/things-tree-grid.html">
+
+<dom-module id="things-wip-bom-tree-viewer">
+  <template>
+    <style>
+    :host {
+      display: block;
+      @apply(--layout-vertical);
+      @apply(--layout-flex);
+    }
+    </style>
+
+    <things-ajax
+      auto
+      id="tree-ajax"
+      method="GET"
+      resource-id="[[resourceId]]"
+      resource-url="[[searchUrl]]">
+    </things-ajax>    
+
+    <things-tree-grid 
+      class="flex" 
+      fixed-column-count="0"
+      model="[[gridModel]]" 
+      columns="[[gridColumns]]" 
+      config="[[config]]" 
+      data="[[treeData]]"
+      buttons="[[buttons]]">
+    </things-tree-grid>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'things-wip-bom-tree-viewer',
+      
+      properties: {
+        /**
+         * Tree Grid Config
+         */
+        config: {
+          type: 'Object',
+          value: function() {
+            return {
+              header: {
+                height: 30
+              },
+              tree: {
+                expanderWithCellStyles: true,
+                checkBoxVisible: true
+              }
+            };
+          }
+        },
+
+        /**
+         * Tree Grid Model
+         */
+        gridModel: {
+          type: 'Array'
+        },
+
+        /**
+         * Tree Grid Columns
+         */
+        gridColumns: {
+          type: 'Array'
+        },
+
+        /**
+         * Tree Data
+         */
+        treeData: {
+          type: 'Array'
+        },
+
+        /**
+         * Resource Id
+         */
+        resourceId: {
+          type: String
+        },
+
+        /**
+         * Resource Data
+         */
+        resource: {
+          type: Object
+        },
+
+        /**
+         * Grid Search URL
+         */
+        searchUrl: {
+          type: String
+        },
+
+        /**
+         * Buttons
+         */
+        buttons: {
+          type: 'Array',
+          value: function() {
+            return [];
+          }
+        }
+      },
+
+      listeners: {
+        'tree-ajax.things-ajax-response' : '_responseData'
+      },
+
+      /**
+       * Grid Data가 변경되었을 경우 
+       *
+       * @param {Object} gridData
+       */
+      _responseData: function(e) {
+        var items = e.detail;
+        var dataList = [];
+
+        for(var i = 0 ; i < items.length ; i++) {
+          var item = items[i];
+          var id = item.parent_id ? (item.parent_id + '.' + item.id) : '' + item.id;
+          var op_name = (item.operation && item.operation.name) ? item.operation.name : '';
+          dataList.push([id, item.material.name, op_name, item.unit, item.std_qty, item.backflush, item.collectable, item.assy_mode, item.alt_group]);
+        }
+
+        this.treeData = dataList;
+      },
+    });
+  </script>
+</dom-module>

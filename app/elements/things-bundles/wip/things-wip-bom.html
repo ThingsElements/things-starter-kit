@@ -1,0 +1,178 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../bower_components/things-form/things-search-form.html">
+<link rel="import" href="../../../bower_components/things-grid/things-resource-grid.html">
+
+<link rel="import" href="../../things-content/things-resource-menu-content-behavior.html">
+<link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
+
+<!--
+	BOM
+-->
+
+<dom-module id="things-wip-bom">
+	<template>
+		<style>
+      :host {
+        display: block;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+      }
+      things-layout-hera {
+        @apply(--layout-flex);
+      }
+		</style>
+
+		<things-ajax 
+			auto
+			id="resource-meta"
+			method="GET"
+			resource-url="[[menuMetaUrl]]"
+			last-response="{{metaData}}">
+		</things-ajax>
+
+		<things-ajax 
+			id="get-bom-parts"
+			method="GET"
+			resource-url="boms/:id/bom_parts">
+		</things-ajax>
+
+		<things-search-form 
+			id="search-form"
+			title="[[menuInfo.title]]"
+			form-fields="[[searchFormFields]]" 
+			action-url="[[menuInfo.resource_url]]" 
+			page="{{page}}"
+			per-page="[[perPage]]"
+			last-response="{{lastResponse}}">
+		</things-search-form>
+
+    <things-layout-hera left-content-title="BOM" right-content-title="BOM Parts">
+			<things-resource-grid
+				left
+				class="flex"
+				id="grid"
+				config="[[gridConfig]]"
+				model="[[gridModel]]" 
+				columns="[[gridColumns]]"
+				data="[[items]]"
+				total-count="[[itemCount]]"
+				current-page="{{page}}"
+				per-page="[[perPage]]"
+				fixed-column-count="[[menuInfo.fixed_columns]]"
+				grid-save-action="[[menuInfo.grid_save_url]]"
+				buttons="[[buttons]]"
+				export-file-name="[[menuInfo.title]]"
+				export-sheet-name="[[menuInfo.title]]">
+			</things-resource-grid>
+			   
+			<things-diy-based-grid
+				right
+				class="flex"
+				fixed-column-count="0"
+				id="routing-info-grid"
+				items="[[bomPartItems]]"
+				diy-grid-name="BOMParts"
+				grid-save-url="[[bomPartsSaveUrl]]"
+				buttons="[[bomPartButtons]]">
+			</things-diy-based-grid>
+    </things-layout-hera>
+	</template>
+
+	<script>
+		Polymer({
+			is: 'things-wip-bom',
+
+			behaviors: [
+				Things.ResourceMenuContentBehavior
+			],
+			
+			properties: {
+				/**
+				 * BOM ID
+				 */
+				bomId: {
+					type: 'String'
+				},
+
+				/**
+				 * BOM Part Items
+				 */
+				bomPartItems: {
+					type: 'Array'
+				},
+
+				/**
+				 * BOM Part Save URL
+				 */
+				bomPartsSaveUrl: {
+					type: 'String',
+					computed: '_computeBomPartsSaveUrl(bomId)'
+				},
+
+				/**
+				 * BOM Part Buttons
+				 */
+				bomPartButtons: {
+					type: 'Array',
+					value: function() {
+						return [ {
+							id: 'open-import-btn',
+							text: 'import'
+						}, {
+							id: 'export-btn',
+							text: 'export'
+						}, {
+							id: 'add-btn',
+							text: 'add'
+						}, {
+							id: 'delete-btn',
+							text: 'delete'
+						}, {
+							id: 'save-btn',
+							text: 'save'
+						} ];
+					}
+				}
+			},
+
+			listeners : {
+				'grid.things-grid-row-data-select': 'selectBom',
+				'get-bom-parts.things-ajax-response': 'bomPartsResponsed'
+			},
+
+			/**
+			 * BOM Parts 조회 결과 응답 
+			 *
+			 * @param {Object} e 버튼 탭 이벤트
+			 */
+			_computeBomPartsSaveUrl: function(bomId) {
+				return 'boms/' + bomId + '/bom_parts/update_multiple';
+			},
+
+			/**
+			 * Select One BOM
+			 *
+			 * @param {Object} e 버튼 탭 이벤트
+			 */
+			selectBom: function(e) {
+				var bom = e.detail;
+				if(bom.id) {
+					this.bomId = bom.id;
+					this.$['get-bom-parts'].resourceId = this.bomId;
+					this.$['get-bom-parts'].generateRequest();
+				}
+			},
+
+			/**
+			 * BOM Parts 조회 결과 응답 
+			 *
+			 * @param {Object} e 버튼 탭 이벤트
+			 */
+			bomPartsResponsed: function(e) {
+				this.bomPartItems = e.detail;
+			}
+		});
+	</script>
+</dom-module>
