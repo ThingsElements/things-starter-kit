@@ -98,48 +98,6 @@
 					type: 'Object'
 				},
 
-				seriesData: {
-					type: 'Array',
-					value: function() {
-						return [{
-							x: "January",
-							y : 65
-						}, {
-							x : "February",
-							y : 59
-						}, {
-							x : "March",
-							y : 80
-						}, {
-							x : "April",
-							y : 81
-						}, {
-							x : "May",
-							y : 56
-						}, {
-							x : "June",
-							y : 55
-						}, {
-							x : "July",
-							y : 40
-						}];
-					}
-				},
-
-				/**
-				 * SPC Data for control chart
-				 */
-				spcData: {
-					type: 'Object',
-					value: function() {
-						return {
-							ucl: [70, 70, 70, 65, 65, 65, 65],
-							lcl: [50, 50, 50, 55, 55, 55, 55],
-							cl: [60, 60, 60, 60, 60, 60, 60]
-						};
-					}
-				},
-
 				/**
 				 * Chart Model
 				 */
@@ -170,34 +128,9 @@
 								data : []
 							} ],
 							rawData: {
-								spcData: {},/*{
-									ucl: [70, 70, 70, 65, 65, 65, 65],
-									lcl: [50, 50, 50, 55, 55, 55, 55],
-									cl: [60, 60, 60, 60, 60, 60, 60]
-								},*/
-								seriesData : [[]]/*[[{
-									x: "January",
-									y : 65
-								}, {
-									x : "February",
-									y : 59
-								}, {
-									x : "March",
-									y : 80
-								}, {
-									x : "April",
-									y : 81
-								}, {
-									x : "May",
-									y : 56
-								}, {
-									x : "June",
-									y : 55
-								}, {
-									x : "July",
-									y : 40
-								}]]*/,
-								labelData : []//[["January", 2016], "February", "March", "April", "May", "June", "July"]
+								spcData: {},
+								seriesData : [[]],
+								labelData : []
 							}
 						}
 					}
@@ -257,6 +190,7 @@
 			 * @param {Array} items
 			 */
 			_itemsChanged: function(items) {
+				console.log(items);
 				this.updateChartLabels();
 				this.updateChartData();
 				this.updateControlChart();
@@ -270,9 +204,18 @@
 					this.chartModel.labels = [];
 					this.chartModel.rawData.labelData = [];
 				} else {
-					this.chartModel.labels = [["January", 2016], "February", "March", "April", "May", "June", "July"];
+					this.chartModel.labels = this.extractChartLabels();
 					this.chartModel.rawData.labelData = this.chartModel.labels;
 				}
+			},
+
+			/**
+			 * 그리드 데이터에서 Chart Label을 추출한다.
+			 */
+			extractChartLabels: function() {
+				return this.items.map(function(item) {
+					return [item.work_date + '-' + item.rank];
+				});
 			},
 
 			/**
@@ -285,37 +228,32 @@
 					this.chartModel.rawData.spcData = {};
 
 				} else {
-					this.chartModel.datasets[0].data = [{
-						x: "January",
-						y : 65
-					}, {
-						x : "February",
-						y : 59
-					}, {
-						x : "March",
-						y : 80
-					}, {
-						x : "April",
-						y : 81
-					}, {
-						x : "May",
-						y : 56
-					}, {
-						x : "June",
-						y : 55
-					}, {
-						x : "July",
-						y : 40
-					}];
-
-					this.chartModel.rawData.seriesData = [this.chartModel.datasets[0].data];
-					this.chartModel.rawData.spcData = {
-						ucl: [70, 70, 70, 65, 65, 65, 65],
-						lcl: [50, 50, 50, 55, 55, 55, 55],
-						cl: [60, 60, 60, 60, 60, 60, 60]
-					};
+					var data = this.extractChartData();
+					this.chartModel.datasets[0].data = data;
+					this.chartModel.rawData.seriesData = [data];
+					this.chartModel.rawData.spcData = this.extractSpcData();
 				}
-			}
+			},
+
+			/**
+			 * 그리드 데이터에서 Chart Data를 추출한다.
+			 */
+			extractChartData: function() {
+				return this.items.map(function(item) {
+					return { x : item.work_date + '-' + item.rank, y : item.xval};
+				});
+			},
+
+			/**
+			 * 그리드 데이터에서 Chart Data를 추출한다.
+			 */
+			extractSpcData: function() {
+				var spcData = { ucl: [], lcl: [], cl: [] };
+				spcData.ucl = this.items.map(function(item) { return item.xusl; });
+				spcData.lcl = this.items.map(function(item) { return item.xlsl; });
+				spcData.cl = this.items.map(function(item) { return (item.xusl + item.xlsl) / 2.0; });
+				return spcData;
+			},
 		});
 	</script>
 </dom-module>
