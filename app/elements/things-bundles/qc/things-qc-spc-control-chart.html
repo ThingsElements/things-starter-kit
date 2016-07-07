@@ -1,0 +1,321 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
+
+<link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../bower_components/things-form/things-search-form.html">
+<link rel="import" href="../../../bower_components/things-grid/things-resource-grid.html">
+<link rel="import" href="../../../bower_components/chart-elements/chart-elements.html">
+
+<link rel="import" href="../../things-content/things-resource-menu-content-behavior.html">
+
+<!--
+	SPC Control Chart 화면 
+-->
+
+<dom-module id="things-qc-spc-control-chart">
+	<template>
+		<style>
+			:host {
+				display: block;
+				@apply(--layout-vertical);
+				@apply(--layout-flex);
+			}
+			
+			things-resource-grid {
+				@apply(--layout-flex);
+				min-height: 250px;
+			}
+
+			.chart-container {
+				@apply(--layout-flex-2);
+			}	
+		</style>
+
+		<things-ajax 
+			auto
+			id="resource-meta"
+			method="GET"
+			resource-url="[[menuMetaUrl]]"
+			last-response="{{metaData}}">
+		</things-ajax>
+
+		<things-search-form 
+			id="search-form"
+			title="[[menuInfo.title]]"
+			form-fields="[[searchFormFields]]" 
+			select-fields="[[selectFields]]"
+			sort-fields="[[sortFields]]"
+			action-url="[[menuInfo.resource_url]]" 
+			page="{{page}}"
+			per-page="[[perPage]]"
+			last-response="{{lastResponse}}">
+		</things-search-form>
+
+		<things-resource-grid 
+			id="grid"
+			config="[[gridConfig]]"
+			model="[[gridModel]]" 
+			columns="[[gridColumns]]"
+			data="[[items]]"
+			total-count="[[itemCount]]"
+			current-page="{{page}}"
+			per-page="[[perPage]]"
+			fixed-column-count="[[menuInfo.fixed_columns]]"
+			grid-save-action="[[menuInfo.grid_save_url]]"
+			buttons="[[buttons]]"
+			export-file-name="[[menuInfo.title]]"
+			export-sheet-name="[[menuInfo.title]]">
+		</things-resource-grid>
+
+		<div id="chart-container" class="chart-container" class="control-chart">
+			<canvas id="_spc_control-chart_"></canvas>
+		</div>
+	</template>
+
+	<script src="things-control-chart.js" charset="utf-8"></script>
+
+	<script>
+		Polymer({
+			is: 'things-qc-spc-control-chart',
+
+			behaviors: [
+				Polymer.IronResizableBehavior,
+				Things.ResourceMenuContentBehavior
+			],
+			
+			properties: {
+				/**
+				 * Chart Context
+				 */
+				ctx: {
+					type: 'Object'
+				},
+
+				/**
+				 * Control Chart
+				 */
+				controlChart: {
+					type: 'Object'
+				},
+
+				seriesData: {
+					type: 'Array',
+					value: function() {
+						return [{
+							x: "January",
+							y : 65
+						}, {
+							x : "February",
+							y : 59
+						}, {
+							x : "March",
+							y : 80
+						}, {
+							x : "April",
+							y : 81
+						}, {
+							x : "May",
+							y : 56
+						}, {
+							x : "June",
+							y : 55
+						}, {
+							x : "July",
+							y : 40
+						}];
+					}
+				},
+
+				/**
+				 * SPC Data for control chart
+				 */
+				spcData: {
+					type: 'Object',
+					value: function() {
+						return {
+							ucl: [70, 70, 70, 65, 65, 65, 65],
+							lcl: [50, 50, 50, 55, 55, 55, 55],
+							cl: [60, 60, 60, 60, 60, 60, 60]
+						};
+					}
+				},
+
+				/**
+				 * Chart Model
+				 */
+				chartModel: {
+					type: 'Object',
+					value: function() {
+						return {
+							labels: [],
+							datasets: [ {
+								label: "SPC Data Set",
+								fill: false,
+								lineTension: 0.1,
+								backgroundColor: "rgba(102,102,102,0.4)",
+								borderColor: "rgba(102,102,102,1)",
+								borderCapStyle: 'butt',
+								borderDash: [],
+								borderDashOffset: 0.0,
+								borderJoinStyle: 'miter',
+								pointBorderColor: "rgba(102,102,102,1)",
+								pointBackgroundColor: "#fff",
+								pointBorderWidth: 1,
+								pointHoverRadius: 5,
+								pointHoverBackgroundColor: "rgba(102,102,102,1)",
+								pointHoverBorderColor: "rgba(220,220,220,1)",
+								pointHoverBorderWidth: 2,
+								pointRadius: 1,
+								pointHitRadius: 10,
+								data : []
+							} ],
+							rawData: {
+								spcData: {},/*{
+									ucl: [70, 70, 70, 65, 65, 65, 65],
+									lcl: [50, 50, 50, 55, 55, 55, 55],
+									cl: [60, 60, 60, 60, 60, 60, 60]
+								},*/
+								seriesData : [[]]/*[[{
+									x: "January",
+									y : 65
+								}, {
+									x : "February",
+									y : 59
+								}, {
+									x : "March",
+									y : 80
+								}, {
+									x : "April",
+									y : 81
+								}, {
+									x : "May",
+									y : 56
+								}, {
+									x : "June",
+									y : 55
+								}, {
+									x : "July",
+									y : 40
+								}]]*/,
+								labelData : []//[["January", 2016], "February", "March", "April", "May", "June", "July"]
+							}
+						}
+					}
+				}
+			},
+
+			observers: [
+				'_itemsChanged(items)'
+			],
+
+			listeners : {
+				'iron-resize': '_chartResizeHandler'
+			},
+
+			/**
+			 * 화면 리사이즈 시 이벤트 핸들러
+			 *
+			 * @param {Object} iron-resize 이벤트
+			 */
+			_chartResizeHandler: function(e) {
+				var chartContainer = this.$['chart-container'];
+				var height = chartContainer.offsetHeight;
+				if(height == 0)
+					return;
+
+				if(this.ctx == null) {
+					var canvas = this.$$('#_spc_control-chart_');
+					canvas.style.height = height + 'px';					
+					this.ctx = canvas.getContext('2d');
+				}
+
+				this.updateControlChart();
+			},
+
+			/**
+			 * 데이터 변경시 Control Chart 업데이트 
+			 */
+			updateControlChart: function() {
+				this.controlChart = new Chart(this.ctx, {
+					type: 'controlChart',
+					data: this.chartModel,
+					options: {
+						scales : {
+							xAxes : [{
+								type : 'category'
+							}]
+						}
+					}
+				});
+
+				this.controlChart.update();
+			},
+
+			/**
+			 * SPC Data가 변경될 경우 - Chart Update
+			 * 
+			 * @param {Array} items
+			 */
+			_itemsChanged: function(items) {
+				this.updateChartLabels();
+				this.updateChartData();
+				this.updateControlChart();
+			},
+
+			/**
+			 * SPC Data로 부터 Chart Label을 업데이트 한다.
+			 */
+			updateChartLabels: function() {
+				if(!this.items || this.items.length === undefined || this.items.length == 0) {
+					this.chartModel.labels = [];
+					this.chartModel.rawData.labelData = [];
+				} else {
+					this.chartModel.labels = [["January", 2016], "February", "March", "April", "May", "June", "July"];
+					this.chartModel.rawData.labelData = this.chartModel.labels;
+				}
+			},
+
+			/**
+			 * SPC Data로 부터 Chart Data를 업데이트 한다.
+			 */
+			updateChartData: function() {
+				if(!this.items || this.items.length === undefined || this.items.length == 0) {
+					this.chartModel.datasets[0].data = [];
+					this.chartModel.rawData.seriesData = [[]];
+					this.chartModel.rawData.spcData = {};
+
+				} else {
+					this.chartModel.datasets[0].data = [{
+						x: "January",
+						y : 65
+					}, {
+						x : "February",
+						y : 59
+					}, {
+						x : "March",
+						y : 80
+					}, {
+						x : "April",
+						y : 81
+					}, {
+						x : "May",
+						y : 56
+					}, {
+						x : "June",
+						y : 55
+					}, {
+						x : "July",
+						y : 40
+					}];
+
+					this.chartModel.rawData.seriesData = [this.chartModel.datasets[0].data];
+					this.chartModel.rawData.spcData = {
+						ucl: [70, 70, 70, 65, 65, 65, 65],
+						lcl: [50, 50, 50, 55, 55, 55, 55],
+						cl: [60, 60, 60, 60, 60, 60, 60]
+					};
+				}
+			}
+		});
+	</script>
+</dom-module>
