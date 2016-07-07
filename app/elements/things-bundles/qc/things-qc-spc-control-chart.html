@@ -249,7 +249,7 @@
 			 */
 			extractChartLabels: function() {
 				return this.items.map(function(item) {
-					return [item.work_date + '-' + item.rank];
+					return [item.work_date + ' (' + item.rank + ')'];
 				});
 			},
 
@@ -275,7 +275,7 @@
 			 */
 			extractChartData: function() {
 				return this.items.map(function(item) {
-					return { x : item.work_date + '-' + item.rank, y : item.xval};
+					return { x : item.work_date + ' (' + item.rank + ')', y : item.xval};
 				});
 			},
 
