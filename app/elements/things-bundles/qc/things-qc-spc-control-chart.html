@@ -142,7 +142,36 @@
 			],
 
 			listeners : {
-				'iron-resize': '_chartResizeHandler'
+				'iron-resize': '_chartResizeHandler',
+				'search-form.things-form-search': 'searchForm'
+			},
+
+			/**
+			 * Reload Grid. 서치 폼에서 다시 검색한다.
+			 */
+			searchForm: function(event) {
+				var searchForm = this.getResourceSearchForm();
+				var searchData = searchForm.serializeMyForm();
+
+				if(!searchData.spc_item_id) {
+					event.preventDefault();
+					this.openInfoMsg({ 
+						title : 'Validation Error', 
+						text : Things.DataGlobal.t('error.SHOULD_NOT_BE_EMPTY', {
+							value : Things.DataGlobal.t('label.spc_item')
+						}), 
+						type : 'info', 
+						timer : 10000 
+					});
+				}
+			},
+
+			/**
+			 * Reload Grid. 서치 폼에서 다시 검색한다.
+			 */
+			refreshGridData: function(event) {
+				if(event && event.type == 'things-grid-configured') return;
+				this.getResourceSearchForm().submitMyForm();
 			},
 
 			/**
@@ -160,15 +189,16 @@
 					var canvas = this.$$('#_spc_control-chart_');
 					canvas.style.height = height + 'px';					
 					this.ctx = canvas.getContext('2d');
+					this.createControlChart();
 				}
 
 				this.updateControlChart();
 			},
 
 			/**
-			 * 데이터 변경시 Control Chart 업데이트 
+			 * Control Chart 생성
 			 */
-			updateControlChart: function() {
+			createControlChart: function() {
 				this.controlChart = new Chart(this.ctx, {
 					type: 'controlChart',
 					data: this.chartModel,
@@ -180,7 +210,13 @@
 						}
 					}
 				});
+			},
 
+			/**
+			 * 데이터 변경시 Control Chart 업데이트 
+			 */
+			updateControlChart: function() {
+				this.controlChart.chartModel = this.chartModel;
 				this.controlChart.update();
 			},
 
@@ -190,7 +226,6 @@
 			 * @param {Array} items
 			 */
 			_itemsChanged: function(items) {
-				console.log(items);
 				this.updateChartLabels();
 				this.updateChartData();
 				this.updateControlChart();
