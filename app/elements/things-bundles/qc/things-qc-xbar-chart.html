@@ -1,0 +1,219 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../../bower_components/chart-elements/chart-elements.html">
+
+<!--
+	SPC Control X-Bar Chart 화면 
+-->
+
+<dom-module id="things-qc-xbar-chart">
+	<template>
+		<style>
+			:host {
+				display: block;
+				@apply(--layout-vertical);
+				@apply(--layout-flex);
+			}
+			
+			.chart-container {
+				@apply(--layout-flex);
+			}	
+		</style>
+
+		<div id="chart-container" class="chart-container" class="control-chart">
+			<canvas id="_spc_xbar_chart"></canvas>
+		</div>
+	</template>
+
+	<script src="things-control-chart.js" charset="utf-8"></script>
+
+	<script>
+		Polymer({
+			is: 'things-qc-xbar-chart',
+
+			properties: {
+				/**
+				 * SPC Data
+				 */
+				items: {
+					type: 'Array'
+				},
+
+				/**
+				 * Chart Context
+				 */
+				ctx: {
+					type: 'Object'
+				},
+
+				/**
+				 * Control Chart
+				 */
+				controlChart: {
+					type: 'Object'
+				},
+
+				/**
+				 * Chart Model
+				 */
+				chartModel: {
+					type: 'Object',
+					value: function() {
+						return {
+							labels: [],
+							datasets: [ {
+								label: "X-Bar Value",
+								fill: false,
+								lineTension: 0.1,
+								backgroundColor: "rgba(102,102,102,0.4)",
+								borderColor: "rgba(102,102,102,1)",
+								borderCapStyle: 'butt',
+								borderDash: [],
+								borderDashOffset: 0.0,
+								borderJoinStyle: 'miter',
+								pointBorderColor: "rgba(102,102,102,1)",
+								pointBackgroundColor: "#fff",
+								pointBorderWidth: 1,
+								pointHoverRadius: 5,
+								pointHoverBackgroundColor: "rgba(102,102,102,1)",
+								pointHoverBorderColor: "rgba(220,220,220,1)",
+								pointHoverBorderWidth: 2,
+								pointRadius: 1,
+								pointHitRadius: 10,
+								data : []
+							} ],
+							rawData: {
+								spcData: {},
+								seriesData : [[]],
+								labelData : []
+							}
+						}
+					}
+				}
+			},
+
+			observers: [
+				'_itemsChanged(items)'
+			],
+
+			listeners : {
+			},
+
+			/**
+			 * 화면 리사이즈 시 이벤트 핸들러
+			 */
+			resizeChart: function() {
+				var chartContainer = this.$['chart-container'];
+				var height = chartContainer.offsetHeight;
+				if(height == 0)
+					return;
+
+				if(this.ctx == null) {
+					var canvas = this.$$('#_spc_xbar_chart');
+					canvas.style.height = height + 'px';					
+					this.ctx = canvas.getContext('2d');
+					this.createControlChart();
+				}
+
+				this.updateControlChart();
+			},
+
+			/**
+			 * Control Chart 생성
+			 */
+			createControlChart: function() {
+				this.controlChart = new Chart(this.ctx, {
+					type: 'controlChart',
+					data: this.chartModel,
+					options: {
+						scales : {
+							xAxes : [{
+								type : 'category'
+							}]
+						}
+					}
+				});
+			},
+
+			/**
+			 * 데이터 변경시 Control Chart 업데이트 
+			 */
+			updateControlChart: function() {
+				if(this.controlChart) {
+					this.controlChart.chartModel = this.chartModel;
+					this.controlChart.update();
+				}
+			},
+
+			/**
+			 * SPC Data가 변경될 경우 - Chart Update
+			 * 
+			 * @param {Array} items
+			 */
+			_itemsChanged: function(items) {
+				this.updateChartLabels();
+				this.updateChartData();
+				this.updateControlChart();
+			},
+
+			/**
+			 * SPC Data로 부터 Chart Label을 업데이트 한다.
+			 */
+			updateChartLabels: function() {
+				if(!this.items || this.items.length === undefined || this.items.length == 0) {
+					this.chartModel.labels = [];
+					this.chartModel.rawData.labelData = [];
+				} else {
+					this.chartModel.labels = this.extractChartLabels();
+					this.chartModel.rawData.labelData = this.chartModel.labels;
+				}
+			},
+
+			/**
+			 * 그리드 데이터에서 Chart Label을 추출한다.
+			 */
+			extractChartLabels: function() {
+				return this.items.map(function(item) {
+					return [item.work_date + ' (' + item.rank + ')'];
+				});
+			},
+
+			/**
+			 * SPC Data로 부터 Chart Data를 업데이트 한다.
+			 */
+			updateChartData: function() {
+				if(!this.items || this.items.length === undefined || this.items.length == 0) {
+					this.chartModel.datasets[0].data = [];
+					this.chartModel.rawData.seriesData = [[]];
+					this.chartModel.rawData.spcData = {};
+
+				} else {
+					var data = this.extractChartData();
+					this.chartModel.datasets[0].data = data;
+					this.chartModel.rawData.seriesData = [data];
+					this.chartModel.rawData.spcData = this.extractSpcData();
+				}
+			},
+
+			/**
+			 * 그리드 데이터에서 Chart Data를 추출한다.
+			 */
+			extractChartData: function() {
+				return this.items.map(function(item) {
+					return { x : item.work_date + ' (' + item.rank + ')', y : item.xval};
+				});
+			},
+
+			/**
+			 * 그리드 데이터에서 Chart Data를 추출한다.
+			 */
+			extractSpcData: function() {
+				var spcData = { ucl: [], lcl: [], cl: [] };
+				spcData.ucl = this.items.map(function(item) { return item.xusl; });
+				spcData.lcl = this.items.map(function(item) { return item.xlsl; });
+				spcData.cl = this.items.map(function(item) { return (item.xusl + item.xlsl) / 2.0; });
+				return spcData;
+			}
+		});
+	</script>
+</dom-module>
