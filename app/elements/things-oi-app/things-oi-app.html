@@ -185,24 +185,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <things-i18n-msg msgid="label.date" msg="{{labelDate}}" auto hidden>Date</things-i18n-msg>
                 <things-date-picker
                   id="date-picker"
+                  name="date"
                   label="[[labelDate]]"
                   value="{{globals.date}}">
                 </things-date-picker>
+                <iron-localstorage name="OI.date" value="{{globals.date}}"></iron-localstorage>
 
-                <iron-localstorage name="OI.date" value="{{globals.date}}">
-                </iron-localstorage>
                 <things-i18n-msg msgid="label.line" msg="{{labelLine}}" auto hidden>Line</things-i18n-msg>
                 <things-code-combo
-                  id="line-selector" 
+                  id="line-selector"
+                  name="line"
                   label="[[labelLine]]" 
                   code-name="LINE"
                   value="{{globals.line}}"
                   label-path="description" 
                   value-path="name">
                 </things-code-combo>
-                
-                <iron-localstorage name="OI.line" value="{{globals.line}}">
-                </iron-localstorage>
+                <iron-localstorage name="OI.line" value="{{globals.line}}"></iron-localstorage>
+
                 <things-i18n-msg msgid="label.operation" msg="{{labelOperation}}" auto hidden>Operation</things-i18n-msg>
                 <things-resource-selector 
                   id="resource-selector" 
@@ -211,11 +211,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   obj-value="{{globals.operation}}"
                   resource-type="Entity"
                   resource-name="Operation"
-                  resource-title-field="name">
+                  resource-title-field="name"
+                  initial-params="category=$line">
                 </things-resource-selector>
-                
-                <iron-localstorage name="OI.operation" value="{{globals.operation}}">
-                </iron-localstorage>
+                <iron-localstorage name="OI.operation" value="{{globals.operation}}"></iron-localstorage>
+
                 <things-i18n-msg msgid="label.work_order" msg="{{labelOrder}}" auto hidden>Order</things-i18n-msg>
                 <things-resource-selector 
                   id="resource-selector" 
@@ -224,11 +224,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   obj-value="{{globals.order}}"
                   resource-type="Menu"
                   resource-name="WorkOrder"
-                  resource-title-field="name">
+                  resource-title-field="name"
+                  initial-params="status=RUNNING,line=$line">
                 </things-resource-selector>
-                
-                <iron-localstorage name="OI.order" value="{{globals.order}}">
-                </iron-localstorage>
+                <iron-localstorage name="OI.order" value="{{globals.order}}"></iron-localstorage>
               </form>
             </paper-toolbar>
           </iron-collapse>
