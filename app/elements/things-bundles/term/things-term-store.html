@@ -42,7 +42,7 @@
     <things-ajax
       id="relation-lots-search"
       resource-action="index"
-      last-response="{{relationLotList}}">
+      last-response="{{packingLotList}}">
     </things-ajax>    
 
 
@@ -62,7 +62,7 @@
         left-bottom
         id="lots-grid"
         class="flex"
-        items="[[relationLotList.items]]"
+        items="[[packingLotList.items]]"
         fixed-column-count="0"
         diy-grid-name="OI-StoreLots">
       </things-diy-based-grid>
@@ -122,7 +122,7 @@
         /**
          * relation Lot List
          */
-        relationLotList: {
+        packingLotList: {
           type: Object
         }
       },
@@ -160,6 +160,9 @@
         }, {
           name: 'lot_type',
           value: 'PACK'
+        }, {
+          name: 'state',
+          value: 'WAIT_STORE'
         }];
 
         this.refreshLatestLots();
@@ -224,9 +227,9 @@
 
         tranAjax.body = {
           work_order_id: this.orderId,
-          relation_lot_id: this.relationLotId,
+          lot_id: lotInfo.id,
           current_operation_id: this.operationId,
-          store_id: lotInfo.store_code,
+          store_id: lotInfo.store_id,
           store_location_id: lotInfo.store_location_id,
           store_code: lotInfo.store_code,
           comments: lotInfo.comments
@@ -246,6 +249,8 @@
         }
         
         this.resetForm();
+        this.packingLotList = [];
+        this.$['lots-grid'].items = [];
         this.refreshLatestLots();
         this.fire('iron-signal', {name : 'refresh-wip'});
       },
