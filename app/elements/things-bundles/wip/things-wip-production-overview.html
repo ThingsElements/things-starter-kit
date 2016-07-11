@@ -209,7 +209,7 @@
 				this.operationId = event.detail.operation.id;
 				var lotList = this.$['lot-list'];
 
-				lotList.selectFields = 'id,name,status,state,transaction,first_qty,good_qty,scrap_qty,comments,updated_at';
+				lotList.selectFields = 'id,name,work_order,lot_type,status,state,transaction,operation,first_qty,good_qty,scrap_qty,comments,updated_at';
 
 				lotList.queryFields = [{
 					name: 'operation_id',
