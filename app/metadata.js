@@ -1,7 +1,7 @@
 var config = require('../config');
 
 module.exports = {
-  title: 'Things Framework',
+  title: 'X-MES',
   description: 'Developed with Things Start Kit',
   charset: 'UTF-8',
   lang: 'en-US',
