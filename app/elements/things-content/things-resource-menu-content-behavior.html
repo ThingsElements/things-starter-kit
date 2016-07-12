@@ -245,9 +245,17 @@ Things.ResourceMenuContentBehaviorImpl = {
 		viewElement.removeFieldsOnSave = this.ignoreFieldsOnSave;
 		viewElement.resourceType = this.menuInfo.resource_name;
 		viewElement.resourceId = selectedRecord.id;
-		viewElement.resourceUrl = this.menuInfo.resource_url + '/:id';
+		var eventName = 'things-resource-form-saved';
 
-		viewElement.addEventListener('things-resource-form-saved', function(e) {
+		if(selectedRecord.id) {
+			viewElement.resourceUrl = this.menuInfo.resource_url + '/:id';
+		} else {
+			eventName = 'things-resource-form-created';
+			viewElement.resource = selectedRecord;
+			viewElement.resourceUrl = this.menuInfo.resource_url;
+		}
+		
+		viewElement.addEventListener(eventName, function(e) {
 			viewElement.closePopupView();
 			saveCallback.apply(this);
 		}.bind(this));

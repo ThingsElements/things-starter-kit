@@ -16,7 +16,7 @@
         background-color:var(--things-whitegrey-background-color);
       }
       paper-toolbar {
-        background-color:var(--things-primary-background-color);
+        background-color:var(--things-whitegrey-background-color);
         height:45px;
         margin-top:0px !important;
         @apply(--things-padding-clear)
@@ -30,29 +30,10 @@
         @apply(--layout-horizontal);
         @apply(--layout-end-justified);
         padding: 0 10px;
-      }      
+      }
       paper-toolbar .title {
         margin-left:32px !important;
         line-height:initial !important;
-      }
-      .detail-card {
-        @apply(--layout-vertical);
-        min-width:350px;
-        max-width:500px;
-      }
-      .detail-content {
-        @apply(--layout-vertical);
-      }
-      .detail-content:first-child {
-        @apply(--layout-horizontal);
-      }
-      .detail-content:last-child::shadow input {
-        width:68%;
-      }
-      .close-btn {
-        @apply(--things-header-button);
-        background:url(/images/icon-close.png) 100% 50% no-repeat;
-        margin-right:10px;
       }
       .container {
         height: 90vh;
@@ -115,24 +96,6 @@
       #card-list::shadow #card-detail span.homepage:before {
         background-position:50% -99px;
       }
-      .detail-card iron-image {
-        float:left;
-        min-width:150px;
-        min-height:50px;
-        max-width:200px;
-        max-height:100px;
-      }
-      .detail-card iron-image::shadow img {
-        margin:auto;
-        max-width:100%
-      }
-      .topinfo {
-        float:right;
-      }
-      paper-dialog paper-toolbar:last-child {
-        background-color:transparent;
-        margin-bottom:5px;
-      }
     </style>
 
     <things-ajax 
@@ -141,13 +104,6 @@
       method="GET"
       resource-url="[[menuMetaUrl]]"
       last-response="{{metaData}}">
-    </things-ajax>
-
-    <things-ajax
-      id="save-request"
-      resource-action="update"
-      resource-url="[[saveUrl]]"
-      resource-id="[[singleItemId]]">
     </things-ajax>
 
     <things-search-form 
@@ -175,46 +131,6 @@
         <things-button-bar id="button-bar" buttons="[[buttons]]"></things-button-bar>
       </div>
     </paper-toolbar>
-
-    <paper-dialog
-      modal
-      id="dialog"
-      entry-animation="scale-up-animation"
-      exit-animation="fade-out-animation">
-      <paper-toolbar>
-        <span class="title">[[singleItem.name]]</span>
-        <div class="buttonsGroup">
-          <button class="close-btn" on-tap="closeDialog"></button>
-        </div>
-      </paper-toolbar>
-
-      <div class="detail-card">
-        <div class="detail-content">
-          <iron-image src="[[imageSrc]]"></iron-image>
-          <div class="topinfo">
-            <things-input-field label="Name" value="{{singleItem.name}}"></things-input-field>
-            <things-input-field label="CEO" value="{{singleItem.ceo}}"></things-input-field>
-            <things-input-field label="Phone" value="{{singleItem.phone}}"></things-input-field>
-          </div>
-        </div>
-        <div class="detail-content">
-          <things-input-field label="E-Mail" value="{{singleItem.email}}"></things-input-field>
-          <things-input-field label="Homepage" value="{{singleItem.homepage}}"></things-input-field>
-          <things-input-field label="Address" value="{{singleItem.addr}}"></things-input-field>
-          <things-input-field label="Detail Address" value="{{singleItem.detail_addr}}"></things-input-field>
-          <things-input-field label="ZIP Code" value="{{singleItem.zip_code}}"></things-input-field>
-          <!--things-input-field label="Image" value="{{singleItem.attachment.name}}"></things-input-field-->
-          <things-input-field label="Updator" value="{{singleItem.updater.name}}" disabled></things-input-field>
-          <things-input-field label="Updated At" value="{{singleItem.updated_at}}" disabled></things-input-field>
-        </div>
-      </div>
-
-      <paper-toolbar>
-        <div class="bottom">
-          <things-button-bar id="detail-button-bar" buttons="[[detailButtons]]"></things-button-bar>
-        </div>
-      </paper-toolbar>
-    </paper-dialog>
 
     <iron-scroll-threshold
       id="scroller"
@@ -254,43 +170,18 @@
         },
 
         /**
-         * resource url
-         */
-        resourceUrl: {
-          type: String
-        },
-
-        /**
-         * save url
-         */
-        saveUrl: {
-          type: String,
-          computed: '_computeSaveUrl(resourceUrl)'
-        },
-
-        /**
          * 총 페이지 수
          */
         totalCount: {
           type: Number,
           value: 0
-        },        
-
-        /**
-         * 상세 화면 버튼 종류
-         */
-        detailButtons: {
-          type: Array,
-          value: function() {
-            return [ { id: 'save-btn', text: 'save' } ];
-          }
         }
       },
 
       listeners: {
         'things-card-image-selected' : '_onImageSelected',
-        'button-bar.save-btn-tap': '_saveButtonTapped',
-        'scroller.lower-threshold': 'goNextPage'
+        'scroller.lower-threshold': 'goNextPage',
+        'new-btn-tap': 'newCustomer'
       },
 
       /**
@@ -299,6 +190,7 @@
       attached: function() {
         this.page = 1;
         this.perPage = 50;
+        if(!this.sortFields) { this.sortFields = [{ field: 'name', ascending: true }]; }
         this.refreshGridData();
       },      
 
@@ -327,45 +219,23 @@
       },
 
       /**
-       * 개별 item이 클릭 되었을때 해당 item의 detail 정보를 초기화 하고 dialog를  toggle
+       * 개별 item이 클릭 되었을때 해당 item의 detail 정보를 초기화 하고 dialog를 toggle
+       *
+       * @param {Object} event
        */
-      _onImageSelected: function(e) {
-        this.resourceUrl = this.metaData.menu.resource_url;
-        this.singleItem = e.detail;
-        this.singleItemId = e.detail.attachment_id;
-        this.getSingleImageSrc(this.singleItemId);
-        this.$['dialog'].toggle();
+      _onImageSelected: function(event) {
+        this.singleItem = event.detail;
+        this.singleItemId = event.detail.id;
+        this.showResourceForm(this.singleItem, this.refreshGridData);
       },
 
       /**
-       * resource url과 resourc_id를 통해 save url을 계산
+       * 새 Item 입력 창 표시
+       *
+       * @param {Object} event
        */
-      _computeSaveUrl: function(resourceUrl) {
-        return resourceUrl + '/:id';
-      },
-
-      /**
-       * 개별 item을 클릭하면 id를 통해 해당 아이템의 imageSrc를 구한다.
-       */
-      getSingleImageSrc: function(id) {
-        var baseUrl = this.get('globals.baseUrl');
-        this.imageSrc = baseUrl + '/download/' + id;
-      },
-
-      /**
-       * save 버튼이 클릭 되었을때 변경사항을 저장하기 위한 ajax 호출
-       */
-      _saveButtonTapped: function() {
-        this.$['save-request'].body = this.singleItem;
-        this.$['save-request'].generateRequest();
-        this.closeDialog();
-      },
-
-      /**
-       * dialog를 닫는 function
-       */
-      closeDialog: function() {
-        this.$['dialog'].toggle();
+      newCustomer: function(event) {
+        this.showResourceForm({ name: '', description: '' }, this.refreshGridData);
       },
 
       /**
