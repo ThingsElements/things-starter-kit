@@ -15,13 +15,13 @@
         display: block;
         background-color:var(--things-whitegrey-background-color);
       }
-      paper-toolbar{
+      paper-toolbar {
         background-color:var(--things-primary-background-color);
         height:45px;
         margin-top:0px !important;
         @apply(--things-padding-clear)
       }
-      paper-toolbar::shadow #topBar{
+      paper-toolbar::shadow #topBar {
         height:45px;
         padding:0;
       }
@@ -31,7 +31,7 @@
         @apply(--layout-end-justified);
         padding: 0 10px;
       }      
-      paper-toolbar .title{
+      paper-toolbar .title {
         margin-left:32px !important;
         line-height:initial !important;
       }
@@ -46,55 +46,55 @@
       .detail-content:first-child {
         @apply(--layout-horizontal);
       }
-      .detail-content:last-child::shadow input{
+      .detail-content:last-child::shadow input {
         width:68%;
       }
-      .close-btn{
+      .close-btn {
         @apply(--things-header-button);
         background:url(/images/icon-close.png) 100% 50% no-repeat;
         margin-right:10px;
       }
-      .container{
+      .container {
         height: 90vh;
         overflow: auto;
       }
-      #card-list::shadow paper-card{
+      #card-list::shadow paper-card {
         padding:6px 4px;
         min-height:85px
       }
-      #card-list::shadow iron-image{
+      #card-list::shadow iron-image {
         width:65px;
         height:50px;
       }
-      #card-list::shadow iron-image::shadow img{
+      #card-list::shadow iron-image::shadow img {
         height:initial !important;
       }
-      #card-list::shadow .title-text,#card-list::shadow .card-info{
+      #card-list::shadow .title-text,#card-list::shadow .card-info {
         display:none;
       }
-      #card-list::shadow .header{
+      #card-list::shadow .header {
         float:left;
         margin-right:7px;
       }
-      #card-list::shadow #card-detail span{
+      #card-list::shadow #card-detail span {
         display:block;
         overflow-x:hidden;
         font-size:12px;
         color:var(--things-primary-text-color);
         white-space:nowrap;
       }
-      #card-list::shadow #card-detail span.name{
+      #card-list::shadow #card-detail span.name {
         padding:2px 0;
         font-size:13px;
         font-weight:bold;
         color:var(--things-focus-background-color);
       }
-      #card-list::shadow #card-detail span.homepage{
+      #card-list::shadow #card-detail span.homepage {
         margin-top:4px;
         padding:1px 0 0 2px;
         border-top:1px dotted #ddd;
       }
-      #card-list::shadow #card-detail span:before{
+      #card-list::shadow #card-detail span:before {
         content:"";
         display:inline-block;
         position:relative;
@@ -103,31 +103,33 @@
         margin-right:3px;
         background-image:url(/images/icon-tiny.png);
       }
-      #card-list::shadow #card-detail span.name:before{
+      #card-list::shadow #card-detail span.name:before {
         display:none;
       }
-      #card-list::shadow #card-detail span.phone:before{
+      #card-list::shadow #card-detail span.phone:before {
         background-position:50% 0;
       }
-      #card-list::shadow #card-detail span.email:before{
+      #card-list::shadow #card-detail span.email:before {
         background-position:50% -47px;
       }
-      #card-list::shadow #card-detail span.homepage:before{
+      #card-list::shadow #card-detail span.homepage:before {
         background-position:50% -99px;
       }
-      .detail-card iron-image{
+      .detail-card iron-image {
         float:left;
         min-width:150px;
         min-height:50px;
         max-width:200px;
         max-height:100px;
       }
-      .detail-card iron-image::shadow img{
+      .detail-card iron-image::shadow img {
         margin:auto;
         max-width:100%
       }
-      .topinfo{float:right;}
-      paper-dialog paper-toolbar:last-child{
+      .topinfo {
+        float:right;
+      }
+      paper-dialog paper-toolbar:last-child {
         background-color:transparent;
         margin-bottom:5px;
       }
@@ -151,7 +153,9 @@
     <things-search-form 
       id="search-form"
       title="[[menuInfo.title]]"
-      form-fields="[[searchFormFields]]" 
+      form-fields="[[searchFormFields]]"
+      select-fields="[[selectFields]]"
+      sort-fields="[[sortFields]]"
       action-url="[[menuInfo.resource_url]]" 
       page="{{page}}"
       per-page="[[perPage]]"
@@ -160,7 +164,7 @@
 
     <div id="card-list" class="container">
       <things-card-image-list
-        items="[[lastResponse.items]]"
+        items="[[items]]"
         detail-fields="name,description,phone,email,homepage"
         is-selector>
       </things-card-image-list>
@@ -173,16 +177,17 @@
     </paper-toolbar>
 
     <paper-dialog
+      modal
       id="dialog"
       entry-animation="scale-up-animation"
-      exit-animation="fade-out-animation"
-      modal>
+      exit-animation="fade-out-animation">
       <paper-toolbar>
         <span class="title">[[singleItem.name]]</span>
         <div class="buttonsGroup">
           <button class="close-btn" on-tap="closeDialog"></button>
         </div>
       </paper-toolbar>
+
       <div class="detail-card">
         <div class="detail-content">
           <iron-image src="[[imageSrc]]"></iron-image>
@@ -215,7 +220,7 @@
       id="scroller"
       scroll-target="card-list"
       on-lower-threshold="goNextPage">
-    </iron-scroll-threshold>    
+    </iron-scroll-threshold>
   </template>
 
   <script>
@@ -227,7 +232,6 @@
       ],
 
       properties: {
-        
         /**
          * list에서 선택된 개별 item
          */
@@ -265,14 +269,6 @@
         },
 
         /**
-         * search-form을 통해 구한 response
-         */
-        lastResponse: {
-          type: Object,
-          observer: '_responseChanged'
-        },
-
-        /**
          * 총 페이지 수
          */
         totalCount: {
@@ -281,31 +277,12 @@
         },        
 
         /**
-         * 현재 페이지
-         */
-        page: {
-          type: Number,
-          value: 1
-        },        
-
-        /**
-         * 한 페이지 당 보여질 레코드 수 
-         */
-        perPage: {
-          type: Number,
-          value: 100
-        },
-
-        /**
          * 상세 화면 버튼 종류
          */
         detailButtons: {
           type: Array,
           value: function() {
-            return [ {
-              id: 'save-btn',
-              text: 'save'
-            } ];
+            return [ { id: 'save-btn', text: 'save' } ];
           }
         }
       },
@@ -320,14 +297,33 @@
        * search-form request
        */
       attached: function() {
-        this.$['search-form'].submitMyForm();
+        this.page = 1;
+        this.perPage = 50;
+        this.refreshGridData();
       },      
 
       /**
        * search 결과 totalCount를 초기화 하기 위한 function
+       *
+       * @param {Object} lastResponse
        */
       _responseChanged: function(lastResponse) {
-        this.totalCount = lastResponse.total;
+        var items = (this.itemsProp && lastResponse[this.itemsProp]) ? lastResponse[this.itemsProp] : lastResponse;
+        this.totalCount = (this.totalProp && lastResponse[this.totalProp]) ? lastResponse[this.totalProp] : lastResponse.length;
+
+        if(items && items.length > 0) {
+          items.forEach(function(item) { 
+            if(!item.attachment_id && item.attachment) {
+              item.attachment_id = item.attachment ? item.attachment.id : null 
+            }
+          });
+        }
+
+        if(this.page <= 1 || !this.items) {
+          this.items = items;
+        } else {
+          this.items = this.items.concat(items);
+        }
       },
 
       /**
@@ -382,10 +378,10 @@
         }
 
         if((this.page * this.perPage) < this.totalCount) {
-          this.perPage += this.perPage;
-          this.$['search-form'].submitMyForm();
+          this.page = this.page + 1;
         }
-        this.$.scroller.clearTriggers();        
+
+        this.$.scroller.clearTriggers();
       }
     });
   </script>
