@@ -35,8 +35,8 @@
       }
       .detail-card {
         @apply(--layout-vertical);
-        min-width:350px;
-        max-width:500px;
+        min-width:600px;
+        max-width:800px;
       }
       .detail-content {
         @apply(--layout-vertical);
@@ -115,10 +115,10 @@
       }
       .detail-card iron-image {
         float:left;
-        min-width:150px;
-        min-height:50px;
-        max-width:200px;
-        max-height:100px;
+        min-width:580px;
+        min-height:380px;
+        max-width:780px;
+        max-height:580px;
       }
       .detail-card iron-image::shadow img {
         margin:auto;
@@ -157,7 +157,7 @@
 			<things-card-image-list
 				items="[[items]]"
 				image-field="thumbnail"
-				detail-fields="name,description,tags"
+				detail-fields="name,description,version,status"
 				is-selector>
 			</things-card-image-list>
 		</div>
@@ -175,28 +175,21 @@
       </paper-toolbar>
 
       <div class="detail-card">
-        <div class="detial-content">
+        <iron-image src="[[singleItem.thumbnail]]"></iron-image>
+        <!--div class="detail-content">
           <iron-image src="[[singleItem.thumbnail]]"></iron-image>
           <div class="topinfo">
-            <things-input-field label="Status" value="[[singleItem.status]]" readonly></things-input-field>
             <things-input-field label="Version" value="[[singleItem.version]]" readonly></things-input-field>
+            <things-input-field label="Status" value="[[singleItem.status]]" readonly></things-input-field>
             <things-input-field label="Description" value="[[singleItem.description]]" readonly></things-input-field>
           </div>
         </div>
-        <div class="detial-content">
+        <div class="detail-content">
           <things-input-field label="Tags" value="[[singleItem.tags]]" readonly></things-input-field>
           <things-input-field label="Width" value="[[singleItem.width]]" readonly></things-input-field>
           <things-input-field label="Height" value="[[singleItem.height]]" readonly></things-input-field>
-          <!--things-input-field label="Updater" value="[[singleItem.updater.name]]" readonly></things-input-field>
-          <things-input-field label="Updated At" value="[[singleItem.updated_at]]" readonly></things-input-field-->
-        </div>
+        </div-->
       </div>
-
-			<paper-toolbar>
-				<div class="bottom">
-					<things-button-bar id="button-bar" buttons="[[detailButtons]]"></things-button-bar>
-				</div>
-			</paper-toolbar>
 		</paper-dialog>
 
     <iron-scroll-threshold
@@ -242,7 +235,7 @@
 			},
 
 			listeners: {
-				'button-bar.print-btn-tap': '_printLabel',
+				//'button-bar.print-btn-tap': '_printLabel',
 				'things-card-image-selected' : '_onImageSelected',
 				'scroller.lower-threshold':'goNextPage'
 			},
@@ -253,6 +246,7 @@
       attached: function() {
         this.page = 1;
         this.perPage = 50;
+        if(!this.sortFields) { this.sortFields = [{ field: 'name', ascending: true }, { field: 'version', ascending: false }]; }
         this.refreshGridData();
       },
 
@@ -277,7 +271,16 @@
 			 * 클릭한 아이템의 meta 정보를 초기화 하고 dialog를 오픈 합니다.
 			 */
 			_onImageSelected: function(e) {
-				this.singleItem = e.detail;
+        var label = e.detail;
+
+        if(label.thumbnail) {
+          var baseUrl = this.get('globals.baseUrl');
+          if(baseUrl) {
+            label.thumbnail = baseUrl + '/download/' + label.thumbnail;
+          } 
+        }
+
+				this.singleItem = label;
 				this.$['dialog'].open();
 			},
 
