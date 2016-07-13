@@ -175,21 +175,18 @@
 
       <div class="detail-card">
         <div class="detail-content">
-          <iron-image src="[[singleItem.thumbnail]]"></iron-image>
+          <video 
+            id="thevideo" 
+            title="Video of a rabbit and butterfly" 
+            !autoplay
+            !loop
+            controls
+            title="[[singleItem.name]]" 
+            class="video-element">
+            <source src="[[singleItem.path]]" type="video/mp4">
+            <!--source src="http://192.168.35.225:9013/data/entity_create.mov" type="video/mp4"-->
+          </video>
         </div>
-        <!--div class="detail-content">
-          <iron-image src="[[singleItem.thumbnail]]"></iron-image>
-            <div class="topinfo">
-              <things-input-field label="Version" value="[[singleItem.version]]" readonly></things-input-field>
-              <things-input-field label="Status" value="[[singleItem.status]]" readonly></things-input-field>
-              <things-input-field label="Description" value="[[singleItem.description]]" readonly></things-input-field>
-            </div>
-          </div>
-          <div class="detail-content">
-            <things-input-field label="Tags" value="[[singleItem.tags]]" readonly></things-input-field>
-            <things-input-field label="Width" value="[[singleItem.width]]" readonly></things-input-field>
-            <things-input-field label="Height" value="[[singleItem.height]]" readonly></things-input-field>
-        </div-->
       </div>
     </paper-dialog>
 
@@ -222,6 +219,13 @@
          */
         singleItem: {
           type: Object
+        },
+
+        /**
+         * Movie URL
+         */
+        movieUrl: {
+          type: String
         }
       },
 
@@ -249,14 +253,6 @@
         var items = (this.itemsProp && lastResponse[this.itemsProp]) ? lastResponse[this.itemsProp] : lastResponse;
         this.totalCount = (this.totalProp && lastResponse[this.totalProp]) ? lastResponse[this.totalProp] : lastResponse.length;
 
-        // if(items && items.length > 0) {
-        //   items.forEach(function(item) { 
-        //     item.attachment_id = item.thumbnail;
-        //     item.version = 'Version : ' + item.version;
-        //     item.status = 'Status : ' + item.status;
-        //   });
-        // }
-
         if(this.page <= 1 || !this.items) {
           this.items = items;
         } else {
@@ -269,16 +265,17 @@
        * 클릭한 아이템의 meta 정보를 초기화 하고 dialog를 오픈 합니다.
        */
       _onImageSelected: function(e) {
-        var label = e.detail;
+        var movie = e.detail;
 
-        if(label.thumbnail) {
+        if(movie.path) {
           var baseUrl = this.get('globals.baseUrl');
           if(baseUrl) {
-            label.thumbnail = baseUrl + '/download/' + label.attachment_id;
+            movie.path = baseUrl + '/download/' + movie.id;
+            console.log(movie.path);
           } 
         }
 
-        this.singleItem = label;
+        this.singleItem = movie;
         this.$['dialog'].open();
       },
 
