@@ -1,5 +1,7 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 
+<link rel="import" href="../../../iron-resizable-behavior/iron-resizable-behavior.html">
+
 <dom-module id="things-common-video-player">
   <template>
     <style>
@@ -9,29 +11,55 @@
         @apply(--layout-flex);
       }
       
-      div {
+      video {
         @apply(--layout-flex);
       }
     </style>
 
-    <div>
-      <video 
-        id="thevideo" 
-        title="Video of a rabbit and butterfly" 
-        autoplay
-        !loop
-        controls
-        title="[[title]]">
-        <source src="[[videoUrl]]" type='video/mp4'>
-      </video>
-    </div>
+    <video 
+      id="the-video" 
+      autoplay="[[autoplay]]"
+      loop="[[loop]]"
+      controls="[[controls]]"
+      title="[[title]]">
+      <source src="[[videoUrl]]" type='video/mp4'>
+    </video>
 	</template>
 
   <script>
     Polymer({
       is: 'things-common-video-player',
 
+
+      behaviors: [
+        Polymer.IronResizableBehavior
+      ],
+
       properties: {
+        /**
+         * Video AutoPlay
+         */
+        autoplay: {
+          type: Boolean,
+          value: false
+        },
+
+        /**
+         * Video Loop
+         */
+        loop: {
+          type: Boolean,
+          value: false
+        },
+
+        /**
+         * Video Controls
+         */
+        controls: {
+          type: Boolean,
+          value: true
+        },
+
         /**
          * Title
          */
@@ -45,7 +73,22 @@
         videoUrl: {
           type: String
         }
+      },
+
+      listeners: {
+        'iron-resize': '_handleResize'
+      },
+
+      /**
+       * Resize Handler
+       */
+      _handleResize: function(e) {
+        if(this.parentElement.offsetHeight > 0) {
+          var videoContainer = this.$['the-video'];
+          videoContainer.style.height = this.parentElement.offsetHeight + 'px';
+        }
       }
+
     });
   </script>
 </dom-module>
