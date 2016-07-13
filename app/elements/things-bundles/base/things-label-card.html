@@ -7,7 +7,7 @@
 <link rel="import" href="../../things-content/things-resource-menu-content-behavior.html">
 
 <dom-module id="things-label-card">
-	<template>
+  <template>
     <style>
       :host {
         display: block;
@@ -152,21 +152,20 @@
       per-page="[[perPage]]"
       last-response="{{lastResponse}}">
     </things-search-form>
-		
-		<div id="card-list" class="container">
-			<things-card-image-list
-				items="[[items]]"
-				image-field="thumbnail"
-				detail-fields="name,description,version,status"
-				is-selector>
-			</things-card-image-list>
-		</div>
 
-		<paper-dialog
+    <div id="card-list" class="container">
+      <things-card-image-list
+        items="[[items]]"
+        detail-fields="name,description,version,status"
+        is-selector>
+      </things-card-image-list>
+    </div>
+
+    <paper-dialog
       modal
-			id="dialog"
-			entry-animation="scale-up-animation"
-			exit-animation="fade-out-animation">
+      id="dialog"
+      entry-animation="scale-up-animation"
+      exit-animation="fade-out-animation">
       <paper-toolbar>
         <span class="title">[[singleItem.name]]</span>
         <div class="buttonsGroup">
@@ -175,70 +174,61 @@
       </paper-toolbar>
 
       <div class="detail-card">
-        <iron-image src="[[singleItem.thumbnail]]"></iron-image>
+        <div class="detail-content">
+          <iron-image src="[[singleItem.thumbnail]]"></iron-image>
+        </div>
         <!--div class="detail-content">
           <iron-image src="[[singleItem.thumbnail]]"></iron-image>
-          <div class="topinfo">
-            <things-input-field label="Version" value="[[singleItem.version]]" readonly></things-input-field>
-            <things-input-field label="Status" value="[[singleItem.status]]" readonly></things-input-field>
-            <things-input-field label="Description" value="[[singleItem.description]]" readonly></things-input-field>
+            <div class="topinfo">
+              <things-input-field label="Version" value="[[singleItem.version]]" readonly></things-input-field>
+              <things-input-field label="Status" value="[[singleItem.status]]" readonly></things-input-field>
+              <things-input-field label="Description" value="[[singleItem.description]]" readonly></things-input-field>
+            </div>
           </div>
-        </div>
-        <div class="detail-content">
-          <things-input-field label="Tags" value="[[singleItem.tags]]" readonly></things-input-field>
-          <things-input-field label="Width" value="[[singleItem.width]]" readonly></things-input-field>
-          <things-input-field label="Height" value="[[singleItem.height]]" readonly></things-input-field>
+          <div class="detail-content">
+            <things-input-field label="Tags" value="[[singleItem.tags]]" readonly></things-input-field>
+            <things-input-field label="Width" value="[[singleItem.width]]" readonly></things-input-field>
+            <things-input-field label="Height" value="[[singleItem.height]]" readonly></things-input-field>
         </div-->
       </div>
-		</paper-dialog>
+    </paper-dialog>
 
     <iron-scroll-threshold
       id="scroller"
       scroll-target="card-list"
       on-lower-threshold="goNextPage">
-    </iron-scroll-threshold>  
+    </iron-scroll-threshold>
 	</template>
 
-	<script>
-		Polymer({
-			is: 'things-label-card',
+  <script>
+    Polymer({
+      is: 'things-label-card',
 
-			behaviors: [
-				Things.ResourceMenuContentBehavior,
-				Things.ViewOpenBehavior
-			],
+      behaviors: [
+        Things.ResourceMenuContentBehavior,
+        Things.ViewOpenBehavior
+      ],
 
-			properties: {
-				/**
-				 * 데이터의 total count
-				 */
-				totalCount: {
-					type: Number
-				},
+      properties: {
+        /**
+         * 데이터의 total count
+         */
+        totalCount: {
+          type: Number
+        },
 
-				/**
-				 * list에서 선택된 개별 아이템
-				 */
-				singleItem: {
-					type: Object
-				},
-
-				/**
-				 * 버튼 종류
-				 */
-        detailButtons: {
-          type: Array,
-          value: function() {
-            return [ { id: 'save-btn', text: 'save' } ];
-          }
+        /**
+         * list에서 선택된 개별 아이템
+         */
+        singleItem: {
+          type: Object
         }
-			},
+      },
 
-			listeners: {
-				//'button-bar.print-btn-tap': '_printLabel',
-				'things-card-image-selected' : '_onImageSelected',
-				'scroller.lower-threshold':'goNextPage'
-			},
+      listeners: {
+        'things-card-image-selected' : '_onImageSelected',
+        'scroller.lower-threshold':'goNextPage'
+      },
 
       /**
        * search-form request
@@ -246,7 +236,7 @@
       attached: function() {
         this.page = 1;
         this.perPage = 50;
-        if(!this.sortFields) { this.sortFields = [{ field: 'name', ascending: true }, { field: 'version', ascending: false }]; }
+        if(!this.sortFields) { this.sortFields = [ { field: 'name', ascending: true }, { field: 'version', ascending: false } ]; }
         this.refreshGridData();
       },
 
@@ -259,6 +249,14 @@
         var items = (this.itemsProp && lastResponse[this.itemsProp]) ? lastResponse[this.itemsProp] : lastResponse;
         this.totalCount = (this.totalProp && lastResponse[this.totalProp]) ? lastResponse[this.totalProp] : lastResponse.length;
 
+        if(items && items.length > 0) {
+          items.forEach(function(item) { 
+            item.attachment_id = item.thumbnail;
+            item.version = 'Version : ' + item.version;
+            item.status = 'Status : ' + item.status;
+          });
+        }
+
         if(this.page <= 1 || !this.items) {
           this.items = items;
         } else {
@@ -266,31 +264,23 @@
         }
       },
 
-			/**
-			 * item 클릭시 발생하는 이벤트
-			 * 클릭한 아이템의 meta 정보를 초기화 하고 dialog를 오픈 합니다.
-			 */
-			_onImageSelected: function(e) {
+      /**
+       * item 클릭시 발생하는 이벤트
+       * 클릭한 아이템의 meta 정보를 초기화 하고 dialog를 오픈 합니다.
+       */
+      _onImageSelected: function(e) {
         var label = e.detail;
 
         if(label.thumbnail) {
           var baseUrl = this.get('globals.baseUrl');
           if(baseUrl) {
-            label.thumbnail = baseUrl + '/download/' + label.thumbnail;
+            label.thumbnail = baseUrl + '/download/' + label.attachment_id;
           } 
         }
 
-				this.singleItem = label;
-				this.$['dialog'].open();
-			},
-
-			/**
-			 * Print button 클릭시 발생하는 프린트 기능
-			 */
-			_printLabel: function(e) {
-				console.log(e);
-				console.log("TODO: inserting print logic");
-			},
+        this.singleItem = label;
+        this.$['dialog'].open();
+      },
 
       /**
        * 다음 페이지 이동
@@ -307,6 +297,6 @@
 
         this.$.scroller.clearTriggers();
       } 
-		});
-	</script>
+    });
+  </script>
 </dom-module>
