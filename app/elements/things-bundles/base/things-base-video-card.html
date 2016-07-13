@@ -1,12 +1,15 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
+
 <link rel="import" href="../../../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../../../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../../../bower_components/things-i18n-msg/things-i18n-msg.html">
 <link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
 <link rel="import" href="../../../bower_components/things-card-image/things-card-image-list.html">
-<link rel="import" href="../../things-content/things-resource-menu-content-behavior.html">
 
-<dom-module id="things-base-movie-card">
+<link rel="import" href="../../things-content/things-resource-menu-content-behavior.html">
+<link rel="import" href="../common/things-common-video-player.html">
+
+<dom-module id="things-base-video-card">
   <template>
     <style>
       :host {
@@ -35,8 +38,8 @@
       }
       .detail-card {
         @apply(--layout-vertical);
-        min-width:600px;
-        max-width:800px;
+        min-width:750px;
+        max-width:900px;
       }
       .detail-content {
         @apply(--layout-vertical);
@@ -59,13 +62,6 @@
       #card-list::shadow paper-card {
         padding:6px 4px;
         min-height:85px
-      }
-      #card-list::shadow iron-image {
-        width:65px;
-        height:50px;
-      }
-      #card-list::shadow iron-image::shadow img {
-        height:initial !important;
       }
       #card-list::shadow .title-text,#card-list::shadow .card-info {
         display:none;
@@ -113,17 +109,6 @@
       #card-list::shadow #card-detail span.homepage:before {
         background-position:50% -99px;
       }
-      .detail-card iron-image {
-        float:left;
-        min-width:580px;
-        min-height:380px;
-        max-width:780px;
-        max-height:580px;
-      }
-      .detail-card iron-image::shadow img {
-        margin:auto;
-        max-width:100%
-      }
       .topinfo {
         float:right;
       }
@@ -156,39 +141,10 @@
     <div id="card-list" class="container">
       <things-card-image-list
         items="[[items]]"
-        detail-fields="name,description,version,status"
+        detail-fields="name,description,file_size,mimetype"
         is-selector>
       </things-card-image-list>
     </div>
-
-    <paper-dialog
-      modal
-      id="dialog"
-      entry-animation="scale-up-animation"
-      exit-animation="fade-out-animation">
-      <paper-toolbar>
-        <span class="title">[[singleItem.name]]</span>
-        <div class="buttonsGroup">
-          <button dialog-dismiss class="close-btn"></button>
-        </div>
-      </paper-toolbar>
-
-      <div class="detail-card">
-        <div class="detail-content">
-          <video 
-            id="thevideo" 
-            title="Video of a rabbit and butterfly" 
-            !autoplay
-            !loop
-            controls
-            title="[[singleItem.name]]" 
-            class="video-element">
-            <source src="[[singleItem.path]]" type="video/mp4">
-            <!--source src="http://192.168.35.225:9013/data/entity_create.mov" type="video/mp4"-->
-          </video>
-        </div>
-      </div>
-    </paper-dialog>
 
     <iron-scroll-threshold
       id="scroller"
@@ -199,7 +155,7 @@
 
   <script>
     Polymer({
-      is: 'things-base-movie-card',
+      is: 'things-base-video-card',
 
       behaviors: [
         Things.ResourceMenuContentBehavior,
@@ -212,20 +168,6 @@
          */
         totalCount: {
           type: Number
-        },
-
-        /**
-         * list에서 선택된 개별 아이템
-         */
-        singleItem: {
-          type: Object
-        },
-
-        /**
-         * Movie URL
-         */
-        movieUrl: {
-          type: String
         }
       },
 
@@ -265,18 +207,18 @@
        * 클릭한 아이템의 meta 정보를 초기화 하고 dialog를 오픈 합니다.
        */
       _onImageSelected: function(e) {
-        var movie = e.detail;
+        var videoId = e.detail.id;
+        var videoTitle = e.detail.name;
+        var videoUrl = e.detail.path;
 
-        if(movie.path) {
-          var baseUrl = this.get('globals.baseUrl');
-          if(baseUrl) {
-            movie.path = baseUrl + '/download/' + movie.id;
-            console.log(movie.path);
-          } 
+        var baseUrl = this.get('globals.baseUrl');
+        if(baseUrl && videoUrl) {
+          videoUrl = baseUrl + '/download/' + videoId;
+          var videoView = document.createElement('things-common-video-player');
+          videoView.title = videoTitle;
+          videoView.videoUrl = videoUrl;
+          this.openPopupView(videoView, true);
         }
-
-        this.singleItem = movie;
-        this.$['dialog'].open();
       },
 
       /**
