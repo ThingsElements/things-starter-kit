@@ -41,9 +41,9 @@
 			content-type="application/json"
 			method="POST"
 			last-response="{{lastResponse}}">
-			<things-input-field required id="invoke-url" name ="invokeUrl" label="Invoke URL" disabled>
-			</things-input-field>
-			<div id="param-fields" class="layout vertical flex fields"></div>
+			<things-textarea required id="invoke-url" name ="invokeUrl" label="Invoke URL" disabled>
+			</things-textarea>
+			<div id="param-fields" class="layout vertical flex fields" hidden></div>
 			<things-textarea id="result" label="Result" rows=4>
 			</things-textarea>
 		</form>

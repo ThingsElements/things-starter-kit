@@ -40,13 +40,13 @@ Example:
         @apply(--layout-end-justified);
         padding: 0 10px;
       }
+
+      .restInvoke {
+      	overflow: auto;
+      }
     </style>
 
-		<things-ajax 
-			id="put-resource"
-			method="PUT"
-			content-type="application/json"
-			last-response="{{lastResponse}}">
+		<things-ajax id="put-resource" method="PUT" content-type="application/json" last-response="{{lastResponse}}">
 		</things-ajax>
 
 		<paper-toolbar>
@@ -55,28 +55,16 @@ Example:
 			</div>
 		</paper-toolbar>
 
-		<br/>
+		<br>
 
-		<form is="iron-form" 
-			id="form" 
-			action="{{action}}"
-			headers="[[headers]]"
-			with-credentials
-			content-type="[[apiContentType]]"
-			method="[[resource.http_method]]"
-			last-response="{{lastResponse}}">
+		<form class="restInvoke" is="iron-form" id="form" action="{{action}}" headers="[[headers]]" with-credentials="" content-type="[[apiContentType]]" method="[[resource.http_method]]" last-response="{{lastResponse}}">
 			
-			<things-input-field 
-				required 
-				id="invoke-url" 
-				name ="invokeUrl" 
-				label="Invoke URL" 
-				value="{{invokeUrl}}">
+			<things-input-field required id="invoke-url" name="invokeUrl" label="Invoke URL" value="{{invokeUrl}}">
 			</things-input-field>
 
 			<div id="param-fields" class="layout vertical flex fields"></div>
 
-			<things-textarea id="result" label="Result" rows=4></things-textarea>
+			<things-textarea id="result" label="Result" rows="4"></things-textarea>
 		</form>
 	</template>
 

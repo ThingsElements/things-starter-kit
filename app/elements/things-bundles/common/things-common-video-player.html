@@ -1,0 +1,51 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<dom-module id="things-common-video-player">
+  <template>
+    <style>
+      :host {
+        display: block;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+      }
+      
+      div {
+        @apply(--layout-flex);
+      }
+    </style>
+
+    <div>
+      <video 
+        id="thevideo" 
+        title="Video of a rabbit and butterfly" 
+        autoplay
+        !loop
+        controls
+        title="[[title]]">
+        <source src="[[videoUrl]]" type='video/mp4'>
+      </video>
+    </div>
+	</template>
+
+  <script>
+    Polymer({
+      is: 'things-common-video-player',
+
+      properties: {
+        /**
+         * Title
+         */
+        title: {
+          type: String
+        },
+
+        /**
+         * Video URL
+         */
+        videoUrl: {
+          type: String
+        }
+      }
+    });
+  </script>
+</dom-module>
