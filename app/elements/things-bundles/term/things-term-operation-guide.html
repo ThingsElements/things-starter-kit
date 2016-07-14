@@ -1,0 +1,208 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../bower_components/things-global-behavior/things-global-behavior.html">
+<link rel="import" href="../../../bower_components/things-view-open-behavior/things-view-open-behavior.html">
+
+<link rel="import" href="../../things-layout-view/things-layout-hera.html">
+<link rel="import" href="../../things-meta-view/things-diy-based-grid.html">
+<link rel="import" href="../../things-meta-view/things-diy-based-form.html">
+<link rel="import" href="../../things-bundles/common/things-common-video-player.html">
+
+<link rel="import" href="things-lot-based-transaction-behavior.html">
+
+<!--
+  OI - Operation Guide
+-->
+
+<dom-module id="things-term-operation-guide">
+  <template>
+    <style>
+      :host {
+        display: block;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+        margin-top:20px;
+      }
+      things-layout-hera {
+        @apply(--layout-flex);
+      }
+    </style>
+
+    <things-ajax
+      id="attachments"
+      resource-action="index"
+      resource-url="attachments">
+    </things-ajax>
+
+    <things-diy-based-grid 
+      content
+      id="attach-grid"
+      class="flex"
+      fixed-column-count="1"
+      items="[[items]]"
+      diy-grid-name="OI-OperationGuide"
+      buttons="[[buttons]]">
+    </things-diy-based-grid>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'things-term-operation-guide',
+
+      behaviors: [
+        Things.ViewOpenBehavior,
+        Things.GlobalBehavior
+      ],
+      
+      properties: {
+        /**
+        * 라우팅 정보
+        */
+        dataRoute: {
+          type: String
+        },
+
+        /**
+         * Title Of Lot Information
+         */
+        lotInfoTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('label.attachment')
+          }
+        },
+
+        /**
+         * Title Of Input
+         */
+        inputTitle: {
+          type: String,
+          value: function() {
+            return Things.DataGlobal.t('label.movie')
+          }
+        },
+
+        /**
+         * 공정
+         */
+        operation: {
+          type: Object
+        },
+
+        /**
+         * 공정 아이디
+         */
+        operationId: {
+          type: String
+        },
+
+        /**
+         * 첨부 파일 리스트 
+         */
+        items: {
+          type: Array
+        },
+
+        /**
+         * 현재 선택된 첨부 파일 아이디 
+         */
+        selectedItemId: {
+          type: String
+        }, 
+
+        /**
+         * 버튼
+         */
+        buttons: {
+          type: Array,
+          value: function() {
+            return [ { name : 'refresh-btn', text : 'refresh' } ];
+          }
+        }
+      },
+
+      observers: [
+        'dataRouteChanged(dataRoute)',
+        'operationChanged(globals.operation)'
+      ],
+
+      listeners: {
+        'things-grid-configured' : 'refreshAttachmentList',
+        'attachments.things-ajax-response' : 'attachmentsResponsed',
+        'attach-grid.things-grid-detail-tap' : 'attachSelected',
+        'refresh-btn-tap' : 'refreshAttachmentList'
+      },
+
+      /**
+       * dataRoute가 변경되었을 경우 
+       *
+       * @param {String} dataRoute
+       */
+      dataRouteChanged: function(dataRoute) {
+        if(dataRoute == this.menuInfo.routing) {
+          if(this.globals) {
+            this.operationId = this.globals.operation ? this.globals.operation.id : '';
+          }
+        }
+      },
+
+      /**
+       * Operation 변경시 
+       *
+       * @param {Object} operation
+       */
+      operationChanged: function(operation) {
+        this.operationId = (operation && operation.id) ? operation.id : '';
+        this.refreshAttachmentList();
+      },
+
+      /**
+       * Attachment List 조회 
+       */
+      refreshAttachmentList: function() {
+        var queryFields = [ {
+          name: 'mimetype',
+          value: 'mp4'
+        }, {
+          name: 'on_type',
+          value: 'Operation'
+        }, {
+          name: 'on_id',
+          value: this.operationId
+        } ];
+
+        var service = this.$['attachments'];
+        service.queryFields = queryFields;
+        service.generateRequest();
+      },
+
+      /**
+       * Attachment List 응답시  
+       */
+      attachmentsResponsed: function(event) {
+        var response = event.detail;
+        this.items = response && response.items ? response.items : [];
+      },
+
+      /**
+       * Attachment 선택시
+       */
+      attachSelected: function(event) {
+        var item = event.detail;
+        if(this.selectedItemId == item.id) return;
+
+        this.selectedItemId = item.id;
+        var baseUrl = this.get('globals.baseUrl');
+        if(baseUrl) {
+          var videoUrl = baseUrl + '/download/' + this.selectedItemId;
+          var videoView = document.createElement('things-common-video-player');
+          videoView.title = item.name;
+          videoView.videoUrl = videoUrl;
+          this.openPopupView(videoView, true);
+        }
+      }
+    });
+  </script>
+</dom-module>
+
+
