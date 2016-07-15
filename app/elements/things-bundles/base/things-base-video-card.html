@@ -144,7 +144,7 @@
       attached: function() {
         this.page = 1;
         this.perPage = 50;
-        if(!this.sortFields) { this.sortFields = [ { field: 'name', ascending: true } ]; }
+        if(!this.sortFields) { this.sortFields = [ { field: 'name', ascending: false } ]; }
         this.refreshGridData();
       },
 
@@ -175,7 +175,7 @@
 
         var baseUrl = this.get('globals.baseUrl');
         if(baseUrl && videoUrl) {
-          videoUrl = baseUrl + '/download/' + videoId;
+          videoUrl = baseUrl + '/stream/' + videoId;
           var videoView = document.createElement('things-common-video-player');
           videoView.title = videoTitle;
           videoView.videoUrl = videoUrl;
