@@ -33,23 +33,17 @@
 		</things-ajax>
 
 		<things-ajax 
-			id="add-handler"
+			id="handler-on"
 			method="POST"
 			content-type="application/json"
-			resource-url="channels/apply_listener">
+			resource-url="channels/handler_on">
 		</things-ajax>
 
 		<things-ajax 
-			id="remove-handler"
+			id="handler-off"
 			method="POST"
 			content-type="application/json"
-			resource-url="channels/remove_handler">
-		</things-ajax>
-
-		<things-ajax 
-			id="stop-channel"
-			method="POST"
-			resource-url="channels/stop_listener">
+			resource-url="channels/handler_off">
 		</things-ajax>
 
 		<things-search-form 
@@ -93,8 +87,8 @@
 			},
 
 			listeners : {
-				'start-btn-tap': 'addHandler',
-				'stop-btn-tap': 'removeHandler'
+				'on-btn-tap': 'handlerOn',
+				'off-btn-tap': 'handlerOff'
 			},
 
 			/**
@@ -102,17 +96,17 @@
 			 *
 			 * @param {Object} e 버튼 탭 이벤트
 			 */
-			addHandler: function(e) {
+			handlerOn: function(e) {
 				var channel = this.getSelectedItem();
 				if(channel == null)
 					return;
 
-				if(channel.status == 'ON') {
+				/*if(channel.status == 'ON') {
 					return;
-				}
+				}*/
 
-				var startAjax = this.$['add-handler'];
-				startAjax.body = { input : channel };
+				var startAjax = this.$['handler-on'];
+				startAjax.body = channel;
 				startAjax.generateRequest();
 			},
 
@@ -121,7 +115,7 @@
 			 *
 			 * @param {Object} e 버튼 탭 이벤트
 			 */
-			removeHandler: function(e) {
+			handlerOff: function(e) {
 				var channel = this.getSelectedItem();
 				if(channel == null)
 					return;
@@ -130,7 +124,7 @@
 					return;
 				}
 
-				var stopAjax = this.$['remove-handler'];
+				var stopAjax = this.$['handler-off'];
 				stopAjax.body = channel;
 				stopAjax.generateRequest();
 			},
