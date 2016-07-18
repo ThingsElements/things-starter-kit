@@ -87,8 +87,10 @@
 			},
 
 			listeners : {
-				'on-btn-tap': 'handlerOn',
-				'off-btn-tap': 'handlerOff'
+				'start-btn-tap': 'handlerOn',
+				'stop-btn-tap': 'handlerOff',
+				'handler-on.things-ajax-response': 'refreshGridData',
+				'handler-off.things-ajax-response': 'refreshGridData'
 			},
 
 			/**
@@ -101,9 +103,9 @@
 				if(channel == null)
 					return;
 
-				/*if(channel.status == 'ON') {
+				if(channel.status == 'ON') {
 					return;
-				}*/
+				}
 
 				var startAjax = this.$['handler-on'];
 				startAjax.body = channel;
