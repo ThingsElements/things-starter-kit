@@ -1,0 +1,153 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../../bower_components/things-ajax/things-ajax.html">
+<link rel="import" href="../../../bower_components/things-form/things-search-form.html">
+<link rel="import" href="../../../bower_components/things-grid/things-resource-grid.html">
+
+<link rel="import" href="../../things-content/things-resource-menu-content-behavior.html">
+
+<!--
+	Channel 정의 화면 
+-->
+
+<dom-module id="things-base-channel">
+	<template>
+		<style>
+			:host {
+				display: block;
+				@apply(--layout-vertical);
+				@apply(--layout-flex);
+			}
+			
+			things-resource-grid {
+				@apply(--layout-flex);
+			}
+		</style>
+
+		<things-ajax 
+			auto
+			id="resource-meta"
+			method="GET"
+			resource-url="[[menuMetaUrl]]"
+			last-response="{{metaData}}">
+		</things-ajax>
+
+		<things-ajax 
+			id="add-handler"
+			method="POST"
+			content-type="application/json"
+			resource-url="channels/apply_listener">
+		</things-ajax>
+
+		<things-ajax 
+			id="remove-handler"
+			method="POST"
+			content-type="application/json"
+			resource-url="channels/remove_handler">
+		</things-ajax>
+
+		<things-ajax 
+			id="stop-channel"
+			method="POST"
+			resource-url="channels/stop_listener">
+		</things-ajax>
+
+		<things-search-form 
+			id="search-form"
+			title="[[menuInfo.title]]"
+			form-fields="[[searchFormFields]]" 
+			select-fields="[[selectFields]]"
+			sort-fields="[[sortFields]]"
+			action-url="[[menuInfo.resource_url]]" 
+			page="{{page}}"
+			per-page="[[perPage]]"
+			last-response="{{lastResponse}}">
+		</things-search-form>
+
+		<things-resource-grid 
+			id="grid"
+			config="[[gridConfig]]"
+			model="[[gridModel]]" 
+			columns="[[gridColumns]]"
+			data="[[items]]"
+			total-count="[[itemCount]]"
+			current-page="{{page}}"
+			per-page="[[perPage]]"
+			fixed-column-count="[[menuInfo.fixed_columns]]"
+			grid-save-action="[[menuInfo.grid_save_url]]"
+			buttons="[[buttons]]"
+			export-file-name="[[menuInfo.title]]"
+			export-sheet-name="[[menuInfo.title]]">
+		</things-resource-grid>
+	</template>
+
+	<script>
+		Polymer({
+			is: 'things-base-channel',
+
+			behaviors: [
+				Things.ResourceMenuContentBehavior
+			],
+			
+			properties: {
+			},
+
+			listeners : {
+				'start-btn-tap': 'addHandler',
+				'stop-btn-tap': 'removeHandler'
+			},
+
+			/**
+			 * Add Channel Handler
+			 *
+			 * @param {Object} e 버튼 탭 이벤트
+			 */
+			addHandler: function(e) {
+				var channel = this.getSelectedItem();
+				if(channel == null)
+					return;
+
+				if(channel.status == 'ON') {
+					return;
+				}
+
+				var startAjax = this.$['add-handler'];
+				startAjax.body = { input : channel };
+				startAjax.generateRequest();
+			},
+
+			/**
+			 * Remove Channel Handler
+			 *
+			 * @param {Object} e 버튼 탭 이벤트
+			 */
+			removeHandler: function(e) {
+				var channel = this.getSelectedItem();
+				if(channel == null)
+					return;
+
+				if(channel.status == 'OFF') {
+					return;
+				}
+
+				var stopAjax = this.$['remove-handler'];
+				stopAjax.body = channel;
+				stopAjax.generateRequest();
+			},
+
+			/**
+			 * 선택한 채널 아이템 
+			 */
+			getSelectedItem: function() {
+				var resourceGrid = this.$.grid;
+				var grid = resourceGrid.getGridObject();
+				var rows = grid.getCheckedRows();
+				if(!rows || rows.length == 0) return null;
+
+				var ds = resourceGrid.getGridDataSet();
+				var channel = ds.getRowObject(rows[0]._index);
+				return channel;
+			}		
+		});
+	</script>
+</dom-module>
